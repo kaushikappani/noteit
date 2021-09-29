@@ -27,7 +27,7 @@ const Create = () => {
                 }
             }
             setLoading(true);
-            const { data } = await axios.get("http://192.168.29.200:5000/api/users/info", config);
+            const { data } = await axios.get("/api/users/info", config);
             setUser(data);
             setLoading(false)
         } catch (e) {
@@ -47,7 +47,7 @@ const Create = () => {
             }
             setLoading(true);
             //eslint-disable-next-line
-            const { data } = await axios.post("http://192.168.29.200:5000/api/notes/create", note, config);
+            const { data } = await axios.post("/api/notes/create", note, config);
             setLoading(false)
             history.push("/");
 

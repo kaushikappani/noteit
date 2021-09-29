@@ -23,7 +23,7 @@ const Profile = () => {
                 }
             }
             setLoading(true);
-            const { data } = await axios.get("http://192.168.29.200:5000/api/users/info", config);
+            const { data } = await axios.get("/api/users/info", config);
             setUser(data);
             setLoading(false)
         } catch (e) {
@@ -42,7 +42,7 @@ const Profile = () => {
                 }
             }
             setLoading(true);
-            const { data } = await axios.put("http://192.168.29.200:5000/api/users/info", user, config);
+            const { data } = await axios.put("/api/users/info", user, config);
             setSuccess(data.message)
             setLoading(false)
             setError(null)

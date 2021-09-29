@@ -28,7 +28,7 @@ const Register = () => {
                     }
                 }
                 setLoading(true);
-                const { data } = await axios.post("http://192.168.29.200:5000/api/users", { ...authData }, config)
+                const { data } = await axios.post("/api/users", { ...authData }, config)
 
                 localStorage.setItem('userInfo', JSON.stringify(data))
                 setLoading(false)

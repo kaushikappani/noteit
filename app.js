@@ -9,26 +9,19 @@ const notesRoute = require("./routes/notes");
 const { errorHandler, notFound } = require("./middleware/error");
 const { protect } = require("./middleware/protect");
 const path = require("path")
-
-
-var corsOptions = {
-    origin: 'http://192.168.29.200:3000',
-    optionsSuccessStatus: 200
-}
+app.use(express.json());
 connectDB();
-app.use(cors(corsOptions))
-app.use(express.json())
 
-app.get("/", (req, res) => {
-    res.send({ text: "hello world" });
-})
 
 app.use("/api/users", userRoutes)
 app.use("/api/notes", notesRoute)
 
 __dirname = path.resolve();
 if (process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(__dirname)))
+    app.use(express.static(path.join(__dirname, "/noteitfrontend/build",)))
+    app.get("*", (req, res) => {
+        res.sendFile(path.resolve(__dirname, "noteitfrontend", "build", "index.html"));
+    })
 } else {
 
 }

@@ -24,7 +24,7 @@ const Notes = () => {
                 }
             }
             setLoading(true);
-            const { data } = await axios.get("http://192.168.29.200:5000/api/notes", config)
+            const { data } = await axios.get("/api/notes", config)
             setNotes(data.notes)
             setUser(data.user);
             setLoading(false)

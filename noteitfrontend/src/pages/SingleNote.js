@@ -23,7 +23,7 @@ const SingleNote = () => {
                 }
             }
             setLoading(true);
-            const { data } = await axios.get(`http://192.168.29.200:5000/api/notes/${id}`, config)
+            const { data } = await axios.get(`/api/notes/${id}`, config)
             setNote(data.note)
             setUser(data.user);
             setLoading(false)
@@ -44,7 +44,7 @@ const SingleNote = () => {
             }
             setLoading(true);
             //eslint-disable-next-line
-            const { data } = await axios.put(`http://192.168.29.200:5000/api/notes/${id}`, note, config)
+            const { data } = await axios.put(`/api/notes/${id}`, note, config)
 
             setLoading(false)
             history.push("/notes")
@@ -63,7 +63,7 @@ const SingleNote = () => {
             }
             setLoading(true);
             //eslint-disable-next-line
-            const { data } = await axios.delete(`http://192.168.29.200:5000/api/notes/${id}`, config)
+            const { data } = await axios.delete(`/api/notes/${id}`, config)
             setLoading(false)
             history.push("/notes")
         } catch (e) {
