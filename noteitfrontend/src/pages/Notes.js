@@ -44,7 +44,7 @@ const Notes = () => {
             <Header user={user} />
             {loading && <Mainscreen title="loading ..."><Loading /></Mainscreen>}
             {!loading && <Mainscreen
-                title={`Welcome back ${user.name}`}>
+                title={`Welcome back ${user.verified ? user.name : "Verification email sent"}`}>
 
 
 
