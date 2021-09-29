@@ -1,7 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs")
 const router = express.Router();
-const asyncHandler = require("express-async-Handler");
+const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const { User } = require("../config/models");
 const { protect } = require("../middleware/protect");
