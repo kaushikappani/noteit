@@ -1,0 +1,133 @@
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import Header from '../components/Header';
+import { Button, Card, Form } from "react-bootstrap";
+import Loading from "../components/Loading"
+import ReactMarkdown from "react-markdown";
+import Mainscreen from '../components/Mainscreen';
+import { useHistory } from 'react-router';
+
+const Create = () => {
+    const history = useHistory();
+    const [note, setNote] = useState({
+        title: "",
+        category: "",
+        content: ""
+    })
+    const [user, setUser] = useState({});
+    const [error, setError] = useState();
+    const [loading, setLoading] = useState(false);
+    const authData = localStorage.getItem("userInfo");
+    const fetchUser = async () => {
+        console.log("fetch user")
+        try {
+            const config = {
+                headers: {
+                    "Authorization": "Bearer " + JSON.parse(authData).token,
+                }
+            }
+            setLoading(true);
+            const { data } = await axios.get("http://192.168.29.200:5000/api/users/info", config);
+            setUser(data);
+            setLoading(false)
+        } catch (e) {
+            setLoading(false)
+            setError(e.response ? e.response.data.message : e.message)
+            history.push("/")
+        }
+    }
+    const submitHandler = async (e) => {
+        e.preventDefault();
+        try {
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + JSON.parse(authData).token,
+                }
+            }
+            setLoading(true);
+            //eslint-disable-next-line
+            const { data } = await axios.post("http://192.168.29.200:5000/api/notes/create", note, config);
+            setLoading(false)
+            history.push("/");
+
+        } catch (e) {
+            console.log("failed")
+            setError(e.response ? e.response.data.message : e.message)
+            setLoading(false);
+        }
+    }
+    useEffect(() => {
+        fetchUser();
+        //eslint-disable-next-line
+    }, [])
+    return (
+        <>
+            <Header user={user} />
+            <Mainscreen title="Create note">
+                <Card>
+                    <Card.Header>Create a new Note</Card.Header>
+                    <Card.Body>
+                        <Form onSubmit={submitHandler}>
+                            {error && <p className="text-danger">{error}</p>}
+                            <Form.Group controlId="title">
+                                <Form.Label>Title</Form.Label>
+                                <Form.Control
+                                    type="title"
+                                    value={note.title}
+                                    placeholder="Enter the title"
+                                    onChange={(e) => setNote(prev => {
+                                        return { ...prev, title: e.target.value }
+                                    })}
+                                />
+                            </Form.Group>
+
+                            <Form.Group controlId="content">
+                                <Form.Label>Content</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    value={note.content}
+                                    placeholder="Enter the content"
+                                    rows={10}
+                                    onChange={(e) => setNote(prev => {
+                                        return { ...prev, content: e.target.value }
+                                    })}
+                                />
+                            </Form.Group>
+                            {note.content && (
+                                <Card>
+                                    <Card.Header>Note Preview</Card.Header>
+                                    <Card.Body>
+                                        <ReactMarkdown>{note.content}</ReactMarkdown>
+                                    </Card.Body>
+                                </Card>
+                            )}
+
+                            <Form.Group controlId="content">
+                                <Form.Label>Category</Form.Label>
+                                <Form.Control
+                                    type="content"
+                                    value={note.category}
+                                    placeholder="Enter the Category"
+                                    onChange={(e) => setNote(prev => {
+                                        return { ...prev, category: e.target.value }
+                                    })}
+                                />
+                            </Form.Group>
+                            {loading && <Loading />}
+                            <Button type="submit" variant="primary">
+                                Create Note
+                            </Button>
+                        </Form>
+                    </Card.Body>
+
+                    <Card.Footer className="text-muted">
+                        Creating on - {new Date().toLocaleDateString()}
+                    </Card.Footer>
+                </Card>
+            </Mainscreen>
+        </>
+    )
+}
+
+export default Create
