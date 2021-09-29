@@ -34,7 +34,7 @@ router.route("/").post(asyncHandler(async (req, res) => {
         });
         let mailOptions = {
             form: "no-reply",
-            to: "appani.kaushik2019@vitstudent.ac.in",
+            to: email,
             subject: "Noteit conformation",
             html: `<h1>Email Confirmation</h1>
             <h2>Hello ${name}</h2>
