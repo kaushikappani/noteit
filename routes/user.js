@@ -25,32 +25,8 @@ router.route("/").post(asyncHandler(async (req, res) => {
         name, email, password: hashPassword, pic
     })
     newUser.save().then((u) => {
-        let transporter = mail.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'hourlycontact@gmail.com',
-                pass: 'Hesoy@m.io1',
-            }
-        });
-        let mailOptions = {
-            form: "no-reply",
-            to: email,
-            subject: "Noteit conformation",
-            html: `<h1>Email Confirmation</h1>
-            <h2>Hello ${name}</h2>
-            <a href=https://noteit1.herokuapp.com/confirm/${generateToken(u._id)}> Click here</a>
-            </div>`
-        }
-        transporter.sendMail(mailOptions, function (err, data) {
-            if (err) {
-                console.log(err);
-                res.send(err)
-            } else {
-                console.log(data);
-                res.status(200).json({
-                    _id: u.id, name: u.name, email: u.email, token: generateToken(u._id)
-                })
-            }
+        res.status(200).json({
+            _id: u.id, name: u.name, email: u.email, token: generateToken(u._id)
         })
     }).catch((e) => {
         res.status(400);

@@ -7,7 +7,6 @@ const { protect } = require("../middleware/protect");
 const router = express.Router();
 
 router.route("/").get(protect, asyncHandler(async (req, res) => {
-    console.log("jello")
     const notes = await Note.find({ user: req.user._id });
     user = req.user;
     res.json({ notes, user });

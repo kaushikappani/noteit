@@ -40,7 +40,8 @@ const Landingpage = ({ history }) => {
                 if (!err) {
                     history.push("/notes");
                 } else {
-                    localStorage.removeItem("userInfo")
+                    localStorage.removeItem("userInfo");
+                    console.log("removed")
                 }
             })
         }

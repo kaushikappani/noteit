@@ -30,7 +30,7 @@ const Notes = () => {
             setLoading(false)
         } catch (e) {
             console.log("failed")
-            history.push('/')
+            history.push('/');
             setLoading(false);
         }
     }
@@ -45,9 +45,6 @@ const Notes = () => {
             {loading && <Mainscreen title="loading ..."><Loading /></Mainscreen>}
             {!loading && <Mainscreen
                 title={`Welcome back ${user.verified ? user.name : "Verification email sent"}`}>
-
-
-
                 {!loading && (notes.length >= 1 && notes?.reverse().map((e) => {
                     return (
                         <Card key={e._id} id={e._id} title={e.title} content={e.content} category={e.category} createdAt={e.createdAt} />
