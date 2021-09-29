@@ -22,7 +22,9 @@ if (process.env.NODE_ENV === "production") {
         res.sendFile(path.resolve(__dirname, "noteitfrontend", "build", "index.html"));
     })
 } else {
-
+    app.get("/", (req, res) => {
+        res.json({ message: "Server started" })
+    })
 }
 
 app.use(errorHandler)

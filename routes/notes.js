@@ -19,9 +19,14 @@ router.route("/create").post(protect, asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error("Please fill all the fields");
     } else {
-        const note = new Note({ user: req.user._id, title, category, content })
-        const createdNote = await note.save();
-        res.status(201).json(createdNote);
+        if (req.user.verified === true) {
+            const note = new Note({ user: req.user._id, title, category, content })
+            const createdNote = await note.save();
+            res.status(201).json(createdNote);
+        } else {
+            res.status(400);
+            throw new Error("Please verify your account");
+        }
     }
 }))
 

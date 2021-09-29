@@ -39,6 +39,8 @@ const Landingpage = ({ history }) => {
             jwt.verify(JSON.parse(userInfo).token, 'kakaka', (err, decoded) => {
                 if (!err) {
                     history.push("/notes");
+                } else {
+                    localStorage.removeItem("userInfo")
                 }
             })
         }
