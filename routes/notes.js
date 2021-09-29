@@ -1,6 +1,6 @@
 const express = require("express");
 const { Note, User } = require("../config/models");
-const asyncHandler = require("express-async-Handler");
+const asyncHandler = require("express-async-handler");
 const notes = require("../data");
 const jwt = require("jsonwebtoken");
 const { protect } = require("../middleware/protect");
