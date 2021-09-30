@@ -6,7 +6,7 @@ import { Button, Card, Form } from "react-bootstrap";
 import Loading from "../components/Loading"
 import ReactMarkdown from "react-markdown";
 import Mainscreen from '../components/Mainscreen';
-import "./form.css";
+import "./form.css"
 
 const SingleNote = () => {
     const history = useHistory();
@@ -79,7 +79,7 @@ const SingleNote = () => {
     }, [])
 
     return (
-        <>
+        <div className="noteDiv">
             <Header user={user} />
             <Mainscreen title="Edit Note">
                 {loading && <Loading />}
@@ -147,7 +147,7 @@ const SingleNote = () => {
                     </Card.Footer>
                 </Card>}
             </Mainscreen>
-        </>
+        </div>
     )
 }
 

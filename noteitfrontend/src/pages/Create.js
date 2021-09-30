@@ -6,7 +6,8 @@ import Loading from "../components/Loading"
 import ReactMarkdown from "react-markdown";
 import Mainscreen from '../components/Mainscreen';
 import { useHistory } from 'react-router';
-import "./form.css";
+import "./form.css"
+
 const Create = () => {
     const history = useHistory();
     const [note, setNote] = useState({
@@ -62,7 +63,7 @@ const Create = () => {
         //eslint-disable-next-line
     }, [])
     return (
-        <>
+        <div className="noteDiv">
             <Header user={user} />
             <Mainscreen title="Create note">
                 <Card>
@@ -126,7 +127,7 @@ const Create = () => {
                     </Card.Footer>
                 </Card>
             </Mainscreen>
-        </>
+        </div>
     )
 }
 

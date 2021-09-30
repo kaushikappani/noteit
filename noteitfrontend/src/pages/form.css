@@ -1,8 +1,8 @@
-input {
+.noteDiv input {
   background-color: #444444 !important;
   color: white !important;
 }
-textarea {
+.noteDiv textarea {
   background-color: #444444 !important;
   color: white !important;
 }
