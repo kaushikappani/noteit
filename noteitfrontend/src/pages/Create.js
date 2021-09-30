@@ -6,7 +6,7 @@ import Loading from "../components/Loading"
 import ReactMarkdown from "react-markdown";
 import Mainscreen from '../components/Mainscreen';
 import { useHistory } from 'react-router';
-
+import "./form.css";
 const Create = () => {
     const history = useHistory();
     const [note, setNote] = useState({

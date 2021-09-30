@@ -6,6 +6,7 @@ import { Button, Card, Form } from "react-bootstrap";
 import Loading from "../components/Loading"
 import ReactMarkdown from "react-markdown";
 import Mainscreen from '../components/Mainscreen';
+import "./form.css";
 
 const SingleNote = () => {
     const history = useHistory();
@@ -105,7 +106,7 @@ const SingleNote = () => {
                                     as="textarea"
                                     value={note.content}
                                     placeholder="Enter the content"
-                                    rows={4}
+                                    rows={10}
                                     onChange={(e) => setNote(prev => {
                                         return { ...prev, content: e.target.value }
                                     })}
