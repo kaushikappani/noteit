@@ -29,7 +29,8 @@ const Notes = () => {
             setUser(data.user);
             setLoading(false)
         } catch (e) {
-            console.log("failed")
+            console.log("failed124")
+            localStorage.clear();
             history.push('/');
             setLoading(false);
         }

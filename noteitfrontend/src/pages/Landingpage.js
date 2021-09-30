@@ -26,6 +26,7 @@ const Landingpage = ({ history }) => {
             setLoading(true);
             const { data } = await axios.post("/api/users/login", authData, config)
             localStorage.setItem('userInfo', JSON.stringify(data))
+            history.push("/notes")
             setLoading(false);
         } catch (e) {
             setError(e.response ? e.response.data.message : "Error occured please try again");
@@ -45,7 +46,7 @@ const Landingpage = ({ history }) => {
                 }
             })
         }
-    }, [history, userInfo])
+    }, [])
     return (
         <>
             <Header />
