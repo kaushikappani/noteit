@@ -92,7 +92,7 @@ router.route("/info").put(protect, asyncHandler(async (req, res) => {
     if (user) {
         console.log("put request found")
         user.name = name || user.name;
-        user.email = email || user.email;
+        user.email =  user.email;
         if (password && password === conformPassword) {
             console.log("pas block sier")
             const salt = await bcrypt.genSalt(11);
@@ -100,7 +100,7 @@ router.route("/info").put(protect, asyncHandler(async (req, res) => {
             user.password = hashPassword;
         }
         const updatedUser = await user.save();
-        res.json({ message: "Profile Updated" })
+        res.json({ message: "Profile Updated - Email Cant be updated" })
     } else {
         res.status(404);
         throw new Error("User Not Found");
