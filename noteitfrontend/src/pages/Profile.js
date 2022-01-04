@@ -10,6 +10,7 @@ import "./profile.css"
 const Profile = () => {
     const history = useHistory();
     const [user, setUser] = useState();
+    const [update,setUpdate] = useState()
     const [error, setError] = useState();
     const [success, setSuccess] = useState();
     const [loading, setLoading] = useState(false);
@@ -25,6 +26,7 @@ const Profile = () => {
             setLoading(true);
             const { data } = await axios.get("/api/users/info", config);
             setUser(data);
+            setUpdate(data);
             setLoading(false)
         } catch (e) {
             setLoading(false)
@@ -58,7 +60,7 @@ const Profile = () => {
     }, [])
     return (
         <>
-            <Header user={user} />
+            <Header user={update} />
             <Mainscreen title="Profile">
                 {user && <div >
                     <Row style={{ maxWidth: "500px", position: "relative", margin: "auto" }} className="profileContainer">
