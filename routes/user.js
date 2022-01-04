@@ -5,7 +5,10 @@ const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const { User } = require("../config/models");
 const { protect } = require("../middleware/protect");
-const mail = require("nodemailer")
+const mail = require("nodemailer");
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: "1d"
@@ -28,6 +31,23 @@ router.route("/").post(asyncHandler(async (req, res) => {
         res.status(200).json({
             _id: u.id, name: u.name, email: u.email, token: generateToken(u._id)
         })
+        const msg = {
+          to: email,
+          from: "kaushikappani@gmail.com", // Use the email address or domain you verified above
+          subject: "NoteIt - Account Verification",
+          text: "Click the following link to verify your link",
+          html: `<strong><a href="https://noteit1.herokuapp.com/confirm/${generateToken(u._id)}">https://noteit1.herokuapp.com/confirm/${generateToken(u._id)}</a></strong>`,
+        };sgMail.send(msg).then(
+          () => {},
+          (error) => {
+            console.error(error);
+
+            if (error.response) {
+              console.error(error.response.body);
+            }
+          }
+        );
+
     }).catch((e) => {
         res.status(400);
         throw new Error("Error Occured try later")
@@ -88,6 +108,7 @@ router.route("/info").put(protect, asyncHandler(async (req, res) => {
 }))
 
 router.route("/confirm/:id").get(asyncHandler(async (req, res) => {
+    console.log("------------------confirm-------------------------")
     try {
         token = req.params.id;
         const decode = jwt.verify(token, process.env.JWT_SECRET);
