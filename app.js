@@ -8,11 +8,12 @@ const notesRoute = require("./routes/notes");
 const { errorHandler, notFound } = require("./middleware/error");
 const { protect } = require("./middleware/protect");
 const { Note } = require("./config/models");
+const cookieParser = require("cookie-parser");
 const path = require("path")
 app.use(express.json());
 connectDB();
 
-
+app.use(cookieParser());
 app.use("/api/users", userRoutes)
 app.use("/api/notes", notesRoute)
 
@@ -25,7 +26,11 @@ if (process.env.NODE_ENV === "production") {
     })
 } else {
     app.get("/", (req, res) => {
-        res.json({ message: "Server started" })
+        const cookie = req.cookies;
+        res.json({
+            message: "Server started cookie",
+            cookie: cookie
+        })
     })
 }
 

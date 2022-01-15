@@ -47,10 +47,17 @@ router.route("/:id").put(protect, asyncHandler(async (req, res) => {
         res.status(401)
         throw new Error("You cannot edit other notes");
     } if (note) {
+        console.log(note.color,color)
+        
         note.title = title || note.title;
         note.content = content || note.content;
         note.category = category || note.category;
-        note.color = color || note.color;
+        if (color && color === note.color) {
+            
+          note.color = "#202124";
+        } else {
+            note.color = color || note.color;
+        }
         const updatedNote = await note.save();
         res.json(updatedNote);
 

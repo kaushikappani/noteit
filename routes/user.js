@@ -27,10 +27,14 @@ router.route("/").post(asyncHandler(async (req, res) => {
     const newUser = new User({
         name, email, password: hashPassword, pic
     })
+    const options = {
+      httpOnly: true,
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    };
     newUser.save().then((u) => {
         res.status(200).json({
             _id: u.id, name: u.name, email: u.email, token: generateToken(u._id)
-        })
+        }).cookie('token', token,options);
         const msg = {
           to: email,
           from: "kaushikappani@gmail.com", // Use the email address or domain you verified above
@@ -59,14 +63,19 @@ router.route("/login").post(asyncHandler(async (req, res) => {
     if (user) {
         bcrypt.compare(password, user.password, (err, data) => {
             if (data) {
-                res.json({
-                    _id: user._id,
-                    name: user.name,
-                    email: user.email,
-                    isAdmin: user.isAdmin,
-                    pic: user.pic,
-                    token: generateToken(user._id)
-                })
+                    const options = {
+                      httpOnly: true,
+                      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                };
+                const token = generateToken(user._id); 
+                res.cookie("token", token, options).json({
+                  _id: user._id,
+                  name: user.name,
+                  email: user.email,
+                  isAdmin: user.isAdmin,
+                  pic: user.pic,
+                  token: token,
+                });
             } if (!data) {
                 res.status(400)
                 res.json({ message: "invalid crendientials" })
