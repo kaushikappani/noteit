@@ -24,28 +24,34 @@ const userSchema = mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
-const noteModel = mongoose.Schema({
+const noteModel = mongoose.Schema(
+  {
     title: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     content: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     category: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     user: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: "User",
-
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
     },
-}, {
-    timestamps: true
-})
+    color: {
+      type: String,
+      default: "#202124",
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const Note = mongoose.model("Note", noteModel)
 

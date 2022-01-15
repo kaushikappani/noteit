@@ -7,6 +7,7 @@ const userRoutes = require("./routes/user");
 const notesRoute = require("./routes/notes");
 const { errorHandler, notFound } = require("./middleware/error");
 const { protect } = require("./middleware/protect");
+const { Note } = require("./config/models");
 const path = require("path")
 app.use(express.json());
 connectDB();
@@ -14,6 +15,7 @@ connectDB();
 
 app.use("/api/users", userRoutes)
 app.use("/api/notes", notesRoute)
+
 
 __dirname = path.resolve();
 if (process.env.NODE_ENV === "production") {
@@ -26,6 +28,8 @@ if (process.env.NODE_ENV === "production") {
         res.json({ message: "Server started" })
     })
 }
+
+
 
 app.use(errorHandler)
 app.use(notFound)

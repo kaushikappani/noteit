@@ -7,7 +7,9 @@ const { protect } = require("../middleware/protect");
 const router = express.Router();
 
 router.route("/").get(protect, asyncHandler(async (req, res) => {
-    const notes = await Note.find({ user: req.user._id });
+    const notes = await Note.find({ user: req.user._id }).sort({
+      createdAt: -1,
+    });
     user = req.user;
     res.json({ notes, user });
 }))
@@ -39,15 +41,16 @@ router.route("/:id").get(protect, asyncHandler(async (req, res) => {
 }))
 
 router.route("/:id").put(protect, asyncHandler(async (req, res) => {
-    const { title, content, category } = req.body;
+    const { title, content, category, color } = req.body;
     const note = await Note.findById(req.params.id);
     if (note.user.toString() !== req.user._id.toString()) {
         res.status(401)
         throw new Error("You cannot edit other notes");
     } if (note) {
-        note.title = title;
-        note.content = content;
-        note.category = category;
+        note.title = title || note.title;
+        note.content = content || note.content;
+        note.category = category || note.category;
+        note.color = color || note.color;
         const updatedNote = await note.save();
         res.json(updatedNote);
 
@@ -70,5 +73,6 @@ router.route("/:id").delete(protect, asyncHandler(async (req, res) => {
         throw new Error("Note not found")
     }
 }))
+
 
 module.exports = router
