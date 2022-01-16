@@ -35,18 +35,19 @@ const Landingpage = ({ history }) => {
         }
 
     }
-
-    useEffect(() => {
-        if (userInfo) {
-            jwt.verify(JSON.parse(userInfo).token, 'kakaka', (err, decoded) => {
-                if (!err) {
-                    history.push("/notes");
-                } else {
-                    localStorage.removeItem("userInfo");
-                    console.log("removed")
-                }
-            })
+    const verifyToken = async() => {
+        try {
+            const { data } = await axios.get("/api/users/verifytoken", {
+                withCredentials: true,
+            });
+            history.push("/notes");
+            
+        } catch (err) {
+            
         }
+    }
+    useEffect(() => {
+        verifyToken();
     }, [])
     return (
         <>

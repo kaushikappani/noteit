@@ -19,10 +19,8 @@ const Profile = () => {
         console.log("fetch user")
         try {
             const config = {
-                headers: {
-                    "Authorization": "Bearer " + JSON.parse(authData).token,
-                }
-            }
+              withCredentials: true,
+            };
             setLoading(true);
             const { data } = await axios.get("/api/users/info", config);
             setUser(data);
@@ -38,11 +36,11 @@ const Profile = () => {
         e.preventDefault()
         try {
             const config = {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + JSON.parse(authData).token,
-                }
-            }
+              withCredentials: true,
+              headers: {
+                "Content-Type": "application/json",
+              },
+            };
             setLoading(true);
             const { data } = await axios.put("/api/users/info", user, config);
             setSuccess(data.message)

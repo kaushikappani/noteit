@@ -19,10 +19,8 @@ const SingleNote = () => {
     const fetchData = async () => {
         try {
             const config = {
-                headers: {
-                    "Authorization": "Bearer " + JSON.parse(authData).token,
-                }
-            }
+              withCredentials: true,
+            };
             setLoading(true);
             const { data } = await axios.get(`/api/notes/${id}`, config)
             setNote(data.note)
@@ -38,15 +36,15 @@ const SingleNote = () => {
         e.preventDefault();
         try {
             const config = {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + JSON.parse(authData).token,
-                }
-            }
+              withCredentials: true,
+              headers: {
+                "Content-Type": "application/json",
+              },
+            };
             setLoading(true);
             //eslint-disable-next-line
             const { data } = await axios.put(`/api/notes/${id}`, note, config)
-
+            
             setLoading(false)
             history.push("/notes")
         } catch (e) {
@@ -58,10 +56,8 @@ const SingleNote = () => {
     const handleDelete = async () => {
         try {
             const config = {
-                headers: {
-                    "Authorization": "Bearer " + JSON.parse(authData).token,
-                }
-            }
+              withCredentials: true,
+            };
             setLoading(true);
             //eslint-disable-next-line
             const { data } = await axios.delete(`/api/notes/${id}`, config)

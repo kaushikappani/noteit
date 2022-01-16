@@ -1,12 +1,16 @@
 import React from 'react';
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap"
 import { Link, useHistory } from 'react-router-dom';
+import axios from "axios";
 const Header = (props) => {
 
     const history = useHistory()
-
-    const handleLogout = () => {
+    
+    const handleLogout = async() => {
         localStorage.removeItem("userInfo");
+        const { data } = await axios.get("/api/users/logout", {
+          withCredentials: true,
+        });
         history.push("/")
     }
     return (

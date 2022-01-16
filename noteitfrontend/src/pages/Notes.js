@@ -21,10 +21,8 @@ const Notes = () => {
     const fetchNotes = async () => {
         try {
             const config = {
-                headers: {
-                    "Authorization": "Bearer " + JSON.parse(authData).token,
-                }
-            }
+              withCredentials: true,
+            };
           const { data } = await axios.get("/api/notes", config)
           setNotes(data.notes);
           setLoading(false);

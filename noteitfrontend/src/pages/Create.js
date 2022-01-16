@@ -23,10 +23,8 @@ const Create = () => {
         console.log("fetch user")
         try {
             const config = {
-                headers: {
-                    "Authorization": "Bearer " + JSON.parse(authData).token,
-                }
-            }
+              withCredentials: true,
+            };
             setLoading(true);
             const { data } = await axios.get("/api/users/info", config);
             setUser(data);
@@ -41,16 +39,16 @@ const Create = () => {
         e.preventDefault();
         try {
             const config = {
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + JSON.parse(authData).token,
-                }
-            }
+              withCredentials: true,
+              headers: {
+                "Content-Type": "application/json",
+              },
+            };
             setLoading(true);
             //eslint-disable-next-line
             const { data } = await axios.post("/api/notes/create", note, config);
             setLoading(false)
-            history.push("/");
+            history.push("/notes");
 
         } catch (e) {
             console.log("failed")
