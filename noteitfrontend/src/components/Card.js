@@ -1,5 +1,7 @@
 import React from 'react'
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
@@ -62,7 +64,9 @@ const CardComponent = (p) => {
             {p.title}
           </Typography>
           <Typography variant="body2" style={{ color: "#c7dee5" }}>
-            <ReactMarkdown>{modifyText(p.content)}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {modifyText(p.content)}
+            </ReactMarkdown>
           </Typography>
           <Typography sx={{ fontSize: 14 }} gutterBottom>
             <ReactTimeAgo

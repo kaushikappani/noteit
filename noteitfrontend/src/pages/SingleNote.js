@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import { Button, Card, Form } from "react-bootstrap";
 import Loading from "../components/Loading"
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import Mainscreen from '../components/Mainscreen';
 import "./form.css"
 
@@ -124,7 +125,9 @@ const SingleNote = () => {
                     <Card>
                       <Card.Header>Note Preview</Card.Header>
                       <Card.Body>
-                        <ReactMarkdown>{modifyText(note.content)}</ReactMarkdown>
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {modifyText(note.content)}
+                        </ReactMarkdown>
                       </Card.Body>
                     </Card>
                   )}
