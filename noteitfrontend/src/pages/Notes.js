@@ -8,6 +8,7 @@ import Header from '../components/Header';
 import Loading from "../components/Loading";
 import { PencilSquare } from 'react-bootstrap-icons';
 import { Container, Grid } from '@mui/material';
+import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
 const buttonStyle = { borderRadius: "100%", height: "75px", width: "75px", float: "right", position: "sticky", bottom: "5px", }
 
@@ -44,17 +45,14 @@ const Notes = () => {
         <Container>{loading && <Loading />}</Container>
         {!loading && (
           <Container style={{ marginTop: "20px" }}>
-            <Grid
-              container
-              rowSpacing={2}
-              columnSpacing={{ xs: 1, sm: 2, md: 2, lg: 2 }}
-              style={{ display: "flex", flexWrap: "wrap" }}
+            <ResponsiveMasonry
+              columnsCountBreakPoints={{ 350: 1, 750: 3, 1000: 4 }}
             >
-              {!loading &&
-                notes.length >= 1 &&
-                notes?.map((e) => {
-                  return (
-                    <Grid item lg={3} md={6} sm={6} xs={12}>
+              <Masonry gutter={"7px"}>
+                {!loading &&
+                  notes.length >= 1 &&
+                  notes?.map((e) => {
+                    return (
                       <Card
                         key={e._id}
                         id={e._id}
@@ -65,10 +63,10 @@ const Notes = () => {
                         color={e.color}
                         fetchNotes={fetchNotes}
                       />
-                    </Grid>
-                  );
-                })}
-            </Grid>
+                    );
+                  })}
+              </Masonry>
+            </ResponsiveMasonry>
 
             <Link to="/createnote">
               <button
