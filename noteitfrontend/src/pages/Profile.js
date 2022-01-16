@@ -14,7 +14,6 @@ const Profile = () => {
     const [error, setError] = useState();
     const [success, setSuccess] = useState();
     const [loading, setLoading] = useState(false);
-    const authData = localStorage.getItem("userInfo");
     const fetchUser = async () => {
         console.log("fetch user")
         try {
