@@ -56,77 +56,91 @@ const Create = () => {
             setLoading(false);
         }
     }
+    const modifyText = (text) => {
+      text = text
+        .replaceAll("!done", "✅")
+        .replaceAll("!pending", "⏳")
+        .replaceAll("!imp", "❗")
+        .replaceAll("!bell", "🔔");
+      return text;
+    };
     useEffect(() => {
         fetchUser();
         //eslint-disable-next-line
     }, [])
     return (
-        <div className="noteDiv">
-            <Header user={user} />
-            <Mainscreen title="Create note">
-                <Card>
-                    <Card.Header>Create a new Note</Card.Header>
+      <div className="noteDiv">
+        <Header user={user} />
+        <Mainscreen title="Create note">
+          <Card>
+            <Card.Header>Create a new Note</Card.Header>
+            <Card.Body>
+              <Form onSubmit={submitHandler}>
+                {error && <p className="text-danger">{error}</p>}
+                <Form.Group controlId="title">
+                  <Form.Label>Title</Form.Label>
+                  <Form.Control
+                    type="title"
+                    value={note.title}
+                    placeholder="Enter the title"
+                    onChange={(e) =>
+                      setNote((prev) => {
+                        return { ...prev, title: e.target.value };
+                      })
+                    }
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="content">
+                  <Form.Label>Content</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    value={modifyText(note.content)}
+                    placeholder="Enter the content"
+                    rows={10}
+                    onChange={(e) =>
+                      setNote((prev) => {
+                        return { ...prev, content: e.target.value };
+                      })
+                    }
+                  />
+                </Form.Group>
+                {note.content && (
+                  <Card>
+                    <Card.Header>Note Preview</Card.Header>
                     <Card.Body>
-                        <Form onSubmit={submitHandler}>
-                            {error && <p className="text-danger">{error}</p>}
-                            <Form.Group controlId="title">
-                                <Form.Label>Title</Form.Label>
-                                <Form.Control
-                                    type="title"
-                                    value={note.title}
-                                    placeholder="Enter the title"
-                                    onChange={(e) => setNote(prev => {
-                                        return { ...prev, title: e.target.value }
-                                    })}
-                                />
-                            </Form.Group>
-
-                            <Form.Group controlId="content">
-                                <Form.Label>Content</Form.Label>
-                                <Form.Control
-                                    as="textarea"
-                                    value={note.content}
-                                    placeholder="Enter the content"
-                                    rows={10}
-                                    onChange={(e) => setNote(prev => {
-                                        return { ...prev, content: e.target.value }
-                                    })}
-                                />
-                            </Form.Group>
-                            {note.content && (
-                                <Card>
-                                    <Card.Header>Note Preview</Card.Header>
-                                    <Card.Body>
-                                        <ReactMarkdown>{note.content}</ReactMarkdown>
-                                    </Card.Body>
-                                </Card>
-                            )}
-
-                            <Form.Group controlId="content">
-                                <Form.Label>Category</Form.Label>
-                                <Form.Control
-                                    type="content"
-                                    value={note.category}
-                                    placeholder="Enter the Category"
-                                    onChange={(e) => setNote(prev => {
-                                        return { ...prev, category: e.target.value }
-                                    })}
-                                />
-                            </Form.Group>
-                            {loading && <Loading />}
-                            <Button type="submit" variant="primary">
-                                Create Note
-                            </Button>
-                        </Form>
+                      <ReactMarkdown>{modifyText(note.content)}</ReactMarkdown>
                     </Card.Body>
+                  </Card>
+                )}
 
-                    <Card.Footer className="text-muted">
-                        Creating on - {new Date().toLocaleDateString()}
-                    </Card.Footer>
-                </Card>
-            </Mainscreen>
-        </div>
-    )
+                <Form.Group controlId="content">
+                  <Form.Label>Category</Form.Label>
+                  <Form.Control
+                    type="content"
+                    value={note.category}
+                    placeholder="Enter the Category"
+                    onChange={(e) =>
+                      setNote((prev) => {
+                        return { ...prev, category: e.target.value };
+                      })
+                    }
+                  />
+                </Form.Group>
+                {loading && <Loading />}
+                <Button type="submit" variant="primary">
+                  Create Note
+                </Button>
+              </Form>
+            </Card.Body>
+
+            <Card.Footer className="text-muted">
+              Creating on - {new Date().toLocaleDateString()}
+            </Card.Footer>
+          </Card>
+        </Mainscreen>
+      </div>
+    );
 }
 
 export default Create

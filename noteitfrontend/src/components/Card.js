@@ -13,7 +13,15 @@ TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(ru);
 const CardComponent = (p) => {
   const [isHovering, setIsHovering] = React.useState(false);
-  const [color,setColor] = React.useState(p.color)
+  const [color, setColor] = React.useState(p.color);
+  const modifyText = (text) => {
+    text = text
+      .replaceAll("!done", "✅")
+      .replaceAll("!pending", "⏳")
+      .replaceAll("!imp", "❗")
+      .replaceAll("!bell", "🔔");
+    return text;
+  };
   const handleMouseOver = () => {
     setIsHovering(true);
   };
@@ -54,7 +62,7 @@ const CardComponent = (p) => {
             {p.title}
           </Typography>
           <Typography variant="body2" style={{ color: "#c7dee5" }}>
-            <ReactMarkdown>{p.content}</ReactMarkdown>
+            <ReactMarkdown>{modifyText(p.content)}</ReactMarkdown>
           </Typography>
           <Typography sx={{ fontSize: 14 }} gutterBottom>
             <ReactTimeAgo
