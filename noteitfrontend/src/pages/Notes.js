@@ -16,7 +16,6 @@ const Notes = () => {
     const [notes, setNotes] = useState({});
     const [user, setUser] = useState({});
     const [loading, setLoading] = useState(true);
-    const authData = localStorage.getItem("userInfo");
 
     const fetchNotes = async () => {
         try {
