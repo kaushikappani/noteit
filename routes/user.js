@@ -28,28 +28,32 @@ router.route("/").post(asyncHandler(async (req, res) => {
         name, email, password: hashPassword, pic
     })
     const options = {
-      httpOnly: true,
-      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        httpOnly: true,
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
     };
+    
     newUser.save().then((u) => {
-        res.status(200).json({
-            _id: u.id, name: u.name, email: u.email, token: generateToken(u._id)
-        }).cookie('token', token,options);
+        const token = generateToken(u._id)
+        res.cookie("token", token, options).status(200).json({
+            name: u.name,
+            email: u.email,
+        });
         const msg = {
-          to: email,
-          from: "kaushikappani@gmail.com", // Use the email address or domain you verified above
-          subject: "NoteIt - Account Verification",
-          text: "Click the following link to verify your link",
-          html: `<strong><a href="https://noteit1.herokuapp.com/confirm/${generateToken(u._id)}">https://noteit1.herokuapp.com/confirm/${generateToken(u._id)}</a></strong>`,
-        };sgMail.send(msg).then(
-          () => {},
-          (error) => {
-            console.error(error);
+            to: email,
+            from: "kaushikappani@gmail.com", // Use the email address or domain you verified above
+            subject: "NoteIt - Account Verification",
+            text: "Click the following link to verify your link",
+            html: `<strong><a href="https://noteit1.herokuapp.com/confirm/${token}">https://noteit1.herokuapp.com/confirm/${generateToken(u._id)}</a></strong>`,
+        };
+        sgMail.send(msg).then(
+            () => { },
+            (error) => {
+                console.error(error);
 
-            if (error.response) {
-              console.error(error.response.body);
+                if (error.response) {
+                    console.error(error.response.body);
+                }
             }
-          }
         );
 
     }).catch((e) => {
@@ -63,18 +67,16 @@ router.route("/login").post(asyncHandler(async (req, res) => {
     if (user) {
         bcrypt.compare(password, user.password, (err, data) => {
             if (data) {
-                    const options = {
-                      httpOnly: true,
-                      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                const options = {
+                    httpOnly: true,
+                    expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
                 };
-                const token = generateToken(user._id); 
+                const token = generateToken(user._id);
                 res.cookie("token", token, options).json({
-                  _id: user._id,
-                  name: user.name,
-                  email: user.email,
-                  isAdmin: user.isAdmin,
-                  pic: user.pic,
-                  token: token,
+                    name: user.name,
+                    email: user.email,
+                    isAdmin: user.isAdmin,
+                    pic: user.pic,
                 });
             } if (!data) {
                 res.status(400)
@@ -86,9 +88,7 @@ router.route("/login").post(asyncHandler(async (req, res) => {
         throw new Error("User not found")
     }
 }))
-router.route("/").get((req, res) => {
-    res.send("jello ")
-})
+
 router.route("/info").get(protect, asyncHandler(async (req, res) => {
     res.send(req.user);
 }))
@@ -101,7 +101,7 @@ router.route("/info").put(protect, asyncHandler(async (req, res) => {
     if (user) {
         console.log("put request found")
         user.name = name || user.name;
-        user.email =  user.email;
+        user.email = user.email;
         if (password && password === conformPassword) {
             console.log("pas block sier")
             const salt = await bcrypt.genSalt(11);
@@ -131,5 +131,11 @@ router.route("/confirm/:id").get(asyncHandler(async (req, res) => {
         throw new Error("Not authorizes, token failed")
     }
 }))
+router.route("/verifytoken").get(protect, asyncHandler(async (req, res) => {
+    res.status(202).send("protected");
+}))
+router.route("/logout").get(asyncHandler(async (req, res) => {
 
+    res.clearCookie("token").status(202).send("logout");
+}))
 module.exports = router
