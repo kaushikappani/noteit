@@ -3,22 +3,12 @@ import { CircleFill } from "react-bootstrap-icons";
 import axios from "axios";
 import { Link } from 'react-router-dom';
 import { Typography } from '@mui/material';
-import { PencilSquare } from "react-bootstrap-icons";
+import { PencilSquare,PinFill } from "react-bootstrap-icons";
 import "./css/toolbar.css";
 
 const Toolbar = ({ id, fetchNotes, updateColor }) => {
-  const authData = localStorage.getItem("userInfo");
   const changeColor = async (color) => {
     updateColor(color);
-    try {
-      const config = {
-        headers: {
-          Authorization: "Bearer " + JSON.parse(authData).token,
-        },
-      };
-      const { data } = await axios.put(`/api/notes/${id}`, { color }, config);
-      fetchNotes();
-    } catch (e) {}
   };
 
   return (
@@ -30,6 +20,7 @@ const Toolbar = ({ id, fetchNotes, updateColor }) => {
           margin: "7px",
           color: "#5c2b29",
           border: "1px solid white",
+          cursor: "pointer",
         }}
         onClick={(e) => changeColor("#5c2b29")}
       />
@@ -40,6 +31,7 @@ const Toolbar = ({ id, fetchNotes, updateColor }) => {
           margin: "7px",
           color: "#345920",
           border: "1px solid white",
+          cursor: "pointer",
         }}
         onClick={() => changeColor("#345920")}
       />
@@ -50,6 +42,7 @@ const Toolbar = ({ id, fetchNotes, updateColor }) => {
           margin: "7px",
           color: "#614a19",
           border: "1px solid white",
+          cursor: "pointer",
         }}
         onClick={() => changeColor("#614a19")}
       />
@@ -58,6 +51,7 @@ const Toolbar = ({ id, fetchNotes, updateColor }) => {
           <PencilSquare size={17} />
         </Typography>
       </Link>
+      
     </div>
   );
 };

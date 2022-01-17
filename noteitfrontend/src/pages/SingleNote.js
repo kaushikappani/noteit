@@ -15,7 +15,6 @@ const SingleNote = () => {
     const [user, setUser] = useState();
     const [error, setError] = useState();
     const [loading, setLoading] = useState(false);
-    const authData = localStorage.getItem("userInfo")
     const { id } = useParams();
     const fetchData = async () => {
         try {

@@ -19,7 +19,6 @@ const Create = () => {
     const [user, setUser] = useState({});
     const [error, setError] = useState();
     const [loading, setLoading] = useState(false);
-    const authData = localStorage.getItem("userInfo");
     const fetchUser = async () => {
         console.log("fetch user")
         try {

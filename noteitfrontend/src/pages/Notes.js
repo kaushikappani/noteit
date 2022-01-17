@@ -16,9 +16,20 @@ const Notes = () => {
     const history = useHistory();
     const [notes, setNotes] = useState({});
     const [user, setUser] = useState({});
-    const [loading, setLoading] = useState(true);
-
-    const fetchNotes = async () => {
+    const [loading, setLoading] = useState(false);
+  const colorSync = async (id, color) => {
+    setLoading(true);
+      try {
+        const config = {
+          withCredentials: true,
+        };
+        const { data } = await axios.put(`/api/notes/${id}`, { color }, config);
+        fetchNotes();
+    } catch (e) { }
+    setLoading(false);
+    };
+  const fetchNotes = async () => {
+    setLoading(true);
         try {
             const config = {
               withCredentials: true,
@@ -41,15 +52,14 @@ const Notes = () => {
 
     return (
       <div>
-        <Header user={user} />
-        <Container>{loading && <Loading />}</Container>
-        {!loading && (
+        <Header user={user} loading = {loading} />
+        { (
           <Container style={{ marginTop: "20px" }}>
             <ResponsiveMasonry
               columnsCountBreakPoints={{ 350: 1, 750: 3, 1000: 4 }}
             >
               <Masonry gutter={"7px"}>
-                {!loading &&
+                {
                   notes.length >= 1 &&
                   notes?.map((e) => {
                     return (
@@ -62,6 +72,7 @@ const Notes = () => {
                         createdAt={e.createdAt}
                         color={e.color}
                         fetchNotes={fetchNotes}
+                        colorSync={colorSync}
                       />
                     );
                   })}

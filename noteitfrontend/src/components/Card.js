@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
@@ -34,8 +33,10 @@ const CardComponent = (p) => {
   const updateColor = (c) => {
     if (c === color) {
       setColor("#202124");
+      p.colorSync(p.id, c);
     } else {
       setColor(c);
+      p.colorSync(p.id, c);
     }
   };
     return (
