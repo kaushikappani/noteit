@@ -83,7 +83,7 @@ const SingleNote = () => {
 
     return (
       <div className="noteDiv">
-        <Header user={user} loading={loading} />
+        <Header fetchNotes={fetchData} user={user} loading={loading} />
         <Mainscreen title="Edit Note">
           {loading && <Loading />}
           {user && (

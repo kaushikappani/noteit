@@ -48,6 +48,7 @@ const CardComponent = (p) => {
           backgroundColor: color,
           color: "#e8eaed",
           borderColor: "#c7dee5",
+          borderWidth:"0.2px",
           width: "100%",
         }}
       >

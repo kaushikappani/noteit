@@ -10,7 +10,7 @@ import { PencilSquare } from 'react-bootstrap-icons';
 import { Container, Grid } from '@mui/material';
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
-const buttonStyle = { borderRadius: "100%", height: "75px", width: "75px", float: "right", position: "sticky", bottom: "5px", }
+const buttonStyle = { borderRadius: "100%", height: "60px", width: "60px", float: "right", position: "sticky", bottom: "5px", }
 
 const Notes = () => {
     const history = useHistory();
@@ -24,7 +24,6 @@ const Notes = () => {
           withCredentials: true,
         };
         const { data } = await axios.put(`/api/notes/${id}`, { color }, config);
-        fetchNotes();
     } catch (e) { }
     setLoading(false);
     };
@@ -52,15 +51,14 @@ const Notes = () => {
 
     return (
       <div>
-        <Header user={user} loading = {loading} />
-        { (
+        <Header fetchNotes={fetchNotes} user={user} loading={loading} />
+        {
           <Container style={{ marginTop: "20px" }}>
             <ResponsiveMasonry
               columnsCountBreakPoints={{ 350: 1, 750: 3, 1000: 4 }}
             >
               <Masonry gutter={"7px"}>
-                {
-                  notes.length >= 1 &&
+                {notes.length >= 1 &&
                   notes?.map((e) => {
                     return (
                       <Card
@@ -85,11 +83,11 @@ const Notes = () => {
                 className="btn btn-md btn-success"
                 type="button"
               >
-                <PencilSquare size={30} />
+                <PencilSquare size={25} />
               </button>
             </Link>
           </Container>
-        )}
+        }
       </div>
     );
 }
