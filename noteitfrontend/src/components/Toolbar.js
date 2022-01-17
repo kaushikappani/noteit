@@ -1,6 +1,5 @@
 import React from 'react';
 import { CircleFill } from "react-bootstrap-icons";
-import axios from "axios";
 import { Link } from 'react-router-dom';
 import { Typography } from '@mui/material';
 import { PencilSquare,PinFill } from "react-bootstrap-icons";

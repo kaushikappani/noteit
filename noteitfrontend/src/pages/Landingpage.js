@@ -4,11 +4,9 @@ import { Container, Form, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Loading from '../components/Loading';
 import "./page.css";
-import jwt from "jsonwebtoken";
 import Header from '../components/Header';
 
 const Landingpage = ({ history }) => {
-    const userInfo = localStorage.getItem("userInfo")
     const [authData, setAuthData] = useState({
         email: "",
         password: ""

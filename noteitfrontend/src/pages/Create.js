@@ -70,7 +70,7 @@ const Create = () => {
     }, [])
     return (
       <div className="noteDiv">
-        <Header user={user} />
+        <Header user={user} loading = {loading} />
         <Mainscreen title="Create note">
           <Card>
             <Card.Header>Create a new Note</Card.Header>

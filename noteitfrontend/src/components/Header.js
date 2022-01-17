@@ -16,10 +16,11 @@ const Header = (props) => {
         history.push("/")
     }
     return (
-        <Navbar className="navbar  navbar-expand navbar-light bg-light" expand="sm">
+        <div style={{margin:"90px"}}>
+            <Navbar className="navbar fixed-top navbar-expand navbar-dark bg-dark" expand="sm">
             <Container className="m-auto">
                 <Navbar.Brand>
-                    <Link to="/">
+                    <Link to="/notes">
                         NoteIt
                     </Link>
                 </Navbar.Brand>
@@ -29,7 +30,7 @@ const Header = (props) => {
                         <Nav className="mr-auto">
                             {props.loading && <Nav.Link><Spinner animation="border"  size="sm" /></Nav.Link>}
                             {!props.loading && <Nav.Link>  <CloudCheck size={22} /></Nav.Link>}
-                            <Nav.Link href="/createnote"><FileEarmarkPlus size={20} /></Nav.Link>
+                            <Nav.Link href="/createnote"><FileEarmarkPlus size={22} /></Nav.Link>
                             <Nav.Link href="/notes"> <List size={22} /> </Nav.Link>
                             <NavDropdown title={props.user.name} id="basic-nav-dropdown">
                                 <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
@@ -41,6 +42,7 @@ const Header = (props) => {
                 </>}
             </Container>
         </Navbar>
+        </div>
     )
 }
 
