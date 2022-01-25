@@ -7,17 +7,30 @@ import axios from "axios";
 import Header from '../components/Header';
 import Loading from "../components/Loading";
 import { PencilSquare } from 'react-bootstrap-icons';
-import { Container, Grid } from '@mui/material';
+import { Container, Grid, Typography } from '@mui/material';
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
 const buttonStyle = { borderRadius: "100%", height: "60px", width: "60px", float: "right", position: "sticky", bottom: "5px", }
 
 const Notes = () => {
     const history = useHistory();
-  const [notes, setNotes] = useState({});
+    const [notes, setNotes] = useState({});
     const [user, setUser] = useState({});
     const [loading, setLoading] = useState(false);
-  const pinNote = async (id) => {
+    const archive = async (id) => {
+      setLoading(true);
+      try {
+        setNotes((prev) => {
+          return prev.filter((e)=>e._id !== id)
+        });
+        const config = {
+          withCredentials: true,
+        };
+        const { data } = await axios.put(`/api/notes/${id}`, { archived: true }, config);
+      } catch (e) {}
+      setLoading(false);
+    }
+    const pinNote = async (id) => {
     const updatedNotes = notes.map(e => {
       if (e._id === id) {
         const newItem = {
@@ -29,27 +42,23 @@ const Notes = () => {
       return e;
     });
     setNotes(updatedNotes)
-      setLoading(true);
-      try {
-        const config = {
-          withCredentials: true,
-        };
-        const { data } = await axios.put(`/api/notes/${id}`, { pinned: true }, config);
-        fetchNotes();
-      } catch (e) {}
-      setLoading(false);
-  }
-
-  const colorSync = async (id, color) => {
-
     setLoading(true);
       try {
         const config = {
           withCredentials: true,
         };
+        const { data } = await axios.put(`/api/notes/${id}`, { pinned: true }, config);
+      } catch (e) {}
+      setLoading(false);
+  }
 
+  const colorSync = async (id, color) => {
+    setLoading(true);
+      try {
+        const config = {
+          withCredentials: true,
+        };
         const { data } = await axios.put(`/api/notes/${id}`, { color }, config);
-        
     } catch (e) { }
     setLoading(false);
     };
@@ -82,40 +91,63 @@ const Notes = () => {
         {
           <>
             <Container style={{ marginTop: "20px" }}>
+              {notes?.length > 0 && (
+                <Typography
+                  sx={{ fontSize: 14 }}
+                  style={{ color: "#c7dee5" }}
+                  gutterBottom
+                >
+                  PINNED
+                </Typography>
+              )}
               <ResponsiveMasonry
                 columnsCountBreakPoints={{ 350: 1, 750: 3, 1000: 4 }}
               >
                 <Masonry gutter={"7px"}>
-                  {notes.length >= 1 &&
-                    notes?.filter((v)=>v.pinned===true).map((e) => {
-                      return (
-                        e.pinned && (
-                          <Card
-                            key={e._id}
-                            id={e._id}
-                            title={e.title}
-                            content={e.content}
-                            category={e.category}
-                            createdAt={e.createdAt}
-                            color={e.color}
-                            fetchNotes={fetchNotes}
-                            colorSync={colorSync}
-                            pinNote={pinNote}
-                          />
-                        )
-                      );
-                    })}
+                  {notes?.length >= 1 &&
+                    notes
+                      ?.filter((v) => v.pinned === true)
+                      .map((e) => {
+                        return (
+                          e.pinned && (
+                            <Card
+                              key={e._id}
+                              id={e._id}
+                              title={e.title}
+                              content={e.content}
+                              category={e.category}
+                              createdAt={e.createdAt}
+                              color={e.color}
+                              fetchNotes={fetchNotes}
+                              colorSync={colorSync}
+                              pinNote={pinNote}
+                              archive={archive}
+                            />
+                          )
+                        );
+                      })}
                 </Masonry>
               </ResponsiveMasonry>
             </Container>
             <Container style={{ marginTop: "20px" }}>
+              {notes?.length > 1 && (
+                <Typography
+                  sx={{ fontSize: 14 }}
+                  style={{ color: "#c7dee5" }}
+                  gutterBottom
+                >
+                  OTHERS
+                </Typography>
+              )}
               <ResponsiveMasonry
                 columnsCountBreakPoints={{ 350: 1, 750: 3, 1000: 4 }}
               >
                 <Masonry gutter={"7px"}>
-                  {notes.length >= 1 &&
-                    notes?.filter((v)=>v.pinned === false).map((e) => {
-                      return (
+                  {notes?.length >= 0 &&
+                    notes
+                      ?.filter((v) => v.pinned === false)
+                      .map((e) => {
+                        return (
                           <Card
                             key={e._id}
                             id={e._id}
@@ -127,9 +159,10 @@ const Notes = () => {
                             fetchNotes={fetchNotes}
                             colorSync={colorSync}
                             pinNote={pinNote}
+                            archive={archive}
                           />
-                      );
-                    })}
+                        );
+                      })}
                 </Masonry>
               </ResponsiveMasonry>
 

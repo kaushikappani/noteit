@@ -44,6 +44,9 @@ const CardComponent = (p) => {
   const pinNote = () => {
     p.pinNote(p.id);
   }
+  const archive = () => {
+    p.archive(p.id);
+  }
     return (
       <Card
         onMouseOver={handleMouseOver}
@@ -92,8 +95,9 @@ const CardComponent = (p) => {
             <Toolbar
               id={p.id}
               fetchNotes={p.fetchNotes}
-              updateColor={updateColor}
-              pinNote = {pinNote}
+              updateColor={p.colorSync ? updateColor : null}
+              pinNote={p.pinNote ? pinNote : null}
+              archive={archive}
             />
           </div>
         </CardContent>

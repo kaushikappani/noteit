@@ -28,7 +28,6 @@ if (process.env.NODE_ENV === "production") {
     app.get("/", async(req, res) => {
         const notes = await Note.find({});
         notes.forEach(n => {
-            n.pinned = false
             n.archived = false
             n.save();
         })

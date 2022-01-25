@@ -13,6 +13,13 @@ router.route("/").get(protect, asyncHandler(async (req, res) => {
     user = req.user;
     res.json({ notes, user });
 }))
+router.route("/archived").get(protect, asyncHandler(async (req, res) => {
+    const notes = await Note.find({ user: req.user._id ,archived:true}).sort({
+      createdAt: -1,
+    });
+    user = req.user;
+    res.json({ notes, user });
+}))
 
 router.route("/create").post(protect, asyncHandler(async (req, res) => {
     const { title, content, category } = req.body;
@@ -32,7 +39,7 @@ router.route("/create").post(protect, asyncHandler(async (req, res) => {
 }))
 
 router.route("/:id").get(protect, asyncHandler(async (req, res) => {
-    const note = await Note.findById(req.params.id);
+    const note = await Note.findById(req.params.id).select("-color").select("-archived").select("-pinned");
     if (note) {
         res.json({ note, user: req.user })
     } else {
@@ -41,7 +48,7 @@ router.route("/:id").get(protect, asyncHandler(async (req, res) => {
 }))
 
 router.route("/:id").put(protect, asyncHandler(async (req, res) => {
-    const { title, content, category, color,pinned} = req.body;
+    const { title, content, category, color,pinned,archived} = req.body;
     const note = await Note.findById(req.params.id);
     if (note.user.toString() !== req.user._id.toString()) {
         res.status(401)
@@ -52,6 +59,10 @@ router.route("/:id").put(protect, asyncHandler(async (req, res) => {
         note.title = title || note.title;
         note.content = content || note.content;
         note.category = category || note.category;
+        console.log("archived",archived);
+        if (archived) {
+            note.archived = !note.archived;
+        }
         if (pinned) {
             note.pinned = !note.pinned;
         }
