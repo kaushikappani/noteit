@@ -16,9 +16,9 @@ router.route("/").get(protect, asyncHandler(async (req, res) => {
 
 router.route("/create").post(protect, asyncHandler(async (req, res) => {
     const { title, content, category } = req.body;
-    if (!content || !title || !category) {
+    if (!content || !title) {
         res.status(400);
-        throw new Error("Please fill all the fields");
+        throw new Error("Please fill all the required feilds");
     } else {
         if (req.user.verified === true) {
             const note = new Note({ user: req.user._id, title, category, content })
