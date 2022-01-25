@@ -36,12 +36,20 @@ const noteModel = mongoose.Schema(
     },
     category: {
       type: String,
-      required: true,
+      required: false,
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: "User",
+    },
+    pinned: {
+      type: Boolean,
+      default:false
+    },
+    archived: {
+      type: Boolean,
+      default:false
     },
     color: {
       type: String,

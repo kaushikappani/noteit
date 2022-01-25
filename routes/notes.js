@@ -7,7 +7,7 @@ const { protect } = require("../middleware/protect");
 const router = express.Router();
 
 router.route("/").get(protect, asyncHandler(async (req, res) => {
-    const notes = await Note.find({ user: req.user._id }).sort({
+    const notes = await Note.find({ user: req.user._id ,archived:false}).sort({
       createdAt: -1,
     });
     user = req.user;
@@ -41,7 +41,7 @@ router.route("/:id").get(protect, asyncHandler(async (req, res) => {
 }))
 
 router.route("/:id").put(protect, asyncHandler(async (req, res) => {
-    const { title, content, category, color } = req.body;
+    const { title, content, category, color,pinned} = req.body;
     const note = await Note.findById(req.params.id);
     if (note.user.toString() !== req.user._id.toString()) {
         res.status(401)
@@ -52,6 +52,9 @@ router.route("/:id").put(protect, asyncHandler(async (req, res) => {
         note.title = title || note.title;
         note.content = content || note.content;
         note.category = category || note.category;
+        if (pinned) {
+            note.pinned = !note.pinned;
+        }
         if (color && color === note.color) {
             
           note.color = "#202124";

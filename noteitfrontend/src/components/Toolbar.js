@@ -2,10 +2,10 @@ import React from 'react';
 import { CircleFill } from "react-bootstrap-icons";
 import { Link } from 'react-router-dom';
 import { Typography } from '@mui/material';
-import { PencilSquare,PinFill } from "react-bootstrap-icons";
+import { PencilSquare,PinAngle,Archive } from "react-bootstrap-icons";
 import "./css/toolbar.css";
 
-const Toolbar = ({ id, fetchNotes, updateColor }) => {
+const Toolbar = ({ id, fetchNotes, updateColor,pinNote }) => {
   const changeColor = async (color) => {
     updateColor(color);
   };
@@ -45,11 +45,21 @@ const Toolbar = ({ id, fetchNotes, updateColor }) => {
         }}
         onClick={() => changeColor("#614a19")}
       />
-      <Link to={`/note/${id}`}>
-        <Typography sx={{ fontSize: 18 }} gutterBottom>
-          <PencilSquare size={17} />
-        </Typography>
-      </Link>
+      {/* <Archive
+        size={17}
+        style={{
+          margin: "7px",
+          cursor: "pointer",
+        }}
+      /> */}
+      <PinAngle
+        size={17}
+        style={{
+          margin: "7px",
+          cursor: "pointer",
+        }}
+        onClick = {()=>pinNote()}
+      />
       
     </div>
   );

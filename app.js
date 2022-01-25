@@ -25,12 +25,14 @@ if (process.env.NODE_ENV === "production") {
         res.sendFile(path.resolve(__dirname, "noteitfrontend", "build", "index.html"));
     })
 } else {
-    app.get("/", (req, res) => {
-        const cookie = req.cookies;
-        res.json({
-            message: "Server started cookie",
-            cookie: cookie
+    app.get("/", async(req, res) => {
+        const notes = await Note.find({});
+        notes.forEach(n => {
+            n.pinned = false
+            n.archived = false
+            n.save();
         })
+        res.send("done")
     })
 }
 

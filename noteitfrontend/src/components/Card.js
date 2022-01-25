@@ -10,6 +10,8 @@ import ru from "javascript-time-ago/locale/ru.json";
 import TimeAgo from "javascript-time-ago";
 import Toolbar from "../components/Toolbar";
 import "./css/toolbar.css";
+import { Link } from 'react-router-dom';
+import { PencilSquare } from 'react-bootstrap-icons';
 TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(ru);
 const CardComponent = (p) => {
@@ -39,6 +41,9 @@ const CardComponent = (p) => {
       p.colorSync(p.id, c);
     }
   };
+  const pinNote = () => {
+    p.pinNote(p.id);
+  }
     return (
       <Card
         onMouseOver={handleMouseOver}
@@ -48,7 +53,7 @@ const CardComponent = (p) => {
           backgroundColor: color,
           color: "#e8eaed",
           borderColor: "#c7dee5",
-          borderWidth:"0.2px",
+          borderWidth: "0.2px",
           width: "100%",
         }}
       >
@@ -61,10 +66,16 @@ const CardComponent = (p) => {
             >
               {p.category}
             </Typography>
+            <Link to={`/note/${p.id}`}>
+              <Typography sx={{ fontSize: 18 }} gutterBottom>
+                <PencilSquare size={17} />
+              </Typography>
+            </Link>
           </div>
           <Typography variant="h5" component="div">
             {p.title}
           </Typography>
+
           <Typography variant="body2" style={{ color: "#c7dee5" }}>
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {modifyText(p.content)}
@@ -82,6 +93,7 @@ const CardComponent = (p) => {
               id={p.id}
               fetchNotes={p.fetchNotes}
               updateColor={updateColor}
+              pinNote = {pinNote}
             />
           </div>
         </CardContent>

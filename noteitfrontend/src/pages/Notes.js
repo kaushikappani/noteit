@@ -14,16 +14,42 @@ const buttonStyle = { borderRadius: "100%", height: "60px", width: "60px", float
 
 const Notes = () => {
     const history = useHistory();
-    const [notes, setNotes] = useState({});
+  const [notes, setNotes] = useState({});
     const [user, setUser] = useState({});
     const [loading, setLoading] = useState(false);
+  const pinNote = async (id) => {
+    const updatedNotes = notes.map(e => {
+      if (e._id === id) {
+        const newItem = {
+          ...e,
+          pinned :!e.pinned
+        }
+        return newItem;
+      }
+      return e;
+    });
+    setNotes(updatedNotes)
+      setLoading(true);
+      try {
+        const config = {
+          withCredentials: true,
+        };
+        const { data } = await axios.put(`/api/notes/${id}`, { pinned: true }, config);
+        fetchNotes();
+      } catch (e) {}
+      setLoading(false);
+  }
+
   const colorSync = async (id, color) => {
+
     setLoading(true);
       try {
         const config = {
           withCredentials: true,
         };
+
         const { data } = await axios.put(`/api/notes/${id}`, { color }, config);
+        
     } catch (e) { }
     setLoading(false);
     };
@@ -35,6 +61,7 @@ const Notes = () => {
             };
           const { data } = await axios.get("/api/notes", config)
           setNotes(data.notes);
+
           setLoading(false);
             setUser(data.user);
         } catch (e) {
@@ -53,40 +80,70 @@ const Notes = () => {
       <div>
         <Header fetchNotes={fetchNotes} user={user} loading={loading} />
         {
-          <Container style={{ marginTop: "20px" }}>
-            <ResponsiveMasonry
-              columnsCountBreakPoints={{ 350: 1, 750: 3, 1000: 4 }}
-            >
-              <Masonry gutter={"7px"}>
-                {notes.length >= 1 &&
-                  notes?.map((e) => {
-                    return (
-                      <Card
-                        key={e._id}
-                        id={e._id}
-                        title={e.title}
-                        content={e.content}
-                        category={e.category}
-                        createdAt={e.createdAt}
-                        color={e.color}
-                        fetchNotes={fetchNotes}
-                        colorSync={colorSync}
-                      />
-                    );
-                  })}
-              </Masonry>
-            </ResponsiveMasonry>
-
-            <Link to="/createnote">
-              <button
-                style={buttonStyle}
-                className="btn btn-md btn-success"
-                type="button"
+          <>
+            <Container style={{ marginTop: "20px" }}>
+              <ResponsiveMasonry
+                columnsCountBreakPoints={{ 350: 1, 750: 3, 1000: 4 }}
               >
-                <PencilSquare size={25} />
-              </button>
-            </Link>
-          </Container>
+                <Masonry gutter={"7px"}>
+                  {notes.length >= 1 &&
+                    notes?.filter((v)=>v.pinned===true).map((e) => {
+                      return (
+                        e.pinned && (
+                          <Card
+                            key={e._id}
+                            id={e._id}
+                            title={e.title}
+                            content={e.content}
+                            category={e.category}
+                            createdAt={e.createdAt}
+                            color={e.color}
+                            fetchNotes={fetchNotes}
+                            colorSync={colorSync}
+                            pinNote={pinNote}
+                          />
+                        )
+                      );
+                    })}
+                </Masonry>
+              </ResponsiveMasonry>
+            </Container>
+            <Container style={{ marginTop: "20px" }}>
+              <ResponsiveMasonry
+                columnsCountBreakPoints={{ 350: 1, 750: 3, 1000: 4 }}
+              >
+                <Masonry gutter={"7px"}>
+                  {notes.length >= 1 &&
+                    notes?.filter((v)=>v.pinned === false).map((e) => {
+                      return (
+                          <Card
+                            key={e._id}
+                            id={e._id}
+                            title={e.title}
+                            content={e.content}
+                            category={e.category}
+                            createdAt={e.createdAt}
+                            color={e.color}
+                            fetchNotes={fetchNotes}
+                            colorSync={colorSync}
+                            pinNote={pinNote}
+                          />
+                      );
+                    })}
+                </Masonry>
+              </ResponsiveMasonry>
+
+              <Link to="/createnote">
+                <button
+                  style={buttonStyle}
+                  className="btn btn-md btn-success"
+                  type="button"
+                >
+                  <PencilSquare size={25} />
+                </button>
+              </Link>
+            </Container>
+          </>
         }
       </div>
     );
