@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import Mainscreen from '../components/Mainscreen';
 import { useHistory } from "react-router-dom"
 import Card from "../components/Card";
 import axios from "axios";
 import Header from '../components/Header';
-import Loading from "../components/Loading";
 import { PencilSquare } from 'react-bootstrap-icons';
-import { Container, Grid, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
+import { Container } from "react-bootstrap";
+
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
 const buttonStyle = { borderRadius: "100%", height: "60px", width: "60px", float: "right", position: "sticky", bottom: "5px", }
@@ -89,8 +89,8 @@ const Notes = () => {
       <div>
         <Header fetchNotes={fetchNotes} user={user} loading={loading} />
         {
-          <>
-            <Container style={{ marginTop: "20px" }}>
+          <div>
+            <Container>
               {notes?.length > 0 && (
                 <Typography
                   sx={{ fontSize: 14 }}
@@ -176,7 +176,7 @@ const Notes = () => {
                 </button>
               </Link>
             </Container>
-          </>
+          </div>
         }
       </div>
     );
