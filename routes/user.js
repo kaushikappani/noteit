@@ -9,8 +9,8 @@ const mail = require("nodemailer");
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const generateToken = (id,secret) => {
-    return jwt.sign({ id }, secret, {
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: "1d"
     })
 }
@@ -33,8 +33,9 @@ router.route("/").post(asyncHandler(async (req, res) => {
     };
     
     newUser.save().then((u) => {
-        const token = generateToken(u._id, process.env.JWT_SECRET);
-        const verificationToken = generateToken(u._id,process.env.JWT_SECRET)
+        const token = generateToken(u._id);
+        const id = u._id;
+        const verificationToken = jwt.sign({ id }, process.env.JWT_SECRET_VERIFICATION);
         res.cookie("token", token, options).status(200).json({
             name: u.name,
             email: u.email,
