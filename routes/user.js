@@ -132,7 +132,7 @@ router.route("/confirm/:id").get(asyncHandler(async (req, res) => {
     } catch (err) {
         console.log(err)
         res.status(401);
-        throw new Error("Not authorizes, token failed")
+        throw new Error("Token failed")
     }
 }))
 router.route("/verifytoken").get(protect, asyncHandler(async (req, res) => {
