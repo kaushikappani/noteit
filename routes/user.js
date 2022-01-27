@@ -10,7 +10,7 @@ const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const generateToken = (id,secret) => {
-    return jwt.sign({ id }, secret, {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: "1d"
     })
 }
