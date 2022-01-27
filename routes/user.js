@@ -130,7 +130,7 @@ router.route("/confirm/:id").get(asyncHandler(async (req, res) => {
         user.save();
         res.json({ message: "Verified" })
     } catch (err) {
-        console.log('err')
+        console.log(err)
         res.status(401);
         throw new Error("Not authorizes, token failed")
     }

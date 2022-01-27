@@ -7,11 +7,18 @@ const { protect } = require("../middleware/protect");
 const router = express.Router();
 
 router.route("/").get(protect, asyncHandler(async (req, res) => {
-    const notes = await Note.find({ user: req.user._id ,archived:false}).sort({
-      createdAt: -1,
-    });
-    user = req.user;
-    res.json({ notes, user });
+    try {
+        const notes = await Note.find({
+          user: req.user._id,
+          archived: false,
+        }).sort({
+          createdAt: -1,
+        });
+        user = req.user;
+        res.json({ notes, user });
+    } catch (err) {
+        res.clearCookie("token");
+    }
 }))
 router.route("/archived").get(protect, asyncHandler(async (req, res) => {
     const notes = await Note.find({ user: req.user._id ,archived:true}).sort({
