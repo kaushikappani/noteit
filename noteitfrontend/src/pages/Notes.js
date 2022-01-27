@@ -130,7 +130,7 @@ const Notes = () => {
               </ResponsiveMasonry>
             </Container>
             <Container style={{ marginTop: "20px" }}>
-              {notes?.length > 1 && (
+              {notes?.length > 0 && (
                 <Typography
                   sx={{ fontSize: 14 }}
                   style={{ color: "#c7dee5" }}
@@ -143,7 +143,7 @@ const Notes = () => {
                 columnsCountBreakPoints={{ 350: 1, 750: 3, 1000: 4 }}
               >
                 <Masonry gutter={"7px"}>
-                  {notes?.length >= 0 &&
+                  {notes?.length > 0 &&
                     notes
                       ?.filter((v) => v.pinned === false)
                       .map((e) => {

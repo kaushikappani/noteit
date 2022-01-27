@@ -9,8 +9,8 @@ const mail = require("nodemailer");
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
+const generateToken = (id,secret) => {
+    return jwt.sign({ id }, secret, {
         expiresIn: "1d"
     })
 }
@@ -33,17 +33,18 @@ router.route("/").post(asyncHandler(async (req, res) => {
     };
     
     newUser.save().then((u) => {
-        const token = generateToken(u._id)
+        const token = generateToken(u._id, process.env.JWT_SECRET);
+        const verificationToken = generateToken(u._id,process.env.JWT_SECRET_VERIFICATION)
         res.cookie("token", token, options).status(200).json({
             name: u.name,
             email: u.email,
         });
         const msg = {
-            to: email,
-            from: "kaushikappani@gmail.com", // Use the email address or domain you verified above
-            subject: "NoteIt - Account Verification",
-            text: "Click the following link to verify your link",
-            html: `<strong><a href="https://noteit1.herokuapp.com/confirm/${token}">https://noteit1.herokuapp.com/confirm/${generateToken(u._id)}</a></strong>`,
+          to: email,
+          from: "kaushikappani@gmail.com", // Use the email address or domain you verified above
+          subject: "NoteIt - Account Verification",
+          text: "Click the following link to verify your link",
+          html: `<strong><a href="https://noteit1.herokuapp.com/confirm/${verificationToken}">https://noteit1.herokuapp.com/confirm/${verificationToken}</a></strong>`,
         };
         sgMail.send(msg).then(
             () => { },
@@ -71,7 +72,7 @@ router.route("/login").post(asyncHandler(async (req, res) => {
                     httpOnly: true,
                     expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
                 };
-                const token = generateToken(user._id);
+                const token = generateToken(user._id, process.env.JWT_SECRET);
                 res.cookie("token", token, options).json({
                     name: user.name,
                     email: user.email,
@@ -123,7 +124,7 @@ router.route("/confirm/:id").get(asyncHandler(async (req, res) => {
     console.log("------------------confirm-------------------------")
     try {
         token = req.params.id;
-        const decode = jwt.verify(token, process.env.JWT_SECRET);
+        const decode = jwt.verify(token, process.env.JET_SECRET_VERIFICATION);
         user = await User.findById(decode.id).select("-password");
         user.verified = true;
         user.save();
