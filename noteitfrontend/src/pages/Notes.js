@@ -87,7 +87,7 @@ const Notes = () => {
 
     return (
       <div>
-        <Header fetchNotes={fetchNotes} user={user} loading={loading} />
+        <Header page = "notes" fetchNotes={fetchNotes} user={user} loading={loading} />
         {
           <div>
             <Container>

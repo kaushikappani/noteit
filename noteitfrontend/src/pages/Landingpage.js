@@ -49,7 +49,7 @@ const Landingpage = ({ history }) => {
     }, [])
     return (
         <>
-            <Header />
+            <Header paage = "landing" />
             <Container className="pagecontainer">
 
                 <Row>

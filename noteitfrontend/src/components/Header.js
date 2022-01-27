@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap"
 import { Link, useHistory } from 'react-router-dom';
-import { FileEarmarkPlus, Archive, CloudCheck } from "react-bootstrap-icons";
+import { FileEarmarkPlus, Archive, CloudCheck,Grid } from "react-bootstrap-icons";
 import { Spinner } from 'react-bootstrap';
 import Icon from "./noteIcon.jpg";
 import axios from "axios";
@@ -32,7 +32,7 @@ const Header = (props) => {
                             {props.loading && <Nav.Link><Spinner animation="border"  size="sm" /></Nav.Link>}
                             {!props.loading && <Nav.Link onClick = {props.fetchNotes}>  <CloudCheck size={23} /></Nav.Link>}
                             <Nav.Link href="/createnote"><FileEarmarkPlus size={23} /></Nav.Link>
-                            <Nav.Link href="/archived"> <Archive size={23} /> </Nav.Link>
+                            {props.page === "notes" ? <Nav.Link href="/archived"> <Archive size={23} /> </Nav.Link> :<Nav.Link href="/notes"> <Grid size={23} /> </Nav.Link> }
                             <NavDropdown title={props.user.name} id="basic-nav-dropdown">
                                 <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
                                 <NavDropdown.Divider />

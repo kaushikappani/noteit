@@ -46,7 +46,7 @@ const Register = () => {
 
     return (
         <>
-            <Header />
+            <Header page = "register" />
             <Container className="pagecontainer">
                 <Row>
                     <div className="col-lg-6" style={{}}>

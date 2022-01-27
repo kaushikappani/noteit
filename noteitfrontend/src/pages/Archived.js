@@ -53,7 +53,7 @@ const Archived = () => {
   },[])
   return (
     <div>
-      <Header fetchNotes={fetchNotes} user={user} loading={loading} />
+      <Header page = "archive" fetchNotes={fetchNotes} user={user} loading={loading} />
       <Container>
         <Typography
           sx={{ fontSize: 14 }}

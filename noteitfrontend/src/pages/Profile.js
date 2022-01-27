@@ -56,73 +56,88 @@ const Profile = () => {
         //eslint-disable-next-line
     }, [])
     return (
-        <>
-            <Header user={update} />
-            <Mainscreen title="Profile">
-                {user && <div >
-                    <Row style={{ maxWidth: "500px", position: "relative", margin: "auto" }} className="profileContainer">
-                        <Col md={12}>
-                            {success && <p className="text-success">{success}</p>}
-                            <Form onSubmit={submitHandler}>
-                                {loading && <Loading />}
-                                {error && <p className="text-danger">{error}</p>}
-                                <Form.Group controlId="name">
-                                    <Form.Label>Name</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Enter Name"
-                                        value={user.name}
-                                        onChange={(e) => setUser(prev => {
-                                            return { ...prev, name: e.target.value }
-                                        })}
-                                    ></Form.Control>
-                                </Form.Group>
-                                <Form.Group controlId="email">
-                                    <Form.Label>Email Address</Form.Label>
-                                    <Form.Control
-                                        type="email"
-                                        placeholder="Enter Email"
-                                        value={user.email}
-                                        onChange={(e) => setUser(prev => {
-                                            return { ...prev, email: e.target.value }
-                                        })}
-                                    ></Form.Control>
-                                </Form.Group>
-                                <Form.Group controlId="password">
-                                    <Form.Label>Password</Form.Label>
-                                    <Form.Control
-                                        type="password"
-                                        placeholder="Enter Password"
-                                        value={user.password}
-                                        onChange={(e) => setUser(prev => {
-                                            return { ...prev, password: e.target.value }
-                                        })}
-                                    ></Form.Control>
-                                </Form.Group>
-                                <Form.Group controlId="confirmPassword">
-                                    <Form.Label>Confirm Password</Form.Label>
-                                    <Form.Control
-                                        type="password"
-                                        placeholder="Confirm Password"
-                                        value={user.confirmPassword}
-                                        onChange={(e) => setUser(prev => {
-                                            return { ...prev, conformPassword: e.target.value }
-                                        })}
-                                    ></Form.Control>
-                                </Form.Group>{" "}
-
-                                <Button type="submit" varient="primary">
-                                    Update
-                                </Button>
-                            </Form>
-                        </Col>
-
-                    </Row>
-                </div>}
-            </Mainscreen>
-
-        </>
-    )
+      <>
+        <Header user={update} />
+        <Mainscreen title="Profile">
+          {user && (
+            <div>
+              <Row
+                style={{
+                  maxWidth: "500px",
+                  position: "relative",
+                  margin: "auto",
+                }}
+                className="profileContainer"
+              >
+                <Col md={12}>
+                  {success && <p className="text-success">{success}</p>}
+                  <Form onSubmit={submitHandler}>
+                    {loading && <Loading />}
+                    {error && <p className="text-danger">{error}</p>}
+                    <Form.Group controlId="name">
+                      <Form.Label>Name</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Enter Name"
+                        value={user.name}
+                        onChange={(e) =>
+                          setUser((prev) => {
+                            return { ...prev, name: e.target.value };
+                          })
+                        }
+                      ></Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="email">
+                      <Form.Label>Email Address</Form.Label>
+                      <Form.Control
+                        type="email"
+                        placeholder="Enter Email"
+                        value={user.email}
+                        readOnly
+                        onChange={(e) =>
+                          setUser((prev) => {
+                            return { ...prev, email: e.target.value };
+                          })
+                        }
+                      ></Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="password">
+                      <Form.Label>Password</Form.Label>
+                      <Form.Control
+                        type="password"
+                        placeholder="Enter Password"
+                        value={user.password}
+                        onChange={(e) =>
+                          setUser((prev) => {
+                            return { ...prev, password: e.target.value };
+                          })
+                        }
+                      ></Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="confirmPassword">
+                      <Form.Label>Confirm Password</Form.Label>
+                      <Form.Control
+                        type="password"
+                        placeholder="Confirm Password"
+                        value={user.confirmPassword}
+                        onChange={(e) =>
+                          setUser((prev) => {
+                            return { ...prev, conformPassword: e.target.value };
+                          })
+                        }
+                      ></Form.Control>
+                    </Form.Group>{" "}
+                    <Button type="submit" varient="primary">
+                      Update
+                    </Button>
+                  </Form>
+                </Col>
+              </Row>
+            </div>
+          )}
+        </Mainscreen>
+      </>
+    );
 }
 
 export default Profile
