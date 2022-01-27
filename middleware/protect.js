@@ -12,13 +12,13 @@ const protect = asyncHandler(async (req, res, next) => {
             next();
         } catch (err) {
             console.log('err')
-            res.status(401);
-            throw new Error("Not authorizes, token failed")
+            res.clearCookie("token").status(401);
+            throw new Error("Not authorizes, token failed");
         }
     } else {
         res.status(401);
         console.log("err")
-        throw new Error("Not authorizes, No token")
+        throw new Error("Not authorizes, No token");
     }
 })
 

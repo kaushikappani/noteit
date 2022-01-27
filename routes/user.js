@@ -124,7 +124,7 @@ router.route("/confirm/:id").get(asyncHandler(async (req, res) => {
     console.log("------------------confirm-------------------------")
     try {
         token = req.params.id;
-        const decode = jwt.verify(token, process.env.JET_SECRET_VERIFICATION);
+        const decode = jwt.verify(token, process.env.JWT_SECRET_VERIFICATION);
         user = await User.findById(decode.id).select("-password");
         user.verified = true;
         user.save();
