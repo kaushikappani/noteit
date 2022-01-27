@@ -34,7 +34,7 @@ router.route("/").post(asyncHandler(async (req, res) => {
     
     newUser.save().then((u) => {
         const token = generateToken(u._id, process.env.JWT_SECRET);
-        const verificationToken = generateToken(u._id,process.env.JWT_SECRET_VERIFICATION)
+        const verificationToken = generateToken(u._id,process.env.JWT_SECRET)
         res.cookie("token", token, options).status(200).json({
             name: u.name,
             email: u.email,
@@ -127,7 +127,7 @@ router.route("/confirm/:id").get(asyncHandler(async (req, res) => {
     try {
         token = req.params.id;
         console.log("token",token)
-        const decode = jwt.verify(token, process.env.JWT_SECRET_VERIFICATION);
+        const decode = jwt.verify(token, process.env.JWT_SECRET);
         console.log("decode",decode);
         
         user = await User.findById(decode.id).select("-password");
