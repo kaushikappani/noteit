@@ -10,7 +10,7 @@ const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const generateToken = (id,secret) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
+    return jwt.sign({ id }, secret, {
         expiresIn: "1d"
     })
 }
@@ -127,7 +127,7 @@ router.route("/confirm/:id").get(asyncHandler(async (req, res) => {
     try {
         token = req.params.id;
         console.log("token",token)
-        const decode = jwt.verify(token, process.env.JWT_SECRET);
+        const decode = jwt.verify(token, process.env.JWT_SECRET_VERIFICATION);
         console.log("decode",decode);
         
         user = await User.findById(decode.id).select("-password");
