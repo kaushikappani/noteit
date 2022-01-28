@@ -12,6 +12,8 @@ import Toolbar from "../components/Toolbar";
 import "./css/toolbar.css";
 import { Link } from 'react-router-dom';
 import { PencilSquare } from 'react-bootstrap-icons';
+import Editor from "rich-markdown-editor";
+
 TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(ru);
 const CardComponent = (p) => {
@@ -80,9 +82,7 @@ const CardComponent = (p) => {
           </Typography>
 
           <Typography variant="body2" style={{ color: "#c7dee5" }}>
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-              {modifyText(p.content)}
-            </ReactMarkdown>
+            <Editor dark style={{}} readOnly value={p.content} />
           </Typography>
           <Typography sx={{ fontSize: 14 }} gutterBottom>
             <ReactTimeAgo

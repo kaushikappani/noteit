@@ -4,10 +4,11 @@ import { useParams, useHistory } from "react-router-dom";
 import Header from '../components/Header';
 import { Button, Card, Form } from "react-bootstrap";
 import Loading from "../components/Loading"
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+
 import Mainscreen from '../components/Mainscreen';
 import "./form.css"
+import Editor from "rich-markdown-editor";
+
 
 const SingleNote = () => {
     const history = useHistory();
@@ -75,7 +76,12 @@ const SingleNote = () => {
           .replaceAll("!pending", "⏳")
           .replaceAll("!imp", "❗");
         return text;
-    }
+  }
+  const changeEditor = (e) => {
+    setNote(prev => {
+      return {...prev,content:e()}
+    })
+  }
     useEffect(() => {
         fetchData();
         //eslint-disable-next-line
@@ -108,28 +114,9 @@ const SingleNote = () => {
 
                   <Form.Group controlId="content">
                     <Form.Label>Content</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      value={modifyText(note.content)}
-                      placeholder="Enter the content"
-                      rows={10}
-                      onChange={(e) =>
-                        setNote((prev) => {
-                          return { ...prev, content: e.target.value };
-                        })
-                      }
-                    />
+                    <Editor autoFocus dark  onChange={(e)=>changeEditor(e)} defaultValue={note.content} />
                   </Form.Group>
-                  {note.content && (
-                    <Card>
-                      <Card.Header>Note Preview</Card.Header>
-                      <Card.Body>
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                          {modifyText(note.content)}
-                        </ReactMarkdown>
-                      </Card.Body>
-                    </Card>
-                  )}
+                  
 
                   <Form.Group controlId="content">
                     <Form.Label>Category</Form.Label>

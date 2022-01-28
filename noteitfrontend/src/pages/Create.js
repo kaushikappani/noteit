@@ -7,10 +7,11 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import Mainscreen from '../components/Mainscreen';
 import { useHistory } from 'react-router';
+import Editor from "rich-markdown-editor";
 import "./form.css"
 
 const Create = () => {
-    const history = useHistory();
+  const history = useHistory();
     const [note, setNote] = useState({
         title: "",
         category: "",
@@ -68,9 +69,15 @@ const Create = () => {
         fetchUser();
         //eslint-disable-next-line
     }, [])
+  const changeEditor = (e) => {
+    setNote(prev => {
+      return { ...prev, content: e() };
+    })
+  }
     return (
       <div className="noteDiv">
-        <Header page = "create" user={user} loading = {loading} />
+        <Header page="create" user={user} loading={loading} />
+
         <Mainscreen title="Create note">
           <Card>
             <Card.Header>Create a new Note</Card.Header>
@@ -90,31 +97,8 @@ const Create = () => {
                     }
                   />
                 </Form.Group>
-
-                <Form.Group controlId="content">
-                  <Form.Label>Content</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    value={modifyText(note.content)}
-                    placeholder="Enter the content"
-                    rows={10}
-                    onChange={(e) =>
-                      setNote((prev) => {
-                        return { ...prev, content: e.target.value };
-                      })
-                    }
-                  />
-                </Form.Group>
-                {note.content && (
-                  <Card>
-                    <Card.Header>Note Preview</Card.Header>
-                    <Card.Body>
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {modifyText(note.content)}
-                      </ReactMarkdown>
-                    </Card.Body>
-                  </Card>
-                )}
+                Content
+                <Editor autoFocus className = "big" onChange={(e)=>changeEditor(e)} defaultValue="" />
 
                 <Form.Group controlId="content">
                   <Form.Label>Category</Form.Label>
