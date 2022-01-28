@@ -114,7 +114,7 @@ const SingleNote = () => {
 
                   <Form.Group controlId="content">
                     <Form.Label>Content</Form.Label>
-                    <Editor autoFocus dark  onChange={(e)=>changeEditor(e)} defaultValue={note.content} />
+                    <Editor className = "big" autoFocus dark  onChange={(e)=>changeEditor(e)} defaultValue={note.content} />
                   </Form.Group>
                   
 

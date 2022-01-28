@@ -98,7 +98,7 @@ const Create = () => {
                   />
                 </Form.Group>
                 Content
-                <Editor autoFocus className = "big" onChange={(e)=>changeEditor(e)} defaultValue="" />
+                <Editor autoFocus dark className = "big" onChange={(e)=>changeEditor(e)} defaultValue="" />
 
                 <Form.Group controlId="content">
                   <Form.Label>Category</Form.Label>
