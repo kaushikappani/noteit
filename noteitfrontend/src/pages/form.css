@@ -15,3 +15,6 @@
     background-color: transparent !important;
     color:white !important;
 }
+.placeholder{
+  cursor: pointer !important;
+}

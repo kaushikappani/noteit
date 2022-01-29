@@ -82,7 +82,7 @@ const CardComponent = (p) => {
           </Typography>
 
           <Typography variant="body2" style={{ color: "#c7dee5" }}>
-            <Editor dark style={{}} readOnly value={p.content} />
+            <Editor dark style={{}} readOnly value={modifyText(p.content)} />
           </Typography>
           <Typography sx={{ fontSize: 14 }} gutterBottom>
             <ReactTimeAgo

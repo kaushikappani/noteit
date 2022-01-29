@@ -79,7 +79,7 @@ const SingleNote = () => {
   }
   const changeEditor = (e) => {
     setNote(prev => {
-      return {...prev,content:e()}
+      return { ...prev, content: modifyText(e()) };
     })
   }
     useEffect(() => {
@@ -114,7 +114,7 @@ const SingleNote = () => {
 
                   <Form.Group controlId="content">
                     <Form.Label>Content</Form.Label>
-                    <Editor className = "big" autoFocus dark  onChange={(e)=>changeEditor(e)} defaultValue={note.content} />
+                    <Editor defaultValue = {note.content} className = "big"  dark  onChange={(e)=>changeEditor(e)} />
                   </Form.Group>
                   
 

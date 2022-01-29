@@ -71,7 +71,7 @@ const Create = () => {
     }, [])
   const changeEditor = (e) => {
     setNote(prev => {
-      return { ...prev, content: e() };
+      return { ...prev, content: modifyText(e()) };
     })
   }
     return (
@@ -98,7 +98,7 @@ const Create = () => {
                   />
                 </Form.Group>
                 Content
-                <Editor autoFocus dark className = "big" onChange={(e)=>changeEditor(e)} defaultValue="" />
+                <Editor autoFocus dark className = "big" onChange={(e)=>changeEditor(e)} />
 
                 <Form.Group controlId="content">
                   <Form.Label>Category</Form.Label>
