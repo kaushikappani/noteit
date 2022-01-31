@@ -14,7 +14,10 @@ router.route("/").get(protect, asyncHandler(async (req, res) => {
         }).sort({
           createdAt: -1,
         });
-        user = req.user;
+        user = {
+            email: req.user.email,
+            name: req.user.name
+        };
         res.json({ notes, user });
     } catch (err) {
         res.clearCookie("token");
