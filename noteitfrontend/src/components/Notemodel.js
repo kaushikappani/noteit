@@ -39,12 +39,13 @@ export const Notemodel = ({ id, notes, children, fetchNotes,setNotes }) => {
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: "100%",
+    heigth:"100%",
     maxWidth: "750px",
-    maxHeight: "90vh",
+    maxHeight: "100vh",
     overflowY: "scroll",
     borderRadius:"2%",
     zIndex: 100,
-    border:"none"
+    border:"0px"
   };
   const handleOpen = () => {
     fetchData();
@@ -135,11 +136,9 @@ export const Notemodel = ({ id, notes, children, fetchNotes,setNotes }) => {
       >
         <Box sx={style}>
           <div className="noteDiv">
-          
             {loading && <Loading />}
             {user && (
               <Card>
-                
                 <Card.Body>
                   <Form onSubmit={submitHandler}>
                     {error && <p className="text-danger">{error}</p>}
@@ -163,6 +162,7 @@ export const Notemodel = ({ id, notes, children, fetchNotes,setNotes }) => {
                         defaultValue={note.content}
                         className="big"
                         dark
+                        autoFocus
                         onChange={(e) => changeEditor(e)}
                       />
                     </Form.Group>
