@@ -7,13 +7,28 @@ import { Button, Card, Form } from "react-bootstrap";
 import "../pages/form.css"
 import Editor from "rich-markdown-editor";
 import Loading from "../components/Loading";
-export const Notemodel = ({ id, notes, children, fetchNotes,setNotes }) => {
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import ReactTimeAgo from "react-time-ago";
+import Toolbar from "../components/Toolbar";
+
+export const Notemodel = ({ props }) => {
+  console.log("props", props);
   const [open, setOpen] = useState(false);
   const history = useHistory();
   const [note, setNote] = useState({});
   const [user, setUser] = useState();
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
+  const [isHovering, setIsHovering] = React.useState(false);
+  const [color, setColor] = React.useState(props.color);
+  const handleMouseOver = () => {
+    setIsHovering(true);
+  };
+
+  const handleMouseOut = () => {
+    setIsHovering(false);
+  };
   const updateNote = async() => {
     try {
       const config = {
@@ -24,8 +39,8 @@ export const Notemodel = ({ id, notes, children, fetchNotes,setNotes }) => {
       };
       setLoading(true);
       //eslint-disable-next-line
-      const { data } = await axios.put(`/api/notes/${id}`, note, config);
-      fetchNotes();
+      const { data } = await axios.put(`/api/notes/${props.id}`, note, config);
+      props.fetchNotes();
       setLoading(false);
     } catch (e) {
       console.log("failed");
@@ -39,7 +54,6 @@ export const Notemodel = ({ id, notes, children, fetchNotes,setNotes }) => {
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: "100%",
-    heigth:"100%",
     maxWidth: "750px",
     maxHeight: "100vh",
     overflowY: "scroll",
@@ -52,19 +66,19 @@ export const Notemodel = ({ id, notes, children, fetchNotes,setNotes }) => {
     setOpen(true)
   };
   const handleClose = () => {
-    const updatedNotes = notes.map(e => {
-      if (e._id === id) {
+    const updatedNotes = props.notes.map((e) => {
+      if (e._id === props.id) {
         const newNote = {
           ...note,
           pinned: e.pinned,
-          color:e.color
-        }
+          color: e.color,
+        };
         return newNote;
       } else {
         return e;
       }
-    })
-    setNotes(updatedNotes);
+    });
+    props.setNotes(updatedNotes);
     updateNote();
     setOpen(false);
   }
@@ -74,7 +88,7 @@ export const Notemodel = ({ id, notes, children, fetchNotes,setNotes }) => {
         withCredentials: true,
       };
       setLoading(true);
-      const { data } = await axios.get(`/api/notes/${id}`, config);
+      const { data } = await axios.get(`/api/notes/${props.id}`, config);
       setNote(data.note);
       setUser(data.user);
       setLoading(false);
@@ -96,9 +110,9 @@ export const Notemodel = ({ id, notes, children, fetchNotes,setNotes }) => {
       };
       setLoading(true);
       //eslint-disable-next-line
-      const { data } = await axios.delete(`/api/notes/${id}`, config);
+      const { data } = await axios.delete(`/api/notes/${props.id}`, config);
       
-      fetchNotes();
+      props.fetchNotes();
       handleClose();
       setLoading(false);
     } catch (e) {
@@ -114,6 +128,21 @@ export const Notemodel = ({ id, notes, children, fetchNotes,setNotes }) => {
       .replaceAll("!imp", "❗");
     return text;
   };
+   const updateColor = (c) => {
+     if (c === color) {
+       setColor("#202124");
+       props.colorSync(props.id, c);
+     } else {
+       setColor(c);
+       props.colorSync(props.id, c);
+     }
+   };
+   const pinNote = () => {
+     props.pinNote(props.id);
+   };
+   const archive = () => {
+     props.archive(props.id);
+   };
   const changeEditor = (e) => {
     setNote((prev) => {
       return { ...prev, content: modifyText(e()) };
@@ -127,7 +156,53 @@ export const Notemodel = ({ id, notes, children, fetchNotes,setNotes }) => {
 
   return (
     <>
-      <div onClick={handleOpen}>{children}</div>
+      <div
+        onMouseOver={handleMouseOver}
+        onMouseOut={handleMouseOut}
+        style={{ backgroundColor: color }}
+      >
+        <CardContent>
+          <div onClick={handleOpen}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography
+                sx={{ fontSize: 14 }}
+                style={{ color: "#c7dee5" }}
+                gutterBottom
+              >
+                {props.category}
+              </Typography>
+            </div>
+            <Typography variant="h5" component="div">
+              {props.title}
+            </Typography>
+
+            <Typography variant="body2" style={{ color: "#c7dee5" }}>
+              <Editor
+                dark
+                style={{}}
+                readOnly
+                value={modifyText(props.content)}
+              />
+            </Typography>
+            <Typography sx={{ fontSize: 14 }} gutterBottom>
+              <ReactTimeAgo
+                date={props.createdAt}
+                locale="en-US"
+                timeStyle="round-minute"
+              />
+            </Typography>
+          </div>
+          <div style={{ visibility: isHovering ? "visible" : "hidden" }}>
+            <Toolbar
+              id={props.id}
+              fetchNotes={props.fetchNotes}
+              updateColor={props.colorSync ? updateColor : null}
+              pinNote={props.pinNote ? pinNote : null}
+              archive={archive}
+            />
+          </div>
+        </CardContent>
+      </div>
       <Modal
         open={open}
         onClose={handleClose}

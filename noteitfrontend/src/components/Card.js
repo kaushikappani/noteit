@@ -61,41 +61,8 @@ const CardComponent = (p) => {
           width: "100%",
         }}
       >
-        <Notemodel notes = {p.notes} setNotes = {p.setNotes} fetchNotes={p.fetchNotes} id={p.id}>
-          <CardContent>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <Typography
-                sx={{ fontSize: 14 }}
-                style={{ color: "#c7dee5" }}
-                gutterBottom
-              >
-                {p.category}
-              </Typography>
-            </div>
-            <Typography variant="h5" component="div">
-              {p.title}
-            </Typography>
-
-            <Typography variant="body2" style={{ color: "#c7dee5" }}>
-              <Editor dark style={{}} readOnly value={modifyText(p.content)} />
-            </Typography>
-            <Typography sx={{ fontSize: 14 }} gutterBottom>
-              <ReactTimeAgo
-                date={p.createdAt}
-                locale="en-US"
-                timeStyle="round-minute"
-              />
-            </Typography>
-            <div style={{ visibility: isHovering ? "visible" : "hidden" }}>
-              <Toolbar
-                id={p.id}
-                fetchNotes={p.fetchNotes}
-                updateColor={p.colorSync ? updateColor : null}
-                pinNote={p.pinNote ? pinNote : null}
-                archive={archive}
-              />
-            </div>
-          </CardContent>
+        <Notemodel props = {p}>
+          
         </Notemodel>
       </Card>
     );
