@@ -10,5 +10,7 @@ body::-webkit-scrollbar {
 .sc-gsDKAQ{
   z-index: 100000 !important;
 }
-
+html{
+  border:none
+}
 

@@ -43,9 +43,13 @@ export const Notemodel = ({ id, notes, children, fetchNotes,setNotes }) => {
     maxHeight: "90vh",
     overflowY: "scroll",
     borderRadius:"2%",
-    zIndex:100
+    zIndex: 100,
+    border:"none"
   };
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    fetchData();
+    setOpen(true)
+  };
   const handleClose = () => {
     const updatedNotes = notes.map(e => {
       if (e._id === id) {
@@ -115,7 +119,7 @@ export const Notemodel = ({ id, notes, children, fetchNotes,setNotes }) => {
     });
   };
   useEffect(() => {
-    fetchData();
+    
     //eslint-disable-next-line
   }, []);
 
