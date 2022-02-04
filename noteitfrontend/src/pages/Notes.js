@@ -7,16 +7,16 @@ import Header from '../components/Header';
 import { PencilSquare } from 'react-bootstrap-icons';
 import { Typography } from '@mui/material';
 import { Container } from "react-bootstrap";
-
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
-
+import Create from './Create';
 const buttonStyle = { borderRadius: "100%", height: "60px", width: "60px", float: "right", position: "sticky", bottom: "5px", }
-
 const Notes = () => {
+  
     const history = useHistory();
     const [notes, setNotes] = useState({});
     const [user, setUser] = useState({});
     const [loading, setLoading] = useState(false);
+    
     const archive = async (id) => {
       setLoading(true);
       try {
@@ -87,7 +87,12 @@ const Notes = () => {
 
     return (
       <div>
-        <Header page = "notes" fetchNotes={fetchNotes} user={user} loading={loading} />
+        <Header
+          page="notes"
+          fetchNotes={fetchNotes}
+          user={user}
+          loading={loading}
+        />
         {
           <div>
             <Container>
@@ -110,19 +115,23 @@ const Notes = () => {
                       .map((e) => {
                         return (
                           e.pinned && (
-                            <Card
-                              key={e._id}
-                              id={e._id}
-                              title={e.title}
-                              content={e.content}
-                              category={e.category}
-                              createdAt={e.createdAt}
-                              color={e.color}
-                              fetchNotes={fetchNotes}
-                              colorSync={colorSync}
-                              pinNote={pinNote}
-                              archive={archive}
-                            />
+                            <>
+                              <Card
+                                key={e._id}
+                                id={e._id}
+                                title={e.title}
+                                content={e.content}
+                                category={e.category}
+                                createdAt={e.createdAt}
+                                color={e.color}
+                                fetchNotes={fetchNotes}
+                                colorSync={colorSync}
+                                pinNote={pinNote}
+                                archive={archive}
+                                setNotes={setNotes}
+                                notes={notes}
+                              />
+                            </>
                           )
                         );
                       })}
@@ -160,21 +169,22 @@ const Notes = () => {
                             colorSync={colorSync}
                             pinNote={pinNote}
                             archive={archive}
+                            setNotes={setNotes}
+                            notes={notes}
                           />
                         );
                       })}
                 </Masonry>
               </ResponsiveMasonry>
-
-              <Link to="/createnote">
-                <button
-                  style={buttonStyle}
-                  className="btn btn-md btn-success"
-                  type="button"
-                >
+              <button
+                style={buttonStyle}
+                className="btn btn-md btn-success"
+                type="button"
+              >
+                <Create setNotes={setNotes} fetchNotes = {fetchNotes}>
                   <PencilSquare size={25} />
-                </button>
-              </Link>
+                </Create>
+              </button>
             </Container>
           </div>
         }

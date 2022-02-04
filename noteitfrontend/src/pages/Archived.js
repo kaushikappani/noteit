@@ -80,6 +80,8 @@ const Archived = () => {
                     color={e.color}
                     fetchNotes={fetchNotes}
                     archive={archive}
+                    setNotes={setNotes}
+                    notes={notes}
                   />
                 );
               })}

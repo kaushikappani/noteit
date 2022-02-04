@@ -11,7 +11,7 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: "1d"
+        expiresIn: "360d"
     })
 }
 //   /api/users

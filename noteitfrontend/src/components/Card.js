@@ -1,6 +1,4 @@
 import React from 'react'
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
@@ -13,6 +11,7 @@ import "./css/toolbar.css";
 import { Link } from 'react-router-dom';
 import { PencilSquare } from 'react-bootstrap-icons';
 import Editor from "rich-markdown-editor";
+import {Notemodel} from "./Notemodel";
 
 TimeAgo.addDefaultLocale(en);
 TimeAgo.addLocale(ru);
@@ -62,45 +61,42 @@ const CardComponent = (p) => {
           width: "100%",
         }}
       >
-        <CardContent>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography
-              sx={{ fontSize: 14 }}
-              style={{ color: "#c7dee5" }}
-              gutterBottom
-            >
-              {p.category}
-            </Typography>
-            <Link to={`/note/${p.id}`}>
-              <Typography sx={{ fontSize: 18 }} gutterBottom>
-                <PencilSquare size={17} />
+        <Notemodel notes = {p.notes} setNotes = {p.setNotes} fetchNotes={p.fetchNotes} id={p.id}>
+          <CardContent>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography
+                sx={{ fontSize: 14 }}
+                style={{ color: "#c7dee5" }}
+                gutterBottom
+              >
+                {p.category}
               </Typography>
-            </Link>
-          </div>
-          <Typography variant="h5" component="div">
-            {p.title}
-          </Typography>
+            </div>
+            <Typography variant="h5" component="div">
+              {p.title}
+            </Typography>
 
-          <Typography variant="body2" style={{ color: "#c7dee5" }}>
-            <Editor dark style={{}} readOnly value={modifyText(p.content)} />
-          </Typography>
-          <Typography sx={{ fontSize: 14 }} gutterBottom>
-            <ReactTimeAgo
-              date={p.createdAt}
-              locale="en-US"
-              timeStyle="round-minute"
-            />
-          </Typography>
-          <div style={{ visibility: isHovering ? "visible" : "hidden" }}>
-            <Toolbar
-              id={p.id}
-              fetchNotes={p.fetchNotes}
-              updateColor={p.colorSync ? updateColor : null}
-              pinNote={p.pinNote ? pinNote : null}
-              archive={archive}
-            />
-          </div>
-        </CardContent>
+            <Typography variant="body2" style={{ color: "#c7dee5" }}>
+              <Editor dark style={{}} readOnly value={modifyText(p.content)} />
+            </Typography>
+            <Typography sx={{ fontSize: 14 }} gutterBottom>
+              <ReactTimeAgo
+                date={p.createdAt}
+                locale="en-US"
+                timeStyle="round-minute"
+              />
+            </Typography>
+            <div style={{ visibility: isHovering ? "visible" : "hidden" }}>
+              <Toolbar
+                id={p.id}
+                fetchNotes={p.fetchNotes}
+                updateColor={p.colorSync ? updateColor : null}
+                pinNote={p.pinNote ? pinNote : null}
+                archive={archive}
+              />
+            </div>
+          </CardContent>
+        </Notemodel>
       </Card>
     );
 }

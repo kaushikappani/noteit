@@ -1,3 +1,14 @@
 body::-webkit-scrollbar {
   display: none;
 }
+::-webkit-scrollbar {
+  display: none;
+}
+#block-menu-container{
+  z-index: 100000 !important;
+}
+.sc-gsDKAQ{
+  z-index: 100000 !important;
+}
+
+

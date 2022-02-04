@@ -5,6 +5,7 @@ import { FileEarmarkPlus, Archive, CloudCheck,Grid } from "react-bootstrap-icons
 import { Spinner } from 'react-bootstrap';
 import Icon from "./noteIcon.jpg";
 import axios from "axios";
+import Create from '../pages/Create';
 const Header = (props) => {
 
     const history = useHistory()
@@ -31,7 +32,6 @@ const Header = (props) => {
                         <Nav className="mr-auto">
                             {props.loading && <Nav.Link><Spinner animation="border"  size="sm" /></Nav.Link>}
                             {!props.loading && <Nav.Link onClick = {props.fetchNotes}>  <CloudCheck size={23} /></Nav.Link>}
-                            <Nav.Link href="/createnote"><FileEarmarkPlus size={23} /></Nav.Link>
                             {props.page === "notes" ? <Nav.Link href="/archived"> <Archive size={23} /> </Nav.Link> :<Nav.Link href="/notes"> <Grid size={23} /> </Nav.Link> }
                             <NavDropdown title={props.user.name} id="basic-nav-dropdown">
                                 <NavDropdown.Item href="/profile">Profile</NavDropdown.Item>
