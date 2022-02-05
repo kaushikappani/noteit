@@ -125,7 +125,8 @@ export const Notemodel = ({ props }) => {
     text = text
       .replaceAll("!done", "✅")
       .replaceAll("!pending", "⏳")
-      .replaceAll("!imp", "❗");
+      .replaceAll("!imp", "❗")
+      .replaceAll("!bell", "🔔");
     return text;
   };
    const updateColor = (c) => {

@@ -25,7 +25,7 @@ router.route("/").get(protect, asyncHandler(async (req, res) => {
 }))
 router.route("/archived").get(protect, asyncHandler(async (req, res) => {
     const notes = await Note.find({ user: req.user._id ,archived:true}).sort({
-      createdAt: -1,
+      updatedAt: -1,
     });
     user = req.user;
     res.json({ notes, user });
