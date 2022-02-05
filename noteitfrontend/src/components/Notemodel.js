@@ -242,7 +242,6 @@ export const Notemodel = ({ props }) => {
                         defaultValue={note.content}
                         className="big"
                         dark
-                        autoFocus
                         onChange={(e) => changeEditor(e)}
                       />
                     </Form.Group>
