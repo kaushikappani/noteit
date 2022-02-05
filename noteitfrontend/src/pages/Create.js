@@ -33,7 +33,7 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
     transform: "translate(-50%, -50%)",
     width: "100%",
     maxWidth: "750px",
-    maxHeight: "95vh",
+    maxHeight: "90vh",
     overflowY: "scroll",
     borderRadius: "2%",
     zIndex: 100,
