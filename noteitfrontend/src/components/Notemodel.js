@@ -11,6 +11,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import ReactTimeAgo from "react-time-ago";
 import Toolbar from "../components/Toolbar";
+import { ArrowLeft } from 'react-bootstrap-icons';
 
 export const Notemodel = ({ props }) => {
   console.log("props", props);
@@ -219,7 +220,10 @@ export const Notemodel = ({ props }) => {
                   <Form onSubmit={submitHandler}>
                     {error && <p className="text-danger">{error}</p>}
                     <Form.Group controlId="title">
-                      <Form.Label>Title</Form.Label>
+                      <div style={{display:"flex",justifyContent:"space-between"}}>
+                        <Form.Label>Title</Form.Label>
+                        <ArrowLeft onClick = {handleClose} size={25} />
+                      </div>
                       <Form.Control
                         type="title"
                         value={note.title}

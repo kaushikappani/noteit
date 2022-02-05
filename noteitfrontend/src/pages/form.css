@@ -9,8 +9,16 @@
 .big .sc-dJjYzT{
     background-color: #444444 !important;
     color:white !important;
-    min-height:50vh
+    min-height:40vh
 }
+@media only screen and (max-width: 768px) {
+  .big .sc-dJjYzT{
+    background-color: #444444 !important;
+    color:white !important;
+    min-height:65vh
+}
+}
+
 .sc-dJjYzT{
     background-color: transparent !important;
     color:white !important;
