@@ -56,7 +56,7 @@ export const Notemodel = ({ props }) => {
     transform: "translate(-50%, -50%)",
     width: "100%",
     maxWidth: "750px",
-    maxHeight: "100vh",
+    maxHeight: "95vh",
     overflowY: "scroll",
     borderRadius:"2%",
     zIndex: 100,
