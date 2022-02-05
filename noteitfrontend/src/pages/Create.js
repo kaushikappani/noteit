@@ -9,6 +9,7 @@ import Mainscreen from '../components/Mainscreen';
 import { useHistory } from 'react-router';
 import Editor from "rich-markdown-editor";
 import "./form.css"
+import { ArrowLeft } from 'react-bootstrap-icons';
 
 const Create = ({ children, setNotes ,fetchNotes}) => {
   const history = useHistory();
@@ -32,10 +33,11 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
     transform: "translate(-50%, -50%)",
     width: "100%",
     maxWidth: "750px",
-    maxHeight: "100vh",
+    maxHeight: "95vh",
     overflowY: "scroll",
     borderRadius: "2%",
     zIndex: 100,
+    border: "0px",
   };
   const fetchUser = async () => {
     console.log("fetch user");
@@ -120,7 +122,15 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
         <Box sx={style}>
           <div className="noteDiv">
             <Card>
-              <Card.Header>Create a new Note</Card.Header>
+              <Card.Header style={{ display:"flex",justifyContent:"space-between"}}>
+                Create a new Note{" "}
+                <ArrowLeft
+                  style={{ cursor: "pointer" }}
+                  onClick={handleClose}
+                  size={25}
+                />
+              </Card.Header>
+
               <Card.Body>
                 <Form onSubmit={submitHandler}>
                   {error && <p className="text-danger">{error}</p>}
@@ -142,7 +152,7 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
                     autoFocus
                     dark
                     className="big"
-                    defaultValue = {note.content}
+                    defaultValue={note.content}
                     onChange={(e) => changeEditor(e)}
                   />
                   <Form.Group controlId="content">

@@ -222,7 +222,7 @@ export const Notemodel = ({ props }) => {
                     <Form.Group controlId="title">
                       <div style={{display:"flex",justifyContent:"space-between"}}>
                         <Form.Label>Title</Form.Label>
-                        <ArrowLeft onClick = {handleClose} size={25} />
+                        <ArrowLeft style={{cursor:"pointer"}} onClick = {handleClose} size={25} />
                       </div>
                       <Form.Control
                         type="title"
