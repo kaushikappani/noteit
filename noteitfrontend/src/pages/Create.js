@@ -114,6 +114,7 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
     <>
       <div onClick={handleOpen}>{children}</div>
       <Modal
+        className = "model"
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
