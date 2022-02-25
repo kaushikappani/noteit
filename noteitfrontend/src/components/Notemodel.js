@@ -123,11 +123,13 @@ export const Notemodel = ({ props }) => {
     }
   };
   const modifyText = (text) => {
-    text = text
-      .replaceAll("!done", "✅")
-      .replaceAll("!pending", "⏳")
-      .replaceAll("!imp", "❗")
-      .replaceAll("!bell", "🔔");
+    if (text) {
+      text = text
+        .replaceAll("!done", "✅")
+        .replaceAll("!pending", "⏳")
+        .replaceAll("!imp", "❗")
+        .replaceAll("!bell", "🔔");
+    }
     return text;
   };
    const updateColor = (c) => {
@@ -161,7 +163,7 @@ export const Notemodel = ({ props }) => {
       <div
         onMouseOver={handleMouseOver}
         onMouseOut={handleMouseOut}
-        style={{ backgroundColor: color }}
+        style={{ backgroundColor: color,cursor:"pointer" }}
       >
         <CardContent>
           <div onClick={handleOpen}>
