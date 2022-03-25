@@ -7,6 +7,8 @@ import Create from './pages/Create';
 import Profile from './pages/Profile';
 import confirm from "./components/confirm"
 import Archived from './pages/Archived';
+import ForgotPassword from "./pages/ForgotPassword";
+import PasswordReset from "./pages/PasswordReset";
 function App() {
   return (
     <BrowserRouter>
@@ -17,7 +19,9 @@ function App() {
         <Route path="/createnote" component={Create} exact />
         <Route path="/profile" component={Profile} exact />
         <Route path="/confirm/:id" component={confirm} exact />
-        <Route path="/archived" component = {Archived} exact />
+        <Route path="/archived" component={Archived} exact />
+        <Route path = "/forgotpassword" component={ForgotPassword} exact />
+        <Route path = "/passwordreset/:id" component={PasswordReset} exact />
       </main>
     </BrowserRouter>
   );

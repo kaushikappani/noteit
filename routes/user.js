@@ -144,6 +144,63 @@ router.route("/confirm/:id").get(asyncHandler(async (req, res) => {
 router.route("/verifytoken").get(protect, asyncHandler(async (req, res) => {
     res.status(202).send("protected");
 }))
+
+router.route("/forgotpassword").post(
+  asyncHandler(async (req, res) => {
+    const generateToken = (id) => {
+      return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: "1h",
+      });
+    };
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+      if (user) {
+          console.log(user);
+          const token = generateToken(
+              user._id,
+              process.env.JWT_SECRET_FORGOTPASSWORD
+          );
+          console.log(token);
+          const msg = {
+              to: email,
+              from: "kaushikappani@gmail.com", // Use the email address or domain you verified above
+              subject: "NoteIt - Password Reset Link",
+              text: "Click the following link to verify your link",
+              html: `<strong><a href="https://noteit1.herokuapp.com/resetpassword/${token}">https://noteit1.herokuapp.com/resetpassword/${token}</a></strong>`,
+          };
+          sgMail.send(msg).then(
+            () => {},
+            (error) => {
+              console.error(error);
+
+              if (error.response) {
+                console.error(error.response.body);
+              }
+            }
+          );
+          res.status(200);
+          res.json({message:"email send"})
+      }
+  })
+);
+router.route("/resetpassword/:id").post(asyncHandler(async (req, res) => {
+    const id = req.params.id;
+    console.log("id", id);
+    const { password, conformpassword } = req.body;
+    console.log(password, conformpassword);
+    if (password === conformpassword) {
+        const decode = jwt.verify(id, process.env.JWT_SECRET);
+        const salt = await bcrypt.genSalt(11);
+        hashPassword = await bcrypt.hash(password, salt);
+        let user = await User.findOneAndUpdate({_id:decode.id},{password:hashPassword});
+        res.status(200);
+        res.json({ message: "Password changed" });
+    } else {
+        res.status(400);
+        throw new Error("New passwod and conform password match");
+    }
+
+}))
 router.route("/logout").get(asyncHandler(async (req, res) => {
 
     res.clearCookie("token").status(202).send("logout");
