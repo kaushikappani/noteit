@@ -179,8 +179,12 @@ router.route("/forgotpassword").post(
             }
           );
           res.status(200);
-          res.json({message:"email send"})
+          res.json({message:"email sent"})
+      } else {
+          res.status(400);
+          res.json({message:"User not found"})
       }
+
   })
 );
 router.route("/resetpassword/:id").post(asyncHandler(async (req, res) => {

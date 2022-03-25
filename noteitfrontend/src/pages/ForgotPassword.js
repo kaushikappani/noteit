@@ -75,12 +75,12 @@ const ForgotPassword = () => {
                   />
                   <label htmlFor="floatingInput">Email address</label>
                 </div>
-                {error && (
+                {data && (
                   <p
-                    className="text-danger"
+                    className="text-success"
                     style={{ justifyContent: "right", textAlign: "center" }}
                   >
-                    {error}
+                    {data.message}
                   </p>
                 )}
                 <div className="d-grid mb-5">
