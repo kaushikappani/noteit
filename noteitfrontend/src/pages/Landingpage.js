@@ -123,7 +123,13 @@ const Landingpage = ({ history }) => {
                       {loading ? <Loading /> : "Log In"}
                     </button>
                   </div>
-                  <Link to="/forgotpassword">Forgot Password</Link>
+                  <p
+                    className="text-warning"
+                    style={{ justifyContent: "right", textAlign: "center" }}
+                  >
+                    <Link to="/forgotpassword">Forgot Password</Link>
+                  </p>
+
                   <Link to="/register">
                     <div className="d-grid">
                       <button className="btn btn-lg btn-success" type="button">
