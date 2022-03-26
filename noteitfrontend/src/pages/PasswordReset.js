@@ -96,7 +96,7 @@ const PasswordReset = () => {
                 <div className="d-grid mb-5">
                   <button className="btn btn-lg btn-primary" type="submit">
                     {" "}
-                    {loading ? <Loading /> : "Get Password Change Link"}
+                    {loading ? <Loading /> : "Reset Password"}
                   </button>
                 </div>
               </div>
