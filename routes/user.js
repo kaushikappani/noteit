@@ -162,11 +162,11 @@ router.route("/forgotpassword").post(
           );
           console.log(token);
           const msg = {
-              to: email,
-              from: "kaushikappani@gmail.com", // Use the email address or domain you verified above
-              subject: "NoteIt - Password Reset Link",
-              text: "Click the following link to verify your link",
-              html: `<strong><a href="https://noteit1.herokuapp.com/resetpassword/${token}">https://noteit1.herokuapp.com/resetpassword/${token}</a></strong>`,
+            to: email,
+            from: "kaushikappani@gmail.com", // Use the email address or domain you verified above
+            subject: "NoteIt - Password Reset Link",
+            text: "Click the following link to verify your link",
+            html: `<strong><a href="https://noteit1.herokuapp.com/passwordreset/${token}">https://noteit1.herokuapp.com/passwordreset/${token}</a></strong>`,
           };
           sgMail.send(msg).then(
             () => {},
