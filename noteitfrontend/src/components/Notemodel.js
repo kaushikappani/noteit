@@ -14,7 +14,6 @@ import Toolbar from "../components/Toolbar";
 import { ArrowLeft } from 'react-bootstrap-icons';
 
 export const Notemodel = ({ props }) => {
-  console.log("props", props);
   const [open, setOpen] = useState(false);
   const history = useHistory();
   const [note, setNote] = useState({});

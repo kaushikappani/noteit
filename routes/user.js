@@ -7,7 +7,13 @@ const { User } = require("../config/models");
 const { protect } = require("../middleware/protect");
 const mail = require("nodemailer");
 const sgMail = require("@sendgrid/mail");
+const { google } = require("googleapis");
+
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+// google 
+const calender = google.calendar("v3");
+
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -208,5 +214,10 @@ router.route("/resetpassword/:id").post(asyncHandler(async (req, res) => {
 router.route("/logout").get(asyncHandler(async (req, res) => {
 
     res.clearCookie("token").status(202).send("logout");
+}))
+
+router.route("/googleauth").post(asyncHandler(async (req, res) => {
+    
+    res.json({ success: true });
 }))
 module.exports = router
