@@ -7,12 +7,10 @@ const { User } = require("../config/models");
 const { protect } = require("../middleware/protect");
 const mail = require("nodemailer");
 const sgMail = require("@sendgrid/mail");
-const { google } = require("googleapis");
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // google 
-const calender = google.calendar("v3");
 
 
 const generateToken = (id) => {
