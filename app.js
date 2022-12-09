@@ -43,6 +43,6 @@ app.use(errorHandler)
 app.use(notFound)
 
 
-app.listen(process.env.PORT || 3000, () => {
+app.listen(3000, () => {
     console.log(`server running ${process.env.PORT}`)
 })
