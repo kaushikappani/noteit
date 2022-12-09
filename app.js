@@ -35,6 +35,10 @@ app.use("/api/notes", notesRoute)
 //     })
 // }
 
+app.get("/", (req, res) => {
+    res.send({name:"working"})
+})
+
 app.use(errorHandler)
 app.use(notFound)
 
