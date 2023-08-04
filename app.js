@@ -18,22 +18,22 @@ app.use("/api/users", userRoutes)
 app.use("/api/notes", notesRoute)
 
 
-// __dirname = path.resolve();
-// if (process.env.NODE_ENV === "production") {
-//     app.use(express.static(path.join(__dirname, "/noteitfrontend/build",)))
-//     app.get("*", (req, res) => {
-//         res.sendFile(path.resolve(__dirname, "noteitfrontend", "build", "index.html"));
-//     })
-// } else {
-//     app.get("/", async(req, res) => {
-//         const notes = await Note.find({});
-//         notes.forEach(n => {
-//             n.archived = false
-//             n.save();
-//         })
-//         res.send("done")
-//     })
-// }
+__dirname = path.resolve();
+if (process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, "/noteitfrontend/build",)))
+    app.get("*", (req, res) => {
+        res.sendFile(path.resolve(__dirname, "noteitfrontend", "build", "index.html"));
+    })
+} else {
+    app.get("/", async(req, res) => {
+        const notes = await Note.find({});
+        notes.forEach(n => {
+            n.archived = false
+            n.save();
+        })
+        res.send("done")
+    })
+}
 
 app.get("/", (req, res) => {
     res.send({name:"working"})
