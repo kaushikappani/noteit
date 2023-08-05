@@ -43,22 +43,16 @@ router.route("/").post(asyncHandler(async (req, res) => {
             name: u.name,
             email: u.email,
         });
-        const msg = {
-          to: email,
-          from: "kaushikappani@gmail.com", // Use the email address or domain you verified above
-          subject: "NoteIt - Account Verification",
-          text: "Click the following link to verify your link",
-          html: `<strong><a href="https://noteit1.herokuapp.com/confirm/${verificationToken}">https://noteit1.herokuapp.com/confirm/${verificationToken}</a></strong>`,
-        };
+
         mg.messages.create('sandbox-123.mailgun.org', {
-            from: "Excited User <mailgun@sandbox-123.mailgun.org>",
-            to: [...email],
-            subject: "Hello",
-            text: "Testing some Mailgun awesomeness!",
-            html: "<h1>Testing some Mailgun awesomeness!</h1>"
+            from: "kaushikappani@gmail.com",
+            to: email,
+            subject: "NoteIt - Account Verification",
+            text: "Click the following link to verify your link",
+            html: `<strong><a href="${process.env.DOMAIN}/confirm/${verificationToken}">${process.env.DOMAIN}/confirm/${verificationToken}</a></strong>`,
         })
-            .then(msg => console.log(msg)) // logs response data
-            .catch(err => console.log(err)); // logs any error
+            .then(msg => console.log(msg)) 
+            .catch(err => console.log(err)); 
 
     }).catch((e) => {
         res.status(400);
@@ -168,7 +162,7 @@ router.route("/forgotpassword").post(
               to: email,
               subject: "NoteIt - Password Reset Link",
               text: "Click the following link to verify your link",
-              html: `<strong><a href="https://noteit1.herokuapp.com/passwordreset/${token}">https://noteit1.herokuapp.com/passwordreset/${token}</a></strong>`,
+              html: `<strong><a href="${process.env.DOMAIN}/passwordreset/${token}">${process.env.DOMAIN}/passwordreset/${token}</a></strong>`,
           })
               .then(msg => console.log(msg)) // logs response data
               .catch(err => console.log(err)); // logs any error
