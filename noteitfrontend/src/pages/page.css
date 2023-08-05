@@ -1,0 +1,8 @@
+.pagecontainer {
+  margin-top: 30vh;
+}
+@media screen and (max-width: 700px) {
+  .pagecontainer {
+    margin-top: 15vh;
+  }
+}

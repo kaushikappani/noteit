@@ -1,0 +1,10 @@
+.heading {
+  font-family: "Work Sans", sans-serif;
+  padding: 5px 10px;
+}
+@media screen and (max-width: 600px) {
+  .heading {
+    display: flex;
+    justify-content: center;
+  }
+}
