@@ -6,12 +6,11 @@ const jwt = require("jsonwebtoken");
 const { User } = require("../config/models");
 const { protect } = require("../middleware/protect");
 const mail = require("nodemailer");
-const sgMail = require("@sendgrid/mail");
+const formData = require('form-data');
+const Mailgun = require('mailgun.js');
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-// google 
-
+const mailgun = new Mailgun(formData);
+const mg = mailgun.client({ username: 'api', key: process.env.MAILGUN_API_KEY});
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -51,16 +50,15 @@ router.route("/").post(asyncHandler(async (req, res) => {
           text: "Click the following link to verify your link",
           html: `<strong><a href="https://noteit1.herokuapp.com/confirm/${verificationToken}">https://noteit1.herokuapp.com/confirm/${verificationToken}</a></strong>`,
         };
-        sgMail.send(msg).then(
-            () => { },
-            (error) => {
-                console.error(error);
-
-                if (error.response) {
-                    console.error(error.response.body);
-                }
-            }
-        );
+        mg.messages.create('sandbox-123.mailgun.org', {
+            from: "Excited User <mailgun@sandbox-123.mailgun.org>",
+            to: [...email],
+            subject: "Hello",
+            text: "Testing some Mailgun awesomeness!",
+            html: "<h1>Testing some Mailgun awesomeness!</h1>"
+        })
+            .then(msg => console.log(msg)) // logs response data
+            .catch(err => console.log(err)); // logs any error
 
     }).catch((e) => {
         res.status(400);
@@ -165,23 +163,15 @@ router.route("/forgotpassword").post(
               process.env.JWT_SECRET_FORGOTPASSWORD
           );
           console.log(token);
-          const msg = {
-            to: email,
-            from: "kaushikappani@gmail.com", // Use the email address or domain you verified above
-            subject: "NoteIt - Password Reset Link",
-            text: "Click the following link to verify your link",
-            html: `<strong><a href="https://noteit1.herokuapp.com/passwordreset/${token}">https://noteit1.herokuapp.com/passwordreset/${token}</a></strong>`,
-          };
-          sgMail.send(msg).then(
-            () => {},
-            (error) => {
-              console.error(error);
-
-              if (error.response) {
-                console.error(error.response.body);
-              }
-            }
-          );
+          mg.messages.create('sandbox36912320289346e6a9f53ff5c5c42d68.mailgun.org', {
+              from: "kaushikappani@gmail.com",
+              to: email,
+              subject: "NoteIt - Password Reset Link",
+              text: "Click the following link to verify your link",
+              html: `<strong><a href="https://noteit1.herokuapp.com/passwordreset/${token}">https://noteit1.herokuapp.com/passwordreset/${token}</a></strong>`,
+          })
+              .then(msg => console.log(msg)) // logs response data
+              .catch(err => console.log(err)); // logs any error
           res.status(200);
           res.json({message:"email sent"})
       } else {
