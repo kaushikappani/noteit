@@ -17,6 +17,7 @@ import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.bubble.css';
 
 
+
 export const Notemodel = ({ props }) => {
   const [open, setOpen] = useState(false);
   const history = useHistory();
@@ -157,13 +158,14 @@ export const Notemodel = ({ props }) => {
     });
   };
   useEffect(() => {
-    
+   
     //eslint-disable-next-line
   }, []);
 
 
   return (
     <>
+     
       <div
         onMouseOver={handleMouseOver}
         onMouseOut={handleMouseOut}

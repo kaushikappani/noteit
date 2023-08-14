@@ -12,6 +12,10 @@ import { Container } from "react-bootstrap";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import ApiCalendar from "react-google-calendar-api";
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 import Create from "./Create";
 const buttonStyle = {
   borderRadius: "100%",
@@ -29,6 +33,8 @@ const Notes = () => {
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
   const [googleCredentials, setGoogleCredentials] = useState(false);
+  const notify = (message,type) => toast(message,type);
+
   const responseGoogle = async (response) => {
     setGoogleCredentials(response);
   try {
@@ -42,6 +48,7 @@ const Notes = () => {
   }
 };
   const archive = async (id) => {
+   
     setLoading(true);
     try {
       setNotes((prev) => {
@@ -55,6 +62,19 @@ const Notes = () => {
         { archived: true },
         config
       );
+      console.log("triggered")
+     
+      notify("Archived", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+     
     } catch (e) {}
     setLoading(false);
   };
@@ -80,6 +100,16 @@ const Notes = () => {
         { pinned: true },
         config
       );
+      notify("Updated", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     } catch (e) {}
     setLoading(false);
   };
@@ -91,6 +121,16 @@ const Notes = () => {
         withCredentials: true,
       };
       const { data } = await axios.put(`/api/notes/${id}`, { color }, config);
+      notify("Updated", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     } catch (e) {}
     setLoading(false);
   };
@@ -119,6 +159,7 @@ const Notes = () => {
   }
 
   useEffect(() => {
+    
     fetchNotes();
     // google.accounts.id.initialize({
     //   client_id:
@@ -134,6 +175,9 @@ const Notes = () => {
 
   return (
     <div>
+      <ToastContainer/>
+      {/* Same as */}
+      <ToastContainer />
       <Header
         page="notes"
         fetchNotes={fetchNotes}
