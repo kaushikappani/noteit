@@ -144,9 +144,9 @@ const Notes = () => {
       {
         <div>
           <Container>
-            <div>
+            {/* <div>
               <button onClick={SignIn}>Sign IN</button>
-            </div>
+            </div> */}
             {notes?.length > 0 && (
               <Typography
                 sx={{ fontSize: 14 }}
