@@ -66,7 +66,7 @@ const Notes = () => {
      
       notify("Archived", {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -102,7 +102,7 @@ const Notes = () => {
       );
       notify("Updated", {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -123,7 +123,7 @@ const Notes = () => {
       const { data } = await axios.put(`/api/notes/${id}`, { color }, config);
       notify("Updated", {
         position: "top-right",
-        autoClose: 5000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -176,8 +176,6 @@ const Notes = () => {
   return (
     <div>
       <ToastContainer/>
-      {/* Same as */}
-      <ToastContainer />
       <Header
         page="notes"
         fetchNotes={fetchNotes}

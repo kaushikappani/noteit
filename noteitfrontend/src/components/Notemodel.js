@@ -16,6 +16,8 @@ import ReactQuill, { QuillMixins } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.bubble.css';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 export const Notemodel = ({ props }) => {
@@ -47,6 +49,17 @@ export const Notemodel = ({ props }) => {
       //eslint-disable-next-line
       const { data } = await axios.put(`/api/notes/${props.id}`, note, config);
       props.fetchNotes();
+      console.log("trigerreed")
+      toast.success("Note Updated", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
       setLoading(false);
     } catch (e) {
       console.log("failed");
@@ -121,6 +134,16 @@ export const Notemodel = ({ props }) => {
       props.fetchNotes();
       handleClose();
       setLoading(false);
+      toast.warn("Note Deleted", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     } catch (e) {
       console.log("failed");
       setError(e.response ? e.response.data.message : e.message);
@@ -165,7 +188,7 @@ export const Notemodel = ({ props }) => {
 
   return (
     <>
-     
+      <ToastContainer />
       <div
         onMouseOver={handleMouseOver}
         onMouseOut={handleMouseOut}

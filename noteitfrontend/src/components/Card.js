@@ -18,14 +18,6 @@ TimeAgo.addLocale(ru);
 const CardComponent = (p) => {
   const [isHovering, setIsHovering] = React.useState(false);
   const [color, setColor] = React.useState(p.color);
-  const modifyText = (text) => {
-    text = text
-      .replaceAll("!done", "✅")
-      .replaceAll("!pending", "⏳")
-      .replaceAll("!imp", "❗")
-      .replaceAll("!bell", "🔔");
-    return text;
-  };
   const handleMouseOver = () => {
     setIsHovering(true);
   };
@@ -33,21 +25,7 @@ const CardComponent = (p) => {
   const handleMouseOut = () => {
     setIsHovering(false);
   };
-  const updateColor = (c) => {
-    if (c === color) {
-      setColor("#202124");
-      p.colorSync(p.id, c);
-    } else {
-      setColor(c);
-      p.colorSync(p.id, c);
-    }
-  };
-  const pinNote = () => {
-    p.pinNote(p.id);
-  }
-  const archive = () => {
-    p.archive(p.id);
-  }
+
     return (
       <Card
         onMouseOver={handleMouseOver}
