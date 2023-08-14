@@ -68,15 +68,19 @@ const PasswordReset = () => {
                     type="password"
                     className="form-control"
                     id="password1"
-                    placeholder="name@example.com"
+                    placeholder="Password"
                     required
                   />
+                  <label htmlFor="password1">Password</label>
+                </div>
+
+                <div className="form-floating mb-3">
                   <input
                     value={passwords.conformpassword}
                     onChange={(e) => {
-                        setPasswords((prev) => {
-                         return {...prev,conformpassword:e.target.value}
-                     })
+                      setPasswords((prev) => {
+                        return { ...prev, conformpassword: e.target.value }
+                      })
                     }}
                     type="password"
                     className="form-control"
@@ -84,7 +88,9 @@ const PasswordReset = () => {
                     placeholder="name@example.com"
                     required
                   />
+                  <label htmlFor="password2">Conform Password</label>
                 </div>
+
                 {data && (
                   <p
                     className="text-success"
