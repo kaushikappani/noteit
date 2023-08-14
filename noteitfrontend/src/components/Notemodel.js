@@ -274,8 +274,13 @@ export const Notemodel = ({ props }) => {
                   </Form>
                 </Card.Body>
 
-                <Card.Footer className="text-muted">
-                  Updating on - {new Date().toLocaleDateString()}
+                <Card.Footer style={{ display: "flex", justifyContent: "space-between" }} className="text-muted">
+                  <div>
+                    Updating on - {new Date().toLocaleDateString()}
+                  </div>
+                  <p>
+                    Created At: - {new Date(note.createdAt).toLocaleDateString()}
+                  </p>
                 </Card.Footer>
               </Card>
             )}
