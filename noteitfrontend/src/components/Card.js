@@ -10,7 +10,7 @@ import Toolbar from "../components/Toolbar";
 import "./css/toolbar.css";
 import { Link } from 'react-router-dom';
 import { PencilSquare } from 'react-bootstrap-icons';
-import Editor from "rich-markdown-editor";
+// import Editor from "rich-markdown-editor";
 import {Notemodel} from "./Notemodel";
 
 TimeAgo.addDefaultLocale(en);

@@ -108,7 +108,7 @@ const Notes = () => {
     } catch (e) {
       console.log("failed124");
       localStorage.clear();
-      history.push("/");
+     history.push("/");
       setLoading(false);
     }
   };

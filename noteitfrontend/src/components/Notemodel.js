@@ -5,13 +5,17 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { Button, Card, Form } from "react-bootstrap";
 import "../pages/form.css"
-import Editor from "rich-markdown-editor";
 import Loading from "../components/Loading";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import ReactTimeAgo from "react-time-ago";
 import Toolbar from "../components/Toolbar";
 import { ArrowLeft } from 'react-bootstrap-icons';
+
+import ReactQuill, { QuillMixins } from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import 'react-quill/dist/quill.bubble.css';
+
 
 export const Notemodel = ({ props }) => {
   const [open, setOpen] = useState(false);
@@ -22,6 +26,7 @@ export const Notemodel = ({ props }) => {
   const [loading, setLoading] = useState(false);
   const [isHovering, setIsHovering] = React.useState(false);
   const [color, setColor] = React.useState(props.color);
+
   const handleMouseOver = () => {
     setIsHovering(true);
   };
@@ -146,9 +151,9 @@ export const Notemodel = ({ props }) => {
    const archive = () => {
      props.archive(props.id);
    };
-  const changeEditor = (e) => {
+  const changeEditor = (text) => {
     setNote((prev) => {
-      return { ...prev, content: modifyText(e()) };
+      return { ...prev, content: modifyText(text) };
     });
   };
   useEffect(() => {
@@ -180,12 +185,9 @@ export const Notemodel = ({ props }) => {
             </Typography>
 
             <Typography variant="body2" style={{ color: "#c7dee5" }}>
-              <Editor
-                dark
-                style={{}}
-                readOnly
-                value={modifyText(props.content)}
-              />
+          
+              <ReactQuill readOnly={true}  theme="bubble" value={modifyText(props.content)} />
+
             </Typography>
             <Typography sx={{ fontSize: 14 }} gutterBottom>
               <ReactTimeAgo
@@ -239,15 +241,13 @@ export const Notemodel = ({ props }) => {
 
                     <Form.Group controlId="content">
                       <Form.Label>Content</Form.Label>
-                      <Editor
-                        defaultValue={note.content}
-                        className="big"
-                        dark
-                        onChange={(e) => changeEditor(e)}
-                      />
+                 
+                      <ReactQuill
+                        
+                        style={{ height: "50vh" }} theme="snow" value={note.content} onChange={(value, viewUpdate) => changeEditor(value)} />
                     </Form.Group>
 
-                    <Form.Group controlId="content">
+                    <Form.Group style={{paddingTop:"50px"}} controlId="content">
                       <Form.Label>Category</Form.Label>
                       <Form.Control
                         type="content"

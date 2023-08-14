@@ -32,3 +32,26 @@ html{
   border:none
 }
 
+
+
+.ql-toolbar {
+  background-color: #f0f0f0;
+}
+
+/* Change the text color of the buttons/icons on the toolbar */
+.ql-toolbar .ql-picker-label,
+.ql-toolbar .ql-picker-item {
+  color: #333333;
+}
+
+/* Change the background color of the active buttons/icons */
+.ql-toolbar .ql-picker-item.ql-selected {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+/* Change the background color of the dropdown menus */
+.ql-toolbar .ql-picker-options {
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+}

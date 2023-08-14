@@ -7,9 +7,14 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Mainscreen from '../components/Mainscreen';
 import { useHistory } from 'react-router';
-import Editor from "rich-markdown-editor";
+// import Editor from "rich-markdown-editor";
 import "./form.css"
 import { ArrowLeft } from 'react-bootstrap-icons';
+
+
+import ReactQuill, { QuillMixins } from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import 'react-quill/dist/quill.bubble.css'
 
 const Create = ({ children, setNotes ,fetchNotes}) => {
   const history = useHistory();
@@ -107,7 +112,7 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
   const changeEditor = (e) => {
     localStorage.setItem("newNote", JSON.stringify(note));
     setNote((prev) => {
-      return { ...prev, content: modifyText(e()) };
+      return { ...prev, content: modifyText(e) };
     });
   };
   return (
@@ -149,14 +154,19 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
                     />
                   </Form.Group>
                   Content
-                  <Editor
+                  {/* <Editor
                     autoFocus
                     dark
                     className="big"
                     defaultValue={note.content}
                     onChange={(e) => changeEditor(e)}
-                  />
-                  <Form.Group controlId="content">
+                  /> */}
+
+                  <ReactQuill
+
+                    style={{ height: "40vh" }} theme="snow" value={note.content} onChange={(value, viewUpdate) => changeEditor(value)} />
+             
+                  <Form.Group style={{paddingTop:"50px"}} controlId="content">
                     <Form.Label>Category</Form.Label>
                     <Form.Control
                       type="content"
