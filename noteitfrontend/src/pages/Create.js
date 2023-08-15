@@ -11,6 +11,9 @@ import { useHistory } from 'react-router';
 import "./form.css"
 import { ArrowLeft } from 'react-bootstrap-icons';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 import ReactQuill, { QuillMixins } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -91,6 +94,16 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
       });
       setLoading(false);
       setOpen(false);
+      toast.success("Note Created", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
     } catch (e) {
       console.log("failed");
       setError(e.response ? e.response.data.message : e.message);
@@ -117,6 +130,7 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
   };
   return (
     <>
+      <ToastContainer />
       <div onClick={handleOpen}>{children}</div>
       <Modal
         className = "model"
