@@ -7,10 +7,13 @@ const { User } = require("../config/models");
 const { protect } = require("../middleware/protect");
 const mail = require("nodemailer");
 const formData = require('form-data');
-const Mailgun = require('mailgun.js');
+// const Mailgun = require('mailgun.js');
 
-const mailgun = new Mailgun(formData);
-const mg = mailgun.client({ username: 'api', key: process.env.MAILGUN_API_KEY});
+const {mailer} = require("../middleware/mailer")
+
+
+// const mailgun = new Mailgun(formData);
+// const mg = mailgun.client({ username: 'api', key: process.env.MAILGUN_API_KEY});
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -44,15 +47,25 @@ router.route("/").post(asyncHandler(async (req, res) => {
             email: u.email,
         });
 
-        mg.messages.create('sandbox-123.mailgun.org', {
-            from: "kaushikappani@gmail.com",
-            to: email,
+        // mg.messages.create('sandbox-123.mailgun.org', {
+        //     from: "kaushikappani@gmail.com",
+        //     to: email,
+        //     subject: "NoteIt - Account Verification",
+        //     text: "Click the following link to verify your link",
+        //     html: `<strong><a href="${process.env.DOMAIN}/confirm/${verificationToken}">${process.env.DOMAIN}/confirm/${verificationToken}</a></strong>`,
+        // })
+        //     .then(msg => console.log(msg)) 
+        //     .catch(err => console.log(err)); 
+        
+        const recipent = {
+            name,email
+        }
+        const mailBody = {
             subject: "NoteIt - Account Verification",
             text: "Click the following link to verify your link",
             html: `<strong><a href="${process.env.DOMAIN}/confirm/${verificationToken}">${process.env.DOMAIN}/confirm/${verificationToken}</a></strong>`,
-        })
-            .then(msg => console.log(msg)) 
-            .catch(err => console.log(err)); 
+        }
+        mailer(recipent, mailBody)
 
     }).catch((e) => {
         res.status(400);
@@ -157,15 +170,31 @@ router.route("/forgotpassword").post(
               process.env.JWT_SECRET_FORGOTPASSWORD
           );
           console.log(token);
-          mg.messages.create('sandbox36912320289346e6a9f53ff5c5c42d68.mailgun.org', {
-              from: "kaushikappani@gmail.com",
-              to: email,
+        //   mg.messages.create('sandbox36912320289346e6a9f53ff5c5c42d68.mailgun.org', {
+        //       from: "kaushikappani@gmail.com",
+        //       to: email,
+        //       subject: "NoteIt - Password Reset Link",
+        //       text: "Click the following link to verify your link",
+        //       html: `<strong><a href="${process.env.DOMAIN}/passwordreset/${token}">${process.env.DOMAIN}/passwordreset/${token}</a></strong>`,
+        //   })
+        //       .then(msg => console.log(msg)) // logs response data
+        //       .catch(err => console.log(err)); // logs any error
+          const recipent = {
+              name: user.name,
+              email: user.email
+          }
+          const mailBody = {
               subject: "NoteIt - Password Reset Link",
-              text: "Click the following link to verify your link",
-              html: `<strong><a href="${process.env.DOMAIN}/passwordreset/${token}">${process.env.DOMAIN}/passwordreset/${token}</a></strong>`,
-          })
-              .then(msg => console.log(msg)) // logs response data
-              .catch(err => console.log(err)); // logs any error
+              text: "Click the following link to change your password",
+              html: `<strong><a href="${process.env.DOMAIN}/passwordreset/${token}">${process.env.DOMAIN}/passwordreset/${token}</a></strong>`
+          }
+          
+          try {
+              mailer(recipent, mailBody);
+          } catch (err) {
+              console.log(err)
+          }
+          
           res.status(200);
           res.json({message:"email sent"})
       } else {
