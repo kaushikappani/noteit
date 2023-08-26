@@ -9,7 +9,6 @@ import { useHistory } from 'react-router';
 import "./form.css"
 import { ArrowLeft } from 'react-bootstrap-icons';
 
-import {  toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Notification from "../components/Notification"
@@ -117,6 +116,11 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
       console.log("failed");
       setError(e.response ? e.response.data.message : e.message);
       setLoading(false);
+      setAlert({
+        open: true,
+        type: "warning",
+        message: "Error Creating Note"
+      })
     }
   };
   const modifyText = (text) => {

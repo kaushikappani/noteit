@@ -1,7 +1,4 @@
-/* global google */
-import React, { useEffect, useState, useRef } from "react";
-import { useScript } from "../useScript";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import Card from "../components/Card";
 import axios from "axios";
@@ -13,7 +10,7 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import ApiCalendar from "react-google-calendar-api";
 import Notification from "../components/Notification"
 
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
@@ -123,7 +120,7 @@ const Notes = () => {
       setAlert({
         open: true,
         type: "success",
-        message: "Updated"
+        message: "Note - Updated"
       })
     } catch (e) {}
     setLoading(false);
@@ -149,7 +146,7 @@ const Notes = () => {
       setAlert({
         open: true,
         type: "success",
-        message: "Updated"
+        message: "Note - Color Updated"
       })
      
     } catch (e) {}
@@ -166,6 +163,7 @@ const Notes = () => {
 
       setLoading(false);
       setUser(data.user);
+
     } catch (e) {
       console.log("failed124");
       localStorage.clear();

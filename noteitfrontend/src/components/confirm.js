@@ -4,7 +4,7 @@ import axios from "axios";
 
 const Confirm = () => {
     const { id } = useParams();
-    const [success, setSuccess] = React.useState(false);
+    // const [success, setSuccess] = React.useState(false);
     console.log("id",id)
     useEffect(() => {
       const { data } = axios.get(`/api/users/confirm/${id}`);

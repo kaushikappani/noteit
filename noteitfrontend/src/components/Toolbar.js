@@ -1,8 +1,6 @@
 import React from 'react';
 import { CircleFill } from "react-bootstrap-icons";
-import { Link } from 'react-router-dom';
-import { Typography } from '@mui/material';
-import { PencilSquare,PinAngle,Archive } from "react-bootstrap-icons";
+import { PinAngle,Archive } from "react-bootstrap-icons";
 import "./css/toolbar.css";
 
 const Toolbar = ({ id, fetchNotes, updateColor, pinNote, archive }) => {

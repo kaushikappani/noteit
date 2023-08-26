@@ -12,11 +12,11 @@ import ReactTimeAgo from "react-time-ago";
 import Toolbar from "../components/Toolbar";
 import { ArrowLeft } from 'react-bootstrap-icons';
 
-import ReactQuill, { QuillMixins } from 'react-quill';
+import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.bubble.css';
 
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Notification from "../components/Notification"
 

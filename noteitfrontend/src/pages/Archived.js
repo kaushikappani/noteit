@@ -7,12 +7,20 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import Card from "../components/Card";
 import { Container } from 'react-bootstrap';
 import { Typography } from '@mui/material';
+import Notification from "../components/Notification"
+
+
 
 const Archived = () => {
   const history = useHistory();
    const [notes, setNotes] = useState({});
    const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState({
+    open: false,
+    type: "",
+    message: ""
+  })
   const archive = async (id) => {
     setLoading(true);
     try {
@@ -27,7 +35,18 @@ const Archived = () => {
         { archived: true },
         config
       );
-    } catch (e) {}
+      setAlert({
+        open: true,
+        type: "success",
+        message: "Note - Unarchived"
+      })
+    } catch (e) {
+      setAlert({
+        open: true,
+        type: "warning",
+        message: "Error orrured"
+      })
+    }
     setLoading(false);
   };
   const fetchNotes = async () => {
@@ -53,6 +72,8 @@ const Archived = () => {
   },[])
   return (
     <div>
+      <Notification alert={alert} setAlert={setAlert} />
+
       <Header page = "archive" fetchNotes={fetchNotes} user={user} loading={loading} />
       <Container>
         <Typography

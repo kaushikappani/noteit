@@ -1,11 +1,10 @@
 import React from 'react';
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap"
 import { Link, useHistory } from 'react-router-dom';
-import { FileEarmarkPlus, Archive, CloudCheck,Grid } from "react-bootstrap-icons";
+import {  Archive, CloudCheck,Grid } from "react-bootstrap-icons";
 import { Spinner } from 'react-bootstrap';
 import Icon from "./noteIcon.jpg";
 import axios from "axios";
-import Create from '../pages/Create';
 const Header = (props) => {
 
     const history = useHistory()
