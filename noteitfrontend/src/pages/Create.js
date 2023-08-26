@@ -1,21 +1,20 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import Header from '../components/Header';
 import { Button, Card, Form } from "react-bootstrap";
 import Loading from "../components/Loading"
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import Mainscreen from '../components/Mainscreen';
 import { useHistory } from 'react-router';
 // import Editor from "rich-markdown-editor";
 import "./form.css"
 import { ArrowLeft } from 'react-bootstrap-icons';
 
-import { ToastContainer, toast } from 'react-toastify';
+import {  toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import Notification from "../components/Notification"
 
-import ReactQuill, { QuillMixins } from 'react-quill';
+import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.bubble.css'
 
@@ -31,6 +30,11 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
   const handleOpen = () => setOpen(true);
+  const [alert, setAlert] = useState({
+    open: false,
+    type: "",
+    message: ""
+  })
   const handleClose = async () => {
     setOpen(false);
   };
@@ -94,16 +98,21 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
       });
       setLoading(false);
       setOpen(false);
-      toast.success("Note Created", {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
+      // toast.success("Note Created", {
+      //   position: "top-right",
+      //   autoClose: 2000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   progress: undefined,
+      //   theme: "dark",
+      // });
+      setAlert({
+        open: true,
+        type: "success",
+        message: "Note - Created"
+      })
     } catch (e) {
       console.log("failed");
       setError(e.response ? e.response.data.message : e.message);
@@ -130,7 +139,9 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
   };
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
+      <Notification alert={alert} setAlert={setAlert} />
+
       <div onClick={handleOpen}>{children}</div>
       <Modal
         className = "model"

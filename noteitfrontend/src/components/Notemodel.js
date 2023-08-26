@@ -18,6 +18,7 @@ import 'react-quill/dist/quill.bubble.css';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Notification from "../components/Notification"
 
 
 export const Notemodel = ({ props }) => {
@@ -29,7 +30,11 @@ export const Notemodel = ({ props }) => {
   const [loading, setLoading] = useState(false);
   const [isHovering, setIsHovering] = React.useState(false);
   const [color, setColor] = React.useState(props.color);
-
+  const [alert, setAlert] = useState({
+    open: false,
+    type: "",
+    message: ""
+  })
   const handleMouseOver = () => {
     setIsHovering(true);
   };
@@ -60,6 +65,11 @@ export const Notemodel = ({ props }) => {
         progress: undefined,
         theme: "dark",
       });
+      setAlert({
+        open: true,
+        type: "success",
+        message: "Note - Updated"
+      })
       setLoading(false);
     } catch (e) {
       console.log("failed");
@@ -144,6 +154,11 @@ export const Notemodel = ({ props }) => {
         progress: undefined,
         theme: "dark",
       });
+      setAlert({
+        open: true,
+        type: "warning",
+        message: "Note - Deleted"
+      })
     } catch (e) {
       console.log("failed");
       setError(e.response ? e.response.data.message : e.message);
@@ -188,7 +203,9 @@ export const Notemodel = ({ props }) => {
 
   return (
     <>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
+      <Notification alert={alert} setAlert={setAlert} />
+
       <div
         onMouseOver={handleMouseOver}
         onMouseOut={handleMouseOut}

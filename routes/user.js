@@ -5,15 +5,8 @@ const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const { User } = require("../config/models");
 const { protect } = require("../middleware/protect");
-const mail = require("nodemailer");
-const formData = require('form-data');
-// const Mailgun = require('mailgun.js');
 
-const {mailer} = require("../middleware/mailer")
-
-
-// const mailgun = new Mailgun(formData);
-// const mg = mailgun.client({ username: 'api', key: process.env.MAILGUN_API_KEY});
+const { mailer } = require("../middleware/mailer")
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -37,7 +30,7 @@ router.route("/").post(asyncHandler(async (req, res) => {
         httpOnly: true,
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
     };
-    
+
     newUser.save().then((u) => {
         const token = generateToken(u._id);
         const id = u._id;
@@ -46,19 +39,8 @@ router.route("/").post(asyncHandler(async (req, res) => {
             name: u.name,
             email: u.email,
         });
-
-        // mg.messages.create('sandbox-123.mailgun.org', {
-        //     from: "kaushikappani@gmail.com",
-        //     to: email,
-        //     subject: "NoteIt - Account Verification",
-        //     text: "Click the following link to verify your link",
-        //     html: `<strong><a href="${process.env.DOMAIN}/confirm/${verificationToken}">${process.env.DOMAIN}/confirm/${verificationToken}</a></strong>`,
-        // })
-        //     .then(msg => console.log(msg)) 
-        //     .catch(err => console.log(err)); 
-        
         const recipent = {
-            name,email
+            name, email
         }
         const mailBody = {
             subject: "NoteIt - Account Verification",
@@ -133,13 +115,13 @@ router.route("/info").put(protect, asyncHandler(async (req, res) => {
 router.route("/confirm/:id").get(asyncHandler(async (req, res) => {
     console.log("------------------confirm-------------------------")
     console.log("token", req.params.id);
-    console.log("secret",process.env.JWT_SECRET_VERIFICATION)
+    console.log("secret", process.env.JWT_SECRET_VERIFICATION)
     try {
         token = req.params.id;
-        console.log("token",token)
+        console.log("token", token)
         const decode = jwt.verify(token, process.env.JWT_SECRET_VERIFICATION);
-        console.log("decode",decode);
-        
+        console.log("decode", decode);
+
         user = await User.findById(decode.id).select("-password");
         user.verified = true;
         user.save();
@@ -155,54 +137,45 @@ router.route("/verifytoken").get(protect, asyncHandler(async (req, res) => {
 }))
 
 router.route("/forgotpassword").post(
-  asyncHandler(async (req, res) => {
-    const generateToken = (id) => {
-      return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: "1h",
-      });
-    };
-    const { email } = req.body;
-    const user = await User.findOne({ email });
-      if (user) {
-          console.log(user);
-          const token = generateToken(
-              user._id,
-              process.env.JWT_SECRET_FORGOTPASSWORD
-          );
-          console.log(token);
-        //   mg.messages.create('sandbox36912320289346e6a9f53ff5c5c42d68.mailgun.org', {
-        //       from: "kaushikappani@gmail.com",
-        //       to: email,
-        //       subject: "NoteIt - Password Reset Link",
-        //       text: "Click the following link to verify your link",
-        //       html: `<strong><a href="${process.env.DOMAIN}/passwordreset/${token}">${process.env.DOMAIN}/passwordreset/${token}</a></strong>`,
-        //   })
-        //       .then(msg => console.log(msg)) // logs response data
-        //       .catch(err => console.log(err)); // logs any error
-          const recipent = {
-              name: user.name,
-              email: user.email
-          }
-          const mailBody = {
-              subject: "NoteIt - Password Reset Link",
-              text: "Click the following link to change your password",
-              html: `<strong><a href="${process.env.DOMAIN}/passwordreset/${token}">${process.env.DOMAIN}/passwordreset/${token}</a></strong>`
-          }
-          
-          try {
-              mailer(recipent, mailBody);
-          } catch (err) {
-              console.log(err)
-          }
-          
-          res.status(200);
-          res.json({message:"email sent"})
-      } else {
-          res.status(400);
-          res.json({message:"User not found"})
-      }
+    asyncHandler(async (req, res) => {
+        const generateToken = (id) => {
+            return jwt.sign({ id }, process.env.JWT_SECRET, {
+                expiresIn: "1h",
+            });
+        };
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+        if (user) {
+            console.log(user);
+            const token = generateToken(
+                user._id,
+                process.env.JWT_SECRET_FORGOTPASSWORD
+            );
+            console.log(token);
+            const recipent = {
+                name: user.name,
+                email: user.email
+            }
+            const mailBody = {
+                subject: "NoteIt - Password Reset Link",
+                text: "Click the following link to change your password",
+                html: `<strong><a href="${process.env.DOMAIN}/passwordreset/${token}">${process.env.DOMAIN}/passwordreset/${token}</a></strong>`
+            }
 
-  })
+            try {
+                mailer(recipent, mailBody);
+            } catch (err) {
+                console.log(err)
+            }
+
+            res.status(200);
+            res.json({ message: "email sent" })
+        } else {
+            res.status(400);
+            res.json({ message: "User not found" })
+        }
+
+    })
 );
 router.route("/resetpassword/:id").post(asyncHandler(async (req, res) => {
     const id = req.params.id;
@@ -213,7 +186,7 @@ router.route("/resetpassword/:id").post(asyncHandler(async (req, res) => {
         const decode = jwt.verify(id, process.env.JWT_SECRET);
         const salt = await bcrypt.genSalt(11);
         hashPassword = await bcrypt.hash(password, salt);
-        let user = await User.findOneAndUpdate({_id:decode.id},{password:hashPassword});
+        let user = await User.findOneAndUpdate({ _id: decode.id }, { password: hashPassword });
         res.status(200);
         res.json({ message: "Password changed" });
     } else {
@@ -228,7 +201,7 @@ router.route("/logout").get(asyncHandler(async (req, res) => {
 }))
 
 router.route("/googleauth").post(asyncHandler(async (req, res) => {
-    
+
     res.json({ success: true });
 }))
 module.exports = router

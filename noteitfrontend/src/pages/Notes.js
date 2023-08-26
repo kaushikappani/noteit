@@ -7,10 +7,11 @@ import Card from "../components/Card";
 import axios from "axios";
 import Header from "../components/Header";
 import { PencilSquare } from "react-bootstrap-icons";
-import { Typography } from "@mui/material";
+import {Typography } from "@mui/material";
 import { Container } from "react-bootstrap";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import ApiCalendar from "react-google-calendar-api";
+import Notification from "../components/Notification"
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -34,7 +35,11 @@ const Notes = () => {
   const [loading, setLoading] = useState(false);
   const [googleCredentials, setGoogleCredentials] = useState(false);
   const notify = (message,type) => toast(message,type);
-
+  const [alert, setAlert] = useState({
+    open: false,
+    type: "",
+    message:""
+  })
   const responseGoogle = async (response) => {
     setGoogleCredentials(response);
   try {
@@ -74,6 +79,11 @@ const Notes = () => {
         progress: undefined,
         theme: "dark",
       });
+      setAlert({
+        open: true,
+        type: "success",
+        message: "Archived"
+      })
      
     } catch (e) {}
     setLoading(false);
@@ -110,6 +120,11 @@ const Notes = () => {
         progress: undefined,
         theme: "dark",
       });
+      setAlert({
+        open: true,
+        type: "success",
+        message: "Updated"
+      })
     } catch (e) {}
     setLoading(false);
   };
@@ -131,6 +146,12 @@ const Notes = () => {
         progress: undefined,
         theme: "dark",
       });
+      setAlert({
+        open: true,
+        type: "success",
+        message: "Updated"
+      })
+     
     } catch (e) {}
     setLoading(false);
   };
@@ -175,14 +196,16 @@ const Notes = () => {
 
   return (
     <div>
-      <ToastContainer/>
+      {/* <ToastContainer /> */}
+
+
       <Header
         page="notes"
         fetchNotes={fetchNotes}
         user={user}
         loading={loading}
       />
-
+      <Notification alert={alert} setAlert = {setAlert} />
       {
         <div>
           <Container>
