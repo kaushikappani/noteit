@@ -165,6 +165,34 @@ export const Notemodel = ({ props }) => {
       setLoading(false);
     }
   };
+
+  const handleArchive = async () => {
+    try {
+      const config = {
+        withCredentials: true,
+      };
+      setLoading(true);
+      //eslint-disable-next-line
+      const { data } = await axios.put(
+        `/api/notes/${props.id}`,
+        { archived: true },
+        config
+      );
+
+      props.fetchNotes();
+      handleClose();
+      setLoading(false);
+      setAlert({
+        open: true,
+        type: "warning",
+        message: "Note - Archived"
+      })
+    } catch (e) {
+      console.log("failed");
+      setError(e.response ? e.response.data.message : e.message);
+      setLoading(false);
+    }
+  };
   const modifyText = (text) => {
     if (text) {
       text = text
@@ -306,13 +334,26 @@ export const Notemodel = ({ props }) => {
                     <Button type="submit" variant="primary">
                       Update Note
                     </Button>
-                    <Button
-                      style={{ float: "right" }}
-                      onClick={handleDelete}
-                      variant="danger"
-                    >
-                      Delete Note
-                    </Button>
+                    {
+                      props.from == "notes" ? (
+                        <Button
+                          style={{ float: "right" }}
+                          onClick={handleArchive}
+                          variant="warning"
+                        >
+                          Archive Note
+                        </Button>
+                      ) : (
+                          <Button
+                            style={{ float: "right" }}
+                            onClick={handleDelete}
+                            variant="danger"
+                          >
+                            Delete Note
+                          </Button>
+                      )
+                    }
+
                   </Form>
                 </Card.Body>
 

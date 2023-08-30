@@ -103,6 +103,7 @@ const Archived = () => {
                     archive={archive}
                     setNotes={setNotes}
                     notes={notes}
+                    from="archive"
                   />
                 );
               })}

@@ -244,6 +244,7 @@ const Notes = () => {
                               archive={archive}
                               setNotes={setNotes}
                               notes={notes}
+                              from="notes"
                             />
                           </>
                         )
@@ -285,6 +286,7 @@ const Notes = () => {
                           archive={archive}
                           setNotes={setNotes}
                           notes={notes}
+                          from="notes"
                         />
                       );
                     })}

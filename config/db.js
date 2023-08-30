@@ -5,7 +5,7 @@ const connectDB = () => {
         useUnifiedTopology: true,
         useNewUrlParser: true,
     }).then(() => {
-        console.log("db connected");
+        console.log("Connection establised with mongodb");
     }).catch((err) => {
         console.error(err);
     })
