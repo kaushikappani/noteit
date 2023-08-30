@@ -21,22 +21,26 @@ const CardComponent = (p) => {
   };
 
     return (
-      <Card
-        onMouseOver={handleMouseOver}
-        onMouseOut={handleMouseOut}
-        variant="outlined"
-        style={{
-          backgroundColor: color,
-          color: "#e8eaed",
-          borderColor: "#c7dee5",
-          borderWidth: "0.2px",
-          width: "100%",
-        }}
-      >
-        <Notemodel props = {p}>
-          
-        </Notemodel>
-      </Card>
+  
+        <Card
+          onMouseOver={handleMouseOver}
+          onMouseOut={handleMouseOut}
+          variant="outlined"
+          style={{
+            backgroundColor: color,
+            color: "#e8eaed",
+            borderColor: "#c7dee5",
+            borderWidth: "0.2px",
+            width: "100%",
+          }}
+        >
+
+          <Notemodel props={p}>
+
+          </Notemodel>
+
+        </Card>
+      
     );
 }
 

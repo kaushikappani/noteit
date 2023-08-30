@@ -16,6 +16,7 @@ import Notification from "../components/Notification"
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.bubble.css'
+import { Input } from '@mui/material';
 
 const Create = ({ children, setNotes ,fetchNotes}) => {
   const history = useHistory();

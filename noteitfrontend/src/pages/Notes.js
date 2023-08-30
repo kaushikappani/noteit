@@ -3,18 +3,20 @@ import { useHistory } from "react-router-dom";
 import Card from "../components/Card";
 import axios from "axios";
 import Header from "../components/Header";
-import { PencilSquare } from "react-bootstrap-icons";
-import {Typography } from "@mui/material";
+import { PencilSquare, Search } from "react-bootstrap-icons";
+import { Input, Typography } from "@mui/material";
 import { Container } from "react-bootstrap";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import ApiCalendar from "react-google-calendar-api";
-import Notification from "../components/Notification"
+import Notification from "../components/Notification";
 
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Create from "./Create";
+import InputAdornment from "@mui/material/InputAdornment";
+
+const ariaLabel = { "aria-label": "Search" };
+
 const buttonStyle = {
   borderRadius: "100%",
   height: "60px",
@@ -24,33 +26,35 @@ const buttonStyle = {
   bottom: "5px",
 };
 
-
 const Notes = () => {
   const history = useHistory();
   const [notes, setNotes] = useState({});
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
   const [googleCredentials, setGoogleCredentials] = useState(false);
-  const notify = (message,type) => toast(message,type);
+  const notify = (message, type) => toast(message, type);
   const [alert, setAlert] = useState({
     open: false,
     type: "",
-    message:""
-  })
+    message: "",
+  });
   const responseGoogle = async (response) => {
     setGoogleCredentials(response);
-  try {
-    const config = {
-      withCredentials: true,
-    };
-    const { data } = await axios.post("/api/users/googleauth", { response }, config);
-    console.log(data);
-  } catch (err) {
-    console.log(err);
-  }
-};
+    try {
+      const config = {
+        withCredentials: true,
+      };
+      const { data } = await axios.post(
+        "/api/users/googleauth",
+        { response },
+        config
+      );
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const archive = async (id) => {
-   
     setLoading(true);
     try {
       setNotes((prev) => {
@@ -64,8 +68,8 @@ const Notes = () => {
         { archived: true },
         config
       );
-      console.log("triggered")
-     
+      console.log("triggered");
+
       notify("Archived", {
         position: "top-right",
         autoClose: 2000,
@@ -79,9 +83,8 @@ const Notes = () => {
       setAlert({
         open: true,
         type: "success",
-        message: "Archived"
-      })
-     
+        message: "Archived",
+      });
     } catch (e) {}
     setLoading(false);
   };
@@ -120,8 +123,8 @@ const Notes = () => {
       setAlert({
         open: true,
         type: "success",
-        message: "Note - Updated"
-      })
+        message: "Note - Updated",
+      });
     } catch (e) {}
     setLoading(false);
   };
@@ -146,9 +149,8 @@ const Notes = () => {
       setAlert({
         open: true,
         type: "success",
-        message: "Note - Color Updated"
-      })
-     
+        message: "Note - Color Updated",
+      });
     } catch (e) {}
     setLoading(false);
   };
@@ -159,26 +161,41 @@ const Notes = () => {
         withCredentials: true,
       };
       const { data } = await axios.get("/api/notes", config);
-      setNotes(data.notes);
+      const notes = data.notes.map((note) => ({
+        ...note,
+        view: true,
+      }));
+      setNotes(notes);
 
       setLoading(false);
       setUser(data.user);
-
     } catch (e) {
       console.log("failed124");
       localStorage.clear();
-     history.push("/");
+      history.push("/");
       setLoading(false);
     }
+  };
+
+  const handleSearch = (value) => {
+    console.log("handle search");
+    const updatedNotes = notes.map((note) => ({
+      ...note,
+      view:
+        note.content.toLowerCase().includes(value) ||
+        note.title.toLowerCase().includes(value) ||
+        note.category.toLowerCase().includes(value),
+    }));
+
+    setNotes(updatedNotes);
   };
 
   const SignIn = () => {
     ApiCalendar.handleAuthClick();
     console.log("logged in");
-  }
+  };
 
   useEffect(() => {
-    
     fetchNotes();
     // google.accounts.id.initialize({
     //   client_id:
@@ -196,20 +213,33 @@ const Notes = () => {
     <div>
       {/* <ToastContainer /> */}
 
-
       <Header
         page="notes"
         fetchNotes={fetchNotes}
         user={user}
         loading={loading}
       />
-      <Notification alert={alert} setAlert = {setAlert} />
+      <Notification alert={alert} setAlert={setAlert} />
+
       {
         <div>
           <Container>
             {/* <div>
               <button onClick={SignIn}>Sign IN</button>
             </div> */}
+            <Input
+              startAdornment={
+                <InputAdornment position="start">
+                  <Search color="white" />
+                </InputAdornment>
+              }
+              onChange={(e) => handleSearch(e.target.value)}
+              fullWidth="true"
+              style={{ color: "white" }}
+              variant="standard"
+              defaultValue=""
+              inputProps={ariaLabel}
+            />
             {notes?.length > 0 && (
               <Typography
                 sx={{ fontSize: 14 }}
@@ -225,7 +255,7 @@ const Notes = () => {
               <Masonry gutter={"7px"}>
                 {notes?.length >= 1 &&
                   notes
-                    ?.filter((v) => v.pinned === true)
+                    ?.filter((v) => v.pinned === true && v.view)
                     .map((e) => {
                       return (
                         e.pinned && (
@@ -244,6 +274,7 @@ const Notes = () => {
                               archive={archive}
                               setNotes={setNotes}
                               notes={notes}
+                              view={e.view}
                               from="notes"
                             />
                           </>
@@ -269,25 +300,28 @@ const Notes = () => {
               <Masonry gutter={"7px"}>
                 {notes?.length > 0 &&
                   notes
-                    ?.filter((v) => v.pinned === false)
+                    ?.filter((v) => v.pinned === false && v.view)
                     .map((e) => {
                       return (
-                        <Card
-                          key={e._id}
-                          id={e._id}
-                          title={e.title}
-                          content={e.content}
-                          category={e.category}
-                          createdAt={e.createdAt}
-                          color={e.color}
-                          fetchNotes={fetchNotes}
-                          colorSync={colorSync}
-                          pinNote={pinNote}
-                          archive={archive}
-                          setNotes={setNotes}
-                          notes={notes}
-                          from="notes"
-                        />
+                        e.view && (
+                          <Card
+                            key={e._id}
+                            id={e._id}
+                            title={e.title}
+                            content={e.content}
+                            category={e.category}
+                            createdAt={e.createdAt}
+                            color={e.color}
+                            fetchNotes={fetchNotes}
+                            colorSync={colorSync}
+                            pinNote={pinNote}
+                            archive={archive}
+                            setNotes={setNotes}
+                            notes={notes}
+                            view={e.view}
+                            from="notes"
+                          />
+                        )
                       );
                     })}
               </Masonry>
