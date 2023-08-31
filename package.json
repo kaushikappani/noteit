@@ -9,7 +9,6 @@
   "author": "kaushik appani",
   "license": "ISC",
   "dependencies": {
-    "@sendgrid/mail": "^7.6.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -23,7 +22,6 @@
     "mailgun.js": "^9.2.0",
     "mongoose": "^6.0.7",
     "node-mailjet": "^6.0.4",
-    "nodemailer": "^6.9.4",
-    "react-draft-wysiwyg": "^1.14.7"
+    "nodemailer": "^6.9.4"
   }
 }
