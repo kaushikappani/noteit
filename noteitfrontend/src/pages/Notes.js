@@ -161,16 +161,13 @@ const Notes = () => {
         withCredentials: true,
       };
       const { data } = await axios.get("/api/notes", config);
-      const notes = data.notes.map((note) => ({
-        ...note,
-        view: true,
-      }));
-      setNotes(notes);
+      console.log(data)
+      setNotes(data.modifiedNotes);
 
       setLoading(false);
       setUser(data.user);
     } catch (e) {
-      console.log("failed124");
+      console.log(e);
       localStorage.clear();
       history.push("/");
       setLoading(false);

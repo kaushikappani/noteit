@@ -3,23 +3,30 @@ const { Note, User } = require("../config/models");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const { protect } = require("../middleware/protect");
+const { map } = require("draft-js/lib/DefaultDraftBlockRenderMap");
 
 const router = express.Router();
 
 router.route("/").get(protect, asyncHandler(async (req, res) => {
     try {
-        const notes = await Note.find({
+        var notes = await Note.find({
           user: req.user._id,
           archived: false,
         }).sort({
           createdAt: -1,
-        });
+        })
+        const modifiedNotes = notes.map(note => ({
+            ...note.toObject(), 
+            view: true 
+        }));
+        console.log(modifiedNotes)
         user = {
             email: req.user.email,
             name: req.user.name
         };
-        res.json({ notes, user });
+        res.json({ modifiedNotes, user });
     } catch (err) {
+        console.log(err)
         res.clearCookie("token");
     }
 }))
@@ -50,8 +57,9 @@ router.route("/create").post(protect, asyncHandler(async (req, res) => {
 
 router.route("/:id").get(protect, asyncHandler(async (req, res) => {
     const note = await Note.findById(req.params.id).select("-color").select("-archived").select("-pinned");
+    const modifiedNote = {...note.toObject(),view:true}
     if (note) {
-        res.json({ note, user: req.user })
+        res.json({ note: modifiedNote, user: req.user })
     } else {
         res.status(400).json({ message: "Note not found" })
     }
