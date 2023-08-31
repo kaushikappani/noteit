@@ -3,7 +3,7 @@ const { Note, User } = require("../config/models");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const { protect } = require("../middleware/protect");
-const { map } = require("draft-js/lib/DefaultDraftBlockRenderMap");
+// const { map } = require("draft-js/lib/DefaultDraftBlockRenderMap");
 
 const router = express.Router();
 
