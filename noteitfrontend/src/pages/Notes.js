@@ -31,6 +31,7 @@ const Notes = () => {
   const [notes, setNotes] = useState({});
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
+  const [searchText, setSearchText] = useState();
   const [googleCredentials, setGoogleCredentials] = useState(false);
   const notify = (message, type) => toast(message, type);
   const [alert, setAlert] = useState({
@@ -166,6 +167,10 @@ const Notes = () => {
 
       setLoading(false);
       setUser(data.user);
+      console.log(searchText)
+      if (searchText) {
+        handleSearch(searchText)
+     }
     } catch (e) {
       console.log(e);
       localStorage.clear();
@@ -175,6 +180,7 @@ const Notes = () => {
   };
 
   const handleSearch = (value) => {
+    setSearchText(value);
     console.log("handle search");
     const updatedNotes = notes.map((note) => ({
       ...note,

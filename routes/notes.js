@@ -19,7 +19,6 @@ router.route("/").get(protect, asyncHandler(async (req, res) => {
             ...note.toObject(), 
             view: true 
         }));
-        console.log(modifiedNotes)
         user = {
             email: req.user.email,
             name: req.user.name
