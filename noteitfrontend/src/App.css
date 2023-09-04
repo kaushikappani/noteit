@@ -55,3 +55,11 @@ html{
   background-color: #ffffff;
   border: 1px solid #cccccc;
 }
+
+.ql-editor{
+  max-height: 450px;
+}
+
+.ql-editor::-webkit-scrollbar {
+  display: none;
+}

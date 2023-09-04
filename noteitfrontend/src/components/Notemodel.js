@@ -256,7 +256,7 @@ export const Notemodel = ({ props }) => {
 
             <Typography variant="body2" style={{ color: "#c7dee5" }}>
           
-              <ReactQuill readOnly={true}  theme="bubble" value={modifyText(props.content)} />
+              <ReactQuill  readOnly={true}  theme="bubble" value={modifyText(props.content)} />
 
             </Typography>
             <Typography sx={{ fontSize: 14 }} gutterBottom>

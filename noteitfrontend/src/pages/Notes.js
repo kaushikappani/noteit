@@ -253,9 +253,9 @@ const Notes = () => {
               </Typography>
             )}
             <ResponsiveMasonry
-              columnsCountBreakPoints={{ 350: 1, 750: 3, 1000: 4 }}
+              columnsCountBreakPoints={{ 350: 1, 750: 2, 1000: 3 }}
             >
-              <Masonry gutter={"7px"}>
+              <Masonry gutter={"15px"}>
                 {notes?.length >= 1 &&
                   notes
                     ?.filter((v) => v.pinned === true && v.view)
@@ -298,9 +298,9 @@ const Notes = () => {
               </Typography>
             )}
             <ResponsiveMasonry
-              columnsCountBreakPoints={{ 350: 1, 750: 3, 1000: 4 }}
+              columnsCountBreakPoints={{ 350: 1, 750: 2, 1000: 3 }}
             >
-              <Masonry gutter={"7px"}>
+              <Masonry gutter={"15px"}>
                 {notes?.length > 0 &&
                   notes
                     ?.filter((v) => v.pinned === false && v.view)
