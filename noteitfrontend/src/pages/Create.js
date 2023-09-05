@@ -36,6 +36,7 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
     message: ""
   })
   const handleClose = async () => {
+    localStorage.setItem("newNote", JSON.stringify(note));
     setOpen(false);
   };
   const style = {
@@ -69,6 +70,7 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
   };
   const submitHandler = async (e) => {
     e.preventDefault();
+   
     try {
       const config = {
         withCredentials: true,
@@ -82,20 +84,14 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
       setNotes(prev => {
         return [data,...prev];
       })
-      localStorage.setItem(
-        "newNote",
-        JSON.stringify({
-          title: "",
-          content: "",
-          category: "",
-        })
-      );
+     
       fetchNotes();
       setNote({
         title: "",
         content: "",
         category: "",
       });
+      localStorage.removeItem("newNote")
       setLoading(false);
       setOpen(false);
       // toast.success("Note Created", {
