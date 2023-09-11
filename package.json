@@ -21,6 +21,7 @@
     "mailgun.js": "^9.2.0",
     "mongoose": "^6.0.7",
     "node-mailjet": "^6.0.4",
-    "nodemailer": "^6.9.4"
+    "nodemailer": "^6.9.4",
+    "redis": "^4.6.8"
   }
 }

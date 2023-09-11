@@ -6,9 +6,10 @@ const connectDB = require("./config/db");
 const userRoutes = require("./routes/user");
 const notesRoute = require("./routes/notes");
 const { errorHandler, notFound } = require("./middleware/error");
-const { protect } = require("./middleware/protect");
 const { Note } = require("./config/models");
 const cookieParser = require("cookie-parser");
+
+
 const path = require("path")
 app.use(express.json());
 connectDB();

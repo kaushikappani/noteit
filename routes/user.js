@@ -5,9 +5,21 @@ const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const { User } = require("../config/models");
 const { protect } = require("../middleware/protect");
-
 const { mailer } = require("../middleware/mailer")
 
+const redis = require("redis");
+
+const client = redis.createClient({
+    url: process.env.REDIS_URL,
+    legacyMode: true
+});
+client.on("ready", () => console.log("redis connected"))
+
+client.on('error', (err) => {
+    console.error(`Redis Error: ${err}`);
+});
+
+client.connect();
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: "360d"
@@ -31,7 +43,7 @@ router.route("/").post(asyncHandler(async (req, res) => {
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
     };
 
-    newUser.save().then((u) => {
+    newUser.save().then(async (u) => {
         const token = generateToken(u._id);
         const id = u._id;
         const verificationToken = jwt.sign({ id }, process.env.JWT_SECRET_VERIFICATION);
@@ -39,6 +51,13 @@ router.route("/").post(asyncHandler(async (req, res) => {
             name: u.name,
             email: u.email,
         });
+        const key = id + "";
+        value = token + "";
+        await client.set(key, value, (err, data) => {
+            if (err) {
+                console.log(err)
+            }
+        })
         const recipent = {
             name, email
         }
@@ -58,7 +77,7 @@ router.route("/login").post(asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email })
     if (user) {
-        bcrypt.compare(password, user.password, (err, data) => {
+        bcrypt.compare(password, user.password, async (err, data) => {
             if (data) {
                 const options = {
                     httpOnly: true,
@@ -71,6 +90,13 @@ router.route("/login").post(asyncHandler(async (req, res) => {
                     isAdmin: user.isAdmin,
                     pic: user.pic,
                 });
+                const key = user._id + "";
+                value = token + "";
+                await client.set(key, value, (err, data) => {
+                    if (err) {
+                        console.log(err)
+                    }
+                })
             } if (!data) {
                 res.status(400)
                 res.json({ message: "invalid crendientials" })
