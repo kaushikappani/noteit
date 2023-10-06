@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect,useRef } from 'react';
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import Box from "@mui/material/Box";
@@ -20,6 +20,45 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Notification from "../components/Notification"
 
+import SunEditorComponent from './SunEditorComponent';
+
+import SunEditor from 'suneditor-react';
+import 'suneditor/dist/css/suneditor.min.css';
+
+
+const editorOptions = {
+  height: 200,
+  buttonList: [
+    ["undo", "redo"],
+    ["removeFormat"],
+    ["bold", "underline", "italic", "fontSize"],
+    ["fontColor", "hiliteColor"],
+    ["align", "horizontalRule", "list"],
+    ["table", "link"],
+    ["showBlocks", "codeView"]
+  ],
+  imageRotation: false,
+  fontSize: [12, 14, 16, 18, 20],
+  colorList: [
+    [
+      "#828282",
+      "#FF5400",
+      "#676464",
+      "#F1F2F4",
+      "#FF9B00",
+      "#F00",
+      "#fa6e30",
+      "#000",
+      "rgba(255, 153, 0, 0.1)",
+      "#FF6600",
+      "#0099FF",
+      "#74CC6D",
+      "#FF9900",
+      "#CCCCCC"
+    ]
+  ]
+};
+
 
 export const Notemodel = ({ props }) => {
   const [open, setOpen] = useState(false);
@@ -35,6 +74,8 @@ export const Notemodel = ({ props }) => {
     type: "",
     message: ""
   })
+  const editorRef = useRef  ();
+  const contentRef = useRef ();
   const handleMouseOver = () => {
     setIsHovering(true);
   };
@@ -224,9 +265,9 @@ export const Notemodel = ({ props }) => {
     });
   };
   useEffect(() => {
-   
-    //eslint-disable-next-line
-  }, []);
+    if (!contentRef.current) return;
+    contentRef.current.innerHTML = note.content;
+  }, [note.content]);
 
 
   return (
@@ -256,7 +297,18 @@ export const Notemodel = ({ props }) => {
 
             <Typography variant="body2" style={{ color: "#c7dee5" }}>
           
-              <ReactQuill  readOnly={true}  theme="bubble" value={modifyText(props.content)} />
+              {/* <ReactQuill readOnly={true} theme="bubble" value={modifyText(props.content)} /> */}
+              <SunEditor
+                style={{ color: "red" }}
+                disable={true}
+                height="100%"
+                hideToolbar={true}
+                ref={editorRef}
+                setOptions={editorOptions}
+                onChange={changeEditor}
+                setContents={modifyText(props.content)}
+                lang="en"
+              />
 
             </Typography>
             <Typography sx={{ fontSize: 14 }} gutterBottom>
@@ -312,9 +364,15 @@ export const Notemodel = ({ props }) => {
                     <Form.Group controlId="content">
                       <Form.Label>Content</Form.Label>
                  
-                      <ReactQuill
+                      {/* <ReactQuill
                         
-                        style={{ height: "50vh" }} theme="snow" value={note.content} onChange={(value, viewUpdate) => changeEditor(value)} />
+                        style={{ height: "50vh" }} theme="snow" value={note.content} onChange={(value, viewUpdate) => changeEditor(value)} /> */}
+                      
+            
+
+                        <SunEditorComponent disable={false} data={note.content} changeEditor={changeEditor} editorRef={editorRef} />
+
+
                     </Form.Group>
 
                     <Form.Group style={{paddingTop:"50px"}} controlId="content">

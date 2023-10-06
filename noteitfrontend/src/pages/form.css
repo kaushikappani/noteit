@@ -32,3 +32,27 @@
 .model{
   outline: none;
 }
+.sun-editor{
+  background-color: transparent !important;
+    color: white !important;
+    border: none !important;
+    max-height: 70vh !important;
+    overflow: scroll !important;
+}
+
+.sun-editor::-webkit-scrollbar {
+  display: none;
+}
+
+.se-wrapper-inner{
+  background-color: transparent !important;
+    color: white !important;
+}
+
+.se-resizing-bar{
+  display: none !important
+}
+
+.se-selector-table{
+  top:42px !important
+}

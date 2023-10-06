@@ -18,8 +18,13 @@ import 'react-quill/dist/quill.snow.css';
 import 'react-quill/dist/quill.bubble.css'
 import { Input } from '@mui/material';
 
+import SunEditorComponent from '../components/SunEditorComponent';
+
 const Create = ({ children, setNotes ,fetchNotes}) => {
   const history = useHistory();
+  const editorRef = React.useRef();
+
+
   const [note, setNote] = useState(JSON.parse(localStorage.getItem("newNote")) || {
     title: "",
     content: "",
@@ -188,9 +193,11 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
                     onChange={(e) => changeEditor(e)}
                   /> */}
 
-                  <ReactQuill
+                  {/* <ReactQuill
 
-                    style={{ height: "40vh" }} theme="snow" value={note.content} onChange={(value, viewUpdate) => changeEditor(value)} />
+                    style={{ height: "40vh" }} theme="snow" value={note.content} onChange={(value, viewUpdate) => changeEditor(value)} /> */}
+                  
+                  <SunEditorComponent data={note.content} changeEditor={changeEditor} editorRef={editorRef} />
              
                   <Form.Group style={{paddingTop:"50px"}} controlId="content">
                     <Form.Label>Category</Form.Label>
