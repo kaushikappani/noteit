@@ -24,6 +24,7 @@ const buttonStyle = {
   float: "right",
   position: "sticky",
   bottom: "5px",
+  zIndex: "1000000"
 };
 
 const Notes = () => {
