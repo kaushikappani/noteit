@@ -26,38 +26,6 @@ import SunEditor from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css';
 
 
-const editorOptions = {
-  height: 200,
-  buttonList: [
-    ["undo", "redo"],
-    ["removeFormat"],
-    ["bold", "underline", "italic", "fontSize"],
-    ["fontColor", "hiliteColor"],
-    ["align", "horizontalRule", "list"],
-    ["table", "link"],
-    ["showBlocks", "codeView"]
-  ],
-  imageRotation: false,
-  fontSize: [12, 14, 16, 18, 20],
-  colorList: [
-    [
-      "#828282",
-      "#FF5400",
-      "#676464",
-      "#F1F2F4",
-      "#FF9B00",
-      "#F00",
-      "#fa6e30",
-      "#000",
-      "rgba(255, 153, 0, 0.1)",
-      "#FF6600",
-      "#0099FF",
-      "#74CC6D",
-      "#FF9900",
-      "#CCCCCC"
-    ]
-  ]
-};
 
 
 export const Notemodel = ({ props }) => {
@@ -124,8 +92,8 @@ export const Notemodel = ({ props }) => {
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: "100%",
-    maxWidth: "750px",
-    maxHeight: "95vh",
+    maxWidth: "1000px",
+    maxHeight: "100vh",
     overflowY: "scroll",
     borderRadius:"2%",
     zIndex: 100,
@@ -297,19 +265,16 @@ export const Notemodel = ({ props }) => {
 
             <Typography variant="body2" style={{ color: "#c7dee5" }}>
           
-              {/* <ReactQuill readOnly={true} theme="bubble" value={modifyText(props.content)} /> */}
+              {/* <ReactQuill readOnly={true} theme="bubble" value={props.content} /> */}
               <SunEditor
-                style={{ color: "red" }}
                 disable={true}
+                autoFocus={false}
                 height="100%"
                 hideToolbar={true}
-                ref={editorRef}
-                setOptions={editorOptions}
-                onChange={changeEditor}
                 setContents={modifyText(props.content)}
                 lang="en"
               />
-
+              
             </Typography>
             <Typography sx={{ fontSize: 14 }} gutterBottom>
               <ReactTimeAgo

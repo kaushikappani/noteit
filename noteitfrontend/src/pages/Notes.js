@@ -29,6 +29,7 @@ const buttonStyle = {
 
 const Notes = () => {
   const history = useHistory();
+  const searchRef = React.useRef();
   const [notes, setNotes] = useState({});
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
@@ -180,26 +181,29 @@ const Notes = () => {
     }
   };
 
-  const handleSearch = (value) => {
-    setSearchText(value);
+  const handleSearch = (e) => {
+    
+    setSearchText(e.target.value);
     console.log("handle search");
     const updatedNotes = notes.map((note) => ({
       ...note,
       view:
-        note.content.toLowerCase().includes(value) ||
-        note.title.toLowerCase().includes(value) ||
-        note.category.toLowerCase().includes(value),
+        note.content.toLowerCase().includes(e.target.value) ||
+        note.title.toLowerCase().includes(e.target.value) ||
+        note.category.toLowerCase().includes(e.target.value),
     }));
-
     setNotes(updatedNotes);
+    e.target.focus() // focus added to the search element on change due to bug
+
   };
 
-  const SignIn = () => {
-    ApiCalendar.handleAuthClick();
-    console.log("logged in");
-  };
+  // const SignIn = () => {
+  //   ApiCalendar.handleAuthClick();
+  //   console.log("logged in");
+  // };
 
   useEffect(() => {
+    searchRef.current.focus();
     fetchNotes();
     // google.accounts.id.initialize({
     //   client_id:
@@ -237,7 +241,8 @@ const Notes = () => {
                   <Search color="white" />
                 </InputAdornment>
               }
-              onChange={(e) => handleSearch(e.target.value)}
+              ref={searchRef}
+              onChange={(e) => handleSearch(e)}
               fullWidth="true"
               style={{ color: "white" }}
               variant="standard"
