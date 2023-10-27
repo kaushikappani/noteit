@@ -98,7 +98,7 @@ router.route("/:id").put(
                 res.status(304);
                 console.log("no changes");
                 throw new Error("No Changes in note");
-            } else if (note.content === content) {
+            } else if (note.content != content) {
                 if (noteHistory == null) {
                     const newNotehistory = new NoteHistory({ note: note.id, h1: note.content, h2: "", h3: "" });
                     const res = await newNotehistory.save();
