@@ -100,7 +100,8 @@ router.route("/:id").put(
             } else {
                 if (noteHistory == null) {
                     const newNotehistory = new NoteHistory({ note: note.id, h1: note.content });
-                    await newNotehistory.save();
+                    const res = await newNotehistory.save();
+                    console.log("res1", res);
                 } else {
                     console.log(noteHistory);
                     noteHistory.h3 = noteHistory.h2;
