@@ -84,8 +84,9 @@ router.route("/:id").put(
     asyncHandler(async (req, res) => {
         const { title, content, category, color, pinned, archived } = req.body;
         const note = await Note.findById(req.params.id);
-        const noteHistory = await NoteHistory.find({ note: note.id });
-        
+        const noteHistory = await NoteHistory.findOne({ note: note.id });
+        console.log("---------")
+        console.log(typeof noteHistory)
         if (note.user.toString() !== req.user._id.toString()) {
             res.status(401);
             throw new Error("You cannot edit other notes");
@@ -98,10 +99,11 @@ router.route("/:id").put(
                 console.log("no changes");
                 throw new Error("No Changes in note");
             } else {
-                if (noteHistory == null) {
-                    const newNotehistory = new NoteHistory({ note: note.id, h1: note.content });
+                if (noteHistory==null) {
+                    const newNotehistory = new NoteHistory({ note: note.id, h1: note.content,h2:"",h3:"" });
                     const res = await newNotehistory.save();
-                    console.log("res1", res);
+                    console.log("res1");
+                    console.log(res)
                 } else {
                     console.log(noteHistory);
                     noteHistory.h3 = noteHistory.h2;
