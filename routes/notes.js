@@ -106,7 +106,8 @@ router.route("/:id").put(
                     noteHistory.h3 = noteHistory.h2;
                     noteHistory.h2 = noteHistory.h1;
                     noteHistory.h1 = note.content;
-                    await noteHistory.save();
+                    const res = await noteHistory.save();
+                    console.log("res",res);
                 }
             }
             note.title = title || note.title;
