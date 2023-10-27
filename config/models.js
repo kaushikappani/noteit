@@ -63,4 +63,26 @@ const noteModel = mongoose.Schema(
 
 const Note = mongoose.model("Note", noteModel)
 
-module.exports = { User, Note }
+
+const noteHistoryModel = mongoose.Schema(
+  {
+    note: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Note"
+    },
+    h1: {
+      type: String,
+    },
+    h2: {
+      type: String,
+    },
+    h3: {
+      type: String,
+    }
+  }
+);
+
+const NoteHistory = mongoose.model("NoteHistory", noteHistoryModel);
+
+module.exports = { User, Note, NoteHistory }
