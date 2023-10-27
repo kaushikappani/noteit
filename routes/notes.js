@@ -84,7 +84,7 @@ router.route("/:id").put(
     asyncHandler(async (req, res) => {
         const { title, content, category, color, pinned, archived } = req.body;
         const note = await Note.findById(req.params.id);
-        const noteHistory = NoteHistory.find({ note: note.id });
+        const noteHistory = await NoteHistory.find({ note: note.id });
         
         if (note.user.toString() !== req.user._id.toString()) {
             res.status(401);
