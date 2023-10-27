@@ -94,13 +94,13 @@ router.route("/:id").put(
 
         if (note) {
             console.log(note.color, color);
-            if (note.content === content) {
+            if (note.content === content && note.title === title && note.category == category) {
                 res.status(304);
                 console.log("no changes");
                 throw new Error("No Changes in note");
-            } else {
-                if (noteHistory==null) {
-                    const newNotehistory = new NoteHistory({ note: note.id, h1: note.content,h2:"",h3:"" });
+            } else if (note.content === content) {
+                if (noteHistory == null) {
+                    const newNotehistory = new NoteHistory({ note: note.id, h1: note.content, h2: "", h3: "" });
                     const res = await newNotehistory.save();
                     console.log("res1");
                     console.log(res)
@@ -110,7 +110,7 @@ router.route("/:id").put(
                     noteHistory.h2 = noteHistory.h1;
                     noteHistory.h1 = note.content;
                     const res = await noteHistory.save();
-                    console.log("res",res);
+                    console.log("res", res);
                 }
             }
             note.title = title || note.title;
