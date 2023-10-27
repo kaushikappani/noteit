@@ -102,9 +102,11 @@ router.route("/:id").put(
                     const newNotehistory = new NoteHistory({ note: note.id, h1: note.content });
                     await newNotehistory.save();
                 } else {
+                    console.log(noteHistory);
                     noteHistory.h3 = noteHistory.h2;
                     noteHistory.h2 = noteHistory.h1;
                     noteHistory.h1 = note.content;
+                    await noteHistory.save();
                 }
             }
             note.title = title || note.title;
