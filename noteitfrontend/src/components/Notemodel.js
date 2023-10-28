@@ -1,32 +1,30 @@
-import React, { useState,useEffect,useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { Button, Card, Form } from "react-bootstrap";
-import "../pages/form.css"
+import "../pages/form.css";
 import Loading from "../components/Loading";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import ReactTimeAgo from "react-time-ago";
 import Toolbar from "../components/Toolbar";
-import { ArrowLeft } from 'react-bootstrap-icons';
+import { ArrowLeft } from "react-bootstrap-icons";
 
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import 'react-quill/dist/quill.bubble.css';
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import "react-quill/dist/quill.bubble.css";
 
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import Notification from "../components/Notification"
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Notification from "../components/Notification";
 
-import SunEditorComponent from './SunEditorComponent';
+import SunEditorComponent from "./SunEditorComponent";
 
-import SunEditor from 'suneditor-react';
-import 'suneditor/dist/css/suneditor.min.css';
-
-
-
+import SunEditor from "suneditor-react";
+import "suneditor/dist/css/suneditor.min.css";
+import { ButtonGroup } from "@mui/material";
 
 export const Notemodel = ({ props }) => {
   const [open, setOpen] = useState(false);
@@ -35,15 +33,16 @@ export const Notemodel = ({ props }) => {
   const [user, setUser] = useState();
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
-  const [isHovering, setIsHovering] = React.useState(false);
-  const [color, setColor] = React.useState(props.color);
+  const [isHovering, setIsHovering] = useState(false);
+  const [color, setColor] = useState(props.color);
+
   const [alert, setAlert] = useState({
     open: false,
     type: "",
-    message: ""
-  })
-  const editorRef = useRef  ();
-  const contentRef = useRef ();
+    message: "",
+  });
+  const editorRef = useRef();
+  const contentRef = useRef();
   const handleMouseOver = () => {
     setIsHovering(true);
   };
@@ -51,7 +50,7 @@ export const Notemodel = ({ props }) => {
   const handleMouseOut = () => {
     setIsHovering(false);
   };
-  const updateNote = async() => {
+  const updateNote = async () => {
     try {
       const config = {
         withCredentials: true,
@@ -63,7 +62,7 @@ export const Notemodel = ({ props }) => {
       //eslint-disable-next-line
       const { data } = await axios.put(`/api/notes/${props.id}`, note, config);
       props.fetchNotes();
-      console.log("trigerreed")
+      console.log("trigerreed");
       toast.success("Note Updated", {
         position: "top-right",
         autoClose: 2000,
@@ -77,15 +76,15 @@ export const Notemodel = ({ props }) => {
       setAlert({
         open: true,
         type: "success",
-        message: "Note - Updated"
-      })
+        message: "Note - Updated",
+      });
       setLoading(false);
     } catch (e) {
       console.log("failed");
       setError(e.response ? e.response.data.message : e.message);
       setLoading(false);
     }
-  }
+  };
   const style = {
     position: "absolute",
     top: "50%",
@@ -95,13 +94,13 @@ export const Notemodel = ({ props }) => {
     maxWidth: "1000px",
     maxHeight: "100vh",
     overflowY: "scroll",
-    borderRadius:"2%",
+    borderRadius: "2%",
     zIndex: 100,
-    border:"0px"
+    border: "0px",
   };
   const handleOpen = () => {
-    fetchData();
-    setOpen(true)
+    fetchData("h0");
+    setOpen(true);
   };
   const handleClose = () => {
     const updatedNotes = props.notes.map((e) => {
@@ -119,14 +118,17 @@ export const Notemodel = ({ props }) => {
     props.setNotes(updatedNotes);
     updateNote();
     setOpen(false);
-  }
-  const fetchData = async () => {
+  };
+  const fetchData = async (noteHistory) => {
     try {
       const config = {
         withCredentials: true,
       };
       setLoading(true);
-      const { data } = await axios.get(`/api/notes/${props.id}`, config);
+      const { data } = await axios.get(
+        `/api/notes/${props.id}/${noteHistory}`,
+        config
+      );
       setNote(data.note);
       setUser(data.user);
       setLoading(false);
@@ -149,7 +151,7 @@ export const Notemodel = ({ props }) => {
       setLoading(true);
       //eslint-disable-next-line
       const { data } = await axios.delete(`/api/notes/${props.id}`, config);
-      
+
       props.fetchNotes();
       handleClose();
       setLoading(false);
@@ -166,8 +168,8 @@ export const Notemodel = ({ props }) => {
       setAlert({
         open: true,
         type: "warning",
-        message: "Note - Deleted"
-      })
+        message: "Note - Deleted",
+      });
     } catch (e) {
       console.log("failed");
       setError(e.response ? e.response.data.message : e.message);
@@ -194,8 +196,8 @@ export const Notemodel = ({ props }) => {
       setAlert({
         open: true,
         type: "warning",
-        message: "Note - Archived"
-      })
+        message: "Note - Archived",
+      });
     } catch (e) {
       console.log("failed");
       setError(e.response ? e.response.data.message : e.message);
@@ -212,31 +214,36 @@ export const Notemodel = ({ props }) => {
     }
     return text;
   };
-   const updateColor = (c) => {
-     if (c === color) {
-       setColor("#202124");
-       props.colorSync(props.id, c);
-     } else {
-       setColor(c);
-       props.colorSync(props.id, c);
-     }
-   };
-   const pinNote = () => {
-     props.pinNote(props.id);
-   };
-   const archive = () => {
-     props.archive(props.id);
-   };
+  const updateColor = (c) => {
+    if (c === color) {
+      setColor("#202124");
+      props.colorSync(props.id, c);
+    } else {
+      setColor(c);
+      props.colorSync(props.id, c);
+    }
+  };
+  const pinNote = () => {
+    props.pinNote(props.id);
+  };
+  const archive = () => {
+    props.archive(props.id);
+  };
   const changeEditor = (text) => {
     setNote((prev) => {
       return { ...prev, content: modifyText(text) };
     });
   };
+
+  const handhleHistoryChange = async (e, state) => {
+    e.preventDefault();
+    fetchData(state);
+  };
+
   useEffect(() => {
     if (!contentRef.current) return;
     contentRef.current.innerHTML = note.content;
   }, [note.content]);
-
 
   return (
     <>
@@ -246,7 +253,7 @@ export const Notemodel = ({ props }) => {
       <div
         onMouseOver={handleMouseOver}
         onMouseOut={handleMouseOut}
-        style={{ backgroundColor: color,cursor:"pointer" }}
+        style={{ backgroundColor: color, cursor: "pointer" }}
       >
         <CardContent>
           <div onClick={handleOpen}>
@@ -264,7 +271,6 @@ export const Notemodel = ({ props }) => {
             </Typography>
 
             <Typography variant="body2" style={{ color: "#c7dee5" }}>
-          
               {/* <ReactQuill readOnly={true} theme="bubble" value={props.content} /> */}
               <SunEditor
                 disable={true}
@@ -274,7 +280,6 @@ export const Notemodel = ({ props }) => {
                 setContents={modifyText(props.content)}
                 lang="en"
               />
-              
             </Typography>
             <Typography sx={{ fontSize: 14 }} gutterBottom>
               <ReactTimeAgo
@@ -310,9 +315,18 @@ export const Notemodel = ({ props }) => {
                   <Form onSubmit={submitHandler}>
                     {error && <p className="text-danger">{error}</p>}
                     <Form.Group controlId="title">
-                      <div style={{display:"flex",justifyContent:"space-between"}}>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
                         <Form.Label>Title</Form.Label>
-                        <ArrowLeft style={{cursor:"pointer"}} onClick = {handleClose} size={25} />
+                        <ArrowLeft
+                          style={{ cursor: "pointer" }}
+                          onClick={handleClose}
+                          size={25}
+                        />
                       </div>
                       <Form.Control
                         type="title"
@@ -328,19 +342,38 @@ export const Notemodel = ({ props }) => {
 
                     <Form.Group controlId="content">
                       <Form.Label>Content</Form.Label>
-                 
+                     
+                      <div >
+                        <Button style={{ margin: "2px" }} onClick={(e) => handhleHistoryChange(e, "h0")}>
+                          Latest Saved
+                        </Button>
+                        <Button style={{ margin: "2px" }} onClick={(e) => handhleHistoryChange(e, "h1")}>
+                          history 1
+                        </Button>
+                        <Button style={{ margin: "2px" }} onClick={(e) => handhleHistoryChange(e, "h2")}>
+                          history 2
+                        </Button>
+                        <Button style={{ margin: "2px" }} onClick={(e) => handhleHistoryChange(e, "h3")}>
+                          history 3
+                        </Button>
+                      </div>
                       {/* <ReactQuill
                         
                         style={{ height: "50vh" }} theme="snow" value={note.content} onChange={(value, viewUpdate) => changeEditor(value)} /> */}
-                      
-            
 
-                        <SunEditorComponent disable={false} data={note.content} changeEditor={changeEditor} editorRef={editorRef} />
-
-
+                      <SunEditorComponent
+                        disable={false}
+                        data={note}
+                        changeEditor={changeEditor}
+                        editorRef={editorRef}
+                      />
+                    
                     </Form.Group>
 
-                    <Form.Group style={{paddingTop:"50px"}} controlId="content">
+                    <Form.Group
+                      style={{ paddingTop: "50px" }}
+                      controlId="content"
+                    >
                       <Form.Label>Category</Form.Label>
                       <Form.Control
                         type="content"
@@ -357,35 +390,34 @@ export const Notemodel = ({ props }) => {
                     <Button type="submit" variant="primary">
                       Update Note
                     </Button>
-                    {
-                      props.from == "notes" ? (
-                        <Button
-                          style={{ float: "right" }}
-                          onClick={handleArchive}
-                          variant="warning"
-                        >
-                          Archive Note
-                        </Button>
-                      ) : (
-                          <Button
-                            style={{ float: "right" }}
-                            onClick={handleDelete}
-                            variant="danger"
-                          >
-                            Delete Note
-                          </Button>
-                      )
-                    }
-
+                    {props.from == "notes" ? (
+                      <Button
+                        style={{ float: "right" }}
+                        onClick={handleArchive}
+                        variant="warning"
+                      >
+                        Archive Note
+                      </Button>
+                    ) : (
+                      <Button
+                        style={{ float: "right" }}
+                        onClick={handleDelete}
+                        variant="danger"
+                      >
+                        Delete Note
+                      </Button>
+                    )}
                   </Form>
                 </Card.Body>
 
-                <Card.Footer style={{ display: "flex", justifyContent: "space-between" }} className="text-muted">
-                  <div>
-                    Updating on - {new Date().toLocaleDateString()}
-                  </div>
+                <Card.Footer
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                  className="text-muted"
+                >
+                  <div>Updating on - {new Date().toLocaleDateString()}</div>
                   <p>
-                    Created At: - {new Date(note.createdAt).toLocaleDateString()}
+                    Created At: -{" "}
+                    {new Date(note.createdAt).toLocaleDateString()}
                   </p>
                 </Card.Footer>
               </Card>

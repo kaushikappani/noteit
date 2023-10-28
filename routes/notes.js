@@ -63,13 +63,33 @@ router.route("/create").post(
     })
 );
 
-router.route("/:id").get(
+router.route("/:id/:history").get(
     protect,
     asyncHandler(async (req, res) => {
         const note = await Note.findById(req.params.id)
             .select("-color")
             .select("-archived")
             .select("-pinned");
+        console.log(note.id)
+        const noteHistory = await NoteHistory.findOne({ note: note.id });
+        console.log(noteHistory);
+        switch (req.params.history) {
+            case "h0":
+                break;
+            case "h1":
+                console.log("h1")         
+                note.content = noteHistory!=null ?  noteHistory.h1 : note.content;
+                break;
+            case "h2":
+                console.log("h2")           
+                note.content = noteHistory != null ? noteHistory.h2 : note.content;
+                break;
+            case "h3":
+                console.log("h3")           
+                console.log(noteHistory)
+                note.content = noteHistory != null ? noteHistory.h3 : note.content;
+                break; 
+        }
         const modifiedNote = { ...note.toObject(), view: true };
         if (note) {
             res.json({ note: modifiedNote, user: req.user });

@@ -13,6 +13,7 @@ const editorOptions = {
         ["align", "horizontalRule", "list"],
         ["table", "link"],
         ["showBlocks", "codeView"]
+        
     ],
     imageRotation: false,
     fontSize: [12, 14, 16, 18, 20],
@@ -47,7 +48,7 @@ const SunEditorComponent = ({ data, changeEditor,editorRef,disable }) => {
             ref={editorRef}
             setOptions={editorOptions}
             onChange={changeEditor}
-            defaultValue={data}
+            setContents={data.content}
             lang="en"
         />
     )
