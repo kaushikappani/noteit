@@ -7,7 +7,6 @@ import { PencilSquare, Search } from "react-bootstrap-icons";
 import { Input, Typography } from "@mui/material";
 import { Container } from "react-bootstrap";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
-import ApiCalendar from "react-google-calendar-api";
 import Notification from "../components/Notification";
 
 import { toast } from "react-toastify";
@@ -29,34 +28,17 @@ const buttonStyle = {
 
 const Notes = () => {
   const history = useHistory();
-  const searchRef = React.useRef();
   const [notes, setNotes] = useState({});
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState();
-  const [googleCredentials, setGoogleCredentials] = useState(false);
   const notify = (message, type) => toast(message, type);
   const [alert, setAlert] = useState({
     open: false,
     type: "",
     message: "",
   });
-  const responseGoogle = async (response) => {
-    setGoogleCredentials(response);
-    try {
-      const config = {
-        withCredentials: true,
-      };
-      const { data } = await axios.post(
-        "/api/users/googleauth",
-        { response },
-        config
-      );
-      console.log(data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+
   const archive = async (id) => {
     setLoading(true);
     try {
@@ -193,28 +175,13 @@ const Notes = () => {
         note.category.toLowerCase().includes(e.target.value),
     }));
     setNotes(updatedNotes);
-    e.target.focus() // focus added to the search element on change due to bug
+
 
   };
 
-  // const SignIn = () => {
-  //   ApiCalendar.handleAuthClick();
-  //   console.log("logged in");
-  // };
 
   useEffect(() => {
-    searchRef.current.focus();
     fetchNotes();
-    // google.accounts.id.initialize({
-    //   client_id:
-    //     "557971450533-9m9mphqj0usak21cs88qgjj3v190kj47.apps.googleusercontent.com",
-    //   callback: responseGoogle,
-    //   access_type:"offline"
-    // });
-    // google.accounts.id.prompt((notification) => {
-    //   console.log(notification);
-    // });
-    //eslint-disable-next-line
   }, []);
 
   return (
@@ -232,16 +199,13 @@ const Notes = () => {
       {
         <div>
           <Container>
-            {/* <div>
-              <button onClick={SignIn}>Sign IN</button>
-            </div> */}
             <Input
               startAdornment={
                 <InputAdornment position="start">
                   <Search color="white" />
                 </InputAdornment>
               }
-              ref={searchRef}
+              
               onChange={(e) => handleSearch(e)}
               fullWidth="true"
               style={{ color: "white" }}
@@ -265,12 +229,12 @@ const Notes = () => {
                 {notes?.length >= 1 &&
                   notes
                     ?.filter((v) => v.pinned === true && v.view)
-                    .map((e) => {
+                    .map((e,i) => {
                       return (
                         e.pinned && (
                           <>
                             <Card
-                              key={e._id}
+                              key={'input' + i}
                               id={e._id}
                               title={e.title}
                               content={e.content}
@@ -310,11 +274,10 @@ const Notes = () => {
                 {notes?.length > 0 &&
                   notes
                     ?.filter((v) => v.pinned === false && v.view)
-                    .map((e) => {
+                    .map((e,i) => {
                       return (
                         e.view && (
                           <Card
-                            key={e._id}
                             id={e._id}
                             title={e.title}
                             content={e.content}
@@ -329,6 +292,7 @@ const Notes = () => {
                             notes={notes}
                             view={e.view}
                             from="notes"
+                            key={'input' + i}
                           />
                         )
                       );
