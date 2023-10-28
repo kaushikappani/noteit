@@ -71,6 +71,10 @@ router.route("/:id/:history").get(
             .select("-archived")
             .select("-pinned");
         console.log(note.id)
+        if (note.user.toString() !== req.user._id.toString()) {
+            res.status(401);
+            throw new Error("You cannot view other notes");
+        }
         const noteHistory = await NoteHistory.findOne({ note: note.id });
         console.log(noteHistory);
         switch (req.params.history) {
