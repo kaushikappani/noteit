@@ -1,5 +1,5 @@
 const express = require("express");
-const { Note, User, NoteHistory } = require("../config/models");
+const { Note, User, NoteHistory, NoteAccess } = require("../config/models");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const { protect } = require("../middleware/protect");
@@ -71,12 +71,14 @@ router.route("/:id/:history").get(
             .select("-archived")
             .select("-pinned");
         console.log(note.id)
-        if (note.user.toString() !== req.user._id.toString()) {
+        const noteAccess = await NoteAccess.findOne({ note: note.id, user: req.user._id, isActive: true })
+        console.log(noteAccess)
+        if (note.user.toString() !== req.user._id.toString() && noteAccess == null ) {
             res.status(401);
-            throw new Error("You cannot view other notes");
+            throw new Error("Oops! No Access to View");
         }
         const noteHistory = await NoteHistory.findOne({ note: note.id });
-        console.log(noteHistory);
+  
         switch (req.params.history) {
             case "h0":
                 break;
@@ -103,6 +105,50 @@ router.route("/:id/:history").get(
     })
 );
 
+router.route("/share/:id/:userEmail").post(protect, asyncHandler(async (req, res) => {
+    const note = await Note.findById(req.params.id);
+    const user = await User.findOne({ email: req.params.userEmail })
+    
+    if (!user) {
+        res.status(404);
+        throw new Error("Oops! User Not Found");
+    }
+   
+    
+    if (note.user.toString() !== req.user._id.toString()) {
+        res.status(401);
+        throw new Error("Oops! You cannot share others notes");
+    }
+    
+    const noteAccess = await NoteAccess.findOne({ note: note._id, user: user._id, isActive: true })
+
+    if (noteAccess) {
+        res.status(401);
+        throw new Error("Access Already Given");
+    }
+    if (note) {
+        const newNoteAccess = new NoteAccess({ note: req.params.id, user: user._id, isActive: true })
+        await newNoteAccess.save();
+        res.status(200).json({ message: "Access given to " + req.params.userEmail })
+    } else {
+        res.status(404);
+        throw new Error("Note! User Not Found"); 
+    }
+}))
+
+router.route("/shared").get(protect, asyncHandler(async (req, res) => {
+    const noteAccess = await NoteAccess.find({ user: req.user._id });
+    const notes = [];
+
+    for (const access of noteAccess) {
+        const note = await Note.findById(access.note);
+        console.log(note);
+        notes.push(note);
+    }
+
+    res.json({ notes });
+}))
+
 router.route("/:id").put(
     protect,
     asyncHandler(async (req, res) => {
@@ -111,10 +157,7 @@ router.route("/:id").put(
         const noteHistory = await NoteHistory.findOne({ note: note.id });
         console.log("---------")
         console.log(typeof noteHistory)
-        if (note.user.toString() !== req.user._id.toString()) {
-            res.status(401);
-            throw new Error("You cannot edit other notes");
-        }
+       
 
         if (note) {
             console.log(note.color, color);
@@ -136,6 +179,10 @@ router.route("/:id").put(
                     const res = await noteHistory.save();
                     console.log("res", res);
                 }
+            }
+            if (note.user.toString() !== req.user._id.toString()) {
+                res.status(401);
+                throw new Error("You cannot edit other notes");
             }
             note.title = title || note.title;
             note.content = content || note.content;

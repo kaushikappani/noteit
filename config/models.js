@@ -85,4 +85,25 @@ const noteHistoryModel = mongoose.Schema(
 
 const NoteHistory = mongoose.model("NoteHistory", noteHistoryModel);
 
-module.exports = { User, Note, NoteHistory }
+
+const noteAccessModel = mongoose.Schema(
+  {
+    note: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Note"
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
+    isActive: {
+      type: Boolean,
+      require:true
+    }
+  }
+)
+
+const NoteAccess = mongoose.model("NoteAccess", noteAccessModel);
+module.exports = { User, Note, NoteHistory, NoteAccess }

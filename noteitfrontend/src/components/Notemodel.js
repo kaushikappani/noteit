@@ -12,11 +12,9 @@ import ReactTimeAgo from "react-time-ago";
 import Toolbar from "../components/Toolbar";
 import { ArrowLeft } from "react-bootstrap-icons";
 
-import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
 
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Notification from "../components/Notification";
 
@@ -24,7 +22,6 @@ import SunEditorComponent from "./SunEditorComponent";
 
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
-import { ButtonGroup } from "@mui/material";
 
 export const Notemodel = ({ props }) => {
   const [open, setOpen] = useState(false);
@@ -35,6 +32,7 @@ export const Notemodel = ({ props }) => {
   const [loading, setLoading] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [color, setColor] = useState(props.color);
+  const [userAccessEmail, setUserAccessEmail] = useState();
 
   const [alert, setAlert] = useState({
     open: false,
@@ -63,16 +61,6 @@ export const Notemodel = ({ props }) => {
       const { data } = await axios.put(`/api/notes/${props.id}`, note, config);
       props.fetchNotes();
       console.log("trigerreed");
-      toast.success("Note Updated", {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
       setAlert({
         open: true,
         type: "success",
@@ -82,6 +70,15 @@ export const Notemodel = ({ props }) => {
     } catch (e) {
       console.log("failed");
       setError(e.response ? e.response.data.message : e.message);
+      const message = e.response ? e.response.data.message : e.message;
+      console.log(message)
+      if (message) {
+        setAlert({
+          open: true,
+          type: "warning",
+          message: message,
+        });
+      }
       setLoading(false);
     }
   };
@@ -155,16 +152,6 @@ export const Notemodel = ({ props }) => {
       props.fetchNotes();
       handleClose();
       setLoading(false);
-      toast.warn("Note Deleted", {
-        position: "top-right",
-        autoClose: 2000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
       setAlert({
         open: true,
         type: "warning",
@@ -240,6 +227,32 @@ export const Notemodel = ({ props }) => {
     fetchData(state);
   };
 
+  const handleAccess = async ()=>{
+    try {
+      const config = {
+        withCredentials: true,
+      };
+      setLoading(true);
+      //eslint-disable-next-line
+      const { data } = await axios.post(`/api/notes/share/${props.id}/${userAccessEmail}`, config);
+      setLoading(false);
+      
+      setAlert({
+        open: true,
+        type: "success",
+        message: data.message,
+      });
+    } catch (e) {
+      console.log("failed");
+      setAlert({
+        open: true,
+        type: "warning",
+        message: e.response ? e.response.data.message : e.message,
+      });
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     if (!contentRef.current) return;
     contentRef.current.innerHTML = note.content;
@@ -313,7 +326,7 @@ export const Notemodel = ({ props }) => {
               <Card>
                 <Card.Body>
                   <Form onSubmit={submitHandler}>
-                    {error && <p className="text-danger">{error}</p>}
+                   
                     <Form.Group controlId="title">
                       <div
                         style={{
@@ -357,6 +370,7 @@ export const Notemodel = ({ props }) => {
                           history 3
                         </Button>
                       </div>
+                      
                       {/* <ReactQuill
                         
                         style={{ height: "50vh" }} theme="snow" value={note.content} onChange={(value, viewUpdate) => changeEditor(value)} /> */}
@@ -385,7 +399,10 @@ export const Notemodel = ({ props }) => {
                           })
                         }
                       />
+
+                      
                     </Form.Group>
+                    
 
                     <Button type="submit" variant="primary">
                       Update Note
@@ -407,7 +424,25 @@ export const Notemodel = ({ props }) => {
                         Delete Note
                       </Button>
                     )}
+                     {error && <p className="text-danger">{error}</p>}
                   </Form>
+                  <div style={{display:"flex",marginTop:"10px"}}>
+                    <Form.Control
+                      type="email"
+                      placeholder="Email Id"
+                      style={{ justifyContent: "left" }}
+                      onChange={(e) => {
+                        setUserAccessEmail(e.target.value);
+                      }}
+                    />
+                    <Button
+                      style={{ justifyContent: "right" }}
+                      onClick={handleAccess}
+                      variant="success"
+                    >
+                      Give View Access
+                    </Button>
+                  </div>
                 </Card.Body>
 
                 <Card.Footer

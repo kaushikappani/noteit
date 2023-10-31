@@ -29,6 +29,7 @@ const buttonStyle = {
 const Notes = () => {
   const history = useHistory();
   const [notes, setNotes] = useState({});
+  const [sharedNotes, setSharedNotes] = useState({});
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState();
@@ -136,7 +137,14 @@ const Notes = () => {
         type: "success",
         message: "Note - Color Updated",
       });
-    } catch (e) {}
+    } catch (e) {
+      console.log(e.response ? e.response.data.message : e.message)
+      setAlert({
+        open: true,
+        type: "warning",
+        message: e.response ? e.response.data.message : e.message,
+      });
+    }
     setLoading(false);
   };
   const fetchNotes = async () => {
@@ -155,6 +163,26 @@ const Notes = () => {
       if (searchText) {
         handleSearch(searchText)
      }
+    } catch (e) {
+      console.log(e);
+      localStorage.clear();
+      history.push("/");
+      setLoading(false);
+    }
+    fetchSharedNotes();
+  };
+
+  const fetchSharedNotes = async () => {
+    setLoading(true);
+    try {
+      const config = {
+        withCredentials: true,
+      };
+      const { data } = await axios.get("/api/notes/shared", config);
+      console.log(data)
+      setSharedNotes(data.notes);
+
+      setLoading(false);
     } catch (e) {
       console.log(e);
       localStorage.clear();
@@ -182,6 +210,7 @@ const Notes = () => {
 
   useEffect(() => {
     fetchNotes();
+
   }, []);
 
   return (
@@ -294,6 +323,48 @@ const Notes = () => {
                             from="notes"
                             key={'input' + i}
                           />
+                        )
+                      );
+                    })}
+              </Masonry>
+            </ResponsiveMasonry>
+
+            {sharedNotes?.length > 0 && (
+              <Typography
+                sx={{ fontSize: 14 }}
+                style={{ color: "#c7dee5" }}
+                gutterBottom
+              >
+                SHARED NOTES
+              </Typography>
+            )}
+            <ResponsiveMasonry
+              columnsCountBreakPoints={{ 350: 1, 750: 2, 1000: 3 }}
+            >
+              <Masonry gutter={"15px"}>
+                {sharedNotes?.length >= 1 &&
+                  sharedNotes
+                    ?.map((e, i) => {
+                      return ((
+                          <>
+                            <Card
+                              key={'input' + i}
+                              id={e._id}
+                              title={e.title}
+                              content={e.content}
+                              category={e.category}
+                              createdAt={e.createdAt}
+                              color={e.color}
+                              fetchNotes={fetchNotes}
+                              colorSync={colorSync}
+                              pinNote={pinNote}
+                              archive={archive}
+                              setNotes={setNotes}
+                              notes={notes}
+                              view={e.view}
+                              from="notes"
+                            />
+                          </>
                         )
                       );
                     })}
