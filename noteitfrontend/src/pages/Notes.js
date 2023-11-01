@@ -169,7 +169,7 @@ const Notes = () => {
       history.push("/");
       setLoading(false);
     }
-    fetchSharedNotes();
+    
   };
 
   const fetchSharedNotes = async () => {
@@ -207,10 +207,14 @@ const Notes = () => {
 
   };
 
+  const reload = () => {
+    fetchNotes();
+    fetchSharedNotes();
+  }
 
   useEffect(() => {
     fetchNotes();
-
+    fetchSharedNotes();
   }, []);
 
   return (
@@ -219,7 +223,7 @@ const Notes = () => {
 
       <Header
         page="notes"
-        fetchNotes={fetchNotes}
+        fetchNotes={reload}
         user={user}
         loading={loading}
       />
