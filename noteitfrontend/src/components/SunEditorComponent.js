@@ -44,7 +44,7 @@ const SunEditorComponent = ({ data, changeEditor,editorRef,disable }) => {
             style={{color:"red"}}
             disable={disable}
             hideToolbar={disable}
-            height="50vh"
+            height="60vh"
             ref={editorRef}
             setOptions={editorOptions}
             onChange={changeEditor}
