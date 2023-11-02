@@ -8,7 +8,13 @@ const notesRoute = require("./routes/notes");
 const { errorHandler, notFound } = require("./middleware/error");
 const { Note } = require("./config/models");
 const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser")
 
+app.use(bodyParser.urlencoded({
+    limit: "50mb",
+    extended: false
+}));
+app.use(bodyParser.json({ limit: "50mb" }));
 
 const path = require("path")
 app.use(express.json());
@@ -17,6 +23,7 @@ connectDB();
 app.use(cookieParser());
 app.use("/api/users", userRoutes)
 app.use("/api/notes", notesRoute)
+
 
 
 __dirname = path.resolve();
