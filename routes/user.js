@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs")
 const router = express.Router();
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
-const { User } = require("../config/models");
+const { User, NoteAccess,Note } = require("../config/models");
 const { protect } = require("../middleware/protect");
 const { mailer } = require("../middleware/mailer")
 
@@ -221,10 +221,41 @@ router.route("/resetpassword/:id").post(asyncHandler(async (req, res) => {
     }
 
 }))
+
+router.route("/:id/access/users").get(protect, asyncHandler(async (req, res) => {
+    
+    const note = await Note.findById(req.params.id)
+        .select("-color")
+        .select("-archived")
+        .select("-pinned");
+    
+    if (note.user.toString() !== req.user._id.toString()) {
+        res.status(401);
+        throw new Error("Oops! No Access to View");
+    }
+    
+    const noteAccess = await NoteAccess.find({ note: note.id });
+    console.log(noteAccess);
+    let users = [];
+    for (const access of noteAccess) {
+        const user = await User.findById(access.user).select("-password");
+        const accessedUser = {
+            email: user.email,
+            name: user.name
+        }
+        users.push(accessedUser);
+    }
+    res.status(200).json(users);
+
+}))
+
 router.route("/logout").get(asyncHandler(async (req, res) => {
 
     res.clearCookie("token").status(202).send("logout");
 }))
+
+
+
 
 router.route("/googleauth").post(asyncHandler(async (req, res) => {
 

@@ -4,6 +4,7 @@ import axios from "axios";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { Button, Card, Form } from "react-bootstrap";
+import ListGroup from 'react-bootstrap/ListGroup';
 import "../pages/form.css";
 import Loading from "../components/Loading";
 import CardContent from "@mui/material/CardContent";
@@ -22,6 +23,8 @@ import SunEditorComponent from "./SunEditorComponent";
 
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
+import { List, ListItem, ListSubheader } from "@mui/material";
+
 
 export const Notemodel = ({ props }) => {
   const [open, setOpen] = useState(false);
@@ -33,6 +36,7 @@ export const Notemodel = ({ props }) => {
   const [isHovering, setIsHovering] = useState(false);
   const [color, setColor] = useState(props.color);
   const [userAccessEmail, setUserAccessEmail] = useState();
+  const [accessUsers, setAccessUsers] = useState([]);
 
   const [alert, setAlert] = useState({
     open: false,
@@ -97,6 +101,7 @@ export const Notemodel = ({ props }) => {
   };
   const handleOpen = () => {
     fetchData("h0");
+    props.edit && (fetchUserAccess());
     setOpen(true);
   };
   const handleClose = () => {
@@ -135,6 +140,24 @@ export const Notemodel = ({ props }) => {
       setLoading(false);
     }
   };
+  const fetchUserAccess = async () => {
+    try {
+      const config = {
+        withCredentials: true,
+      };
+      setLoading(true);
+      const { data } = await axios.get(
+        `/api/users/${props.id}/access/users`,
+        config
+      );
+      setAccessUsers(data)
+      setLoading(false);
+    } catch (e) {
+      console.log("failed");
+      setError(e.response ? e.response.data.message : e.message);
+      setLoading(false);
+    }
+  }
   const submitHandler = async (e) => {
     e.preventDefault();
     await updateNote();
@@ -344,6 +367,7 @@ export const Notemodel = ({ props }) => {
                       <Form.Control
                         type="title"
                         value={note.title}
+                        disabled={!props.edit}
                         placeholder="Enter the title"
                         onChange={(e) =>
                           setNote((prev) => {
@@ -370,17 +394,24 @@ export const Notemodel = ({ props }) => {
                           history 3
                         </Button>
                       </div>
-                      
+                       
                       {/* <ReactQuill
                         
                         style={{ height: "50vh" }} theme="snow" value={note.content} onChange={(value, viewUpdate) => changeEditor(value)} /> */}
 
-                      <SunEditorComponent
+                      {props.edit ? (<SunEditorComponent
                         disable={false}
                         data={note}
                         changeEditor={changeEditor}
                         editorRef={editorRef}
-                      />
+                      />) : (<SunEditor
+                        disable={true}
+                        autoFocus={false}
+                        height="100%"
+                        hideToolbar={true}
+                        setContents={modifyText(props.content)}
+                        lang="en"
+                      />) }
                     
                     </Form.Group>
 
@@ -392,6 +423,7 @@ export const Notemodel = ({ props }) => {
                       <Form.Control
                         type="content"
                         value={note.category}
+                        disabled={!props.edit}
                         placeholder="Enter the Category"
                         onChange={(e) =>
                           setNote((prev) => {
@@ -404,29 +436,30 @@ export const Notemodel = ({ props }) => {
                     </Form.Group>
                     
 
-                    <Button type="submit" variant="primary">
+                    {props.edit && <Button type="submit" variant="primary">
                       Update Note
-                    </Button>
-                    {props.from == "notes" ? (
-                      <Button
-                        style={{ float: "right" }}
-                        onClick={handleArchive}
-                        variant="warning"
-                      >
-                        Archive Note
-                      </Button>
-                    ) : (
+                    </Button>}
+                   
+                    {(props.edit & props.from == "notes") ? <Button
+                      style={{ float: "right" }}
+                      onClick={handleArchive}
+                      variant="warning"
+                    >
+                      Archive Note
+                    </Button>:null}
+                 
+                    {(props.edit & props.from == "archive") ? 
                       <Button
                         style={{ float: "right" }}
                         onClick={handleDelete}
                         variant="danger"
                       >
                         Delete Note
-                      </Button>
-                    )}
+                      </Button>:null}
+                   
                      {error && <p className="text-danger">{error}</p>}
                   </Form>
-                  <div style={{display:"flex",marginTop:"10px"}}>
+                  {props.edit ? (<div style={{ display: "flex", marginTop: "10px" }}>
                     <Form.Control
                       type="email"
                       placeholder="Email Id"
@@ -440,10 +473,21 @@ export const Notemodel = ({ props }) => {
                       onClick={handleAccess}
                       variant="success"
                     >
-                      Give View Access
+                      Grant View Access
                     </Button>
-                  </div>
+                  </div>) : null}
+                  
+                
+                  <List
+                    subheader={accessUsers.length > 0 && <ListSubheader>View Accessed Users</ListSubheader>}>
+                    {accessUsers && accessUsers.map((user, i) => {
+                    return (<ListItem>{user.email}</ListItem>)
+                  })}
+                  </List>
                 </Card.Body>
+                    
+                
+              
 
                 <Card.Footer
                   style={{ display: "flex", justifyContent: "space-between" }}

@@ -281,6 +281,7 @@ const Notes = () => {
                               setNotes={setNotes}
                               notes={notes}
                               view={e.view}
+                              edit={e.edit}
                               from="notes"
                             />
                           </>
@@ -324,6 +325,7 @@ const Notes = () => {
                             setNotes={setNotes}
                             notes={notes}
                             view={e.view}
+                            edit={e.edit}
                             from="notes"
                             key={'input' + i}
                           />
@@ -365,7 +367,8 @@ const Notes = () => {
                               archive={archive}
                               setNotes={setNotes}
                               notes={notes}
-                              view={e.view}
+                            view={e.view}
+                            edit={e.edit}
                               from="notes"
                             />
                           </>

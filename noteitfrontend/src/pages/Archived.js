@@ -84,11 +84,11 @@ const Archived = () => {
           ARCHIVED
         </Typography>
         <ResponsiveMasonry
-          columnsCountBreakPoints={{ 350: 1, 750: 3, 1000: 4 }}
+          columnsCountBreakPoints={{ 350: 1, 750: 3, 1000: 3 }}
         >
-          <Masonry gutter={"7px"}>
+          <Masonry gutter={"15px"}>
             {notes?.length >= 0 &&
-              notes?.map((e) => {
+              notes?.map((e) => { 
                 console.log(e);
                 return (
                   <Card
@@ -104,6 +104,8 @@ const Archived = () => {
                     setNotes={setNotes}
                     notes={notes}
                     from="archive"
+                    view={e.view}
+                    edit={e.edit}
                   />
                 );
               })}

@@ -20,7 +20,8 @@ router.route("/").get(
             const modifiedNotes = notes.map((note) => ({
                 ...note.toObject(),
                 view: true,
-            }));
+                edit: true,
+            })); 
             user = {
                 email: req.user.email,
                 name: req.user.name,
@@ -39,7 +40,12 @@ router.route("/archived").get(
             updatedAt: -1,
         });
         user = req.user;
-        res.json({ notes, user });
+        const modifiedNotes = notes.map((note) => ({
+            ...note.toObject(),
+            view: true,
+            edit: true,
+        })); 
+        res.json({ notes: modifiedNotes, user });
     })
 );
 
@@ -96,7 +102,8 @@ router.route("/:id/:history").get(
                 note.content = noteHistory != null ? noteHistory.h3 : note.content;
                 break; 
         }
-        const modifiedNote = { ...note.toObject(), view: true };
+        const edit = note.user.toString() === req.user._id.toString();
+        const modifiedNote = { ...note.toObject(), view: true,edit };
         if (note) {
             res.json({ note: modifiedNote, user: req.user });
         } else {
@@ -145,8 +152,13 @@ router.route("/shared").get(protect, asyncHandler(async (req, res) => {
         console.log(note);
         notes.push(note);
     }
+    const modifiedNotes = notes.map((note) => ({
+        ...note.toObject(),
+        view: true,
+        edit: false,
+    })); 
 
-    res.json({ notes });
+    res.json({ notes: modifiedNotes });
 }))
 
 router.route("/:id").put(
@@ -226,5 +238,4 @@ router.route("/:id").delete(
         }
     })
 );
-
 module.exports = router;
