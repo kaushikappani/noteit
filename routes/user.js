@@ -234,7 +234,7 @@ router.route("/:id/access/users").get(protect, asyncHandler(async (req, res) => 
         throw new Error("Oops! No Access to View");
     }
     
-    const noteAccess = await NoteAccess.find({ note: note.id });
+    const noteAccess = await NoteAccess.find({ note: note.id,isActive:true });
     console.log(noteAccess);
     let users = [];
     for (const access of noteAccess) {
@@ -246,6 +246,27 @@ router.route("/:id/access/users").get(protect, asyncHandler(async (req, res) => 
         users.push(accessedUser);
     }
     res.status(200).json(users);
+
+}))
+
+router.route("/:id/revoke/:user").put(protect, asyncHandler(async (req, res) => {
+    const note = await Note.findById(req.params.id)
+        .select("-color")
+        .select("-archived")
+        .select("-pinned");
+
+    if (note.user.toString() !== req.user._id.toString()) {
+        res.status(401);
+        throw new Error("Oops! No Access");
+    }
+    const user = await User.findOne({ email: req.params.user }).select("-password");
+    if (user == null) {
+        res.status(401);
+        throw new Error("User Not Found");
+    }
+    await NoteAccess.findOneAndUpdate({ note: note.id, user: user._id ,isActive:true},{ isActive:false});
+    res.status(200).json({ message: "Access revoked to "+user.email });
+
 
 }))
 

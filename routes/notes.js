@@ -144,7 +144,7 @@ router.route("/share/:id/:userEmail").post(protect, asyncHandler(async (req, res
 }))
 
 router.route("/shared").get(protect, asyncHandler(async (req, res) => {
-    const noteAccess = await NoteAccess.find({ user: req.user._id });
+    const noteAccess = await NoteAccess.find({ user: req.user._id ,isActive:true});
     const notes = [];
 
     for (const access of noteAccess) {

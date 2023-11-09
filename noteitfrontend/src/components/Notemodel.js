@@ -23,7 +23,7 @@ import SunEditorComponent from "./SunEditorComponent";
 
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
-import { List, ListItem, ListSubheader } from "@mui/material";
+import { Chip, List, ListItem, ListSubheader } from "@mui/material";
 
 
 export const Notemodel = ({ props }) => {
@@ -180,6 +180,7 @@ export const Notemodel = ({ props }) => {
         type: "warning",
         message: "Note - Deleted",
       });
+      
     } catch (e) {
       console.log("failed");
       setError(e.response ? e.response.data.message : e.message);
@@ -265,6 +266,34 @@ export const Notemodel = ({ props }) => {
         type: "success",
         message: data.message,
       });
+      fetchUserAccess();
+    } catch (e) {
+      console.log("failed");
+      setAlert({
+        open: true,
+        type: "warning",
+        message: e.response ? e.response.data.message : e.message,
+      });
+      setLoading(false);
+    }
+  }
+
+  const handleRevoke = async (e,email) => {
+    e.preventDefault();
+    try {
+      const config = {
+        withCredentials: true,
+      };
+      setLoading(true);
+      //eslint-disable-next-line
+      const { data } = await axios.put(`/api/users/${props.id}/revoke/${email}`, config);
+      setLoading(false);
+      setAlert({
+        open: true,
+        type: "success",
+        message: data.message,
+      });
+      fetchUserAccess();
     } catch (e) {
       console.log("failed");
       setAlert({
@@ -481,7 +510,7 @@ export const Notemodel = ({ props }) => {
                   <List
                     subheader={accessUsers.length > 0 && <ListSubheader>View Accessed Users</ListSubheader>}>
                     {accessUsers && accessUsers.map((user, i) => {
-                    return (<ListItem>{user.email}</ListItem>)
+                      return (<ListItem>{user.email} <Chip onClick={(e) => handleRevoke(e,user.email)} label="revoke" color="error" /></ListItem>)
                   })}
                   </List>
                 </Card.Body>
