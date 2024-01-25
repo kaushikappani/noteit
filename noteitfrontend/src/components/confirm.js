@@ -7,8 +7,8 @@ const Confirm = () => {
     // const [success, setSuccess] = React.useState(false);
     const [data, setData] = React.useState();
     console.log("id",id)
-    useEffect(() => {
-        const { data } = axios.get(`/api/users/confirm/${id}`);
+    useEffect(async() => {
+        const { data } = await axios.get(`/api/users/confirm/${id}`);
         setData(data);
     }, [])
 
