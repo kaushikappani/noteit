@@ -5,6 +5,7 @@ import { useHistory } from 'react-router';
 import Header from '../components/Header'
 import Loading from '../components/Loading';
 import Mainscreen from '../components/Mainscreen';
+import { CheckCircleFill,XCircleFill } from 'react-bootstrap-icons';
 import "./profile.css"
 
 const Profile = () => {
@@ -50,7 +51,30 @@ const Profile = () => {
             setSuccess(null);
             setError(e.response ? e.response.data.message : e.message)
         }
+  }
+  
+  const sendVerificationLink = async (e) => {
+    e.preventDefault();
+    try {
+      const config = {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      setLoading(true);
+      const { data } = await axios.post("/api/users/verification/link", config);
+      setSuccess(data.message)
+      setLoading(false)
+      setError(null)
+    } catch (e) {
+      setLoading(false)
+      setSuccess(null);
+      setError(e.response ? e.response.data.message : e.message)
     }
+
+
+  }
     useEffect(() => {
         fetchUser();
         //eslint-disable-next-line
@@ -127,6 +151,12 @@ const Profile = () => {
                         }
                       ></Form.Control>
                     </Form.Group>{" "}
+
+                    {user && user.verified == true && (<p> <CheckCircleFill color='green' /> Profile verified</p>)}
+                    {user && user.verified == false && (<p> <XCircleFill color='red' /> Profile Not Verified Click here to send verification Link <Button onClick={sendVerificationLink} varient="primary">
+                      Send
+                    </Button></p>)}
+
                     <Button type="submit" varient="primary">
                       Update
                     </Button>

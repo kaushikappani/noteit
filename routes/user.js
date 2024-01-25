@@ -61,11 +61,19 @@ router.route("/").post(asyncHandler(async (req, res) => {
         const recipent = {
             name, email
         }
+        const verificaitonKey = email + "_verification";
+        const  verificationTokenValue = verificationToken + "";
+        await client.set(verificaitonKey, verificationTokenValue, (err, data) => {
+            if (err) {
+                console.log(err)
+            }
+        })
         const mailBody = {
             subject: "NoteIt - Account Verification",
             text: "Click the following link to verify your link",
             html: `<strong><a href="${process.env.DOMAIN}/confirm/${verificationToken}">${process.env.DOMAIN}/confirm/${verificationToken}</a></strong>`,
         }
+
         mailer(recipent, mailBody)
 
     }).catch((e) => {
@@ -144,14 +152,26 @@ router.route("/confirm/:id").get(asyncHandler(async (req, res) => {
     console.log("secret", process.env.JWT_SECRET_VERIFICATION)
     try {
         token = req.params.id;
-        console.log("token", token)
         const decode = jwt.verify(token, process.env.JWT_SECRET_VERIFICATION);
         console.log("decode", decode);
-
+       
         user = await User.findById(decode.id).select("-password");
-        user.verified = true;
-        user.save();
-        res.json({ message: "Verified" })
+        await client.get(user.email +"_verification", (err, result) => {
+            if (err) {
+                console.error(err);
+                res.status(500).json({ message: "Link Expired please try again" });
+                return;
+            }
+            if (token != result) {
+                console.error(err);
+                res.status(500).json({ message: "Link Expired please try again" });
+                return;
+            }
+            user.verified = true;
+            user.save();
+            res.json({ message: "Profile Verified" })
+        })
+  
     } catch (err) {
         console.log(err)
         res.status(401);
@@ -275,6 +295,34 @@ router.route("/logout").get(asyncHandler(async (req, res) => {
     res.clearCookie("token").status(202).send("logout");
 }))
 
+router.route("/verification/link").post(protect,asyncHandler(async (req, res) => {
+    
+    const id = req.user._id;
+    console.log(id);
+    const verificationToken = jwt.sign({ id }, process.env.JWT_SECRET_VERIFICATION);
+    console.log(verificationToken);
+    const mailBody = {
+        subject: "NoteIt - Account Verification",
+        text: "Click the following link to verify your link",
+        html: `<strong><a href="${process.env.DOMAIN}/confirm/${verificationToken}">${process.env.DOMAIN}/confirm/${verificationToken}</a></strong>`,
+    }
+    const verificaitonKey = req.user.email + "_verification";
+    const verificationTokenValue = verificationToken + "";
+    await client.set(verificaitonKey, verificationTokenValue, (err, data) => {
+        if (err) {
+            console.log(err)
+        }
+    })
+    console.log(verificationToken);
+    const recipent = {
+        name: req.user.name,
+        email: req.user.email
+    }
+    mailer(recipent, mailBody)
+
+    res.status(200).json({ message: "Verification email sent to " + req.user.email });
+
+}))
 
 
 

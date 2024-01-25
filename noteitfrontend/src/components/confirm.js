@@ -5,14 +5,16 @@ import axios from "axios";
 const Confirm = () => {
     const { id } = useParams();
     // const [success, setSuccess] = React.useState(false);
+    const [data, setData] = React.useState();
     console.log("id",id)
     useEffect(() => {
-      const { data } = axios.get(`/api/users/confirm/${id}`);
+        const { data } = axios.get(`/api/users/confirm/${id}`);
+        setData(data);
     }, [])
 
     return (
         <div>
-            Email Confirmed
+            {data && (<h1>{ data.message}</h1>)}
         </div>
     )
 }
