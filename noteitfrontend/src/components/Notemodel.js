@@ -506,6 +506,8 @@ export const Notemodel = ({ props }) => {
                     </Button>
                   </div>) : null}
                   
+                  {!props.edit ? <p>Shared By : - {user.name}</p> : null}
+
                 
                   <List
                     subheader={accessUsers.length > 0 && <ListSubheader>View Accessed Users</ListSubheader>}>

@@ -76,9 +76,8 @@ router.route("/:id/:history").get(
             .select("-color")
             .select("-archived")
             .select("-pinned");
-        console.log(note.id)
+        const owner = await User.findById(note.user).select("name").select("email");
         const noteAccess = await NoteAccess.findOne({ note: note.id, user: req.user._id, isActive: true })
-        console.log(noteAccess)
         if (note.user.toString() !== req.user._id.toString() && noteAccess == null) {
             res.status(401);
             throw new Error("Oops! No Access to View");
@@ -89,23 +88,19 @@ router.route("/:id/:history").get(
             case "h0":
                 break;
             case "h1":
-                console.log("h1")
                 note.content = noteHistory != null ? noteHistory.h1 : note.content;
                 break;
             case "h2":
-                console.log("h2")
                 note.content = noteHistory != null ? noteHistory.h2 : note.content;
                 break;
             case "h3":
-                console.log("h3")
-                console.log(noteHistory)
                 note.content = noteHistory != null ? noteHistory.h3 : note.content;
                 break;
         }
         const edit = note.user.toString() === req.user._id.toString();
         const modifiedNote = { ...note.toObject(), view: true, edit };
         if (note) {
-            res.json({ note: modifiedNote, user: req.user });
+            res.json({ note: modifiedNote, user: owner });
         } else {
             res.status(400).json({ message: "Note not found" });
         }
@@ -149,14 +144,12 @@ router.route("/shared").get(protect, asyncHandler(async (req, res) => {
 
     for (const access of noteAccess) {
         const note = await Note.findById(access.note);
-        console.log(note);
         if (note != null) {
             notes.push(note);
         }
 
     }
 
-    console.log("notes = ", notes);
     const modifiedNotes = notes.map((note) => ({
         ...note.toObject(),
         view: true,
@@ -172,29 +165,23 @@ router.route("/:id").put(
         const { title, content, category, color, pinned, archived } = req.body;
         const note = await Note.findById(req.params.id);
         const noteHistory = await NoteHistory.findOne({ note: note.id });
-        console.log("---------")
-        console.log(typeof noteHistory)
+
 
 
         if (note) {
-            console.log(note.color, color);
             if (note.content === content && note.title === title && note.category == category) {
                 res.status(304);
-                console.log("no changes");
                 throw new Error("No Changes in note");
             } else if (note.content != content) {
                 if (noteHistory == null) {
                     const newNotehistory = new NoteHistory({ note: note.id, h1: note.content, h2: "", h3: "" });
                     const res = await newNotehistory.save();
-                    console.log("res1");
-                    console.log(res)
+    
                 } else {
-                    console.log(noteHistory);
                     noteHistory.h3 = noteHistory.h2;
                     noteHistory.h2 = noteHistory.h1;
                     noteHistory.h1 = note.content;
                     const res = await noteHistory.save();
-                    console.log("res", res);
                 }
             }
             if (note.user.toString() !== req.user._id.toString()) {
@@ -204,7 +191,6 @@ router.route("/:id").put(
             note.title = title || note.title;
             note.content = content || note.content;
             note.category = category || note.category;
-            console.log("archived", archived);
             if (archived) {
                 note.archived = !note.archived;
             }

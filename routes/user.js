@@ -121,12 +121,9 @@ router.route("/info").get(protect, asyncHandler(async (req, res) => {
 }))
 
 router.route("/info").put(protect, asyncHandler(async (req, res) => {
-    console.log("put request")
     const { email, password, name, conformPassword } = req.body;
     const user = await User.findById(req.user._id);
-    console.log(req.user)
     if (user) {
-        console.log("put request found")
         user.name = name || user.name;
         user.email = user.email;
         if (password && password === conformPassword) {
@@ -147,9 +144,7 @@ router.route("/info").put(protect, asyncHandler(async (req, res) => {
 }))
 
 router.route("/confirm/:id").get(asyncHandler(async (req, res) => {
-    console.log("------------------confirm-------------------------")
-    console.log("token", req.params.id);
-    console.log("secret", process.env.JWT_SECRET_VERIFICATION)
+
     try {
         token = req.params.id;
         const decode = jwt.verify(token, process.env.JWT_SECRET_VERIFICATION);
@@ -192,12 +187,10 @@ router.route("/forgotpassword").post(
         const { email } = req.body;
         const user = await User.findOne({ email });
         if (user) {
-            console.log(user);
             const token = generateToken(
                 user._id,
                 process.env.JWT_SECRET_FORGOTPASSWORD
             );
-            console.log(token);
             const recipent = {
                 name: user.name,
                 email: user.email
@@ -211,7 +204,6 @@ router.route("/forgotpassword").post(
             try {
                 mailer(recipent, mailBody);
             } catch (err) {
-                console.log(err)
             }
 
             res.status(200);
@@ -225,9 +217,7 @@ router.route("/forgotpassword").post(
 );
 router.route("/resetpassword/:id").post(asyncHandler(async (req, res) => {
     const id = req.params.id;
-    console.log("id", id);
     const { password, conformpassword } = req.body;
-    console.log(password, conformpassword);
     if (password === conformpassword) {
         const decode = jwt.verify(id, process.env.JWT_SECRET);
         const salt = await bcrypt.genSalt(11);
@@ -255,7 +245,6 @@ router.route("/:id/access/users").get(protect, asyncHandler(async (req, res) => 
     }
     
     const noteAccess = await NoteAccess.find({ note: note.id,isActive:true });
-    console.log(noteAccess);
     let users = [];
     for (const access of noteAccess) {
         const user = await User.findById(access.user).select("-password");
@@ -298,9 +287,7 @@ router.route("/logout").get(asyncHandler(async (req, res) => {
 router.route("/verification/link").post(protect,asyncHandler(async (req, res) => {
     
     const id = req.user._id;
-    console.log(id);
     const verificationToken = jwt.sign({ id }, process.env.JWT_SECRET_VERIFICATION);
-    console.log(verificationToken);
     const mailBody = {
         subject: "NoteIt - Account Verification",
         text: "Click the following link to verify your link",
@@ -313,7 +300,6 @@ router.route("/verification/link").post(protect,asyncHandler(async (req, res) =>
             console.log(err)
         }
     })
-    console.log(verificationToken);
     const recipent = {
         name: req.user.name,
         email: req.user.email
