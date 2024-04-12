@@ -5,7 +5,8 @@ const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const { User, NoteAccess,Note } = require("../config/models");
 const { protect } = require("../middleware/protect");
-const { mailer } = require("../middleware/mailer")
+const { mailer,readFile } = require("../middleware/mailer")
+
 
 const redis = require("redis");
 
@@ -68,10 +69,13 @@ router.route("/").post(asyncHandler(async (req, res) => {
                 console.log(err)
             }
         })
+        const mailTemplate = await readFile("../templates/verify_account_email.txt");
+        const mailHtml = mailTemplate.replace("#{link}", `${process.env.DOMAIN}/confirm/${verificationToken}`);
+
         const mailBody = {
             subject: "NoteIt - Account Verification",
             text: "Click the following link to verify your link",
-            html: `<strong><a href="${process.env.DOMAIN}/confirm/${verificationToken}">${process.env.DOMAIN}/confirm/${verificationToken}</a></strong>`,
+            html: mailHtml,
         }
 
         mailer(recipent, mailBody)
@@ -195,12 +199,14 @@ router.route("/forgotpassword").post(
                 name: user.name,
                 email: user.email
             }
+            const mailTemplate = await readFile("../templates/reset_password_email.txt");
+            const mailHtml =  mailTemplate.replace("#{link}", `${process.env.DOMAIN}/passwordreset/${token}`);
             const mailBody = {
                 subject: "NoteIt - Password Reset Link",
                 text: "Click the following link to change your password",
-                html: `<strong><a href="${process.env.DOMAIN}/passwordreset/${token}">${process.env.DOMAIN}/passwordreset/${token}</a></strong>`
+                html: mailHtml
             }
-
+            
             try {
                 mailer(recipent, mailBody);
             } catch (err) {
@@ -288,10 +294,13 @@ router.route("/verification/link").post(protect,asyncHandler(async (req, res) =>
     
     const id = req.user._id;
     const verificationToken = jwt.sign({ id }, process.env.JWT_SECRET_VERIFICATION);
+
+    const mailTemplate = await readFile("../templates/verify_account_email.txt");
+    const mailHtml = mailTemplate.replace("#{link}", `${process.env.DOMAIN}/confirm/${verificationToken}`);
     const mailBody = {
         subject: "NoteIt - Account Verification",
         text: "Click the following link to verify your link",
-        html: `<strong><a href="${process.env.DOMAIN}/confirm/${verificationToken}">${process.env.DOMAIN}/confirm/${verificationToken}</a></strong>`,
+        html: mailHtml,
     }
     const verificaitonKey = req.user.email + "_verification";
     const verificationTokenValue = verificationToken + "";

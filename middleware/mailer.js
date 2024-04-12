@@ -1,5 +1,7 @@
 const nodemailer = require("nodemailer");
-
+const fs = require('node:fs');
+const path = require("path");
+const { file } = require("googleapis/build/src/apis/file");
 const mailer = (recipent,body) => {
     var transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
@@ -24,4 +26,17 @@ const mailer = (recipent,body) => {
         }
     });
 }
-module.exports = {mailer}
+
+const readFile = (relativePath) => {
+    const filePath = path.join(__dirname, relativePath);
+    let data = "";
+    try {
+         data = fs.readFileSync(filePath, 'utf8');
+    } catch (err) {
+        console.error(err);
+        throw new Error("New passwod and conform password match");
+
+    }
+    return data;
+}
+module.exports = { mailer, readFile }

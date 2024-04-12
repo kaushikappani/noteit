@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Account</title>
+</head>
+<body>
+    <table width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="center" style="padding: 50px 0;">
+                <table border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; width: 100%;">
+                    <tr>
+                        <td align="center" bgcolor="#ffffff" style="padding: 40px; border-radius: 10px;">
+                            <h2 style="margin: 0;">NoteIt - Verify Your Account</h2>
+                            <p style="margin-top: 20px;">Thank you for signing up! To complete your registration, please click the button below to verify your email address.</p>
+                            <a href="#{link}" style="display: inline-block; background-color: #007bff; color: #ffffff; text-decoration: none; padding: 10px 20px; border-radius: 5px; margin-top: 20px;">Verify Email</a>
+                            <p style="margin-top: 20px;">If you did not sign up for an account, please ignore this email or contact support.</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
