@@ -1,7 +1,6 @@
 const nodemailer = require("nodemailer");
 const fs = require('node:fs');
 const path = require("path");
-const { file } = require("googleapis/build/src/apis/file");
 const mailer = (recipent,body) => {
     var transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
