@@ -36,7 +36,6 @@
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.3.0",
     "remark-gfm": "^3.0.1",
-    "socket.io-client": "^4.7.5",
     "styled-components": "^5.3.3",
     "suneditor-react": "^3.6.1",
     "web-vitals": "^1.0.1"
