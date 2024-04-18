@@ -14,7 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Create from "./Create";
 import InputAdornment from "@mui/material/InputAdornment";
 import io from 'socket.io-client';
-const socket = io("http://localhost:5500");
+const socket = io();
 
 const ariaLabel = { "aria-label": "Search" };
 
