@@ -22,6 +22,8 @@
     "mongoose": "^6.0.7",
     "node-mailjet": "^6.0.4",
     "nodemailer": "^6.9.4",
-    "redis": "^4.6.8"
+    "redis": "^4.6.8",
+    "socket.io": "^4.7.5",
+    "stock-nse-india": "^1.1.5"
   }
 }

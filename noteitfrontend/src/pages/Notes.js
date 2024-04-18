@@ -13,6 +13,8 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Create from "./Create";
 import InputAdornment from "@mui/material/InputAdornment";
+import io from 'socket.io-client';
+const socket = io();
 
 const ariaLabel = { "aria-label": "Search" };
 
@@ -34,6 +36,8 @@ const Notes = () => {
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState();
   const notify = (message, type) => toast(message, type);
+  const [totalPrice, setTotalPrice] = useState(0);
+
   const [alert, setAlert] = useState({
     open: false,
     type: "",
@@ -215,6 +219,13 @@ const Notes = () => {
   useEffect(() => {
     fetchNotes();
     fetchSharedNotes();
+
+    socket.on('totalPrice', (total) => {
+      setTotalPrice(total);
+    });
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   return (
@@ -258,6 +269,7 @@ const Notes = () => {
             <ResponsiveMasonry
               columnsCountBreakPoints={{ 350: 1, 750: 2, 1000: 3 }}
             >
+              <p>Price : {totalPrice}</p>
               <Masonry gutter={"15px"}>
                 {notes?.length >= 1 &&
                   notes
