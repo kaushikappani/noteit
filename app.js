@@ -60,7 +60,7 @@ const server = app.listen(process.env.PORT, () => {
 
 const io = socket(server, {
     cors: {
-        origin: ["http://localhost:3000", "https://coinwatch-nine.vercel.app"],
+        origin: ["http://localhost:3000", "https://noteit-kof1.onrender.com"],
         methods: ["GET", "POST"]
     }
 });
@@ -109,6 +109,7 @@ io.on("connection", (socket) => {
                 console.error(`Error fetching data for ${symbol}: ${error}`);
             }
         }
+        console.log(total)
         io.to(socket.id).emit("totalPrice", total);
     };
 
