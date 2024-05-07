@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { Col, Form, Row, Button } from 'react-bootstrap';
+import { Col, Form, Row, Button,Image } from 'react-bootstrap';
 import { useHistory } from 'react-router';
 import Header from '../components/Header'
 import Loading from '../components/Loading';
@@ -14,7 +14,9 @@ const Profile = () => {
     const [update,setUpdate] = useState()
     const [error, setError] = useState();
     const [success, setSuccess] = useState();
-    const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState(null);
+
     const fetchUser = async () => {
         console.log("fetch user")
         try {
@@ -72,9 +74,39 @@ const Profile = () => {
       setSuccess(null);
       setError(e.response ? e.response.data.message : e.message)
     }
-
+   
 
   }
+
+  const handleImageChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setImage(selectedFile);
+  };
+
+  const handleImageUpload = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('profilePicture', image);
+
+      const config = {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+
+      setLoading(true);
+      const { data } = await axios.post("/api/upload/profile/pic", formData, config);
+      setUser(prevUser => ({ ...prevUser, pic: data.url }));
+      setLoading(false);
+      setSuccess("Profile picture uploaded successfully");
+      setError(null);
+    } catch (e) {
+      setLoading(false);
+      setSuccess(null);
+      setError(e.response ? e.response.data.message : e.message);
+    }
+  };
     useEffect(() => {
         fetchUser();
         //eslint-disable-next-line
@@ -93,8 +125,26 @@ const Profile = () => {
                 }}
                 className="profileContainer"
               >
+              
                 <Col md={12}>
-                  {success && <p className="text-success">{success}</p>}
+
+                  <label htmlFor="profileImage" style={{ position: "relative" }}>
+                    <Image
+                      src={user.pic}
+                      style={{ width: "250px", cursor: "pointer" }}
+                      rounded
+                    />
+                    <input
+                      id="profileImage"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      style={{ display: "none" }}
+                    />
+                  </label>
+                  <Button onClick={handleImageUpload}>Upload Profile Pic</Button>
+
+                   {success && <p className="text-success">{success}</p>}
                   <Form onSubmit={submitHandler}>
                     {loading && <Loading />}
                     {error && <p className="text-danger">{error}</p>}

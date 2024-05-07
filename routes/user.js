@@ -331,6 +331,7 @@ router.route("/upload/profile/pic").post(protect,upload.single('profilePicture')
     try {
          result = await cloudinary.uploader.upload(req.file.path);
     } catch (e) {
+        console.log("Error While Uploading pic " + e)
         throw new Error("Error While Uploading pic")
 
     }
