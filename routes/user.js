@@ -5,8 +5,15 @@ const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const { User, NoteAccess,Note } = require("../config/models");
 const { protect } = require("../middleware/protect");
-const { mailer,readFile } = require("../middleware/mailer")
-
+const { mailer, readFile } = require("../middleware/mailer")
+const cloudinary = require('cloudinary').v2;
+const fs = require("fs")
+const { upload } = require("../middleware/multer");
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const redis = require("redis");
 
@@ -319,7 +326,28 @@ router.route("/verification/link").post(protect,asyncHandler(async (req, res) =>
 
 }))
 
+router.route("/upload/profile/pic").post(protect,upload.single('profilePicture'), asyncHandler(async (req, res) => {
+    let result = null;
+    try {
+         result = await cloudinary.uploader.upload(req.file.path);
+    } catch (e) {
+        throw new Error("Error While Uploading pic")
 
+    }
+    finally {
+        if (req.file) {
+            await fs.unlinkSync(req.file.path);
+        }
+    }
+    const user = await User.findById(req.user._id);
+    if (user && result) {
+        user.pic = result.url;
+        await user.save();
+    }
+    console.log(result);
+    res.json({message: "Profile Uploaded"});
+
+}))
 
 router.route("/googleauth").post(asyncHandler(async (req, res) => {
 

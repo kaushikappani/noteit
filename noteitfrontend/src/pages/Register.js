@@ -82,7 +82,7 @@ const Register = () => {
                                     <input type="password" className="form-control" value={authData.conformPassword} onChange={(e) => setAuthData((prev) => {
                                         return { ...prev, conformPassword: e.target.value }
                                     })} id="floatingConformPassword" placeholder="Password" />
-                                    <label htmlFor="floatingPassword">Conform Password</label>
+                                    <label htmlFor="floatingPassword">Confirm Password</label>
                                 </div>
                                 {message &&
                                     <p className="text-danger" style={{ justifyContent: "right", textAlign: "center" }}>{message}</p>
