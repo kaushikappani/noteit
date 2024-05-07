@@ -45,8 +45,9 @@ const Profile = () => {
             };
             setLoading(true);
             const { data } = await axios.put("/api/users/info", user, config);
-            setSuccess(data.message)
-            setLoading(false)
+          setSuccess(data.message)
+          setLoading(false)
+         
             setError(null)
         } catch (e) {
             setLoading(false)
@@ -96,11 +97,12 @@ const Profile = () => {
       };
 
       setLoading(true);
-      const { data } = await axios.post("/api/upload/profile/pic", formData, config);
-      setUser(prevUser => ({ ...prevUser, pic: data.url }));
+      const { data } = await axios.post("api/users/upload/profile/pic", formData, config);
       setLoading(false);
       setSuccess("Profile picture uploaded successfully");
       setError(null);
+      setImage(null);
+      fetchUser();
     } catch (e) {
       setLoading(false);
       setSuccess(null);
@@ -139,10 +141,19 @@ const Profile = () => {
                       type="file"
                       accept="image/*"
                       onChange={handleImageChange}
-                      style={{ display: "none" }}
+                      style={{ display : "none" }}
                     />
                   </label>
-                  <Button onClick={handleImageUpload}>Upload Profile Pic</Button>
+                  {user && user.pic == "" && (
+                    <input
+                      id="profileImage"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      style={{ display: "block" }}
+                    />
+                  )}
+                  {image && <Button onClick={handleImageUpload}>Upload Profile Pic</Button>}
 
                    {success && <p className="text-success">{success}</p>}
                   <Form onSubmit={submitHandler}>

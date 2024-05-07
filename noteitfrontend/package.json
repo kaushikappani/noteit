@@ -2,7 +2,7 @@
   "name": "noteitfrontend",
   "version": "4.0.0",
   "private": true,
-  "proxy": "https://noteit-kof1.onrender.com/",
+  "proxy": "http://localhost:5500",
   "dependencies": {
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
