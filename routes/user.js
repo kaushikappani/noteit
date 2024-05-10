@@ -43,6 +43,7 @@ router.route("/").post(asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error("User already exist")
     }
+    pic = "https://res.cloudinary.com/dvg2fdn9e/image/upload/v1715348789/profilepic/pxp09vk4f5c1q01fipua.webp";
     const newUser = new User({
         name, email, password: hashPassword, pic
     })
@@ -331,7 +332,7 @@ router.route("/upload/profile/pic").post(protect, upload.single('profilePicture'
 
     let result = null;
     try {
-        result = await cloudinary.uploader.upload(req.file.path, { public_id: `profilepic/${user._id}`  });
+        result = await cloudinary.uploader.upload(req.file.path, { public_id: `profilepic/${user._id}`, secure: true });
     } catch (e) {
         console.log("Error While Uploading pic " + e)
         throw new Error("Error While Uploading pic")
