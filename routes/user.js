@@ -43,10 +43,10 @@ router.route("/").post(asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error("User already exist")
     }
-    pic = "https://res.cloudinary.com/dvg2fdn9e/image/upload/v1715348789/profilepic/pxp09vk4f5c1q01fipua.webp";
     const newUser = new User({
         name, email, password: hashPassword, pic
     })
+    newUser.pic = "https://res.cloudinary.com/dvg2fdn9e/image/upload/v1715348789/profilepic/pxp09vk4f5c1q01fipua.webp";
     const options = {
         httpOnly: true,
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
