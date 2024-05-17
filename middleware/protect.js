@@ -51,7 +51,7 @@ const protect = asyncHandler(async (req, res, next) => {
 
 const socketProtect = async (socket, next) => {
     const token = socket.handshake.auth.token;
-
+    console.log("token=",token)
     if (token) {
         try {
             const decode = jwt.verify(token, process.env.JWT_SECRET);
