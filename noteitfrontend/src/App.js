@@ -9,6 +9,7 @@ import confirm from "./components/confirm"
 import Archived from './pages/Archived';
 import ForgotPassword from "./pages/ForgotPassword";
 import PasswordReset from "./pages/PasswordReset";
+import StockScreener from './pages/StockScreener';
 function App() {
   return (
     <BrowserRouter>
@@ -23,7 +24,8 @@ function App() {
         <Route path="/confirm/:id" component={confirm} exact />
         <Route path="/archived" component={Archived} exact />
         <Route path = "/forgotpassword" component={ForgotPassword} exact />
-        <Route path = "/passwordreset/:id" component={PasswordReset} exact />
+        <Route path="/passwordreset/:id" component={PasswordReset} exact />
+        <Route path="/stock/screener" component = {StockScreener} exact />
       </main>
     </BrowserRouter>
   );

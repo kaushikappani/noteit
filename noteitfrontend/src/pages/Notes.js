@@ -14,6 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Create from "./Create";
 import InputAdornment from "@mui/material/InputAdornment";
 
+
 const ariaLabel = { "aria-label": "Search" };
 
 const buttonStyle = {
@@ -33,6 +34,7 @@ const Notes = () => {
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState();
+
   const notify = (message, type) => toast(message, type);
   const [alert, setAlert] = useState({
     open: false,
@@ -210,11 +212,13 @@ const Notes = () => {
   const reload = () => {
     fetchNotes();
     fetchSharedNotes();
-  }
 
+    
+  }
   useEffect(() => {
     fetchNotes();
     fetchSharedNotes();
+    
   }, []);
 
   return (
