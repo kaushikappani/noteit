@@ -127,7 +127,7 @@ const symbolQuantityObject = {
 
 io.use(socketProtect);
 
-io.on("connection", protect, (socket) => {
+io.on("connection", (socket) => {
 
     console.log(socket.id);
 
