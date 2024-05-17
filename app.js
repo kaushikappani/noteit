@@ -159,8 +159,8 @@ io.on("connection", (socket) => {
             }
         }
         console.log(total)
-        io.emit.emit("totalPrice", total);
-        io.emit.emit("payload", payload);
+        io.emit("totalPrice", total);
+        io.emit("payload", payload);
     };
 
     // Call fetchDataAndSendTotal when client connects and every 1 second
