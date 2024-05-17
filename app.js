@@ -122,7 +122,7 @@ const symbolQuantityObject = {
     // "UJJIVAN": 20,
     "UJJIVANSFB": 506,
     "VBL": 10,
-    "SHRIRAMFIN":1,
+    "SHRIRAMFIN":0,
 };
 
 io.use(socketProtect);
@@ -163,8 +163,11 @@ io.on("connection", (socket) => {
         io.emit("payload", payload);
     };
 
-    // Call fetchDataAndSendTotal when client connects and every 1 second
-    intervalId = setInterval(fetchDataAndSendTotal, 5000);
+    fetchDataAndSendTotal();
+
+    // Call fetchDataAndSendTotal when client connects and every 5 second
+    
+    intervalId = setInterval(fetchDataAndSendTotal, 6000);
     console.log("intervalId =",intervalId);
 
     // Handle disconnection
