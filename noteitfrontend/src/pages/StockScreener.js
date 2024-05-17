@@ -15,7 +15,7 @@ const token = Cookies.get('token');
 
 console.log(token);
 
-const socket = io("http://localhost:5500", {
+const socket = io("https://noteit-kof1.onrender.com", {
   auth: {
     token,
   }

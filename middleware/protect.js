@@ -70,10 +70,12 @@ const socketProtect = async (socket, next) => {
                 }
 
                 // Check if the user's email is allowed
-                if (user.email === 'kaushikappani@gmai.com') {
+                if (user.email === 'kaushikappani@gmail.com') {
+                    console.log("Authenticated")
                     socket.user = user; // Store user info in socket object
                     return next();
                 } else {
+                    console.log("Access Denied")
                     return next(new Error("Authorization failed: Access denied"));
                 }
             });
