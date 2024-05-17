@@ -5,15 +5,16 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const userRoutes = require("./routes/user");
 const notesRoute = require("./routes/notes");
+const stockRoute = require("./routes/Stock")
 const { errorHandler, notFound } = require("./middleware/error");
 const { Note } = require("./config/models");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser")
 const socket = require("socket.io");
 
-const {socketProtect} = require("./middleware/protect")
+// const {socketProtect} = require("./middleware/protect")
 
-const { NseIndia } = require("stock-nse-india");
+// const { NseIndia } = require("stock-nse-india");
 
 
 app.use(bodyParser.urlencoded({
@@ -29,40 +30,9 @@ connectDB();
 app.use(cookieParser());
 app.use("/api/users", userRoutes)
 app.use("/api/notes", notesRoute)
+app.use("/api/stock", stockRoute)
 
-const getData =  async (symbol,nseIndia) => {
 
-    // let config = {
-    //     method: 'get',
-    //     maxBodyLength: Infinity,
-    //     url: 'https://www.nseindia.com/api/quote-equity?symbol=' + symbol,
-    //     headers: {
-    //         'accept': '*/*',
-    //         'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
-    //         'cookie': '_abck=4FD9F68B71338A97380FE55F897F76D7~-1~YAAQDuscuNYlUTWPAQAAnHQghQs1aVpvCIIHu032CDrptWDTAPpWEDGUbTayeEQHdHRWoDGrgVDf2fjD+c/YmOfsekK7XqPQk+wmMFfPcI+yBHk6icF1yoLBKL6f+XZllzUGs2wuKGC4fOBvKhGz+Rs/Uymo2i6o6no4QzAzimEPy6/cN/JY/QMkjOy0wv05cXQIYdy/q88/ZP5rwS/36PBEyClN36R2f6MV3W2Jp5JFYkyiBdwVcnXIh19Rmr72bBc3Rkocf+Es/7c/tIWVlKKgfhSSjeu9AsO2TX2izhS+BLBmbvlGoN7RP4R+OURvUQfA5WGOoty+3U4b7dLabsYTfttLNuZgl/1+7saiOO0fCJaXoBVi0yBpEVGIiPhEEMccOpDg28cNRZ2o~-1~||1-YzKvHYGrms-1500-10-1000-2||~-1; Domain=.nseindia.com; Path=/; Expires=Sat, 17 May 2025 05:57:27 GMT; Max-Age=31536000; Secure',
-    //         'priority': 'u=1, i',
-    //         'referer': 'https://www.nseindia.com/get-quotes/equity?symbol=JIOFIN',
-    //         'sec-ch-ua': '"Google Chrome";v="125", "Chromium";v="125", "Not.A/Brand";v="24"',
-    //         'sec-ch-ua-mobile': '?0',
-    //         'sec-ch-ua-platform': '"macOS"',
-    //         'sec-fetch-dest': 'empty',
-    //         'sec-fetch-mode': 'cors',
-    //         'sec-fetch-site': 'same-origin',
-    //         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
-    //     }
-    // };
-    // const { data } = await axios.request(config);
-
-    const data = await nseIndia.getEquityDetails(symbol);
-
-    return data;
-}
-
-const tradeData = async (symbol,nseIndia) => {
-    
-    const data = await nseIndia.getEquityTradeInfo(symbol);
-    return data;
-}
 
 
 __dirname = path.resolve();
@@ -92,12 +62,12 @@ const server=app.listen(process.env.PORT, () => {
     console.log(`server running ${process.env.PORT}`)
 })
 
-const io = socket(server, {
-    cors: {
-        origin: ["http://localhost:3000", "https://noteit-kof1.onrender.com"],
-        methods: ["GET", "POST"]
-    }
-});
+// const io = socket(server, {
+//     cors: {
+//         origin: ["http://localhost:3000", "https://noteit-kof1.onrender.com"],
+//         methods: ["GET", "POST"]
+//     }
+// });
 
 const symbolQuantityObject = {
     "ARVIND": 20,
@@ -125,57 +95,57 @@ const symbolQuantityObject = {
     "SHRIRAMFIN":0,
 };
 
-io.use(socketProtect);
+// io.use(socketProtect);
 
-io.on("connection", (socket) => {
+// io.on("connection", (socket) => {
 
-    console.log(socket.id);
+//     console.log(socket.id);
 
-    let intervalId;
+//     let intervalId;
 
-    // Fetch data for fixed symbols, calculate total, and emit to client
-    const fetchDataAndSendTotal = async () => {
-        const nseIndia = new NseIndia()
-        let total = 0;
-        let payload = [];
-        for (const symbol of Object.keys(symbolQuantityObject)) {
-            try {
-                // const data = await nseIndia.getEquityCorporateInfo(symbol);
-                const data = await getData(symbol, nseIndia);
-                const tradeInfo = await tradeData(symbol, nseIndia);
-                const quantity = symbolQuantityObject[symbol];
-                        let stockData = {
-                    currentPrice : data.priceInfo.lastPrice,
-                    daypnl : parseFloat(data.priceInfo.change) * quantity,
-                    symbol: symbol,
-                    pChange: data.priceInfo.pChange,
-                    change: data.priceInfo.change,
-                    deliveryToTradedQuantity: tradeInfo.securityWiseDP.deliveryToTradedQuantity,
-                    date: data.metadata.lastUpdateTime
-                }
-                payload.push(stockData);
-                total += parseFloat(data.priceInfo.change) * quantity;
-            } catch (error) {
-                console.error(`Error fetching data for ${symbol}: ${error}`);
-            }
-        }
-        console.log(total)
-        io.emit("totalPrice", total);
-        io.emit("payload", payload);
-    };
+//     // Fetch data for fixed symbols, calculate total, and emit to client
+//     const fetchDataAndSendTotal = async () => {
+//         const nseIndia = new NseIndia()
+//         let total = 0;
+//         let payload = [];
+//         for (const symbol of Object.keys(symbolQuantityObject)) {
+//             try {
+//                 // const data = await nseIndia.getEquityCorporateInfo(symbol);
+//                 const data = await getData(symbol, nseIndia);
+//                 const tradeInfo = await tradeData(symbol, nseIndia);
+//                 const quantity = symbolQuantityObject[symbol];
+//                         let stockData = {
+//                     currentPrice : data.priceInfo.lastPrice,
+//                     daypnl : parseFloat(data.priceInfo.change) * quantity,
+//                     symbol: symbol,
+//                     pChange: data.priceInfo.pChange,
+//                     change: data.priceInfo.change,
+//                     deliveryToTradedQuantity: tradeInfo.securityWiseDP.deliveryToTradedQuantity,
+//                     date: data.metadata.lastUpdateTime
+//                 }
+//                 payload.push(stockData);
+//                 total += parseFloat(data.priceInfo.change) * quantity;
+//             } catch (error) {
+//                 console.error(`Error fetching data for ${symbol}: ${error}`);
+//             }
+//         }
+//         console.log(total)
+//         io.emit("totalPrice", total);
+//         io.emit("payload", payload);
+//     };
 
-    fetchDataAndSendTotal();
+//     fetchDataAndSendTotal();
 
-    // Call fetchDataAndSendTotal when client connects and every 5 second
+//     // Call fetchDataAndSendTotal when client connects and every 5 second
     
-    intervalId = setInterval(fetchDataAndSendTotal, 6000);
-    console.log("intervalId =",intervalId);
+//     intervalId = setInterval(fetchDataAndSendTotal, 6000);
+//     console.log("intervalId =",intervalId);
 
-    // Handle disconnection
-    socket.on("disconnect", async () => {
-        console.log(`Client disconnected: ${socket.id}`);
-        clearInterval(intervalId);
-    });
+//     // Handle disconnection
+//     socket.on("disconnect", async () => {
+//         console.log(`Client disconnected: ${socket.id}`);
+//         clearInterval(intervalId);
+//     });
 
-});
+// });
 

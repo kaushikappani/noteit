@@ -7,10 +7,17 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TableSortLabel from '@mui/material/TableSortLabel';
-import io from 'socket.io-client';
-import Cookies from "js-cookie";
+import axios from 'axios';
+import Header from '../components/Header';
+import { Container } from 'react-bootstrap';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
-
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 
 
 function descendingComparator(a, b, orderBy) {
@@ -44,31 +51,30 @@ const StockScreener = () => {
   const [payload, setPayload] = useState([]);
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('symbol');
+  const [error, setError] = useState();
+  const [success, setSuccess] = useState();
+  const [loading, setLoading] = useState(false);
 
+  const fetchSummary = async() => {
+    console.log("fetch summary")
+    try {
+      const config = {
+        withCredentials: true,
+      };
+      setLoading(true);
+      const { data } = await axios.get("/api/stock/summary", config);
+      setPayload(data.payload);
+      setTotalPrice(data.total);
+      setLoading(false);
+    } catch (e) {
+      setLoading(false)
+      setError(e.response ? e.response.data.message : e.message)
+    }
+  }
  
 
   useEffect(() => {
-
-    const token = Cookies.get('token');
-
-    console.log(token);
-
-    const socket = io("https://noteit-kof1.onrender.com", {
-      auth: {
-        token,
-      }
-    });
-
-
-    socket.on('totalPrice', (total) => {
-      setTotalPrice(total);
-    });
-    socket.on('payload', (payload) => {
-      setPayload(payload);
-    });
-    return () => {
-      socket.disconnect();
-    };
+    fetchSummary();
   }, []);
 
   const handleRequestSort = (event, property) => {
@@ -78,8 +84,10 @@ const StockScreener = () => {
   };
 
   return (
-    <>
-      <h1>Total P&L = {totalPrice}</h1>
+    <ThemeProvider theme={darkTheme}>
+      <Header page="stocks" fetchSummary={fetchSummary} loading = {loading} />
+      <Container>
+      <h3>Day P&L = {totalPrice}</h3>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="sortable table">
           <TableHead>
@@ -148,8 +156,9 @@ const StockScreener = () => {
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
-    </>
+        </TableContainer>
+      </Container>
+    </ThemeProvider>
   );
 };
 

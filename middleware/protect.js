@@ -49,43 +49,86 @@ const protect = asyncHandler(async (req, res, next) => {
 });
 
 
-const socketProtect = async (socket, next) => {
-    const token = socket.handshake.auth.token;
-    console.log("token=",token)
-    if (token) {
+const stockProtect = asyncHandler(async (req, res, next) => {
+    let token;
+    if (req.cookies && req.cookies.token) {
         try {
+            token = req.cookies.token;
             const decode = jwt.verify(token, process.env.JWT_SECRET);
-            const user = await User.findById(decode.id).select("-password");
+            req.user = await User.findById(decode.id).select("-password");
 
-            // Check if the token in Redis matches the one provided
-            client.get(decode.id, (err, result) => {
+            // Check if the token in Redis matches the one in the request
+            await client.get(decode.id, (err, result) => {
                 if (err) {
                     console.error(err);
-                    return next(new Error("Internal server error"));
+                    res.status(500).json({ message: "Internal server error" });
+                    return;
                 }
 
                 if (result !== token) {
                     console.log('Token mismatch');
-                    return next(new Error("Authorization failed: Token mismatch"));
+                    res.clearCookie("token").status(401).json({ message: "Authorization failed: Token mismatch" });
+                    return;
                 }
 
-                // Check if the user's email is allowed
-                if (user.email === 'kaushikappani@gmail.com') {
+                if (req.user.email === 'kaushikappani@gmail.com') {
                     console.log("Authenticated")
-                    socket.user = user; // Store user info in socket object
-                    return next();
+                    next();
                 } else {
-                    console.log("Access Denied")
-                    return next(new Error("Authorization failed: Access denied"));
+                    res.status(401).json({ message: "Access Denied" });
                 }
+               
             });
         } catch (err) {
             console.error(err);
-            return next(new Error("Authorization failed: Invalid token"));
+            res.clearCookie("token").status(401).json({ message: "Authorization failed: Invalid token" });
         }
     } else {
-        return next(new Error("Authorization failed: No token provided"));
+        res.status(401).json({ message: "Authorization failed: No token provided" });
     }
-};
+});
 
-module.exports = { protect, socketProtect };
+
+
+// const socketProtect = async (socket, next) => {
+//     const token = socket.handshake.auth.token;
+//     console.log("token=",token)
+//     if (token) {
+//         try {
+//             const decode = jwt.verify(token, process.env.JWT_SECRET);
+//             const user = await User.findById(decode.id).select("-password");
+
+//             // Check if the token in Redis matches the one provided
+//             client.get(decode.id, (err, result) => {
+//                 if (err) {
+//                     console.error(err);
+//                     return next(new Error("Internal server error"));
+//                 }
+
+//                 if (result !== token) {
+//                     console.log('Token mismatch');
+//                     return next(new Error("Authorization failed: Token mismatch"));
+//                 }
+
+//                 // Check if the user's email is allowed
+//                 if (user.email === 'kaushikappani@gmail.com') {
+//                     console.log("Authenticated")
+//                     socket.user = user; // Store user info in socket object
+//                     return next();
+//                 } else {
+//                     console.log("Access Denied")
+//                     return next(new Error("Authorization failed: Access denied"));
+//                 }
+//             });
+//         } catch (err) {
+//             console.error(err);
+//             return next(new Error("Authorization failed: Invalid token"));
+//         }
+//     } else {
+//         return next(new Error("Authorization failed: No token provided"));
+//     }
+// };
+
+
+
+module.exports = { protect, stockProtect };
