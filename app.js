@@ -14,7 +14,7 @@ const socket = require("socket.io");
 const {socketProtect} = require("./middleware/protect")
 
 const { NseIndia } = require("stock-nse-india");
-const nseIndia = new NseIndia()
+
 
 app.use(bodyParser.urlencoded({
     limit: "50mb",
@@ -30,7 +30,7 @@ app.use(cookieParser());
 app.use("/api/users", userRoutes)
 app.use("/api/notes", notesRoute)
 
-const getData =  async (symbol) => {
+const getData =  async (symbol,nseIndia) => {
 
     // let config = {
     //     method: 'get',
@@ -58,7 +58,7 @@ const getData =  async (symbol) => {
     return data;
 }
 
-const tradeData = async (symbol) => {
+const tradeData = async (symbol,nseIndia) => {
     
     const data = await nseIndia.getEquityTradeInfo(symbol);
     return data;
@@ -135,13 +135,14 @@ io.on("connection", (socket) => {
 
     // Fetch data for fixed symbols, calculate total, and emit to client
     const fetchDataAndSendTotal = async () => {
+        const nseIndia = new NseIndia()
         let total = 0;
         let payload = [];
         for (const symbol of Object.keys(symbolQuantityObject)) {
             try {
                 // const data = await nseIndia.getEquityCorporateInfo(symbol);
-                const data = await getData(symbol);
-                const tradeInfo = await tradeData(symbol);
+                const data = await getData(symbol, nseIndia);
+                const tradeInfo = await tradeData(symbol, nseIndia);
                 const quantity = symbolQuantityObject[symbol];
                         let stockData = {
                     currentPrice : data.priceInfo.lastPrice,
