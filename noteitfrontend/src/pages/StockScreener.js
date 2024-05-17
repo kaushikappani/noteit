@@ -11,15 +11,6 @@ import io from 'socket.io-client';
 import Cookies from "js-cookie";
 
 
-const token = Cookies.get('token'); 
-
-console.log(token);
-
-const socket = io("https://noteit-kof1.onrender.com", {
-  auth: {
-    token,
-  }
-});
 
 
 function descendingComparator(a, b, orderBy) {
@@ -57,6 +48,18 @@ const StockScreener = () => {
  
 
   useEffect(() => {
+
+    const token = Cookies.get('token');
+
+    console.log(token);
+
+    const socket = io("https://noteit-kof1.onrender.com", {
+      auth: {
+        token,
+      }
+    });
+
+
     socket.on('totalPrice', (total) => {
       setTotalPrice(total);
     });
