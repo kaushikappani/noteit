@@ -143,15 +143,14 @@ io.on("connection", (socket) => {
                 const data = await getData(symbol);
                 const tradeInfo = await tradeData(symbol);
                 const quantity = symbolQuantityObject[symbol];
-
-                let stockData = {
+                        let stockData = {
                     currentPrice : data.priceInfo.lastPrice,
                     daypnl : parseFloat(data.priceInfo.change) * quantity,
                     symbol: symbol,
                     pChange: data.priceInfo.pChange,
                     change: data.priceInfo.change,
                     deliveryToTradedQuantity: tradeInfo.securityWiseDP.deliveryToTradedQuantity,
-                    date: data.EquityMetadata.lastUpdateTime
+                    date: data.metadata.lastUpdateTime
                 }
                 payload.push(stockData);
                 total += parseFloat(data.priceInfo.change) * quantity;

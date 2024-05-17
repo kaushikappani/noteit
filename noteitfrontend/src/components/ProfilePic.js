@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 
 const ProfilePic = ({ user, handleImageChange }) => {
     const [showInput, setShowInput] = useState(false);
-
- 
-
     return (
         <div>
             {user.pic ? (

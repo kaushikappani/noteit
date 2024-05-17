@@ -10,13 +10,17 @@ import TableSortLabel from '@mui/material/TableSortLabel';
 import io from 'socket.io-client';
 import Cookies from "js-cookie";
 
-const token = Cookies.get('token'); // Replace 'token' with the name of your cookie
 
-const socket = io("https://noteit-kof1.onrender.com", {
+const token = Cookies.get('token'); 
+
+console.log(token);
+
+const socket = io("http://localhost:5500", {
   auth: {
-    token: token
+    token,
   }
 });
+
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -50,6 +54,7 @@ const StockScreener = () => {
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('symbol');
 
+ 
 
   useEffect(() => {
     socket.on('totalPrice', (total) => {
