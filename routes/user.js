@@ -48,7 +48,7 @@ router.route("/").post(asyncHandler(async (req, res) => {
     })
     newUser.pic = "https://res.cloudinary.com/dvg2fdn9e/image/upload/v1715348789/profilepic/pxp09vk4f5c1q01fipua.webp";
     const options = {
-        httpOnly: true,
+        httpOnly: false,
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
     };
 
@@ -100,7 +100,7 @@ router.route("/login").post(asyncHandler(async (req, res) => {
         bcrypt.compare(password, user.password, async (err, data) => {
             if (data) {
                 const options = {
-                    httpOnly: true,
+                    httpOnly: false,
                     expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
                 };
                 const token = generateToken(user._id, process.env.JWT_SECRET);
