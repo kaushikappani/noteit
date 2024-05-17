@@ -9,7 +9,7 @@ import Paper from '@mui/material/Paper';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import io from 'socket.io-client';
 
-const socket = io("http://localhost:5500");
+const socket = io("https://noteit-kof1.onrender.com");
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {

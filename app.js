@@ -11,6 +11,8 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser")
 const socket = require("socket.io");
 
+const {socketProtect} = require("./middleware/protect")
+
 const { NseIndia } = require("stock-nse-india");
 const nseIndia = new NseIndia()
 
@@ -97,10 +99,6 @@ const io = socket(server, {
     }
 });
 
-
-
-
-
 const symbolQuantityObject = {
     "ARVIND": 20,
     "DREAMFOLKS": 21,
@@ -127,7 +125,9 @@ const symbolQuantityObject = {
     "SHRIRAMFIN":1,
 };
 
-io.on("connection", (socket) => {
+io.use(socketProtect);
+
+io.on("connection", protect, (socket) => {
 
     console.log(socket.id);
 
@@ -150,7 +150,8 @@ io.on("connection", (socket) => {
                     symbol: symbol,
                     pChange: data.priceInfo.pChange,
                     change: data.priceInfo.change,
-                    deliveryToTradedQuantity: tradeInfo.securityWiseDP.deliveryToTradedQuantity
+                    deliveryToTradedQuantity: tradeInfo.securityWiseDP.deliveryToTradedQuantity,
+                    date: data.EquityMetadata.lastUpdateTime
                 }
                 payload.push(stockData);
                 total += parseFloat(data.priceInfo.change) * quantity;
