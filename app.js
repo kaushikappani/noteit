@@ -11,6 +11,8 @@ const { Note } = require("./config/models");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser")
 const socket = require("socket.io");
+const schedule = require('node-schedule');
+
 
 // const {socketProtect} = require("./middleware/protect")
 
@@ -23,7 +25,8 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json({ limit: "50mb" }));
 
-const path = require("path")
+const path = require("path");
+const { scheduleTask } = require("./middleware/StockScheduler");
 app.use(express.json());
 connectDB();
 
@@ -57,6 +60,11 @@ if (process.env.NODE_ENV === "production") {
 app.use(errorHandler)
 app.use(notFound)
 
+schedule.scheduleJob('0 20 * * *', () => {
+    console.log('Scheduler triggered at 8 PM');
+    scheduleTask();
+});
+
 
 const server=app.listen(process.env.PORT, () => {
     console.log(`server running ${process.env.PORT}`)
@@ -69,31 +77,6 @@ const server=app.listen(process.env.PORT, () => {
 //     }
 // });
 
-const symbolQuantityObject = {
-    "ARVIND": 20,
-    "DREAMFOLKS": 21,
-    "EXIDEIND": 40,
-    "FEDERALBNK": 16,
-    "INDHOTEL": 17,
-    "ITC": 40,
-    "JIOFIN": 240,
-    "KCP": 25,
-    "MOTHERSON": 110,
-    "NHPC": 59,
-    "PARKHOTELS": 9,
-    "PNB": 160,
-    "POWERGRID": 20,
-    "RECLTD": 62,
-    "SBIN": 25,
-    "SUZLON": 418,
-    "TATAMOTORS": 10,
-    "TATAPOWER": 85,
-    "TITAGARH": 48,
-    // "UJJIVAN": 20,
-    "UJJIVANSFB": 506,
-    "VBL": 10,
-    "SHRIRAMFIN":0,
-};
 
 // io.use(socketProtect);
 

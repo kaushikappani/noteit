@@ -1,6 +1,7 @@
 const express = require("express");
 const { stockProtect } = require("../middleware/protect");
 const router = express.Router();
+const allData = require("./data");
 
 const { NseIndia } = require("stock-nse-india");
 
@@ -85,5 +86,16 @@ router.route("/summary").get(stockProtect, async (req, res) => {
         res.status(500).json({ error: 'Error fetching data' });
     }
 });
+router.route("/all").get(async (req, res) => {
+    const nseIndia = new NseIndia();
+
+    const data = await nseIndia.getAllStockSymbols();
+    res.json({ data });
+})
+
+
+
+
+
 
 module.exports = router;
