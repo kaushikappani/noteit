@@ -60,7 +60,7 @@ if (process.env.NODE_ENV === "production") {
 app.use(errorHandler)
 app.use(notFound)
 
-schedule.scheduleJob('0 20 * * *', () => {
+schedule.scheduleJob("45 7 * * * ", () => {
     console.log('Scheduler triggered at 8 PM');
     scheduleTask();
 });
@@ -68,6 +68,7 @@ schedule.scheduleJob('0 20 * * *', () => {
 
 const server=app.listen(process.env.PORT, () => {
     console.log(`server running ${process.env.PORT}`)
+
 })
 
 // const io = socket(server, {
