@@ -66,18 +66,18 @@ router.route("/summary").get(stockProtect, async (req, res) => {
             const quantity = symbolQuantityObject[symbol];
 
             let stockData = {
-                currentPrice: data.priceInfo.lastPrice.toFixed(2),
-                daypnl: (parseFloat(data.priceInfo.change) * quantity).toFixed(2),
+                currentPrice: data.priceInfo.lastPrice,
+                daypnl: (parseFloat(data.priceInfo.change) * quantity),
                 symbol: symbol,
-                pChange: data.priceInfo.pChange.toFixed(2),
-                change: data.priceInfo.change.toFixed(2),
+                pChange: data.priceInfo.pChange,
+                change: data.priceInfo.change,
                 deliveryToTradedQuantity: tradeInfo.securityWiseDP.deliveryToTradedQuantity,
                 date: data.metadata.lastUpdateTime
             }
             payload.push(stockData);
             total += parseFloat(data.priceInfo.change) * quantity;
         });
-        total = total.toFixed(2);
+        total = total;
         res.json({ payload, total });
     } catch (e) {
         console.error(`Error fetching data: ${e}`);
