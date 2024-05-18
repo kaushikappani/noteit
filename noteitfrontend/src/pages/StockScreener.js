@@ -75,7 +75,7 @@ const StockScreener = () => {
 
   useEffect(() => {
     fetchSummary();
-    setTimeout(fetchSummary(), 10000);
+    setInterval(fetchSummary(), 10000);
   }, []);
 
   const handleRequestSort = (event, property) => {
