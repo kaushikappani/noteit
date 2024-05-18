@@ -75,6 +75,7 @@ const StockScreener = () => {
 
   useEffect(() => {
     fetchSummary();
+    setTimeout(fetchSummary(), 10000);
   }, []);
 
   const handleRequestSort = (event, property) => {
@@ -87,7 +88,7 @@ const StockScreener = () => {
     <ThemeProvider theme={darkTheme}>
       <Header page="stocks" fetchSummary={fetchSummary} loading = {loading} />
       <Container>
-      <h3>Day P&L = {totalPrice}</h3>
+      <h3>Day P&L = {totalPrice.toFixed(2)}</h3>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="sortable table">
           <TableHead>
