@@ -26,7 +26,7 @@ const scheduleTask = async () => {
         }
 
         if (batchCount === 20 || (i === symbols.length - 1 && batchCount > 0)) {
-            const mailTemplate = await readFile("../templates/stock_email.html");
+            const mailTemplate = await readFile("../templates/stock_email.txt");
             let tableRows = "";
 
             batchData.forEach(stock => {
