@@ -148,10 +148,10 @@ const StockScreener = () => {
                 <TableCell component="th" scope="row">
                   {row.symbol}
                 </TableCell>
-                <TableCell align="right">{row.currentPrice}</TableCell>
-                <TableCell style={{ color: row.daypnl > 0 ? "green" : "red" }} align="right">{row.daypnl}</TableCell>
-                <TableCell align="right">{row.pChange}</TableCell>
-                <TableCell align="right">{row.deliveryToTradedQuantity}</TableCell>
+                <TableCell align="right">{row.currentPrice.toFixed(2)}</TableCell>
+                <TableCell style={{ color: row.daypnl > 0 ? "green" : "red" }} align="right">{row.daypnl.toFixed(2)}</TableCell>
+                <TableCell align="right">{row.pChange.toFixed(2)}</TableCell>
+                <TableCell align="right">{row.deliveryToTradedQuantity.toFixed(2)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
