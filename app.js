@@ -12,7 +12,18 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser")
 const socket = require("socket.io");
 const schedule = require('node-schedule');
+const moment = require('moment-timezone');
 
+const timeZone = 'Asia/Kolkata';
+
+// Define the time in IST
+const targetTime = moment.tz('20:25', 'HH:mm', timeZone);
+
+// Create a new RecurrenceRule
+const rule = new schedule.RecurrenceRule();
+rule.hour = targetTime.hour();
+rule.minute = targetTime.minute();
+rule.tz = 'Asia/Kolkata';
 
 // const {socketProtect} = require("./middleware/protect")
 
@@ -60,7 +71,7 @@ if (process.env.NODE_ENV === "production") {
 app.use(errorHandler)
 app.use(notFound)
 
-schedule.scheduleJob("45 7 * * * ", () => {
+schedule.scheduleJob(rule, () => {
     console.log('Scheduler triggered at 8 PM');
     scheduleTask();
 });
