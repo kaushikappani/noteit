@@ -12,32 +12,54 @@ const tradeData = async (symbol, nseIndia) => {
 const scheduleTask = async () => {
     const symbols = allData;
 
+    let batchData = [];
+    let batchCount = 0;
+
     for (let i = 0; i < symbols.length; i++) {
         const nseIndia = new NseIndia();
         const symbol = symbols[i];
         const data = await tradeData(symbol, nseIndia);
 
         if (data.securityWiseDP.deliveryToTradedQuantity > 60) {
-            const mailTemplate = await readFile("../templates/stock_email.txt");
-            const mailHtml = mailTemplate.replace("#{symbol}", symbol).replace("#{delivery}", data.securityWiseDP.deliveryToTradedQuantity);
+            batchData.push({ symbol, delivery: data.securityWiseDP.deliveryToTradedQuantity });
+            batchCount++;
+        }
 
-            const recipent = {
-                name: "kaushik", email: "kaushikappani@gmail.com"
+        if (batchCount === 20 || (i === symbols.length - 1 && batchCount > 0)) {
+            const mailTemplate = await readFile("../templates/stock_email.html");
+            let tableRows = "";
+
+            batchData.forEach(stock => {
+                tableRows += `
+                    <tr>
+                        <td>${stock.symbol}</td>
+                        <td>${stock.delivery}%</td>
+                    </tr>
+                `;
+            });
+
+            const mailHtml = mailTemplate.replace("<!-- Repeat rows as needed -->", tableRows);
+
+            const recipient = {
+                name: "kaushik",
+                email: "kaushikappani@gmail.com"
             }
 
             const mailBody = {
-                subject: "Scheduler - " + symbol,
+                subject: "Scheduler - Stock Delivery Report",
                 text: "Mail Sent By Scheduler",
                 html: mailHtml,
             }
 
-            mailer(recipent, mailBody)
+            await mailer(recipient, mailBody);
+
+            // Reset batch data and count
+            batchData = [];
+            batchCount = 0;
         }
 
-        // Wait for 2 minutes before processing the next symbol
         await new Promise(resolve => setTimeout(resolve, 20000));
     }
-
 };
 
 

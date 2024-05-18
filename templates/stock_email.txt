@@ -52,11 +52,6 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Example row -->
-                <tr>
-                    <td>#{symbol}</td>
-                    <td>#{delivery}</td>
-                </tr>
                 <!-- Repeat rows as needed -->
             </tbody>
         </table>
