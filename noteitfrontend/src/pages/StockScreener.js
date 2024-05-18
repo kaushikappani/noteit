@@ -7,6 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TableSortLabel from '@mui/material/TableSortLabel';
+import Button from '@mui/material/Button';
 import axios from 'axios';
 import Header from '../components/Header';
 import { Container } from 'react-bootstrap';
@@ -18,7 +19,6 @@ const darkTheme = createTheme({
     mode: 'dark',
   },
 });
-
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -54,9 +54,10 @@ const StockScreener = () => {
   const [error, setError] = useState();
   const [success, setSuccess] = useState();
   const [loading, setLoading] = useState(false);
+  const [autoReload, setAutoReload] = useState(false); 
 
-  const fetchSummary = async() => {
-    console.log("fetch summary")
+  const fetchSummary = async () => {
+    console.log("fetch summary");
     try {
       const config = {
         withCredentials: true,
@@ -67,16 +68,21 @@ const StockScreener = () => {
       setTotalPrice(data.total);
       setLoading(false);
     } catch (e) {
-      setLoading(false)
-      setError(e.response ? e.response.data.message : e.message)
+      setLoading(false);
+      setError(e.response ? e.response.data.message : e.message);
     }
-  }
- 
+  };
 
   useEffect(() => {
     fetchSummary();
-    setInterval(fetchSummary(), 10000);
-  }, []);
+    let intervalId;
+    if (autoReload) {
+      intervalId = setInterval(() => {
+        fetchSummary();
+      }, 10000);
+    }
+    return () => clearInterval(intervalId);
+  }, [autoReload]);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -84,79 +90,106 @@ const StockScreener = () => {
     setOrderBy(property);
   };
 
+  const handleAutoReloadToggle = () => {
+    setAutoReload(prev => !prev);
+  };
+
   return (
     <ThemeProvider theme={darkTheme}>
-      <Header page="stocks" fetchSummary={fetchSummary} loading = {loading} />
+      <CssBaseline />
+          {autoReload ? 'Stop Auto-Reload' : 'Start Auto-Reload'}
+      <Header page="stocks" fetchSummary={fetchSummary} loading={loading} autoReload={autoReload} handleAutoReloadToggle={handleAutoReloadToggle}  />
       <Container>
-      <h3>Day P&L = {totalPrice.toFixed(2)}</h3>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="sortable table">
-          <TableHead>
-            <TableRow>
-              <TableCell sortDirection={orderBy === 'symbol' ? order : false}>
-                <TableSortLabel
-                  active={orderBy === 'symbol'}
-                  direction={orderBy === 'symbol' ? order : 'asc'}
-                  onClick={(event) => handleRequestSort(event, 'symbol')}
-                >
-                  Symbol
-                </TableSortLabel>
-              </TableCell>
-              <TableCell align="right" sortDirection={orderBy === 'currentPrice' ? order : false}>
-                <TableSortLabel
-                  active={orderBy === 'currentPrice'}
-                  direction={orderBy === 'currentPrice' ? order : 'asc'}
-                  onClick={(event) => handleRequestSort(event, 'currentPrice')}
-                >
-                  Current Price
-                </TableSortLabel>
-              </TableCell>
-              <TableCell align="right" sortDirection={orderBy === 'daypnl' ? order : false}>
-                <TableSortLabel
-                  active={orderBy === 'daypnl'}
-                  direction={orderBy === 'daypnl' ? order : 'asc'}
-                  onClick={(event) => handleRequestSort(event, 'daypnl')}
-                >
-                  Day P&L
-                </TableSortLabel>
-              </TableCell>
-              <TableCell align="right" sortDirection={orderBy === 'pChange' ? order : false}>
-                <TableSortLabel
-                  active={orderBy === 'pChange'}
-                  direction={orderBy === 'pChange' ? order : 'asc'}
-                  onClick={(event) => handleRequestSort(event, 'pChange')}
-                >
-                  % Change
-                </TableSortLabel>
-              </TableCell>
-              <TableCell align="right" sortDirection={orderBy === 'deliveryToTradedQuantity' ? order : false}>
-                <TableSortLabel
-                  active={orderBy === 'deliveryToTradedQuantity'}
-                  direction={orderBy === 'deliveryToTradedQuantity' ? order : 'asc'}
-                  onClick={(event) => handleRequestSort(event, 'deliveryToTradedQuantity')}
-                >
-                  Delivery to Traded Quantity
-                </TableSortLabel>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {stableSort(payload, getComparator(order, orderBy)).map((row) => (
-              <TableRow
-                key={row.symbol}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.symbol}
+        <h3>Day P&L = {totalPrice.toFixed(2)}</h3>
+       
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="sortable table">
+            <TableHead>
+              <TableRow>
+                <TableCell sortDirection={orderBy === 'symbol' ? order : false}>
+                  <TableSortLabel
+                    active={orderBy === 'symbol'}
+                    direction={orderBy === 'symbol' ? order : 'asc'}
+                    onClick={(event) => handleRequestSort(event, 'symbol')}
+                  >
+                    Symbol
+                  </TableSortLabel>
                 </TableCell>
-                <TableCell align="right">{row.currentPrice.toFixed(2)}</TableCell>
-                <TableCell style={{ color: row.daypnl > 0 ? "green" : "red" }} align="right">{row.daypnl.toFixed(2)}</TableCell>
-                <TableCell align="right">{row.pChange.toFixed(2)}</TableCell>
-                <TableCell align="right">{row.deliveryToTradedQuantity.toFixed(2)}</TableCell>
+                <TableCell align="right" sortDirection={orderBy === 'currentPrice' ? order : false}>
+                  <TableSortLabel
+                    active={orderBy === 'currentPrice'}
+                    direction={orderBy === 'currentPrice' ? order : 'asc'}
+                    onClick={(event) => handleRequestSort(event, 'currentPrice')}
+                  >
+                    Current Price
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell align="right" sortDirection={orderBy === 'daypnl' ? order : false}>
+                  <TableSortLabel
+                    active={orderBy === 'daypnl'}
+                    direction={orderBy === 'daypnl' ? order : 'asc'}
+                    onClick={(event) => handleRequestSort(event, 'daypnl')}
+                  >
+                    Day P&L
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell align="right" sortDirection={orderBy === 'pChange' ? order : false}>
+                  <TableSortLabel
+                    active={orderBy === 'pChange'}
+                    direction={orderBy === 'pChange' ? order : 'asc'}
+                    onClick={(event) => handleRequestSort(event, 'pChange')}
+                  >
+                    Change
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell align="right" sortDirection={orderBy === 'deliveryToTradedQuantity' ? order : false}>
+                  <TableSortLabel
+                    active={orderBy === 'deliveryToTradedQuantity'}
+                    direction={orderBy === 'deliveryToTradedQuantity' ? order : 'asc'}
+                    onClick={(event) => handleRequestSort(event, 'deliveryToTradedQuantity')}
+                  >
+                    Delivery to Traded Quantity
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell align="right" sortDirection={orderBy === 'pdSectorPe' ? order : false}>
+                  <TableSortLabel
+                    active={orderBy === 'pdSectorPe'}
+                    direction={orderBy === 'pdSectorPe' ? order : 'asc'}
+                    onClick={(event) => handleRequestSort(event, 'pdSectorPe')}
+                  >
+                    Sector PE
+                  </TableSortLabel>
+                </TableCell>
+                <TableCell align="right" sortDirection={orderBy === 'pdSymbolPe' ? order : false}>
+                  <TableSortLabel
+                    active={orderBy === 'pdSymbolPe'}
+                    direction={orderBy === 'pdSymbolPe' ? order : 'asc'}
+                    onClick={(event) => handleRequestSort(event, 'pdSymbolPe')}
+                  >
+                    PE
+                  </TableSortLabel>
+                </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody>
+              {stableSort(payload, getComparator(order, orderBy)).map((row) => (
+                <TableRow
+                  key={row.symbol}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row.symbol}
+                  </TableCell>
+                  <TableCell align="right">{row.currentPrice.toFixed(2)}</TableCell>
+                  <TableCell style={{ color: row.daypnl >= 0 ? "green" : "red" }} align="right">{row.daypnl.toFixed(2)}</TableCell>
+                  <TableCell style={{ color: row.pChange >= 0 ? "green" : "red" }} align="right">{row.change.toFixed(2)} , {row.pChange.toFixed(2)} % </TableCell>
+                  <TableCell style={{ color: row.deliveryToTradedQuantity >= 40 ? "green" : "red" }} align="right">{row.deliveryToTradedQuantity.toFixed(2)}</TableCell>
+                  <TableCell align="right">{row.pdSectorPe}</TableCell>
+                  <TableCell align="right">{row.pdSymbolPe}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </TableContainer>
       </Container>
     </ThemeProvider>

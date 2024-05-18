@@ -5,6 +5,7 @@ import {  Archive, CloudCheck,Grid } from "react-bootstrap-icons";
 import { Spinner } from 'react-bootstrap';
 import Icon from "./noteIcon.jpg";
 import axios from "axios";
+import { Button } from '@mui/material';
 const Header = (props) => {
 
     const history = useHistory()
@@ -43,8 +44,14 @@ const Header = (props) => {
                     </Navbar.Collapse>
                     </>}
 
-                    {props.page === "stocks" && <> {props.loading && <Nav.Link><Spinner animation="border" size="sm" /></Nav.Link>}
-                        {!props.loading && <Nav.Link onClick={props.fetchSummary}>  <CloudCheck size={23} /></Nav.Link>}</>}
+                    <Nav className="mr-auto">
+                        {props.page === "stocks" && <> {props.loading && <Nav.Link><Spinner animation="border" size="sm" /></Nav.Link>}
+                            {!props.loading && <Nav.Link onClick={props.fetchSummary}>  <CloudCheck size={23} /></Nav.Link>}
+                            <Button variant="contained" color="primary" onClick={props.handleAutoReloadToggle}>
+                                {props.autoReload ? 'Stop Auto-Reload' : 'Start Auto-Reload'}
+                            </Button>
+                        </>}
+                   </Nav>
 
             </Container>
         </Navbar>
