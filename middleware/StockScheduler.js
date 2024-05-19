@@ -16,49 +16,54 @@ const scheduleTask = async () => {
     let batchCount = 0;
 
     for (let i = 0; i < symbols.length; i++) {
-        const nseIndia = new NseIndia();
-        const symbol = symbols[i];
-        const data = await tradeData(symbol, nseIndia);
+        try {
+            const nseIndia = new NseIndia();
+            const symbol = symbols[i];
+            const data = await tradeData(symbol, nseIndia);
 
-        if (data.securityWiseDP.deliveryToTradedQuantity > 60) {
-            batchData.push({ symbol, delivery: data.securityWiseDP.deliveryToTradedQuantity });
-            batchCount++;
-        }
+            if (data.securityWiseDP.deliveryToTradedQuantity > 60) {
+                batchData.push({ symbol, delivery: data.securityWiseDP.deliveryToTradedQuantity });
+                console.log("pushed to batch", symbol)
+                batchCount++;
+            }
 
-        if (batchCount === 20 || (i === symbols.length - 1 && batchCount > 0)) {
-            const mailTemplate = await readFile("../templates/stock_email.txt");
-            let tableRows = "";
+            if (batchCount === 50 || (i === symbols.length - 1 && batchCount > 0)) {
+                const mailTemplate = await readFile("../templates/stock_email.txt");
+                let tableRows = "";
 
-            batchData.forEach(stock => {
-                tableRows += `
+                batchData.forEach(stock => {
+                    tableRows += `
                     <tr>
                         <td>${stock.symbol}</td>
                         <td>${stock.delivery}%</td>
                     </tr>
                 `;
-            });
+                });
 
-            const mailHtml = mailTemplate.replace("<!-- Repeat rows as needed -->", tableRows);
+                const mailHtml = mailTemplate.replace("<!-- Repeat rows as needed -->", tableRows);
 
-            const recipient = {
-                name: "kaushik",
-                email: "kaushikappani@gmail.com"
+                const recipient = {
+                    name: "kaushik",
+                    email: "kaushikappani@gmail.com"
+                }
+
+                const mailBody = {
+                    subject: "Scheduler - Stock Delivery Report",
+                    text: "Mail Sent By Scheduler",
+                    html: mailHtml,
+                }
+
+                mailer(recipient, mailBody);
+
+                // Reset batch data and count
+                batchData = [];
+                batchCount = 0;
             }
 
-            const mailBody = {
-                subject: "Scheduler - Stock Delivery Report",
-                text: "Mail Sent By Scheduler",
-                html: mailHtml,
-            }
-
-            await mailer(recipient, mailBody);
-
-            // Reset batch data and count
-            batchData = [];
-            batchCount = 0;
+            await new Promise(resolve => setTimeout(resolve, 10000));
+        } catch (e) {
+            console.error(`Error while fetching data for symbol = ${symbol}`, e);
         }
-
-        await new Promise(resolve => setTimeout(resolve, 20000));
     }
 };
 

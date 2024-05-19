@@ -89,7 +89,7 @@ router.route("/summary").get(stockProtect, async (req, res) => {
 router.route("/all").get(async (req, res) => {
     const nseIndia = new NseIndia();
 
-    const data = await nseIndia.getAllStockSymbols();
+    const data = await nseIndia.getEquityTradeInfo("JIOFIN");
     res.json({ data });
 })
 
