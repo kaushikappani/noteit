@@ -17,7 +17,7 @@ const moment = require('moment-timezone');
 const timeZone = 'Asia/Kolkata';
 
 // Define the time in IST
-const targetTime = moment.tz('20:00', 'HH:mm', timeZone);
+const targetTime = moment.tz('18:00', 'HH:mm', timeZone);
 
 // Create a new RecurrenceRule
 const rule = new schedule.RecurrenceRule();
@@ -72,7 +72,7 @@ app.use(errorHandler)
 app.use(notFound)
 
 schedule.scheduleJob(rule, () => {
-    console.log('Scheduler triggered at 8 PM');
+    console.log('Scheduler triggered at 6 PM');
     scheduleTask();
 });
 

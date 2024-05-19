@@ -12,15 +12,11 @@ import Typography from "@mui/material/Typography";
 import ReactTimeAgo from "react-time-ago";
 import Toolbar from "../components/Toolbar";
 import { ArrowLeft } from "react-bootstrap-icons";
-
 import "react-quill/dist/quill.snow.css";
 import "react-quill/dist/quill.bubble.css";
-
 import "react-toastify/dist/ReactToastify.css";
 import Notification from "../components/Notification";
-
 import SunEditorComponent from "./SunEditorComponent";
-
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import { Chip, List, ListItem, ListSubheader } from "@mui/material";
@@ -53,37 +49,39 @@ export const Notemodel = ({ props }) => {
     setIsHovering(false);
   };
   const updateNote = async () => {
-    try {
-      const config = {
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      setLoading(true);
-      //eslint-disable-next-line
-      const { data } = await axios.put(`/api/notes/${props.id}`, note, config);
-      props.fetchNotes();
-      console.log("trigerreed");
-      setAlert({
-        open: true,
-        type: "success",
-        message: "Note - Updated",
-      });
-      setLoading(false);
-    } catch (e) {
-      console.log("failed");
-      setError(e.response ? e.response.data.message : e.message);
-      const message = e.response ? e.response.data.message : e.message;
-      console.log(message)
-      if (message) {
+    if (props.edit) {
+      try {
+        const config = {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+        setLoading(true);
+        //eslint-disable-next-line
+        const { data } = await axios.put(`/api/notes/${props.id}`, note, config);
+        props.fetchNotes();
+        console.log("trigerreed");
         setAlert({
           open: true,
-          type: "warning",
-          message: message,
+          type: "success",
+          message: "Note - Updated",
         });
+        setLoading(false);
+      } catch (e) {
+        console.log("failed");
+        setError(e.response ? e.response.data.message : e.message);
+        const message = e.response ? e.response.data.message : e.message;
+        console.log(message)
+        if (message) {
+          setAlert({
+            open: true,
+            type: "warning",
+            message: message,
+          });
+        }
+        setLoading(false);
       }
-      setLoading(false);
     }
   };
   const style = {

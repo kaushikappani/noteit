@@ -3,6 +3,11 @@ const { Note, User, NoteHistory, NoteAccess } = require("../config/models");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
 const { protect } = require("../middleware/protect");
+const client = require("../middleware/redis");
+const util = require('util');
+const { readFile } = require("../middleware/mailer");
+
+
 // const { map } = require("draft-js/lib/DefaultDraftBlockRenderMap");
 
 const router = express.Router();
@@ -11,25 +16,56 @@ router.route("/").get(
     protect,
     asyncHandler(async (req, res) => {
         try {
-            var notes = await Note.find({
+            // Fetch notes from the database
+            const notes = await Note.find({
                 user: req.user._id,
                 archived: false,
-            }).sort({
-                createdAt: -1,
-            });
-            const modifiedNotes = notes.map((note) => ({
+            }).sort({ createdAt: -1 });
+
+            // Modify notes by adding view and edit properties
+            const modifiedNotes = notes.map(note => ({
                 ...note.toObject(),
                 view: true,
                 edit: true,
             }));
-            user = {
+
+            if (req.user.email === "kaushikappani@gmail.com") {
+                const getAsync = util.promisify(client.get).bind(client);
+
+                const result = await getAsync("deliveryreport");
+                const resultDate = await getAsync("deliveryreportlastupdated");
+
+                const mailTemplate = await readFile("../templates/stock_email.txt");
+
+                if (result) {
+                    const deliveryreport = {
+                        _id: "deliveryreport",
+                        title: "Delivery Report - " + resultDate,
+                        content: mailTemplate.replace("<!-- Repeat rows as needed -->", result),
+                        pinned: true,
+                        archived: false,
+                        color: "#202124",
+                        view: true,
+                        edit: false,
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                    };
+                    modifiedNotes.push(deliveryreport);
+                }
+            }
+
+            
+            const user = {
                 email: req.user.email,
                 name: req.user.name,
             };
+
+            // Send the response
             res.json({ modifiedNotes, user });
         } catch (err) {
-            console.log(err);
+            console.error(err);
             res.clearCookie("token");
+            res.status(500).json({ message: "Internal Server Error" });
         }
     })
 );
@@ -72,6 +108,37 @@ router.route("/create").post(
 router.route("/:id/:history").get(
     protect,
     asyncHandler(async (req, res) => {
+        if (req.user.email === "kaushikappani@gmail.com" && req.params.id === "deliveryreport") {
+            const getAsync = util.promisify(client.get).bind(client);
+
+            const result = await getAsync("deliveryreport");
+            const resultDate = await getAsync("deliveryreportlastupdated");
+
+            const mailTemplate = await readFile("../templates/stock_email.txt");
+
+            if (result) {
+                const deliveryreport = {
+                    _id: "deliveryreport",
+                    title: "Delivery Report - " + resultDate,
+                    content: mailTemplate.replace("<!-- Repeat rows as needed -->", result),
+                    pinned: true,
+                    archived: false,
+                    color: "#202124",
+                    view: true,
+                    edit: false,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                };
+                let user = {
+                    "name": "Scheduler",
+                    "email": "Scheduler"
+                }
+
+                res.json({ note: deliveryreport,user})
+            }
+        }
+
+
         const note = await Note.findById(req.params.id)
             .select("-color")
             .select("-archived")
@@ -99,6 +166,9 @@ router.route("/:id/:history").get(
         }
         const edit = note.user.toString() === req.user._id.toString();
         const modifiedNote = { ...note.toObject(), view: true, edit };
+
+       
+
         if (note) {
             res.json({ note: modifiedNote, user: owner });
         } else {

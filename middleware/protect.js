@@ -2,17 +2,7 @@ const jwt = require("jsonwebtoken");
 const { User } = require("../config/models");
 const asyncHandler = require("express-async-handler");
 const redis = require("redis");
-
-const client = redis.createClient({
-    url: process.env.REDIS_URL,
-    legacyMode: true
-});
-client.on("ready", () => console.log("redis connected"))
-
-client.on('error', (err) => {
-    console.error(`Redis Error: ${err}`);
-});
-client.connect();
+const client = require("./redis");
 
 const protect = asyncHandler(async (req, res, next) => {
     let token;

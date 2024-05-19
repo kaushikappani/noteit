@@ -9,25 +9,15 @@ const { mailer, readFile } = require("../middleware/mailer")
 const cloudinary = require('cloudinary').v2;
 const fs = require("fs")
 const { upload } = require("../middleware/multer");
+const client = require("../middleware/redis");
+
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const redis = require("redis");
 
-const client = redis.createClient({
-    url: process.env.REDIS_URL,
-    legacyMode: true
-});
-client.on("ready", () => console.log("redis connected"))
-
-client.on('error', (err) => {
-    console.error(`Redis Error: ${err}`);
-});
-
-client.connect();
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: "360d"
