@@ -82,7 +82,7 @@ const scheduleTask = async () => {
                     html: mailHtml,
                 }
 
-                // mailer(recipient, mailBody);
+                mailer(recipient, mailBody);
 
                 batchData = [];
                 batchCount = 0;
