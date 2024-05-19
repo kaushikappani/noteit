@@ -35,6 +35,8 @@ const scheduleTask = async () => {
                 batchData.push({ symbol, delivery: data.securityWiseDP.deliveryToTradedQuantity });
                 console.log("pushed to batch", symbol)
                 batchCount++;
+            } else {
+                console.log("not pushed ", symbol)
             }
 
             if (batchCount === 50 || (i === symbols.length - 1 && batchCount > 0)) {
@@ -80,13 +82,13 @@ const scheduleTask = async () => {
                     html: mailHtml,
                 }
 
-                mailer(recipient, mailBody);
+                // mailer(recipient, mailBody);
 
                 batchData = [];
                 batchCount = 0;
             }
 
-            await new Promise(resolve => setTimeout(resolve, 10000));
+            await new Promise(resolve => setTimeout(resolve, 3000));
         } catch (e) {
             console.error(`Error while fetching data for symbol =  ${symbols[i]} `, e);
         }

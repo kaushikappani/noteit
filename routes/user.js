@@ -119,7 +119,7 @@ router.route("/login").post(asyncHandler(async (req, res) => {
 }))
 
 router.route("/info").get(protect, asyncHandler(async (req, res) => {
-    res.send(req.user).select("-_id");
+    res.send(req.user);
 }))
 
 router.route("/info").put(protect, asyncHandler(async (req, res) => {
