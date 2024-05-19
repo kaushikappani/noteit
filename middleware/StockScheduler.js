@@ -37,7 +37,7 @@ const scheduleTask = async () => {
                 batchCount++;
             }
 
-            if (batchCount === 5 || (i === symbols.length - 1 && batchCount > 0)) {
+            if (batchCount === 50 || (i === symbols.length - 1 && batchCount > 0)) {
                 const mailTemplate = await readFile("../templates/stock_email.txt");
                 let tableRows = "";
                 batchData.forEach(stock => {
@@ -80,13 +80,13 @@ const scheduleTask = async () => {
                     html: mailHtml,
                 }
 
-                // mailer(recipient, mailBody);
+                mailer(recipient, mailBody);
 
                 batchData = [];
                 batchCount = 0;
             }
 
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise(resolve => setTimeout(resolve, 10000));
         } catch (e) {
             console.error(`Error while fetching data for symbol =  ${symbols[i]} `, e);
         }
