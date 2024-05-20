@@ -286,9 +286,13 @@ router.route("/:id").delete(
     protect,
     asyncHandler(async (req, res) => {
         const note = await Note.findById(req.params.id);
+        const noteHistory = await NoteHistory.findOne({note:req.params.id});
         if (note.user.toString() !== req.user._id.toString()) {
             res.status(401);
             throw new Error("You cannot edit other notes");
+        }
+        if (noteHistory) {
+            await noteHistory.remove();
         }
         if (note) {
             await note.remove();
