@@ -24,7 +24,7 @@ rule.hour = targetTime.hour();
 rule.minute = targetTime.minute();
 rule.tz = 'Asia/Kolkata';
 
-const targetTime2 = moment.tz('10:00', 'HH:mm', timeZone);
+const targetTime2 = moment.tz('9:00', 'HH:mm', timeZone);
 const rule2 = new schedule.RecurrenceRule();
 rule2.hour = targetTime2.hour();
 rule2.minute = targetTime2.minute();
@@ -80,7 +80,7 @@ schedule.scheduleJob(rule, () => {
     scheduleCoorporateActions();
 });
 schedule.scheduleJob(rule2, () => {
-    console.log('Scheduler triggered at 10 AM');
+    console.log('Scheduler triggered at 9 AM');
     scheduleCoorporateAnnouncments();
     scheduleCoorporateActions();
 });
