@@ -1,4 +1,4 @@
-const { model } = require("mongoose");
+
 const { mailer, readFile } = require("./mailer");
 const { NseIndia } = require("stock-nse-india");
 const allData = require("../routes/data");
