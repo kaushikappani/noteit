@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock Updates</title>
+    <style>
+        table {
+            font-family: Arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>Stock Updates</h2>
+    <table>
+        <tr>
+            <th>Symbol</th>
+            <th>Description</th>
+            <th>Date</th>
+            <th>Attachment</th>
+            <th>Company Name</th>
+            <th>ISIN</th>
+            <th>Industry</th>
+            <th>Details</th>
+        </tr>
+        <!-- Repeat rows as needed -->
+    </table>
+</body>
+</html>

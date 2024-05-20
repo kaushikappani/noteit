@@ -119,8 +119,107 @@ const scheduleFiiDiiReport = async () => {
     const mailHtml = mailTemplate.replace("<!-- Repeat rows as needed -->", tableRows);
     const note = new Note({ user: user._id, title: "FII/ DII Report - " + catchDate.toString(), category: "Scheduler", content: mailHtml });
 
+
+    const recipient = {
+        name: "kaushik",
+        email: "kaushikappani@gmail.com"
+    }
+
+    const mailBody = {
+        subject: "FII/ DII Report ",
+        text: "Mail Sent By Scheduler",
+        html: mailHtml,
+    }
+
+    mailer(recipient, mailBody);
+
+    note.save();
+}
+
+const scheduleCoorporateAnnouncments = async () => {
+    const nseIndia = new NseIndia();
+
+    let data = await nseIndia.getDataByEndpoint("/api/corporate-announcements?index=equities");
+    let user = await User.findOne({ email: "kaushikappani@gmail.com" });
+    const mailTemplate = await readFile("../templates/stock_coorporate_annoucements.txt");
+    let tableRows = "";
+    const catchDate = moment.tz('Asia/Kolkata');
+
+    data.forEach(item => {
+        tableRows += `
+            <tr>
+            <td>${item.symbol}</td>
+            <td>${item.desc}</td>
+            <td>${item.an_dt}</td>
+            <td><a href="${item.attchmntFile}" target="_blank">View Attachment</a></td>
+            <td>${item.sm_name}</td>
+            <td>${item.sm_isin}</td>
+            <td>${item.smIndustry || 'N/A'}</td>
+            <td>${item.attchmntText}</td>
+        </tr>
+        `;
+    });
+
+    const mailHtml = mailTemplate.replace("<!-- Repeat rows as needed -->", tableRows);
+    const note = new Note({ user: user._id, title: "Corporate Announcements - " + catchDate.toString(), category: "Scheduler", content: mailHtml });
+
+    const recipient = {
+        name: "kaushik",
+        email: "kaushikappani@gmail.com"
+    }
+
+    const mailBody = {
+        subject: "Corporate Announcements",
+        text: "Corporate Announcements",
+        html: mailHtml,
+    }
+
+    mailer(recipient, mailBody);
+
+    note.save();
+}
+
+const scheduleCoorporateActions = async () => {
+    const nseIndia = new NseIndia();
+
+    let data = await nseIndia.getDataByEndpoint("/api/corporates-corporateActions?index=equities");
+    let user = await User.findOne({ email: "kaushikappani@gmail.com" });
+    const mailTemplate = await readFile("../templates/stock_coorporate_actions.txt");
+    let tableRows = "";
+    const catchDate = moment.tz('Asia/Kolkata');
+
+    data.forEach(item => {
+        tableRows += `
+            <tr>
+            <td>${item.symbol}</td>
+            <td>${item.faceVal}</td>
+            <td>${item.subject}</td>
+            <td>${item.exDate}</td>
+            <td>${item.comp}</td>
+        </tr>
+        `;
+    });
+
+    const mailHtml = mailTemplate.replace("<!-- Repeat rows as needed -->", tableRows);
+    const note = new Note({ user: user._id, title: "Corporate Actions - " + catchDate.toString(), category: "Scheduler", content: mailHtml });
+
+
+    const recipient = {
+        name: "kaushik",
+        email: "kaushikappani@gmail.com"
+    }
+
+    const mailBody = {
+        subject: "Corporate Actions",
+        text: "Corporate Actions",
+        html: mailHtml,
+    }
+
+    mailer(recipient, mailBody);
+
     note.save();
 }
 
 
-module.exports = { scheduleTask, scheduleFiiDiiReport };
+
+module.exports = { scheduleTask, scheduleFiiDiiReport, scheduleCoorporateAnnouncments, scheduleCoorporateActions };

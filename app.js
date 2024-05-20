@@ -13,23 +13,23 @@ const bodyParser = require("body-parser")
 const socket = require("socket.io");
 const schedule = require('node-schedule');
 const moment = require('moment-timezone');
-const { scheduleTask, scheduleFiiDiiReport } = require("./middleware/StockScheduler");
+const { scheduleTask, scheduleFiiDiiReport, scheduleCoorporateAnnouncments, scheduleCoorporateActions } = require("./middleware/StockScheduler");
 
 
 const timeZone = 'Asia/Kolkata';
 
-// Define the time in IST
 const targetTime = moment.tz('19:00', 'HH:mm', timeZone);
-
-// Create a new RecurrenceRule
 const rule = new schedule.RecurrenceRule();
 rule.hour = targetTime.hour();
 rule.minute = targetTime.minute();
 rule.tz = 'Asia/Kolkata';
 
-// const {socketProtect} = require("./middleware/protect")
+const targetTime2 = moment.tz('10:00', 'HH:mm', timeZone);
+const rule2 = new schedule.RecurrenceRule();
+rule2.hour = targetTime2.hour();
+rule2.minute = targetTime2.minute();
+rule2.tz = 'Asia/Kolkata';
 
-// const { NseIndia } = require("stock-nse-india");
 
 
 app.use(bodyParser.urlencoded({
@@ -73,76 +73,22 @@ app.use(errorHandler)
 app.use(notFound)
 
 schedule.scheduleJob(rule, () => {
-    console.log('Scheduler triggered at 6 PM');
+    console.log('Scheduler triggered at 7 PM');
     scheduleTask();
     scheduleFiiDiiReport();
+    scheduleCoorporateAnnouncments();
+    scheduleCoorporateActions();
 });
+schedule.scheduleJob(rule2, () => {
+    console.log('Scheduler triggered at 10 PM');
+    scheduleFiiDiiReport();
+    scheduleCoorporateAnnouncments();
+    scheduleCoorporateActions();
+});
+
 
 
 const server=app.listen(process.env.PORT, () => {
     console.log(`server running ${process.env.PORT}`)
 
 })
-
-// const io = socket(server, {
-//     cors: {
-//         origin: ["http://localhost:3000", "https://noteit-kof1.onrender.com"],
-//         methods: ["GET", "POST"]
-//     }
-// });
-
-
-// io.use(socketProtect);
-
-// io.on("connection", (socket) => {
-
-//     console.log(socket.id);
-
-//     let intervalId;
-
-//     // Fetch data for fixed symbols, calculate total, and emit to client
-//     const fetchDataAndSendTotal = async () => {
-//         const nseIndia = new NseIndia()
-//         let total = 0;
-//         let payload = [];
-//         for (const symbol of Object.keys(symbolQuantityObject)) {
-//             try {
-//                 // const data = await nseIndia.getEquityCorporateInfo(symbol);
-//                 const data = await getData(symbol, nseIndia);
-//                 const tradeInfo = await tradeData(symbol, nseIndia);
-//                 const quantity = symbolQuantityObject[symbol];
-//                         let stockData = {
-//                     currentPrice : data.priceInfo.lastPrice,
-//                     daypnl : parseFloat(data.priceInfo.change) * quantity,
-//                     symbol: symbol,
-//                     pChange: data.priceInfo.pChange,
-//                     change: data.priceInfo.change,
-//                     deliveryToTradedQuantity: tradeInfo.securityWiseDP.deliveryToTradedQuantity,
-//                     date: data.metadata.lastUpdateTime
-//                 }
-//                 payload.push(stockData);
-//                 total += parseFloat(data.priceInfo.change) * quantity;
-//             } catch (error) {
-//                 console.error(`Error fetching data for ${symbol}: ${error}`);
-//             }
-//         }
-//         console.log(total)
-//         io.emit("totalPrice", total);
-//         io.emit("payload", payload);
-//     };
-
-//     fetchDataAndSendTotal();
-
-//     // Call fetchDataAndSendTotal when client connects and every 5 second
-    
-//     intervalId = setInterval(fetchDataAndSendTotal, 6000);
-//     console.log("intervalId =",intervalId);
-
-//     // Handle disconnection
-//     socket.on("disconnect", async () => {
-//         console.log(`Client disconnected: ${socket.id}`);
-//         clearInterval(intervalId);
-//     });
-
-// });
-
