@@ -1,10 +1,10 @@
-
 const { mailer, readFile } = require("./mailer");
 const { NseIndia } = require("stock-nse-india");
 const allData = require("../routes/data");
 const client = require("./redis");
 const util = require('util');
 const moment = require('moment-timezone');
+const { Note,User } = require("../config/models");
 
 
 const tradeData = async (symbol, nseIndia) => {
@@ -95,5 +95,32 @@ const scheduleTask = async () => {
     }
 };
 
+const scheduleFiiDiiReport = async () => {
+    const nseIndia = new NseIndia();
 
-module.exports = { scheduleTask };
+    let data = await nseIndia.getDataByEndpoint("/api/fiidiiTradeReact"); 
+    let user = await User.findOne({ email: "kaushikappani@gmail.com" });
+    const mailTemplate = await readFile("../templates/stock_fii_dii_report.txt");
+    let tableRows = "";
+    const catchDate = moment.tz('Asia/Kolkata');
+
+    data.forEach(item => {
+        tableRows += `
+            <tr>
+                <td>${item.category}</td>
+                <td>${item.date}</td>
+                <td>${item.buyValue}</td>
+                <td>${item.sellValue}</td>
+                <td>${item.netValue}</td>
+            </tr>
+        `;
+    });
+
+    const mailHtml = mailTemplate.replace("<!-- Repeat rows as needed -->", tableRows);
+    const note = new Note({ user: user._id, title: "FII/ DII Report - " + catchDate.toString(), category: "Scheduler", content: mailHtml });
+
+    note.save();
+}
+
+
+module.exports = { scheduleTask, scheduleFiiDiiReport };

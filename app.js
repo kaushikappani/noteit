@@ -13,11 +13,13 @@ const bodyParser = require("body-parser")
 const socket = require("socket.io");
 const schedule = require('node-schedule');
 const moment = require('moment-timezone');
+const { scheduleTask, scheduleFiiDiiReport } = require("./middleware/StockScheduler");
+
 
 const timeZone = 'Asia/Kolkata';
 
 // Define the time in IST
-const targetTime = moment.tz('18:00', 'HH:mm', timeZone);
+const targetTime = moment.tz('19:00', 'HH:mm', timeZone);
 
 // Create a new RecurrenceRule
 const rule = new schedule.RecurrenceRule();
@@ -37,7 +39,6 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json({ limit: "50mb" }));
 
 const path = require("path");
-const { scheduleTask } = require("./middleware/StockScheduler");
 app.use(express.json());
 connectDB();
 
@@ -74,6 +75,7 @@ app.use(notFound)
 schedule.scheduleJob(rule, () => {
     console.log('Scheduler triggered at 6 PM');
     scheduleTask();
+    scheduleFiiDiiReport();
 });
 
 

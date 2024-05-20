@@ -88,9 +88,14 @@ router.route("/summary").get(stockProtect, async (req, res) => {
 });
 router.route("/all").get(async (req, res) => {
     const nseIndia = new NseIndia();
-
-    const data = await nseIndia.getEquityTradeInfo("JIOFIN");
-    res.json({ data });
+    let data = "";
+    try {
+        data = await nseIndia.getDataByEndpoint("/api/fiidiiTradeReact");
+    } catch (e) {
+        res.json({e});
+        console.log(JSON.stringify(e));
+   }
+    res.json(data );
 })
 
 
