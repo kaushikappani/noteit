@@ -104,6 +104,8 @@ const scheduleFiiDiiReport = async () => {
     let tableRows = "";
     const catchDate = moment.tz('Asia/Kolkata');
 
+    const note = await Note.findById("664ca1d9ac1930ca8b3f5945");
+
     data.forEach(item => {
         tableRows += `
             <tr>
@@ -117,7 +119,10 @@ const scheduleFiiDiiReport = async () => {
     });
 
     const mailHtml = mailTemplate.replace("<!-- Repeat rows as needed -->", tableRows);
-    const note = new Note({ user: user._id, title: "FII/ DII Report - " + catchDate.toString(), category: "Scheduler", content: mailHtml });
+    note.content = note.content + mailHtml;
+    note.title = "FII/ DII Report - " + catchDate.toString();
+    note.save();
+    // const note = new Note({ user: user._id, title: "FII/ DII Report - " + catchDate.toString(), category: "Scheduler", content: mailHtml });
 
 
     const recipient = {
@@ -133,7 +138,6 @@ const scheduleFiiDiiReport = async () => {
 
     mailer(recipient, mailBody);
 
-    note.save();
 }
 
 const scheduleCoorporateAnnouncments = async () => {
@@ -160,8 +164,14 @@ const scheduleCoorporateAnnouncments = async () => {
         `;
     });
 
+    const note = await Note.findById("664d66b9ac1930ca8b3f59ce");
+ 
     const mailHtml = mailTemplate.replace("<!-- Repeat rows as needed -->", tableRows);
-    const note = new Note({ user: user._id, title: "Corporate Announcements - " + catchDate.toString(), category: "Scheduler", content: mailHtml });
+    note.content = mailHtml;
+    note.title = "Corporate Announcements - " + catchDate.toString();
+    note.save();
+    
+    // const note = new Note({ user: user._id, title: "Corporate Announcements - " + catchDate.toString(), category: "Scheduler", content: mailHtml });
 
     const recipient = {
         name: "kaushik",
@@ -175,8 +185,6 @@ const scheduleCoorporateAnnouncments = async () => {
     }
 
     mailer(recipient, mailBody);
-
-    note.save();
 }
 
 const scheduleCoorporateActions = async () => {
@@ -201,8 +209,11 @@ const scheduleCoorporateActions = async () => {
     });
 
     const mailHtml = mailTemplate.replace("<!-- Repeat rows as needed -->", tableRows);
-    const note = new Note({ user: user._id, title: "Corporate Actions - " + catchDate.toString(), category: "Scheduler", content: mailHtml });
 
+    const note = await Note.findById("664d66b9ac1930ca8b3f59d1");
+    note.content = mailHtml;
+    note.title = "Corporate Actions - " + catchDate.toString();
+    note.save();
 
     const recipient = {
         name: "kaushik",
@@ -216,8 +227,6 @@ const scheduleCoorporateActions = async () => {
     }
 
     mailer(recipient, mailBody);
-
-    note.save();
 }
 
 
