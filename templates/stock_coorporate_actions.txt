@@ -2,16 +2,31 @@
 <html>
 <head>
     <title>Stock Updates</title>
+    <style>
+        table {
+            font-family: Arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif;">
+<body>
     <h2>Stock Updates</h2>
-    <table style="border-collapse: collapse; width: 100%;">
+    <table>
         <tr>
-            <th style="border: 1px solid #dddddd; text-align: left; padding: 8px;">Symbol</th>
-            <th style="border: 1px solid #dddddd; text-align: left; padding: 8px;">faceVal</th>
-            <th style="border: 1px solid #dddddd; text-align: left; padding: 8px;">subject</th>
-            <th style="border: 1px solid #dddddd; text-align: left; padding: 8px;">exDate</th>
-            <th style="border: 1px solid #dddddd; text-align: left; padding: 8px;">comp</th>
+            <th>Symbol</th>
+            <th>faceVal</th>
+            <th>subject</th>
+            <th>exDate</th>
+            <th>comp</th>
         </tr>
         <!-- Repeat rows as needed -->
     </table>
