@@ -18,7 +18,7 @@ const { scheduleTask, scheduleFiiDiiReport, scheduleCoorporateAnnouncments, sche
 
 const timeZone = 'Asia/Kolkata';
 
-const targetTime = moment.tz('19:00', 'HH:mm', timeZone);
+const targetTime = moment.tz('18:00', 'HH:mm', timeZone);
 const rule = new schedule.RecurrenceRule();
 rule.hour = targetTime.hour();
 rule.minute = targetTime.minute();
