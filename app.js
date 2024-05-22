@@ -18,13 +18,13 @@ const { scheduleTask, scheduleFiiDiiReport, scheduleCoorporateAnnouncments, sche
 
 const timeZone = 'Asia/Kolkata';
 
-const targetTime = moment.tz('18:00', 'HH:mm', timeZone);
+const targetTime = moment.tz(process.env.TIME_RULE1, 'HH:mm', timeZone);
 const rule = new schedule.RecurrenceRule();
 rule.hour = targetTime.hour();
 rule.minute = targetTime.minute();
 rule.tz = 'Asia/Kolkata';
 
-const targetTime2 = moment.tz('9:00', 'HH:mm', timeZone);
+const targetTime2 = moment.tz(process.env.TIME_RULE2, 'HH:mm', timeZone);
 const rule2 = new schedule.RecurrenceRule();
 rule2.hour = targetTime2.hour();
 rule2.minute = targetTime2.minute();
