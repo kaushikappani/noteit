@@ -62,7 +62,6 @@ const stockProtect = asyncHandler(async (req, res, next) => {
                 }
 
                 if (req.user.email === 'kaushikappani@gmail.com') {
-                    console.log("Authenticated")
                     next();
                 } else {
                     res.status(401).json({ message: "Access Denied" });
