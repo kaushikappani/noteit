@@ -10,10 +10,10 @@ const { errorHandler, notFound } = require("./middleware/error");
 const { Note } = require("./config/models");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser")
-const socket = require("socket.io");
 const schedule = require('node-schedule');
 const moment = require('moment-timezone');
-const { scheduleTask, scheduleFiiDiiReport, scheduleCoorporateAnnouncments, scheduleCoorporateActions } = require("./middleware/StockScheduler");
+const { scheduleTask, scheduleFiiDiiReport,
+    scheduleCoorporateAnnouncments, scheduleCoorporateActions } = require("./middleware/StockScheduler");
 
 
 const timeZone = 'Asia/Kolkata';
@@ -46,9 +46,8 @@ app.use(cookieParser());
 app.use("/api/users", userRoutes)
 app.use("/api/notes", notesRoute)
 app.use("/api/stock", stockRoute)
-
-
-
+app.use(errorHandler)
+app.use(notFound)
 
 __dirname = path.resolve();
 if (process.env.NODE_ENV === "production") {
@@ -58,19 +57,9 @@ if (process.env.NODE_ENV === "production") {
     })
 } else {
     app.get("/", async(req, res) => {
-        const notes = await Note.find({});
-        notes.forEach(n => {
-            n.archived = false
-            n.save();
-        })
         res.send("done")
     })
 }
-
-
-
-app.use(errorHandler)
-app.use(notFound)
 
 schedule.scheduleJob(rule, () => {
     console.log('Scheduler triggered at 7 PM');
@@ -84,7 +73,6 @@ schedule.scheduleJob(rule2, () => {
     scheduleCoorporateAnnouncments();
     scheduleCoorporateActions();
 });
-
 
 
 const server=app.listen(process.env.PORT, () => {

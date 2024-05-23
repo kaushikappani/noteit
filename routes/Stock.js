@@ -68,6 +68,7 @@ router.route("/summary").get(stockProtect, async (req, res) => {
             const data = equityDetailsResults[index];
             const tradeInfo = tradeInfoResults[index];
             const quantity = symbolQuantityObject[symbol];
+            console.log(tradeData);
             let stockData = {
                 currentPrice:data.priceInfo.lastPrice,
                 daypnl: (parseFloat(data.priceInfo.change) * quantity),

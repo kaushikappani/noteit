@@ -77,47 +77,4 @@ const stockProtect = asyncHandler(async (req, res, next) => {
     }
 });
 
-
-
-// const socketProtect = async (socket, next) => {
-//     const token = socket.handshake.auth.token;
-//     console.log("token=",token)
-//     if (token) {
-//         try {
-//             const decode = jwt.verify(token, process.env.JWT_SECRET);
-//             const user = await User.findById(decode.id).select("-password");
-
-//             // Check if the token in Redis matches the one provided
-//             client.get(decode.id, (err, result) => {
-//                 if (err) {
-//                     console.error(err);
-//                     return next(new Error("Internal server error"));
-//                 }
-
-//                 if (result !== token) {
-//                     console.log('Token mismatch');
-//                     return next(new Error("Authorization failed: Token mismatch"));
-//                 }
-
-//                 // Check if the user's email is allowed
-//                 if (user.email === 'kaushikappani@gmail.com') {
-//                     console.log("Authenticated")
-//                     socket.user = user; // Store user info in socket object
-//                     return next();
-//                 } else {
-//                     console.log("Access Denied")
-//                     return next(new Error("Authorization failed: Access denied"));
-//                 }
-//             });
-//         } catch (err) {
-//             console.error(err);
-//             return next(new Error("Authorization failed: Invalid token"));
-//         }
-//     } else {
-//         return next(new Error("Authorization failed: No token provided"));
-//     }
-// };
-
-
-
 module.exports = { protect, stockProtect };

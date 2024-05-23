@@ -231,4 +231,7 @@ const scheduleCoorporateActions = async () => {
 
 
 
-module.exports = { scheduleTask, scheduleFiiDiiReport, scheduleCoorporateAnnouncments, scheduleCoorporateActions };
+module.exports = {
+    scheduleTask, scheduleFiiDiiReport,
+    scheduleCoorporateAnnouncments, scheduleCoorporateActions
+};
