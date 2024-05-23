@@ -46,8 +46,7 @@ app.use(cookieParser());
 app.use("/api/users", userRoutes)
 app.use("/api/notes", notesRoute)
 app.use("/api/stock", stockRoute)
-app.use(errorHandler)
-app.use(notFound)
+
 
 __dirname = path.resolve();
 if (process.env.NODE_ENV === "production") {
@@ -60,6 +59,9 @@ if (process.env.NODE_ENV === "production") {
         res.send("done")
     })
 }
+
+app.use(errorHandler)
+app.use(notFound)
 
 schedule.scheduleJob(rule, () => {
     console.log('Scheduler triggered at 7 PM');
