@@ -81,8 +81,6 @@ schedule.scheduleJob(rule, () => {
 });
 schedule.scheduleJob(rule2, () => {
     console.log('Scheduler triggered at 9 AM');
-    scheduleFiiDiiReport();
-
     scheduleCoorporateAnnouncments();
     scheduleCoorporateActions();
 });

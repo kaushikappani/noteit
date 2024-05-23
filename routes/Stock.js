@@ -49,6 +49,7 @@ router.route("/summary").get(stockProtect, async (req, res) => {
     const nseIndia = new NseIndia();
 
     let total = 0;
+    let worth = 0;
     let payload = [];
 
     try {
@@ -68,21 +69,22 @@ router.route("/summary").get(stockProtect, async (req, res) => {
             const tradeInfo = tradeInfoResults[index];
             const quantity = symbolQuantityObject[symbol];
             let stockData = {
-                currentPrice: data.priceInfo.lastPrice,
+                currentPrice:data.priceInfo.lastPrice,
                 daypnl: (parseFloat(data.priceInfo.change) * quantity),
                 symbol: symbol,
                 pChange: data.priceInfo.pChange,
                 change: data.priceInfo.change,
-                deliveryToTradedQuantity: tradeInfo.securityWiseDP.deliveryToTradedQuantity,
+                deliveryToTradedQuantity: tradeData.securityWiseDP ? tradeInfo.securityWiseDP.deliveryToTradedQuantity : 0,
                 date: data.metadata.lastUpdateTime,
                 pdSectorPe: data.metadata.pdSectorPe,
                 pdSymbolPe: data.metadata.pdSymbolPe
             }
             payload.push(stockData);
             total += parseFloat(data.priceInfo.change) * quantity;
+            worth += parseFloat(data.priceInfo.lastPrice) * quantity
         });
         total = total;
-        res.json({ payload, total });
+        res.json({ payload, total, worth });
     } catch (e) {
         console.error(`Error fetching data: ${e}`);
         res.status(500).json({ error: 'Error fetching data' });

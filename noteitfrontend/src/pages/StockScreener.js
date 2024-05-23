@@ -49,6 +49,7 @@ function stableSort(array, comparator) {
 const StockScreener = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [payload, setPayload] = useState([]);
+  const [worth, setWorth] = useState(0);
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('symbol');
   const [error, setError] = useState();
@@ -66,6 +67,7 @@ const StockScreener = () => {
       const { data } = await axios.get("/api/stock/summary", config);
       setPayload(data.payload);
       setTotalPrice(data.total);
+      setWorth(data.worth);
       setLoading(false);
     } catch (e) {
       setLoading(false);
@@ -100,8 +102,10 @@ const StockScreener = () => {
           {autoReload ? 'Stop Auto-Reload' : 'Start Auto-Reload'}
       <Header page="stocks" fetchSummary={fetchSummary} loading={loading} autoReload={autoReload} handleAutoReloadToggle={handleAutoReloadToggle}  />
       <Container>
-        <h3>Day P&L = {totalPrice.toFixed(2)}</h3>
-       
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h3 style={{ margin: 0 }}>Day P&L = {totalPrice.toFixed(2)}</h3>
+          <h3 style={{ margin: 0 }}>Worth = {worth.toFixed(2)}</h3>
+        </div>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="sortable table">
             <TableHead>
