@@ -30,7 +30,6 @@ const rule2 = new schedule.RecurrenceRule();
 rule2.hour = targetTime2.hour();
 rule2.minute = targetTime2.minute();
 rule2.tz = 'Asia/Kolkata';
-rule2.dayOfWeek = new schedule.Range(1, 5);
 
 
 
