@@ -103,8 +103,8 @@ const StockScreener = () => {
       <Header page="stocks" fetchSummary={fetchSummary} loading={loading} autoReload={autoReload} handleAutoReloadToggle={handleAutoReloadToggle}  />
       <Container>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ margin: 0 }}>Day P&L = {totalPrice.toFixed(2)}</h3>
-          <h3 style={{ margin: 0 }}>Worth = {worth.toFixed(2)}</h3>
+          <h3 style={{ margin: 0 }}>{totalPrice.toFixed(2)}</h3>
+          <h3 style={{ margin: 0 }}>{worth.toFixed(2)}</h3>
         </div>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="sortable table">
