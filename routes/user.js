@@ -20,7 +20,7 @@ cloudinary.config({
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: "360d"
+        expiresIn: "365d"
     })
 }
 //   /api/users
@@ -37,32 +37,36 @@ router.route("/").post(asyncHandler(async (req, res) => {
         name, email, password: hashPassword, pic
     })
     newUser.pic = "https://res.cloudinary.com/dvg2fdn9e/image/upload/v1715348789/profilepic/pxp09vk4f5c1q01fipua.webp";
+    const ttlMilliseconds365Days = 365 * 24 * 60 * 60 * 1000;
     const options = {
         httpOnly: true,
-        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        expires: new Date(Date.now() + ttlMilliseconds365Days),
     };
 
     newUser.save().then(async (u) => {
         const token = generateToken(u._id);
         const id = u._id;
-        const verificationToken = jwt.sign({ id }, process.env.JWT_SECRET_VERIFICATION);
-        res.cookie("token", token, options).status(200).json({
+        res.cookie("token ", token, options).status(200).json({
             name: u.name,
             email: u.email,
         });
-        const key = id + "";
+        const key = id + "_login";
         value = token + "";
-        await client.set(key, value, (err, data) => {
+
+        await client.set(key, value, 'PX', ttlMilliseconds365Days,(err, data) => {
             if (err) {
                 console.log(err)
             }
         })
-        const recipent = {
-            name, email
-        }
+       
+        const verificationToken = jwt.sign({ id }, process.env.JWT_SECRET_VERIFICATION, {
+            expiresIn: "1h"
+        });
+
+        const ttlMilliseconds1Hr = 1 * 60 * 60 * 1000; // 3600000 milliseconds for 1 hour
         const verificaitonKey = email + "_verification";
         const  verificationTokenValue = verificationToken + "";
-        await client.set(verificaitonKey, verificationTokenValue, (err, data) => {
+        await client.set(verificaitonKey, verificationTokenValue, 'PX', ttlMilliseconds1Hr,(err, data) => {
             if (err) {
                 console.log(err)
             }
@@ -70,6 +74,9 @@ router.route("/").post(asyncHandler(async (req, res) => {
         const mailTemplate = await readFile("../templates/verify_account_email.txt");
         const mailHtml = mailTemplate.replace("#{link}", `${process.env.DOMAIN}/confirm/${verificationToken}`);
 
+        const recipent = {
+            name, email
+        }
         const mailBody = {
             subject: "NoteIt - Account Verification",
             text: "Click the following link to verify your link",
@@ -89,9 +96,11 @@ router.route("/login").post(asyncHandler(async (req, res) => {
     if (user) {
         bcrypt.compare(password, user.password, async (err, data) => {
             if (data) {
+                const ttlMilliseconds365Days = 365 * 24 * 60 * 60 * 1000;
+
                 const options = {
                     httpOnly: true,
-                    expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                    expires: new Date(Date.now() + ttlMilliseconds365Days),
                 };
                 const token = generateToken(user._id, process.env.JWT_SECRET);
                 res.cookie("token", token, options).json({
@@ -100,11 +109,11 @@ router.route("/login").post(asyncHandler(async (req, res) => {
                     isAdmin: user.isAdmin,
                     pic: user.pic,
                 });
-                const key = user._id + "";
+                const key = user._id + "_login";
                 value = token + "";
-                await client.set(key, value, (err, data) => {
+                await client.set(key, value, 'PX',ttlMilliseconds365Days,(err, data) => {
                     if (err) {
-                        console.log(err)
+                        console.log("error while saving", err);
                     }
                 })
             } if (!data) {
@@ -149,9 +158,9 @@ router.route("/confirm/:id").get(asyncHandler(async (req, res) => {
 
     try {
         token = req.params.id;
+
         const decode = jwt.verify(token, process.env.JWT_SECRET_VERIFICATION);
         console.log("decode", decode);
-       
         user = await User.findById(decode.id).select("-password");
         await client.get(user.email +"_verification", (err, result) => {
             if (err) {
@@ -182,17 +191,14 @@ router.route("/verifytoken").get(protect, asyncHandler(async (req, res) => {
 router.route("/forgotpassword").post(
     asyncHandler(async (req, res) => {
         const generateToken = (id) => {
-            return jwt.sign({ id }, process.env.JWT_SECRET, {
-                expiresIn: "1h",
+            return jwt.sign({ id }, process.env.JWT_SECRET_FORGOTPASSWORD, {
+                expiresIn: "10m",
             });
         };
         const { email } = req.body;
         const user = await User.findOne({ email });
         if (user) {
-            const token = generateToken(
-                user._id,
-                process.env.JWT_SECRET_FORGOTPASSWORD
-            );
+            const token = generateToken(user._id);
             const recipent = {
                 name: user.name,
                 email: user.email
@@ -223,7 +229,7 @@ router.route("/resetpassword/:id").post(asyncHandler(async (req, res) => {
     const id = req.params.id;
     const { password, conformpassword } = req.body;
     if (password === conformpassword) {
-        const decode = jwt.verify(id, process.env.JWT_SECRET);
+        const decode = jwt.verify(id, process.env.JWT_SECRET_FORGOTPASSWORD);
         const salt = await bcrypt.genSalt(11);
         hashPassword = await bcrypt.hash(password, salt);
         let user = await User.findOneAndUpdate({ _id: decode.id }, { password: hashPassword });
@@ -292,6 +298,7 @@ router.route("/verification/link").post(protect,asyncHandler(async (req, res) =>
     
     const id = req.user._id;
     const verificationToken = jwt.sign({ id }, process.env.JWT_SECRET_VERIFICATION);
+    
 
     const mailTemplate = await readFile("../templates/verify_account_email.txt");
     const mailHtml = mailTemplate.replace("#{link}", `${process.env.DOMAIN}/confirm/${verificationToken}`);
@@ -302,7 +309,9 @@ router.route("/verification/link").post(protect,asyncHandler(async (req, res) =>
     }
     const verificaitonKey = req.user.email + "_verification";
     const verificationTokenValue = verificationToken + "";
-    await client.set(verificaitonKey, verificationTokenValue, (err, data) => {
+    const ttlMilliseconds1Hr = 1 * 60 * 60 * 1000;
+
+    await client.set(verificaitonKey, verificationTokenValue, 'PX', ttlMilliseconds1Hr, (err, data) => {
         if (err) {
             console.log(err)
         }

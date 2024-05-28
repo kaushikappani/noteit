@@ -13,7 +13,7 @@ const protect = asyncHandler(async (req, res, next) => {
             req.user = await User.findById(decode.id).select("-password");
 
             // Check if the token in Redis matches the one in the request
-            await client.get(decode.id, (err, result) => {
+            await client.get(decode.id+"_login", (err, result) => {
                 if (err) {
                     console.error(err);
                     res.status(500).json({ message: "Internal server error" });
@@ -48,7 +48,7 @@ const stockProtect = asyncHandler(async (req, res, next) => {
             req.user = await User.findById(decode.id).select("-password");
 
             // Check if the token in Redis matches the one in the request
-            await client.get(decode.id, (err, result) => {
+            await client.get(decode.id+"_login", (err, result) => {
                 if (err) {
                     console.error(err);
                     res.status(500).json({ message: "Internal server error" });
