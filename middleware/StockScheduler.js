@@ -119,7 +119,7 @@ const scheduleFiiDiiReport = async () => {
     });
 
     const mailHtml = mailTemplate.replace("<!-- Repeat rows as needed -->", tableRows);
-    note.content = note.content + mailHtml;
+    note.content = mailHtml + note.content;
     note.title = "FII/ DII Report - " + catchDate.toString();
     note.save();
     // const note = new Note({ user: user._id, title: "FII/ DII Report - " + catchDate.toString(), category: "Scheduler", content: mailHtml });
