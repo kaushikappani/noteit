@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Investment Report</title>
+    
     <style>
         table {
             width: 100%;
@@ -22,15 +20,25 @@
 <body>
     <h1>Investment Data</h1>
     <table>
-        <thead>
-            <tr>
-                <th>Category</th>
-                <th>Date</th>
-                <th>Buy Value (in crores)</th>
-                <th>Sell Value (in crores)</th>
-                <th>Net Value (in crores)</th>
-            </tr>
-        </thead>
+         <thead>
+        <tr>
+            <th>
+                <div><span style="color: rgb(0, 0, 0)">Category</span></div>
+            </th>
+            <th>
+                <div><span style="color: rgb(0, 0, 0)">Date</span></div>
+            </th>
+            <th>
+                <div><span style="color: rgb(0, 0, 0)">Buy Value (in crores)</span></div>
+            </th>
+            <th>
+                <div><span style="color: rgb(0, 0, 0)">Sell Value (in crores)</span></div>
+            </th>
+            <th>
+                <div><span style="color: rgb(0, 0, 0)">Net Value (in crores)</span></div>
+            </th>
+        </tr>
+    </thead>
         <tbody>
             <!-- Repeat rows as needed -->
         </tbody>
