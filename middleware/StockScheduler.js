@@ -33,10 +33,8 @@ const scheduleTask = async () => {
 
             if (data.securityWiseDP.deliveryToTradedQuantity > 60) {
                 batchData.push({ symbol, delivery: data.securityWiseDP.deliveryToTradedQuantity });
-                console.log("pushed to batch", symbol)
                 batchCount++;
             } else {
-                console.log("not pushed ", symbol)
             }
 
             if (batchCount === 50 || (i === symbols.length - 1 && batchCount > 0)) {
@@ -99,7 +97,8 @@ const scheduleFiiDiiReport = async () => {
     const nseIndia = new NseIndia();
 
     let data = await nseIndia.getDataByEndpoint("/api/fiidiiTradeReact"); 
-    let user = await User.findOne({ email: "kaushikappani@gmail.com" });
+
+    console.log(data);
     const mailTemplate = await readFile("../templates/stock_fii_dii_report.txt");
     let tableRows = "";
     const catchDate = moment.tz('Asia/Kolkata');

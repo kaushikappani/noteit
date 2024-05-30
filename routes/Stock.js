@@ -94,7 +94,7 @@ router.route("/all").get(async (req, res) => {
     const nseIndia = new NseIndia();
     let data = "";
     try {
-        data = await nseIndia.getDataByEndpoint("/api/corporate-announcements?index=equities");
+        data = await nseIndia.getDataByEndpoint("/api/fiidiiTradeReact");
     } catch (e) {
         res.json({e});
         console.log(JSON.stringify(e));
