@@ -49,6 +49,7 @@ router.route("/").get(
                         edit: false,
                         createdAt: new Date(),
                         updatedAt: new Date(),
+                        category : "Scheduler"
                     };
                     modifiedNotes.push(deliveryreport);
                 }
@@ -128,6 +129,7 @@ router.route("/:id/:history").get(
                     edit: false,
                     createdAt: new Date(),
                     updatedAt: new Date(),
+                    category : "Scheduler"
                 };
                 let user = {
                     "name": "Scheduler",
