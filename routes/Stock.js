@@ -20,17 +20,17 @@ const symbolQuantityObject = {
     "PNB": 160,
     "POWERGRID": 20,
     "RECLTD": 62,
-    "SBIN": 27,
+    "SBIN": 32,
     "SUZLON": 418,
     "TATAMOTORS": 10,
     "TATAPOWER": 85,
     "TITAGARH": 48,
-    // "UJJIVAN": 20,
     "UJJIVANSFB": 506,
     "VBL": 10,
     "SHRIRAMFIN": 0,
     "BEL": 10,
-    "BHEL":10
+    "BHEL": 10,
+    "KOTAKBANK":5
 };
 
 const getData = async (symbol, nseIndia) => {
