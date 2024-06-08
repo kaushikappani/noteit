@@ -89,9 +89,9 @@ export const Notemodel = ({ props }) => {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "100%",
-    maxWidth: "1000px",
-    maxHeight: "100vh",
+    width: "100%",  // Increase width
+    maxWidth: "1200px",  // Increase max width
+    maxHeight: "100vh",  // Increase max height
     overflowY: "scroll",
     borderRadius: "2%",
     zIndex: 100,
@@ -443,7 +443,7 @@ export const Notemodel = ({ props }) => {
                     </Form.Group>
 
                     <Form.Group
-                      style={{ paddingTop: "50px" }}
+                      style={{ paddingTop: "2px" }}
                       controlId="content"
                     >
                       <Form.Label>Category</Form.Label>

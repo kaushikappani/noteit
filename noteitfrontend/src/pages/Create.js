@@ -49,9 +49,9 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "100%",
-    maxWidth: "750px",
-    maxHeight: "90vh",
+    width: "100%",  // Increase width
+    maxWidth: "100vw",  // Increase max width
+    maxHeight: "100vh",  // Increase max height
     overflowY: "scroll",
     borderRadius: "2%",
     zIndex: 100,

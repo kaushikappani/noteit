@@ -1,0 +1,14 @@
+/* Add this to your CSS file */
+.right-side-modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 35%;
+    height: 100vh;
+    background-color: white;
+    overflow-y: auto;
+    border-left: 1px solid #ccc;
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+}

@@ -16,7 +16,7 @@ const editorOptions = {
         
     ],
     imageRotation: false,
-    fontSize: [12, 14, 16, 18, 20],
+    fontSize: [12, 13,14, 16, 18, 20],
     colorList: [
         [
             "#828282",
@@ -44,7 +44,7 @@ const SunEditorComponent = ({ data, changeEditor,editorRef,disable }) => {
             style={{color:"red"}}
             disable={disable}
             hideToolbar={disable}
-            height="50vh"
+            height="75vh"
             ref={editorRef}
             setOptions={editorOptions}
             onChange={changeEditor}
