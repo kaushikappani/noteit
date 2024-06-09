@@ -65,14 +65,14 @@ app.use(errorHandler)
 app.use(notFound)
 
 schedule.scheduleJob(rule, () => {
-    console.log('Scheduler triggered at 7 PM');
+    console.log('Scheduler triggered with rule');
     scheduleTask();
     scheduleFiiDiiReport();
     scheduleCoorporateAnnouncments();
     scheduleCoorporateActions();
 });
 schedule.scheduleJob(rule2, () => {
-    console.log('Scheduler triggered at 9 AM');
+    console.log('Scheduler triggered with rule2');
     scheduleCoorporateAnnouncments();
     scheduleCoorporateActions();
 });
