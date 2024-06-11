@@ -1,6 +1,6 @@
 {
   "name": "noteitfrontend",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "private": true,
   "proxy": "https://noteit-kof1.onrender.com",
   "dependencies": {

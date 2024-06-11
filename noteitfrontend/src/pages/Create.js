@@ -50,10 +50,10 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: "100%",  // Increase width
-    maxWidth: "100vw",  // Increase max width
+    maxWidth: "1200px",  // Increase max width
     maxHeight: "100vh",  // Increase max height
     overflowY: "scroll",
-    borderRadius: "2%",
+    borderRadius: "0%",
     zIndex: 100,
     border: "0px",
   };

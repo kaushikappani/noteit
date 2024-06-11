@@ -32,6 +32,10 @@ html{
   border:none
 }
 
+.MuiPaper-root{
+  border-radius: 0px !important;
+}
+
 
 
 .ql-toolbar {

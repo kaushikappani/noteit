@@ -308,7 +308,7 @@ const Notes = () => {
             <ResponsiveMasonry
               columnsCountBreakPoints={{ 350: 1, 750: 2, 1000: 3 }}
             >
-              <Masonry gutter={"15px"}>
+              <Masonry gutter={"10px"}>
                 {notes?.length > 0 &&
                   notes
                     ?.filter((v) => v.pinned === false && v.view)
