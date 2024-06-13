@@ -22,14 +22,14 @@
     <h2>Stock Updates</h2>
     <table>
         <tr>
-            <th>Symbol</th>
-            <th>Description</th>
-            <th>Date</th>
-            <th>Attachment</th>
-            <th>Company Name</th>
-            <th>ISIN</th>
-            <th>Industry</th>
-            <th>Details</th>
+            <th><div><span style="color: rgb(0, 0, 0)">Symbol</span></div> </th>
+            <th><div><span style="color: rgb(0, 0, 0)">Description</span></div> </th>
+            <th><div><span style="color: rgb(0, 0, 0)">Date</span></div> </th>
+            <th><div><span style="color: rgb(0, 0, 0)">Attachment</span></div> </th>
+            <th><div><span style="color: rgb(0, 0, 0)">Company Name</span></div> </th>
+            <th><div><span style="color: rgb(0, 0, 0)">ISIN</span></div> </th>
+            <th><div><span style="color: rgb(0, 0, 0)">Industry</span></div> </th>
+            <th><div><span style="color: rgb(0, 0, 0)">Details</span></div> </th>
         </tr>
         <!-- Repeat rows as needed -->
     </table>

@@ -22,11 +22,11 @@
     <h2>Stock Updates</h2>
     <table>
         <tr>
-            <th>Symbol</th>
-            <th>faceVal</th>
-            <th>subject</th>
-            <th>exDate</th>
-            <th>comp</th>
+            <th><div><span style="color: rgb(0, 0, 0)">Symbol</span></div> </th>
+            <th><div><span style="color: rgb(0, 0, 0)">faceVal</span></div></th>
+            <th> <div><span style="color: rgb(0, 0, 0)">subject</span></div></th>
+            <th> <div><span style="color: rgb(0, 0, 0)">exDate</span></div></th>
+            <th><div><span style="color: rgb(0, 0, 0)">comp</span></div></th>
         </tr>
         <!-- Repeat rows as needed -->
     </table>
