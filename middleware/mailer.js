@@ -33,7 +33,7 @@ const readFile = (relativePath) => {
          data = fs.readFileSync(filePath, 'utf8');
     } catch (err) {
         console.error(err);
-        throw new Error("New passwod and conform password match");
+        throw new Error("Error while reading file");
 
     }
     return data;

@@ -142,7 +142,6 @@ const scheduleCoorporateAnnouncments = async () => {
     const nseIndia = new NseIndia();
 
     let data = await nseIndia.getDataByEndpoint("/api/corporate-announcements?index=equities");
-    let user = await User.findOne({ email: "kaushikappani@gmail.com" });
     const mailTemplate = await readFile("../templates/stock_coorporate_annoucements.txt");
     let tableRows = "";
     const catchDate = moment.tz('Asia/Kolkata');
@@ -189,7 +188,6 @@ const scheduleCoorporateActions = async () => {
     const nseIndia = new NseIndia();
 
     let data = await nseIndia.getDataByEndpoint("/api/corporates-corporateActions?index=equities");
-    let user = await User.findOne({ email: "kaushikappani@gmail.com" });
     const mailTemplate = await readFile("../templates/stock_coorporate_actions.txt");
     let tableRows = "";
     const catchDate = moment.tz('Asia/Kolkata');
