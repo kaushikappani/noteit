@@ -19,7 +19,7 @@
     </style>
 </head>
 <body>
-    <h2>Stock Updates</h2>
+    <h3>Coorporate Actions</h3>
     <table>
         <tr>
             <th><div><span style="color: rgb(0, 0, 0)">Symbol</span></div> </th>

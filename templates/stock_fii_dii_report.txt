@@ -18,7 +18,7 @@
     </style>
 </head>
 <body>
-    <h1>Investment Data</h1>
+    <h3>FII/DII Report</h3>
     <table>
          <thead>
         <tr>
