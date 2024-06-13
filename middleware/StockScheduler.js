@@ -31,11 +31,11 @@ const scheduleTask = async () => {
             const symbol = symbols[i];
             const data = await tradeData(symbol, nseIndia);
 
-            if (data.securityWiseDP.deliveryToTradedQuantity > 50) {  //threshold to be configurable
+            if (data.securityWiseDP.deliveryToTradedQuantity > process.env.DELIVERY_QUANTITY_THRESHOLD) {  //threshold to be configurable
                 batchData.push({ symbol, delivery: data.securityWiseDP.deliveryToTradedQuantity });
                 batchCount++;
             } 
-            if (batchCount === 50 || (i === symbols.length - 1 && batchCount > 0)) { // batch size to be configurable
+            if (batchCount === 50 || (i === symbols.length - 1 && batchCount > 0)) { 
                 try {
                     const mailTemplate = await readFile("../templates/stock_email.txt");
                     let tableRows = "";

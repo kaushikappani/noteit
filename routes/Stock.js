@@ -33,21 +33,19 @@ const symbolQuantityObject = {
     "KOTAKBANK":5
 };
 
-const getData = async (symbol, nseIndia) => {
-
+const getData = async (symbol) => {
+    const nseIndia = new NseIndia();
     const data = await nseIndia.getEquityDetails(symbol);
     return data;
 }
 
-const tradeData = async (symbol, nseIndia) => {
-
+const tradeData = async (symbol) => {
+    const nseIndia = new NseIndia();
     const data = await nseIndia.getEquityTradeInfo(symbol);
     return data;
 }
 
 router.route("/summary").get(stockProtect, async (req, res) => {
-    const nseIndia = new NseIndia();
-
     let total = 0;
     let worth = 0;
     let payload = [];
@@ -56,40 +54,63 @@ router.route("/summary").get(stockProtect, async (req, res) => {
         const symbols = Object.keys(symbolQuantityObject);
 
         // Fetch all equity details and trade info concurrently
-        const equityDetailsPromises = symbols.map(symbol => getData(symbol, nseIndia));
-        const tradeInfoPromises = symbols.map(symbol => tradeData(symbol, nseIndia));
+        const dataPromises = symbols.map(async (symbol) => {
+            try {
+                const [equityDetails, tradeInfo] = await Promise.all([
+                    getData(symbol),
+                    tradeData(symbol)
+                ]);
+
+                return { symbol, equityDetails, tradeInfo };
+            } catch (error) {
+                console.error(`Error fetching data for symbol ${symbol}: ${error}`);
+                return null;
+            }
+        });
 
         // Wait for all promises to resolve
-        const equityDetailsResults = await Promise.all(equityDetailsPromises);
-        const tradeInfoResults = await Promise.all(tradeInfoPromises);
+        const results = await Promise.all(dataPromises);
 
         // Process the results
-        symbols.forEach((symbol, index) => {
-            const data = equityDetailsResults[index];
-            const tradeInfo = tradeInfoResults[index];
-            const quantity = symbolQuantityObject[symbol];
-            let stockData = {
-                currentPrice:data.priceInfo.lastPrice,
-                daypnl: (parseFloat(data.priceInfo.change) * quantity),
-                symbol: symbol,
-                pChange: data.priceInfo.pChange,
-                change: data.priceInfo.change,
-                deliveryToTradedQuantity: tradeInfo.securityWiseDP.deliveryToTradedQuantity ,
-                date: data.metadata.lastUpdateTime,
-                pdSectorPe: data.metadata.pdSectorPe,
-                pdSymbolPe: data.metadata.pdSymbolPe
+        results.forEach((result) => {
+            if (result) {
+                const { symbol, equityDetails, tradeInfo } = result;
+                const quantity = symbolQuantityObject[symbol];
+
+                const currentPrice = parseFloat(equityDetails.priceInfo.lastPrice);
+                const change = parseFloat(equityDetails.priceInfo.change);
+                const pChange = parseFloat(equityDetails.priceInfo.pChange);
+                const deliveryToTradedQuantity = parseFloat(tradeInfo.securityWiseDP.deliveryToTradedQuantity);
+                const date = equityDetails.metadata.lastUpdateTime;
+                const pdSectorPe = parseFloat(equityDetails.metadata.pdSectorPe);
+                const pdSymbolPe = parseFloat(equityDetails.metadata.pdSymbolPe);
+
+                payload.push({
+                    currentPrice,
+                    daypnl: change * quantity,
+                    symbol,
+                    pChange,
+                    change,
+                    deliveryToTradedQuantity,
+                    date,
+                    pdSectorPe,
+                    pdSymbolPe
+                });
+
+                total += change * quantity;
+                worth += currentPrice * quantity;
             }
-            payload.push(stockData);
-            total += parseFloat(data.priceInfo.change) * quantity;
-            worth += parseFloat(data.priceInfo.lastPrice) * quantity
         });
-        total = total;
+
         res.json({ payload, total, worth });
     } catch (e) {
-        console.error(`Error fetching data: ${e}`);
-        res.status(500).json({ error: 'Error fetching data' });
+        console.error(`Error processing data: ${e}`);
+        res.status(500).json({ error: 'Error processing data' });
     }
 });
+
+
+
 router.route("/all").get(stockProtect,async (req, res) => {
     const nseIndia = new NseIndia();
     let data = "";
