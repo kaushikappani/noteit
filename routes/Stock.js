@@ -90,7 +90,7 @@ router.route("/summary").get(stockProtect, async (req, res) => {
         res.status(500).json({ error: 'Error fetching data' });
     }
 });
-router.route("/all").get(async (req, res) => {
+router.route("/all").get(stockProtect,async (req, res) => {
     const nseIndia = new NseIndia();
     let data = "";
     try {
@@ -101,10 +101,5 @@ router.route("/all").get(async (req, res) => {
    }
     res.json(data );
 })
-
-
-
-
-
 
 module.exports = router;
