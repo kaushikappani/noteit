@@ -77,7 +77,7 @@ const scheduleTask = async () => {
                         html: mailHtml,
                     }
 
-                    mailer(recipient, mailBody);
+                    // mailer(recipient, mailBody);
                     batchData = [];
                     batchCount = 0;
                 } catch (e) {
@@ -85,7 +85,7 @@ const scheduleTask = async () => {
                 }
             }
 
-            await new Promise(resolve => setTimeout(resolve, 3000));
+            await new Promise(resolve => setTimeout(resolve, 100));
         } catch (e) {
             console.error(`Error while fetching data for symbol =  ${symbols[i]} `, e);
         }
@@ -134,7 +134,7 @@ const scheduleFiiDiiReport = async () => {
         html: mailHtml,
     }
 
-    mailer(recipient, mailBody);
+    // mailer(recipient, mailBody);
 
 }
 
@@ -181,7 +181,7 @@ const scheduleCoorporateAnnouncments = async () => {
         html: mailHtml,
     }
 
-    mailer(recipient, mailBody);
+    // mailer(recipient, mailBody);
 }
 
 const scheduleCoorporateActions = async () => {
@@ -222,7 +222,7 @@ const scheduleCoorporateActions = async () => {
         html: mailHtml,
     }
 
-    mailer(recipient, mailBody);
+    // mailer(recipient, mailBody);
 }
 
 
