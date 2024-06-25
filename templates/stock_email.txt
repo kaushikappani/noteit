@@ -47,8 +47,8 @@
         <table>
             <thead>
                 <tr>
-                    <th><div><span style="color: rgb(0, 0, 0)">Stock Name</span></div> </th>
-                    <th<div><span style="color: rgb(0, 0, 0)">Delivery Percentage</span></div> </th>
+                    <th><span style="color: rgb(0, 0, 0)">Stock Name</span></th>
+                    <th><span style="color: rgb(0, 0, 0)">Delivery Percentage</span></th>
                 </tr>
             </thead>
             <tbody>
