@@ -31,7 +31,7 @@ const scheduleTask = async () => {
             const symbol = symbols[i];
             const data = await tradeData(symbol, nseIndia);
 
-            if (data.securityWiseDP.deliveryToTradedQuantity > process.env.DELIVERY_QUANTITY_THRESHOLD) {  //threshold to be configurable
+            if (data.securityWiseDP &&  data.securityWiseDP.deliveryToTradedQuantity > process.env.DELIVERY_QUANTITY_THRESHOLD) {  //threshold to be configurable
                 batchData.push({ symbol, delivery: data.securityWiseDP.deliveryToTradedQuantity });
                 batchCount++;
             } 
