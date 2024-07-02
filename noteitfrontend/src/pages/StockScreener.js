@@ -197,7 +197,7 @@ const StockScreener = () => {
                   <TableCell style={{ color: row.daypnl >= 0 ? "green" : "red" }} align="right">{row.daypnl.toFixed(2)}</TableCell>
                   <TableCell style={{ color: row.pChange >= 0 ? "green" : "red" }} align="right">{row.change.toFixed(2)} , {row.pChange.toFixed(2)} % </TableCell>
                   <TableCell style={{ color: row.deliveryToTradedQuantity >= 40 ? "green" : "red" }} align="right">{row.deliveryToTradedQuantity.toFixed(2)}</TableCell>
-                  <TableCell align="right">{row.currentValue}</TableCell>
+                  <TableCell align="right">{row.currentValue.toFixed(2)}</TableCell>
                   <TableCell align="right">{row.pdSectorPe}</TableCell>
                   <TableCell align="right">{row.pdSymbolPe}</TableCell>
                 </TableRow>
