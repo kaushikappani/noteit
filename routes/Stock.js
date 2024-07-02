@@ -95,7 +95,7 @@ router.route("/summary").get(stockProtect, async (req, res) => {
                     date,
                     pdSectorPe,
                     pdSymbolPe,
-                    currentValue: (currentPrice * quantity).toFixed(2)
+                    currentValue:currentPrice * quantity
                 });
 
                 total += change * quantity;
