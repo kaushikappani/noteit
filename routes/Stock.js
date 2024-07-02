@@ -94,7 +94,8 @@ router.route("/summary").get(stockProtect, async (req, res) => {
                     deliveryToTradedQuantity,
                     date,
                     pdSectorPe,
-                    pdSymbolPe
+                    pdSymbolPe,
+                    currentValue: currentPrice * quantity
                 });
 
                 total += change * quantity;
