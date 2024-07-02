@@ -25,10 +25,14 @@ rule.minute = targetTime.minute();
 rule.tz = 'Asia/Kolkata';
 rule.dayOfWeek = new schedule.Range(1, 5);
 
-const targetTime2 = moment.tz(process.env.TIME_RULE2, 'HH:mm', timeZone);
+// const targetTime2 = moment.tz(process.env.TIME_RULE2, 'HH:mm', timeZone);
+// const rule2 = new schedule.RecurrenceRule();
+// rule2.hour = targetTime2.hour();
+// rule2.minute = targetTime2.minute();
+// rule2.tz = 'Asia/Kolkata';
+
 const rule2 = new schedule.RecurrenceRule();
-rule2.hour = targetTime2.hour();
-rule2.minute = targetTime2.minute();
+rule2.minute = 0; 
 rule2.tz = 'Asia/Kolkata';
 
 
