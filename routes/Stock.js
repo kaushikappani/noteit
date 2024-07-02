@@ -16,7 +16,7 @@ const symbolQuantityObject = {
     "KCP": 25,
     "MOTHERSON": 115,
     "NHPC": 59,
-    "PARKHOTELS": 9,
+    "PARKHOTELS": 11,
     "PNB": 160,
     "POWERGRID": 20,
     "RECLTD": 62,
@@ -25,11 +25,11 @@ const symbolQuantityObject = {
     "TATAMOTORS": 10,
     "TATAPOWER": 85,
     "TITAGARH": 48,
-    "UJJIVANSFB": 534,
+    "UJJIVANSFB": 535,
     "VBL": 10,
     "SHRIRAMFIN": 0,
     "BEL": 10,
-    "BHEL": 10,
+    "BHEL": 20,
     "KOTAKBANK":10
 };
 
