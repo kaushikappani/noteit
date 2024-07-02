@@ -12,7 +12,7 @@ const symbolQuantityObject = {
     "FEDERALBNK": 41,
     "INDHOTEL": 17,
     "ITC": 40,
-    "JIOFIN": 241,
+    "JIOFIN": 244,
     "KCP": 25,
     "MOTHERSON": 115,
     "NHPC": 59,
@@ -25,12 +25,12 @@ const symbolQuantityObject = {
     "TATAMOTORS": 10,
     "TATAPOWER": 85,
     "TITAGARH": 48,
-    "UJJIVANSFB": 531,
+    "UJJIVANSFB": 534,
     "VBL": 10,
     "SHRIRAMFIN": 0,
     "BEL": 10,
     "BHEL": 10,
-    "KOTAKBANK":5
+    "KOTAKBANK":10
 };
 
 const getData = async (symbol) => {
