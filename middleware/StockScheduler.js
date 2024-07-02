@@ -30,9 +30,10 @@ const scheduleTask = async () => {
             const nseIndia = new NseIndia();
             const symbol = symbols[i];
             const data = await tradeData(symbol, nseIndia);
-
+            console.log("delivery " + data.securityWiseDP.deliveryToTradedQuantity)
             if (data.securityWiseDP &&  data.securityWiseDP.deliveryToTradedQuantity > process.env.DELIVERY_QUANTITY_THRESHOLD) {  //threshold to be configurable
                 batchData.push({ symbol, delivery: data.securityWiseDP.deliveryToTradedQuantity });
+                console.log("pushed to batch " + symbol)
                 batchCount++;
             } 
             if (batchCount === 50 || (i === symbols.length - 1 && batchCount > 0)) { 
@@ -65,6 +66,8 @@ const scheduleTask = async () => {
                             console.log(err)
                         }
                     })
+
+                    console.log("pushed to chache");
                     const mailHtml = mailTemplate.replace("<!-- Repeat rows as needed -->", tableRows);
                     const recipient = {
                         name: "kaushik",
@@ -85,7 +88,7 @@ const scheduleTask = async () => {
                 }
             }
 
-            await new Promise(resolve => setTimeout(resolve, 100));
+            await new Promise(resolve => setTimeout(resolve, 10));
         } catch (e) {
             console.error(`Error while fetching data for symbol =  ${symbols[i]} `, e);
         }
