@@ -20,7 +20,7 @@ router.route("/").get(
             const notes = await Note.find({
                 user: req.user._id,
                 archived: false,
-            }).sort({ createdAt: -1 });
+            }).sort({ createdAt: -1 }).select("-user");
 
             // Modify notes by adding view and edit properties
             const modifiedNotes = notes.map(note => ({
@@ -75,8 +75,9 @@ router.route("/archived").get(
     asyncHandler(async (req, res) => {
         const notes = await Note.find({ user: req.user._id, archived: true }).sort({
             updatedAt: -1,
-        });
+        }).select("-user");
         user = req.user;
+        user._id = null;
         const modifiedNotes = notes.map((note) => ({
             ...note.toObject(),
             view: true,
@@ -97,6 +98,7 @@ router.route("/create").post(
             if (req.user.verified === true) {
                 const note = new Note({ user: req.user._id, title, category, content });
                 const createdNote = await note.save();
+                createdNote.user = null;
                 res.status(201).json(createdNote);
             } else {
                 res.status(400);
@@ -145,7 +147,7 @@ router.route("/:id/:history").get(
             .select("-color")
             .select("-archived")
             .select("-pinned");
-        const owner = await User.findById(note.user).select("name").select("email");
+        const owner = await User.findById(note.user).select("name email -_id");
         const noteAccess = await NoteAccess.findOne({ note: note.id, user: req.user._id, isActive: true })
         if (note.user.toString() !== req.user._id.toString() && noteAccess == null) {
             res.status(401);
@@ -167,7 +169,7 @@ router.route("/:id/:history").get(
                 break;
         }
         const edit = note.user.toString() === req.user._id.toString();
-        const modifiedNote = { ...note.toObject(), view: true, edit };
+        const modifiedNote = { ...note.toObject(), view: true, edit ,user:null};
 
        
 
@@ -215,7 +217,7 @@ router.route("/shared").get(protect, asyncHandler(async (req, res) => {
     const notes = [];
 
     for (const access of noteAccess) {
-        const note = await Note.findById(access.note);
+        const note = await Note.findById(access.note).select("-user");
         if (note != null) {
             notes.push(note);
         }
@@ -276,6 +278,7 @@ router.route("/:id").put(
             }
 
             const updatedNote = await note.save();
+            updatedNote.user = null;
             res.json(updatedNote);
         } else {
             res.status(401);
@@ -288,7 +291,13 @@ router.route("/:id").delete(
     protect,
     asyncHandler(async (req, res) => {
         const note = await Note.findById(req.params.id);
-        const noteHistory = await NoteHistory.findOne({note:req.params.id});
+        const noteHistory = await NoteHistory.findOne({ note: req.params.id });
+        const noteAccess = await NoteAccess.find({ note: req.params.id });
+
+        noteAccess.forEach(element => {
+            element.remove();
+        });
+
         if (note.user.toString() !== req.user._id.toString()) {
             res.status(401);
             throw new Error("You cannot edit other notes");

@@ -80,7 +80,9 @@ const noteHistoryModel = mongoose.Schema(
     h3: {
       type: String,
     }
-  }
+  }, {
+  timestamps: true,
+}
 );
 
 const NoteHistory = mongoose.model("NoteHistory", noteHistoryModel);
@@ -102,7 +104,9 @@ const noteAccessModel = mongoose.Schema(
       type: Boolean,
       require:true
     }
-  }
+  }, {
+  timestamps: true,
+}
 )
 
 const NoteAccess = mongoose.model("NoteAccess", noteAccessModel);

@@ -40,16 +40,14 @@ router.route("/").post(asyncHandler(async (req, res) => {
     const ttlMilliseconds365Days = 365 * 24 * 60 * 60 * 1000;
     const options = {
         httpOnly: true,
+        secure: true,
         expires: new Date(Date.now() + ttlMilliseconds365Days),
     };
 
     newUser.save().then(async (u) => {
         const token = generateToken(u._id);
         const id = u._id;
-        res.cookie("token ", token, options).status(200).json({
-            name: u.name,
-            email: u.email,
-        });
+        
         const key = id + "_login";
         value = token + "";
 
@@ -85,6 +83,11 @@ router.route("/").post(asyncHandler(async (req, res) => {
 
         mailer(recipent, mailBody)
 
+        res.cookie("token ", token, options).status(200).json({
+            name: u.name,
+            email: u.email,
+        });
+
     }).catch((e) => {
         res.status(400);
         throw new Error("Error Occured try later")
@@ -100,15 +103,11 @@ router.route("/login").post(asyncHandler(async (req, res) => {
 
                 const options = {
                     httpOnly: true,
+                    secure: true ,
                     expires: new Date(Date.now() + ttlMilliseconds365Days),
                 };
-                const token = generateToken(user._id, process.env.JWT_SECRET);
-                res.cookie("token", token, options).json({
-                    name: user.name,
-                    email: user.email,
-                    isAdmin: user.isAdmin,
-                    pic: user.pic,
-                });
+                const token = generateToken(user._id);
+                
                 const key = user._id + "_login";
                 value = token + "";
                 await client.set(key, value, 'PX',ttlMilliseconds365Days,(err, data) => {
@@ -116,6 +115,12 @@ router.route("/login").post(asyncHandler(async (req, res) => {
                         console.log("error while saving", err);
                     }
                 })
+                res.cookie("token", token, options).json({
+                    name: user.name,
+                    email: user.email,
+                    isAdmin: user.isAdmin,
+                    pic: user.pic,
+                });
             } if (!data) {
                 res.status(400)
                 res.json({ message: "invalid crendientials" })
@@ -128,7 +133,9 @@ router.route("/login").post(asyncHandler(async (req, res) => {
 }))
 
 router.route("/info").get(protect, asyncHandler(async (req, res) => {
-    res.send(req.user);
+    let response = req.user;
+    response._id = null;
+    res.send(response);
 }))
 
 router.route("/info").put(protect, asyncHandler(async (req, res) => {
@@ -257,7 +264,7 @@ router.route("/:id/access/users").get(protect, asyncHandler(async (req, res) => 
     const noteAccess = await NoteAccess.find({ note: note.id,isActive:true });
     let users = [];
     for (const access of noteAccess) {
-        const user = await User.findById(access.user).select("-password");
+        const user = await User.findById(access.user).select("-password").select("-_id");
         const accessedUser = {
             email: user.email,
             name: user.name
@@ -351,8 +358,4 @@ router.route("/upload/profile/pic").post(protect, upload.single('profilePicture'
 
 }))
 
-router.route("/googleauth").post(asyncHandler(async (req, res) => {
-
-    res.json({ success: true });
-}))
 module.exports = router
