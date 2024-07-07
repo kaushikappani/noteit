@@ -145,7 +145,7 @@ const scheduleCoorporateAnnouncments = async () => {
     const nseIndia = new NseIndia();
 
     const toDate = moment().tz('Asia/Kolkata');
-    const fromDate = toDate.clone().subtract(1, 'weeks');
+    const fromDate = toDate.clone().subtract(1, 'days');
     const toDateString = toDate.format('DD-MM-YYYY');
     const fromDateString = fromDate.format('DD-MM-YYYY');
     const dateString = `from_date=${fromDateString}&to_date=${toDateString}`;
