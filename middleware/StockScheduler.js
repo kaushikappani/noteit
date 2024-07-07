@@ -1,6 +1,6 @@
 const { mailer, readFile } = require("./mailer");
 const { NseIndia } = require("stock-nse-india");
-const allData = require("../routes/data");
+const { allData, symbolQuantityObject } = require("../routes/data");
 const client = require("./redis");
 const util = require('util');
 const moment = require('moment-timezone');
@@ -144,15 +144,25 @@ const scheduleFiiDiiReport = async () => {
 const scheduleCoorporateAnnouncments = async () => {
     const nseIndia = new NseIndia();
 
-    let data = await nseIndia.getDataByEndpoint("/api/corporate-announcements?index=equities");
+    const toDate = moment().tz('Asia/Kolkata');
+    const fromDate = toDate.clone().subtract(1, 'weeks');
+    const toDateString = toDate.format('DD-MM-YYYY');
+    const fromDateString = fromDate.format('DD-MM-YYYY');
+    const dateString = `from_date=${fromDateString}&to_date=${toDateString}`;
+    let data = await nseIndia.getDataByEndpoint(`/api/corporate-announcements?index=equities&${dateString}`);
     const mailTemplate = await readFile("../templates/stock_coorporate_annoucements.txt");
     let tableRows = "";
     const catchDate = moment.tz('Asia/Kolkata');
 
     data.forEach(item => {
+        let rowStyle = '';
+        if (item.symbol in symbolQuantityObject) {
+            console.log(`Found ${item.symbol}`);
+            rowStyle = 'style="background-color: green;"';
+        }
         tableRows += `
             <tr>
-            <td>${item.symbol}</td>
+            <td><div><span ${rowStyle}>${item.symbol}</span></div></td>
             <td>${item.desc}</td>
             <td>${item.an_dt}</td>
             <td><a href="${item.attchmntFile}" target="_blank">View Attachment</a></td>
@@ -190,15 +200,26 @@ const scheduleCoorporateAnnouncments = async () => {
 const scheduleCoorporateActions = async () => {
     const nseIndia = new NseIndia();
 
-    let data = await nseIndia.getDataByEndpoint("/api/corporates-corporateActions?index=equities");
+    const toDate = moment().tz('Asia/Kolkata');
+    const fromDate = toDate.clone().subtract(1, 'weeks');
+    const toDateString = toDate.format('DD-MM-YYYY');
+    const fromDateString = fromDate.format('DD-MM-YYYY');
+    const dateString = `from_date=${fromDateString}&to_date=${toDateString}`;
+
+    let data = await nseIndia.getDataByEndpoint(`/api/corporates-corporateActions?index=equities&${dateString}`);
     const mailTemplate = await readFile("../templates/stock_coorporate_actions.txt");
     let tableRows = "";
     const catchDate = moment.tz('Asia/Kolkata');
 
     data.forEach(item => {
+        let rowStyle = '';
+        if (item.symbol in symbolQuantityObject) {
+            console.log(`Found ${item.symbol}`);
+            rowStyle = 'style="background-color: green;"'; 
+        }
         tableRows += `
             <tr>
-            <td>${item.symbol}</td>
+            <td><div><span ${rowStyle}>${item.symbol}</span></div></td>
             <td>${item.faceVal}</td>
             <td>${item.subject}</td>
             <td>${item.exDate}</td>
@@ -227,7 +248,6 @@ const scheduleCoorporateActions = async () => {
 
     // mailer(recipient, mailBody);
 }
-
 
 
 module.exports = {
