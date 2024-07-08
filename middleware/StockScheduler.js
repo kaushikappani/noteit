@@ -167,7 +167,6 @@ const scheduleCoorporateAnnouncments = async () => {
             <td>${item.an_dt}</td>
             <td><a href="${item.attchmntFile}" target="_blank">View Attachment</a></td>
             <td>${item.sm_name}</td>
-            <td>${item.sm_isin}</td>
             <td>${item.smIndustry || 'N/A'}</td>
             <td>${item.attchmntText}</td>
         </tr>
