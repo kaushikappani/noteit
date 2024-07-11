@@ -502,5 +502,34 @@ const allData = [
     "ECLERX"
 ];
 
+const symbolQuantityObject = {
+    "ARVIND": 20,
+    "DREAMFOLKS": 21,
+    "EXIDEIND": 40,
+    "FEDERALBNK": 41,
+    "INDHOTEL": 17,
+    "ITC": 44,
+    "JIOFIN": 250,
+    "KCP": 26,
+    "MOTHERSON": 115,
+    "NHPC": 59,
+    "PARKHOTELS": 21,
+    "PNB": 160,
+    "POWERGRID": 20,
+    "RECLTD": 65,
+    "SBIN": 34,
+    "SUZLON": 421,
+    "TATAMOTORS": 10,
+    "TATAPOWER": 100,
+    "TITAGARH": 48,
+    "UJJIVANSFB": 285,
+    "VBL": 10,
+    "SHRIRAMFIN": 0,
+    "BEL": 10,
+    "BHEL": 20,
+    "KOTAKBANK": 10,
+    "HDFCBANK": 10
+};
 
-module.exports = allData;
+
+module.exports = { allData, symbolQuantityObject };

@@ -407,7 +407,7 @@ export const Notemodel = ({ props }) => {
                     <Form.Group controlId="content">
                       <Form.Label>Content</Form.Label>
                      
-                      <div >
+                      {props.edit && <div >
                         <Button style={{ margin: "2px" }} onClick={(e) => handhleHistoryChange(e, "h0")}>
                           Latest Saved
                         </Button>
@@ -420,8 +420,8 @@ export const Notemodel = ({ props }) => {
                         <Button style={{ margin: "2px" }} onClick={(e) => handhleHistoryChange(e, "h3")}>
                           history 3
                         </Button>
-                      </div>
-                       
+                      </div> }
+                      
                       {/* <ReactQuill
                         
                         style={{ height: "50vh" }} theme="snow" value={note.content} onChange={(value, viewUpdate) => changeEditor(value)} /> */}
