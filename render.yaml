@@ -1,0 +1,14 @@
+# Exported from Render on 2024-07-12T18:32:51Z
+services:
+- type: web
+  name: noteit-v2-dev
+  runtime: node
+  repo: https://github.com/kaushikappani/noteit
+  plan: free
+  envVars:
+  - fromGroup: Noteit-v2-dev
+  region: oregon
+  buildCommand: rm -rf node_modules package-lock.json && npm i
+  startCommand: npm start
+  healthCheckPath: /
+version: "1"
