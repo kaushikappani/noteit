@@ -10,5 +10,5 @@ services:
   region: oregon
   buildCommand: rm -rf node_modules package-lock.json && npm i
   startCommand: npm start
-  healthCheckPath: /
+  healthCheckPath: /health
 version: "1"
