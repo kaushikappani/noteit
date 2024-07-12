@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Container, Form, Row } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import Loading from "../components/Loading";
 import "./page.css";
 import Header from "../components/Header";
@@ -25,7 +24,8 @@ const ForgotPassword = () => {
     console.log(data);
     setData(data);
     } catch (err) {
-      console.log(err);
+      console.log(err.message);
+      setError(err.message);
       setLoading(false);
     }
     setLoading(false);
@@ -83,6 +83,7 @@ const ForgotPassword = () => {
                     {data.message}
                   </p>
                 )}
+                {error && <p className="text-danger" style={{ justifyContent: "right", textAlign: "center" }}>{ error}</p>}
                 <div className="d-grid mb-5">
                   <button className="btn btn-lg btn-primary" type="submit">
                     {" "}

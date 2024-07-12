@@ -11,6 +11,7 @@ const PasswordReset = () => {
     const [loading, setLoading] = useState(false);
     const [passwords, setPasswords] = useState({});
     const [data, setData] = useState();
+    const [error, setError] = useState();
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -23,7 +24,8 @@ const PasswordReset = () => {
             const { data } = await axios.post("/api/users/resetpassword/" + id, passwords, config);
             setData(data);
         } catch (err) {
-            
+          console.log(err.message);
+          setError(err);
         }
     }
   return (
@@ -97,6 +99,15 @@ const PasswordReset = () => {
                     style={{ justifyContent: "right", textAlign: "center" }}
                   >
                     {data.message}
+                  </p>
+                )}
+                
+                {error && (
+                  <p
+                    className="text-danger"
+                    style={{ justifyContent: "right", textAlign: "center" }}
+                  >
+                    {error.message}
                   </p>
                 )}
                 <div className="d-grid mb-5">

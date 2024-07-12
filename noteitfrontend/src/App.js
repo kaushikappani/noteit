@@ -5,7 +5,7 @@ import Notes from './pages/Notes';
 import Register from './pages/Register';
 import Create from './pages/Create';
 import Profile from './pages/Profile';
-import confirm from "./components/confirm"
+import confirm from "./pages/confirm"
 import Archived from './pages/Archived';
 import ForgotPassword from "./pages/ForgotPassword";
 import PasswordReset from "./pages/PasswordReset";
