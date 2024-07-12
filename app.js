@@ -60,8 +60,8 @@ if (process.env.NODE_ENV === "production") {
         res.sendFile(path.resolve(__dirname, "noteitfrontend", "build", "index.html"));
     })
 } else {
-    app.get("/", async(req, res) => {
-        res.send("done")
+    app.get("*", (req, res) => {
+        res.send("OOPS! Came to wrong place")
     })
 }
 
