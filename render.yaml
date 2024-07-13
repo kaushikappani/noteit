@@ -9,7 +9,7 @@ services:
   - fromGroup: Noteit-v2-dev
   region: oregon
   # buildCommand: rm -rf node_modules package-lock.json && npm i
-  buildCommand : cd noteitfrontend/ && npm run build && cd .. && npm i
+  buildCommand : cd noteitfrontend/ && npm install && npm run build && cd .. && npm install
   startCommand: npm start
   healthCheckPath: /health
 version: "1"
