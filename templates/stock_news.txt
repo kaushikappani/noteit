@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stock Updates</title>
+    <style>
+        table {
+            font-family: Arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h3>News Updates</h3>
+    <table>
+        <tr>
+            <th><div><span style="color: rgb(0, 0, 0)">Category</span></div> </th>
+            <th><div><span style="color: rgb(0, 0, 0)">headline</span></div> </th>
+            <th><div><span style="color: rgb(0, 0, 0)">Synopsis</span></div> </th>
+            <th><div><span style="color: rgb(0, 0, 0)">Source Link</span></div> </th>
+            <th><div><span style="color: rgb(0, 0, 0)">Source Name</span></div> </th>
+        </tr>
+        <!-- Repeat rows as needed -->
+    </table>
+</body>
+</html>
