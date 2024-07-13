@@ -8,7 +8,8 @@ services:
   envVars:
   - fromGroup: Noteit-v2-dev
   region: oregon
-  buildCommand: rm -rf node_modules package-lock.json && npm i
+  # buildCommand: rm -rf node_modules package-lock.json && npm i
+  buildCommand : npm install
   startCommand: npm start
   healthCheckPath: /health
 version: "1"
