@@ -154,13 +154,17 @@ const scheduleCoorporateAnnouncments = async () => {
     let tableRows = "";
     const catchDate = moment.tz('Asia/Kolkata');
 
+    let matchedRows = "";
+    let otherRows = "";
+
+
     data.forEach(item => {
         let rowStyle = '';
         if (item.symbol in symbolQuantityObject) {
             console.log(`Found ${item.symbol}`);
             rowStyle = 'style="background-color: green;"';
-        }
-        tableRows += `
+   
+        matchedRows += `
             <tr>
             <td><div><span ${rowStyle}>${item.symbol}</span></div></td>
             <td>${item.desc}</td>
@@ -171,7 +175,22 @@ const scheduleCoorporateAnnouncments = async () => {
             <td>${item.attchmntText}</td>
         </tr>
         `;
+        } else {
+            otherRows += `
+            <tr>
+            <td><div><span ${rowStyle}>${item.symbol}</span></div></td>
+            <td>${item.desc}</td>
+            <td>${item.an_dt}</td>
+            <td><a href="${item.attchmntFile}" target="_blank">View Attachment</a></td>
+            <td>${item.sm_name}</td>
+            <td>${item.smIndustry || 'N/A'}</td>
+            <td>${item.attchmntText}</td>
+        </tr>
+        `;
+        }
     });
+
+    tableRows = matchedRows + otherRows;
 
     const note = await Note.findById("664d66b9ac1930ca8b3f59ce");
  
@@ -210,13 +229,16 @@ const scheduleCoorporateActions = async () => {
     let tableRows = "";
     const catchDate = moment.tz('Asia/Kolkata');
 
+    let matchedRows = "";
+    let otherRows = "";
+
     data.forEach(item => {
         let rowStyle = '';
         if (item.symbol in symbolQuantityObject) {
             console.log(`Found ${item.symbol}`);
-            rowStyle = 'style="background-color: green;"'; 
-        }
-        tableRows += `
+            rowStyle = 'style="background-color: green;"';
+        
+            matchedRows += `
             <tr>
             <td><div><span ${rowStyle}>${item.symbol}</span></div></td>
             <td>${item.faceVal}</td>
@@ -225,7 +247,20 @@ const scheduleCoorporateActions = async () => {
             <td>${item.comp}</td>
         </tr>
         `;
+        } else {
+            otherRows += `
+            <tr>
+            <td><div><span ${rowStyle}>${item.symbol}</span></div></td>
+            <td>${item.faceVal}</td>
+            <td>${item.subject}</td>
+            <td>${item.exDate}</td>
+            <td>${item.comp}</td>
+        </tr>
+        `;
+        }
     });
+
+    tableRows = matchedRows + otherRows;
 
     const mailHtml = mailTemplate.replace("<!-- Repeat rows as needed -->", tableRows);
 
