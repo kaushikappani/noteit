@@ -337,18 +337,10 @@ const getCogencisToken = async () => {
       "accept-language": "*",
       "content-type": "application/json",
       origin: "https://iinvest.cogencis.com",
-      priority: "u=1, i",
-      "sec-ch-ua":
-        '"Google Chrome";v="125", "Chromium";v="125", "Not.A/Brand";v="24"',
-      "sec-ch-ua-mobile": "?0",
-      "sec-ch-ua-platform": '"macOS"',
-      "sec-fetch-dest": "empty",
-      "sec-fetch-mode": "cors",
-      "sec-fetch-site": "same-site",
+
       "user-agent":
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-      withcredentials: "true",
-      withxsrftoken: "true",
+
     },
     data: data,
   };
