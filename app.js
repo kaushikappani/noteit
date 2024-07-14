@@ -79,9 +79,8 @@ schedule.scheduleJob(rule2, () => {
     console.log('Scheduler triggered with rule2');
     scheduleCoorporateAnnouncments();
     scheduleCoorporateActions();
-    getCogencisNews();
+    // getCogencisNews();
 });
-getCogencisNews();
 
 const server=app.listen(process.env.PORT, () => {
     console.log(`server running ${process.env.PORT}`)
