@@ -31,6 +31,12 @@ rule.dayOfWeek = new schedule.Range(1, 5);
 // rule2.minute = targetTime2.minute();
 // rule2.tz = 'Asia/Kolkata';
 
+const giftNiftyRule = new schedule.RecurrenceRule();
+giftNiftyRule.tz = timeZone;
+giftNiftyRule.dayOfWeek = new schedule.Range(1, 5); // Monday to Friday
+giftNiftyRule.hour = new schedule.Range(6, 23); // 6 AM to 11 PM
+giftNiftyRule.minute = new schedule.Range(0, 59); // Every minute
+
 const rule2 = new schedule.RecurrenceRule();
 rule2.minute = 0; 
 rule2.tz = 'Asia/Kolkata';
@@ -83,6 +89,11 @@ schedule.scheduleJob(rule2, () => {
     scheduleCoorporateActions();
     // getCogencisNews();
 });
+
+schedule.scheduleJob(giftNiftyRule, () => {
+    console.log("gify nifty rule");
+    giftNifty();
+})
 
 
 

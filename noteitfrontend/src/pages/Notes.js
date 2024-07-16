@@ -260,7 +260,7 @@ const Notes = () => {
               </Typography>
             )}
             <ResponsiveMasonry
-              columnsCountBreakPoints={{ 350: 1, 750: 1, 1000: 1 }}
+              columnsCountBreakPoints={{ 350: 1, 750: 2, 1000: 3 }}
             >
               <Masonry gutter={"10px"}>
                 {notes?.length >= 1 &&
@@ -306,7 +306,7 @@ const Notes = () => {
               </Typography>
             )}
             <ResponsiveMasonry
-              columnsCountBreakPoints={{ 350: 1, 750: 2, 1000: 2 }}
+              columnsCountBreakPoints={{ 350: 1, 750: 2, 1000: 3 }}
             >
               <Masonry gutter={"10px"}>
                 {notes?.length > 0 &&
