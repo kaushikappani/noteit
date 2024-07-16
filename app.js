@@ -13,7 +13,7 @@ const bodyParser = require("body-parser")
 const schedule = require('node-schedule');
 const moment = require('moment-timezone');
 const { scheduleTask, scheduleFiiDiiReport,
-    scheduleCoorporateAnnouncments, scheduleCoorporateActions, getCogencisNews } = require("./middleware/StockScheduler");
+    scheduleCoorporateAnnouncments, scheduleCoorporateActions, getCogencisNews, giftNifty } = require("./middleware/StockScheduler");
 
 
 const timeZone = 'Asia/Kolkata';
@@ -68,6 +68,8 @@ if (process.env.NODE_ENV === "production") {
 app.use(errorHandler)
 app.use(notFound)
 
+giftNifty();
+
 schedule.scheduleJob(rule, () => {
     console.log('Scheduler triggered with rule');
     scheduleTask();
@@ -81,6 +83,8 @@ schedule.scheduleJob(rule2, () => {
     scheduleCoorporateActions();
     // getCogencisNews();
 });
+
+
 
 const server=app.listen(process.env.PORT, () => {
     console.log(`server running ${process.env.PORT}`)

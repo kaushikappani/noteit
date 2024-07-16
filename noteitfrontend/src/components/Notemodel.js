@@ -12,8 +12,6 @@ import Typography from "@mui/material/Typography";
 import ReactTimeAgo from "react-time-ago";
 import Toolbar from "../components/Toolbar";
 import { ArrowLeft } from "react-bootstrap-icons";
-import "react-quill/dist/quill.snow.css";
-import "react-quill/dist/quill.bubble.css";
 import "react-toastify/dist/ReactToastify.css";
 import Notification from "../components/Notification";
 import SunEditorComponent from "./SunEditorComponent";

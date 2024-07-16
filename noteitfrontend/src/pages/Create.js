@@ -13,9 +13,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import Notification from "../components/Notification"
 
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
-import 'react-quill/dist/quill.bubble.css'
+
 import { Input } from '@mui/material';
 
 import SunEditorComponent from '../components/SunEditorComponent';

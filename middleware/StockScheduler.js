@@ -409,10 +409,33 @@ const getCogencisNews = async () => {
 
 };
 
+const giftNifty = async() => {
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: 'https://pearl.trendlyne.com/clientapi/pearlapi/global/stock/getStockEOD/1392617',
+    headers: {
+      'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+      'sec-ch-ua-mobile': '?0',
+      'UserId': '5PAISAAPI',
+      'requestCode': '5paisaapi',
+      'password': '5nadynsiitnienny',
+      'KEY': '5260c06e20fb53c4521b8cf1f2eb0ba616634e44',
+      'sec-ch-ua-platform': '"macOS"',
+    }
+  };
+
+  
+  const { data } = await axios.request(config);
+  console.log(data.body.stockData);
+  return data.body.stockData;
+}
+
 module.exports = {
   scheduleTask,
   scheduleFiiDiiReport,
   scheduleCoorporateAnnouncments,
   scheduleCoorporateActions,
   getCogencisNews,
+  giftNifty
 };
