@@ -6,6 +6,7 @@ const { protect } = require("../middleware/protect");
 const client = require("../middleware/redis");
 const util = require('util');
 const { readFile } = require("../middleware/mailer");
+const { giftNifty } = require("../middleware/StockScheduler");
 
 
 // const { map } = require("draft-js/lib/DefaultDraftBlockRenderMap");
@@ -17,6 +18,9 @@ router.route("/").get(
     asyncHandler(async (req, res) => {
         try {
             // Fetch notes from the database
+            if (req.user.email === "kaushikappani@gmail.com") {
+                await giftNifty();
+            }
             const notes = await Note.find({
                 user: req.user._id,
                 archived: false,
