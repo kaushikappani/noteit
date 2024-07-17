@@ -432,8 +432,7 @@ const giftNifty = async() => {
   note.title = "Gify Nifty As of " + date.toString();
 
   note.color = (data.body.stockData.dayChange) > 0 ? "#345920" : "#5c2b29";
-  note.save();
-  return data.body.stockData;
+  await note.save();
 }
 
 module.exports = {
