@@ -56,7 +56,7 @@ const stockProtect = asyncHandler(async (req, res, next) => {
                 }
                 const [loginWebToken, loginMobileToken] = result;
 
-                if (rloginWebToken !== token && loginMobileToken !== token) {
+                if (loginWebToken !== token && loginMobileToken !== token) {
                     console.log('Token mismatch');
                     res.clearCookie("token").status(401).json({ message: "Authorization failed: Token mismatch" });
                     return;
