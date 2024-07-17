@@ -96,6 +96,8 @@ schedule.scheduleJob(rule2, () => {
 // })
 
 
+giftNifty();
+
 
 const server=app.listen(process.env.PORT, () => {
     console.log(`server running ${process.env.PORT}`)

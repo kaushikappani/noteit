@@ -13,19 +13,19 @@ const protect = asyncHandler(async (req, res, next) => {
             req.user = await User.findById(decode.id).select("-password");
 
             // Check if the token in Redis matches the one in the request
-            await client.get(decode.id+"_login", (err, result) => {
+            await client.mget([decode.id + "_login_web", decode.id + "_login_mobile"], (err, result) => {
                 if (err) {
                     console.error(err);
                     res.status(500).json({ message: "Internal server error" });
                     return;
                 }
-
-                if (result !== token) {
+                
+                const [loginWebToken, loginMobileToken] = result;
+                if (loginWebToken !== token && loginMobileToken!== token ) {
                     console.log('Token mismatch');
                     res.clearCookie("token").status(401).json({ message: "Authorization failed: Token mismatch" });
                     return;
                 }
-
                 // Token is valid, proceed to the next middleware
                 next();
             });
@@ -48,14 +48,15 @@ const stockProtect = asyncHandler(async (req, res, next) => {
             req.user = await User.findById(decode.id).select("-password");
 
             // Check if the token in Redis matches the one in the request
-            await client.get(decode.id+"_login", (err, result) => {
+            await client.mget([decode.id + "_login_web", decode.id + "_login_mobile"], (err, result) => {
                 if (err) {
                     console.error(err);
                     res.status(500).json({ message: "Internal server error" });
                     return;
                 }
+                const [loginWebToken, loginMobileToken] = result;
 
-                if (result !== token) {
+                if (rloginWebToken !== token && loginMobileToken !== token) {
                     console.log('Token mismatch');
                     res.clearCookie("token").status(401).json({ message: "Authorization failed: Token mismatch" });
                     return;

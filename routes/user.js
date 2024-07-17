@@ -25,7 +25,7 @@ const generateToken = (id) => {
 }
 //   /api/users
 router.route("/").post(asyncHandler(async (req, res) => {
-    const { name, email, password, pic } = req.body;
+    const { name, email, password, pic,platform } = req.body;
     const userExists = await User.findOne({ email });
     const salt = await bcrypt.genSalt(11);
     hashPassword = await bcrypt.hash(password, salt);
@@ -47,8 +47,11 @@ router.route("/").post(asyncHandler(async (req, res) => {
     newUser.save().then(async (u) => {
         const token = generateToken(u._id);
         const id = u._id;
-        
-        const key = id + "_login";
+        let platformKey = "web";
+        if (platform === "mobile") {
+            platformKey = "mobile"
+        }
+        const key = id + "_login_" + platformKey;
         value = token + "";
 
         await client.set(key, value, 'PX', ttlMilliseconds365Days,(err, data) => {
@@ -94,7 +97,7 @@ router.route("/").post(asyncHandler(async (req, res) => {
     })
 }))
 router.route("/login").post(asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password ,platform} = req.body;
     const user = await User.findOne({ email })
     if (user) {
         bcrypt.compare(password, user.password, async (err, data) => {
@@ -108,7 +111,12 @@ router.route("/login").post(asyncHandler(async (req, res) => {
                 };
                 const token = generateToken(user._id);
                 
-                const key = user._id + "_login";
+                let platformKey = "web";
+                if (platform === "mobile") {
+                    platformKey = "mobile"
+                }
+
+                const key = user._id + "_login_"+platformKey;
                 value = token + "";
                 await client.set(key, value, 'PX',ttlMilliseconds365Days,(err, data) => {
                     if (err) {

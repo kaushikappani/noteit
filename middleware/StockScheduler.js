@@ -409,7 +409,8 @@ const getCogencisNews = async () => {
 
 };
 
-const giftNifty = async() => {
+const giftNifty = async () => {
+  const nseIndia = new NseIndia();
   let config = {
     method: 'get',
     maxBodyLength: Infinity,
@@ -426,6 +427,10 @@ const giftNifty = async() => {
   };
   
   const { data } = await axios.request(config);
+
+  // let nifty = await nseIndia.getEquityStockIndices();
+  // console.log(nifty);
+
   const note = await Note.findById("6696a424d0450dec09316cbf");
   note.content = `<h2>Gify Nifty : ${data.body.stockData.priceInsight.value} , ${data.body.stockData.dayChange} , ${data.body.stockData.dayChangeP} % </h2>`;
   const date = moment.tz("Asia/Kolkata");

@@ -5,6 +5,8 @@ import { useHistory } from 'react-router';
 import Header from '../components/Header';
 import Loading from '../components/Loading';
 import "./page.css"
+import { isMobile } from 'react-device-detect';
+
 
 const Register = () => {
     const history = useHistory();
@@ -27,7 +29,9 @@ const Register = () => {
                         "Content-Type": "application/json",
                     }
                 }
+                
                 setLoading(true);
+                authData.platform = isMobile ? "mobile" : "web"; 
                 const { data } = await axios.post("/api/users", { ...authData }, config)
 
                 localStorage.setItem('userInfo', JSON.stringify(data))

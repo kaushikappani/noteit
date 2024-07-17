@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import Loading from '../components/Loading';
 import "./page.css";
 import Header from '../components/Header';
+import { isMobile } from 'react-device-detect';
+
 
 const Landingpage = ({ history }) => {
     const [authData, setAuthData] = useState({
@@ -22,6 +24,7 @@ const Landingpage = ({ history }) => {
                 }
             }
             setLoading(true);
+            authData.platform = isMobile ? "mobile" : "web"; 
             const { data } = await axios.post("/api/users/login", authData, config)
             localStorage.setItem('userInfo', JSON.stringify(data))
             history.push("/notes")
