@@ -43,7 +43,7 @@ const scheduleTask = async () => {
         console.log("pushed to batch " + symbol);
         batchCount++;
       }
-      if (batchCount === 50 || (i === symbols.length - 1 && batchCount > 0)) {
+      if (batchCount === 5 || (i === symbols.length - 1 && batchCount > 0)) {
         try {
           const mailTemplate = await readFile("../templates/stock_email.txt");
           let tableRows = "";
@@ -432,7 +432,7 @@ const giftNifty = async () => {
   // console.log(nifty);
 
   const note = await Note.findById("6696a424d0450dec09316cbf");
-  note.content = `<h2>Gify Nifty : ${data.body.stockData.priceInsight.value} , ${data.body.stockData.dayChange} , ${data.body.stockData.dayChangeP} % </h2>`;
+  note.content = `<h2>Gify Nifty : ${data.body.stockData.currentPrice} , ${data.body.stockData.dayChange} , ${data.body.stockData.dayChangeP} % </h2>`;
   const date = moment.tz("Asia/Kolkata");
   note.title = "Gify Nifty As of " + date.toString();
 
