@@ -25,17 +25,6 @@ rule.minute = targetTime.minute();
 rule.tz = 'Asia/Kolkata';
 rule.dayOfWeek = new schedule.Range(1, 5);
 
-// const targetTime2 = moment.tz(process.env.TIME_RULE2, 'HH:mm', timeZone);
-// const rule2 = new schedule.RecurrenceRule();
-// rule2.hour = targetTime2.hour();
-// rule2.minute = targetTime2.minute();
-// rule2.tz = 'Asia/Kolkata';
-
-// const giftNiftyRule = new schedule.RecurrenceRule();
-// giftNiftyRule.tz = timeZone;
-// giftNiftyRule.dayOfWeek = new schedule.Range(1, 5); // Monday to Friday
-// giftNiftyRule.hour = new schedule.Range(6, 23); // 6 AM to 11 PM
-// giftNiftyRule.minute = new schedule.Range(0, 59); // Every minute
 
 const rule2 = new schedule.RecurrenceRule();
 rule2.minute = 0; 
@@ -74,8 +63,6 @@ if (process.env.NODE_ENV === "production") {
 app.use(errorHandler)
 app.use(notFound)
 
-giftNifty();
-
 schedule.scheduleJob(rule, () => {
     console.log('Scheduler triggered with rule');
     scheduleTask();
@@ -87,17 +74,10 @@ schedule.scheduleJob(rule2, () => {
     console.log('Scheduler triggered with rule2');
     scheduleCoorporateAnnouncments();
     scheduleCoorporateActions();
-    // getCogencisNews();
 });
-
-// schedule.scheduleJob(giftNiftyRule, () => {
-//     console.log("gify nifty rule");
-//     giftNifty();
-// })
 
 
 giftNifty();
-
 
 const server=app.listen(process.env.PORT, () => {
     console.log(`server running ${process.env.PORT}`)
