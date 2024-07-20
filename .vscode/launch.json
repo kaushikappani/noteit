@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "test",
+            "request": "launch",
+            "mainClass": "test",
+            "projectName": "noteit_398cbdba"
+        },
+        {
             "type": "node",
             "request": "launch",
             "name": "Launch Program",

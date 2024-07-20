@@ -2,11 +2,18 @@ const express = require("express");
 const { Note, User, NoteHistory, NoteAccess } = require("../config/models");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
-const { protect } = require("../middleware/protect");
+const { protect, stockProtect } = require("../middleware/protect");
 const client = require("../middleware/redis");
 const util = require('util');
 const { readFile } = require("../middleware/mailer");
 const { giftNifty } = require("../middleware/StockScheduler");
+const {
+    GoogleGenerativeAI,
+    HarmCategory,
+    HarmBlockThreshold,
+} = require("@google/generative-ai");
+const { content } = require("googleapis/build/src/apis/content");
+
 
 
 // const { map } = require("draft-js/lib/DefaultDraftBlockRenderMap");
@@ -318,4 +325,46 @@ router.route("/:id").delete(
         }
     })
 );
+
+router.route("/:id/genai/summary").get(stockProtect,asyncHandler(async (req, res) => {
+        console.log("triggered");
+        const note = await Note.findById(req.params.id);
+        const apiKey = process.env.GEMINI_API_KEY;
+        const genAI = new GoogleGenerativeAI(apiKey);
+
+        const model = genAI.getGenerativeModel({
+            model: "gemini-1.5-flash",
+        });
+
+        const generationConfig = {
+            temperature: 0.8,
+            topP: 0.95,
+            topK: 64,
+            maxOutputTokens: 8192,
+            responseMimeType: "text/plain",
+        };
+
+        async function run() {
+            const chatSession = model.startChat({
+                generationConfig,
+                // safetySettings: Adjust safety settings
+                // See https://ai.google.dev/gemini-api/docs/safety-settings
+                history: [
+                ],
+            });
+
+            const result = await chatSession.sendMessage(note.content + " give small summary in html fragments based on the above data");
+            let content = result.response.text() + note.content
+            note.content = content;
+            await note.save();
+        }
+        await run();
+
+        res.status(200).json({ message: "AI Summary Generated"});
+    })
+);
+
+
 module.exports = router;
+
+

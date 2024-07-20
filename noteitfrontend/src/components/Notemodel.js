@@ -4,7 +4,6 @@ import axios from "axios";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { Button, Card, Form } from "react-bootstrap";
-import ListGroup from 'react-bootstrap/ListGroup';
 import "../pages/form.css";
 import Loading from "../components/Loading";
 import CardContent from "@mui/material/CardContent";
@@ -301,6 +300,33 @@ export const Notemodel = ({ props }) => {
     }
   }
 
+
+  const generateAiSummary = async () => {
+    try {
+      const config = {
+        withCredentials: true,
+      };
+      setLoading(true);
+      //eslint-disable-next-line
+      const { data } = await axios.get(`api/notes/${props.id}/genai/summary`, config);
+      setLoading(false);
+      setAlert({
+        open: true,
+        type: "success",
+        message: data.message,
+      });
+      fetchData("h0");
+    } catch (e) {
+      console.log("failed");
+      setAlert({
+        open: true,
+        type: "warning",
+        message: e.response ? e.response.data.message : e.message,
+      });
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     if (!contentRef.current) return;
     contentRef.current.innerHTML = note.content;
@@ -418,6 +444,8 @@ export const Notemodel = ({ props }) => {
                         <Button style={{ margin: "2px" }} onClick={(e) => handhleHistoryChange(e, "h3")}>
                           history 3
                         </Button>
+                        <Button style={{ margin: "2px" }} onClick={(e) => generateAiSummary()}>
+                          Generate AI Summary</Button>
                       </div> }
                       
                       {/* <ReactQuill
