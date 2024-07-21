@@ -337,7 +337,7 @@ router.route("/:id/genai/summary").get(stockProtect,asyncHandler(async (req, res
         });
 
         const generationConfig = {
-            temperature: 0.8,
+            temperature: 0.9,
             topP: 0.95,
             topK: 64,
             maxOutputTokens: 8192,
@@ -353,8 +353,9 @@ router.route("/:id/genai/summary").get(stockProtect,asyncHandler(async (req, res
                 ],
             });
 
-            const result = await chatSession.sendMessage(note.content + " give small summary in html fragments based on the above data");
-            let content = result.response.text() + note.content
+            const result = await chatSession.sendMessage(note.content + " give summary in html fragments based on the above data");
+
+            let content = "======= AI Generated =======​" + result.response.text() + " ======= AI Generated =======​"+ note.content
             note.content = content;
             await note.save();
         }
