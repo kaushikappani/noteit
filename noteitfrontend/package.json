@@ -2,7 +2,7 @@
   "name": "noteitfrontend",
   "version": "8.0.0",
   "private": true,
-  "proxy": "http://localhost:5500",
+  "proxy": "https://noteit-prod.onrender.com",
   "dependencies": {
     "@babel/preset-env": "^7.24.8",
     "@emotion/react": "^11.7.1",

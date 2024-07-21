@@ -9,7 +9,7 @@
     margin: 2px;
     background: linear-gradient(90deg, #00C6FF 0%, #0072FF 100%);
     color: #FFFFFF;
-    border-radius: 25px;
+    border-radius: 20px !important;
     box-shadow: 0 4px 15px rgba(0, 118, 255, 0.75);
     padding: 10px 20px;
     font-size: 16px;
@@ -25,5 +25,5 @@
 
 .blinking-button:hover {
     box-shadow: 0 6px 20px rgba(0, 118, 255, 0.85);
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
