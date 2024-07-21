@@ -1,0 +1,29 @@
+/* AiButton.css */
+@keyframes blinking {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+.blinking-button {
+    margin: 2px;
+    background: linear-gradient(90deg, #00C6FF 0%, #0072FF 100%);
+    color: #FFFFFF;
+    border-radius: 25px;
+    box-shadow: 0 4px 15px rgba(0, 118, 255, 0.75);
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: none;
+    float: right;
+    outline: none;
+    animation: blinking 3.0s infinite;
+    display: flex;
+    align-items: center;
+}
+
+.blinking-button:hover {
+    box-shadow: 0 6px 20px rgba(0, 118, 255, 0.85);
+    transform: scale(1.1);
+}

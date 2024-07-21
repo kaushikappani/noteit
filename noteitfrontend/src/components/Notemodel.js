@@ -17,6 +17,7 @@ import SunEditorComponent from "./SunEditorComponent";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import { Chip, List, ListItem, ListSubheader } from "@mui/material";
+import "./css/Aibutton.css"
 
 
 export const Notemodel = ({ props }) => {
@@ -444,8 +445,13 @@ export const Notemodel = ({ props }) => {
                         <Button style={{ margin: "2px" }} onClick={(e) => handhleHistoryChange(e, "h3")}>
                           history 3
                         </Button>
-                        <Button style={{ margin: "2px" }} onClick={(e) => generateAiSummary()}>
-                          Generate AI Summary</Button>
+                        <Button
+                          className="blinking-button"
+                          onClick={(e) => generateAiSummary()}
+                          
+                        >
+                        Ai Summary
+                        </Button>
                       </div> }
                       
                       {/* <ReactQuill
