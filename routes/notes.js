@@ -338,9 +338,9 @@ router.route("/:id/genai/summary").get(stockProtect,asyncHandler(async (req, res
 
         const generationConfig = {
             temperature: 0.9,
-            topP: 0.95,
+            topP: 0.9,
             topK: 64,
-            maxOutputTokens: 8192,
+            maxOutputTokens: 5000,
             responseMimeType: "text/plain",
         };
 
