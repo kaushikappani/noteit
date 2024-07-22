@@ -337,7 +337,7 @@ router.route("/:id/genai/summary").get(stockProtect,asyncHandler(async (req, res
             temperature: 0.9,
             topP: 0.9,
             topK: 64,
-            maxOutputTokens: 5000,
+            maxOutputTokens: 500,
             responseMimeType: "text/plain",
         };
 
