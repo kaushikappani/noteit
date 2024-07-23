@@ -1,7 +1,7 @@
 # Exported from Render on 2024-07-12T18:32:51Z
 services:
 - type: web
-  name: noteit-v2-dev
+  name: noteit-prod
   runtime: node
   repo: https://github.com/kaushikappani/noteit
   plan: free

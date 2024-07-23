@@ -25,12 +25,9 @@ rule.minute = targetTime.minute();
 rule.tz = 'Asia/Kolkata';
 rule.dayOfWeek = new schedule.Range(1, 5);
 
-
 const rule2 = new schedule.RecurrenceRule();
 rule2.minute = 0; 
 rule2.tz = 'Asia/Kolkata';
-
-
 
 app.use(bodyParser.urlencoded({
     limit: "50mb",
@@ -75,8 +72,6 @@ schedule.scheduleJob(rule2, () => {
     scheduleCoorporateAnnouncments();
     scheduleCoorporateActions();
 });
-
-
 
 const server=app.listen(process.env.PORT, () => {
     console.log(`server running ${process.env.PORT}`)
