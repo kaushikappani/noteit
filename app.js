@@ -76,7 +76,6 @@ schedule.scheduleJob(rule2, () => {
     scheduleCoorporateActions();
 });
 
-scheduleCoorporateAnnouncments();
 
 
 const server=app.listen(process.env.PORT, () => {
