@@ -177,8 +177,9 @@ const scheduleCoorporateAnnouncments = async () => {
     const fromDateString = fromDate.format("DD-MM-YYYY");
     const dateString = `from_date=${fromDateString}&to_date=${toDateString}`;
     let data = await nseIndia.getDataByEndpoint(
-      `/api/corporate-announcements?index=equities&${dateString}`
+      `/api/corporate-announcements?index=equities`
     );
+    // console.log(data);
     const mailTemplate = await readFile(
       "../templates/stock_coorporate_annoucements.txt"
     );
