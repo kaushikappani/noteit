@@ -13,7 +13,7 @@ const bodyParser = require("body-parser")
 const schedule = require('node-schedule');
 const moment = require('moment-timezone');
 const { scheduleTask, scheduleFiiDiiReport,
-    scheduleCoorporateAnnouncments, scheduleCoorporateActions, getCogencisNews, giftNifty } = require("./middleware/StockScheduler");
+    scheduleCoorporateAnnouncments, scheduleCoorporateActions } = require("./middleware/StockScheduler");
 
 
 const timeZone = 'Asia/Kolkata';
