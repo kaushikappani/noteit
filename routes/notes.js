@@ -331,7 +331,7 @@ router.route("/:id/genai/summary").get(stockProtect,asyncHandler(async (req, res
 
         const model = genAI.getGenerativeModel({
             model: "gemini-1.5-flash",
-            systemInstruction: "Give sumamry in paragraphs and points in html fragments",
+            systemInstruction: "Give sumamry",
         });
 
         const generationConfig = {
@@ -353,7 +353,7 @@ router.route("/:id/genai/summary").get(stockProtect,asyncHandler(async (req, res
 
             const result = await chatSession.sendMessage(note.content);
 
-            let content = " <br>======= AI Generated =======​  <br>" + result.response.text().replace('```html', "").replace('```',"") + "  <br> ======= AI Generated =======  <br>​"+ note.content
+            let content = " <br>======= AI Generated =======​  <br>" + markdownToHtml(result.response.text()) + "  <br> ======= AI Generated =======  <br>​"+ note.content
             note.content = content;
             await note.save();
         }
@@ -362,6 +362,64 @@ router.route("/:id/genai/summary").get(stockProtect,asyncHandler(async (req, res
         res.status(200).json({ message: "AI Summary Generated"});
     })
 );
+
+
+function markdownToHtml(markdown) {
+    const parser = new DOMParser();
+    const html = parser.parseFromString(
+        markdownToHtmlString(markdown),
+        'text/html'
+    );
+    return html.body.innerHTML;
+}
+
+function markdownToHtmlString(markdown) {
+    // Convert headers
+    markdown = markdown.replace(/^(#{1,6})\s+(.*?)\s*$/gm, (match, header, text) => {
+        const level = header.length;
+        return `<h${level}>${text}</h${level}>`;
+    });
+
+    // Convert bold text
+    markdown = markdown.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+    markdown = markdown.replace(/__(.*?)__/g, '<b>$1</b>');
+
+    // Convert italic text
+    markdown = markdown.replace(/\*(.*?)\*/g, '<i>$1</i>');
+    markdown = markdown.replace(/_(.*?)_/g, '<i>$1</i>');
+
+    // Convert links
+    markdown = markdown.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
+
+    // Convert line breaks
+    markdown = markdown.replace(/\n/g, '<br>');
+
+    // Convert ordered lists
+    markdown = markdown.replace(
+        /^(\s*)(\d+)\.\s+(.*?)\s*$/gm,
+        (match, indent, number, text) => {
+            return `<ol style="margin-left: ${indent.length * 20}px;"><li>${text}</li></ol>`;
+        }
+    );
+
+    // Convert unordered lists
+    markdown = markdown.replace(
+        /^(\s*)(-|\*|\+)\s+(.*?)\s*$/gm,
+        (match, indent, symbol, text) => {
+            return `<ul style="margin-left: ${indent.length * 20}px;"><li>${text}</li></ul>`;
+        }
+    );
+
+    // Convert code blocks
+    markdown = markdown.replace(
+        /^```(.*?)\n(.*?)```/gms,
+        (match, lang, code) => {
+            return `<pre><code class="language-${lang}">${code}</code></pre>`;
+        }
+    );
+
+    return markdown;
+}
 
 
 module.exports = router;
