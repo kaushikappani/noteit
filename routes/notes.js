@@ -331,7 +331,7 @@ router.route("/:id/genai/summary").get(stockProtect,asyncHandler(async (req, res
 
         const model = genAI.getGenerativeModel({
             model: "gemini-1.5-flash",
-            systemInstruction: "You should generate descriptive summary on the data ONLY in HTML ",
+            systemInstruction: "You are a summary button in a notes app you should generate detailed summary output ONLY on HTML",
         });
 
         const generationConfig = {
