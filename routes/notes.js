@@ -351,7 +351,7 @@ router.route("/:id/genai/summary").get(stockProtect,asyncHandler(async (req, res
                 ],
             });
 
-            const result = await chatSession.sendMessage(note.content + "give Summary");
+            const result = await chatSession.sendMessage(note.content + "give detailed Summary");
 
             let content = " <br>======= AI Generated =======​  <br>" + result.response.text().replace('```html', "").replace('```', "") + "  <br> ======= AI Generated =======  <br>​"+ note.content
             note.content = content;
