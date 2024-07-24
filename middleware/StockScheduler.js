@@ -438,11 +438,15 @@ const giftNifty = async () => {
   
   const { data } = await axios.request(config);
 
-  // let nifty = await nseIndia.getEquityStockIndices();
-  // console.log(nifty);
+  let dataIndices= await nseIndia.getDataByEndpoint(
+    `/api/allIndices`
+  );
+
+  dataNifty = dataIndices.data[0];
+  
 
   const note = await Note.findById("6696a424d0450dec09316cbf");
-  note.content = `<h2>Gify Nifty : ${data.body.stockData.currentPrice} , ${data.body.stockData.dayChange} , ${data.body.stockData.dayChangeP} % </h2>`;
+  note.content = `<h2>Gify Nifty : ${data.body.stockData.currentPrice} , ${data.body.stockData.dayChange} , ${data.body.stockData.dayChangeP} % </h2> <br> <h2> Nifty 50 : ${dataNifty.last} ${dataNifty.variation} ${dataNifty.percentChange} % </h2>`;
   const date = moment.tz("Asia/Kolkata");
   note.title = "Gify Nifty As of " + date.toString();
 
