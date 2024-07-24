@@ -331,7 +331,7 @@ router.route("/:id/genai/summary").get(stockProtect,asyncHandler(async (req, res
 
         const model = genAI.getGenerativeModel({
             model: "gemini-1.5-flash",
-            systemInstruction: "Give output in HTML only",
+            systemInstruction: "You should generate summary on the data ONLY in HTML ",
         });
 
         const generationConfig = {
@@ -351,7 +351,7 @@ router.route("/:id/genai/summary").get(stockProtect,asyncHandler(async (req, res
                 ],
             });
 
-            const result = await chatSession.sendMessage(note.content + "give detailed descriptive Summary based on the data");
+            const result = await chatSession.sendMessage(note.content);
 
             let content = " <br>======= AI Generated =======​  <br>" + result.response.text().replace('```html', "").replace('```', "") + "  <br> ======= AI Generated =======  <br>​"+ note.content
             note.content = content;
