@@ -353,7 +353,7 @@ router.route("/:id/genai/summary").get(stockProtect,asyncHandler(async (req, res
 
             const result = await chatSession.sendMessage(note.content);
 
-            let content = " <br>======= AI Generated =======​  <br>" + markdownToHtml(result.response.text()) + "  <br> ======= AI Generated =======  <br>​"+ note.content
+            let content = " <br>======= AI Generated =======​  <br>" + markdownToHtmlString(result.response.text()) + "  <br> ======= AI Generated =======  <br>​"+ note.content
             note.content = content;
             await note.save();
         }
@@ -363,15 +363,6 @@ router.route("/:id/genai/summary").get(stockProtect,asyncHandler(async (req, res
     })
 );
 
-
-function markdownToHtml(markdown) {
-    const parser = new DOMParser();
-    const html = parser.parseFromString(
-        markdownToHtmlString(markdown),
-        'text/html'
-    );
-    return html.body.innerHTML;
-}
 
 function markdownToHtmlString(markdown) {
     // Convert headers
