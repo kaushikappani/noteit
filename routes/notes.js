@@ -331,6 +331,7 @@ router.route("/:id/genai/summary").get(stockProtect,asyncHandler(async (req, res
 
         const model = genAI.getGenerativeModel({
             model: "gemini-1.5-flash",
+            systemInstruction: "Give sumamry in paragraphs and points in html fragments",
         });
 
         const generationConfig = {
@@ -350,7 +351,7 @@ router.route("/:id/genai/summary").get(stockProtect,asyncHandler(async (req, res
                 ],
             });
 
-            const result = await chatSession.sendMessage(note.content + " summarization in html fragments based on the above data");
+            const result = await chatSession.sendMessage(note.content);
 
             let content = " <br>======= AI Generated =======​  <br>" + result.response.text().replace('```html', "").replace('```',"") + "  <br> ======= AI Generated =======  <br>​"+ note.content
             note.content = content;
