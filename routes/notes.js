@@ -50,7 +50,7 @@ router.route("/").get(
                         _id: "deliveryreport",
                         title: "Delivery Report - " + resultDate,
                         content: mailTemplate.replace("<!-- Repeat rows as needed -->", result),
-                        pinned: true,
+                        pinned: false,
                         archived: false,
                         color: "#202124",
                         view: true,
