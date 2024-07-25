@@ -11,7 +11,6 @@ const tradeData = async (symbol, nseIndia) => {
   const data = await nseIndia.getEquityTradeInfo(symbol);
   return data;
 };
-
 const scheduleTask = async () => {
   const symbols = allData;
 
@@ -30,26 +29,24 @@ const scheduleTask = async () => {
       const symbol = symbols[i];
       const data = await tradeData(symbol, nseIndia);
       console.log("delivery " + data.securityWiseDP.deliveryToTradedQuantity);
-      if (
-        data.securityWiseDP &&
-        data.securityWiseDP.deliveryToTradedQuantity >
-          process.env.DELIVERY_QUANTITY_THRESHOLD
-      ) {
+      if (data.securityWiseDP && data.securityWiseDP.deliveryToTradedQuantity > process.env.DELIVERY_QUANTITY_THRESHOLD) {
         //threshold to be configurable
         batchData.push({
           symbol,
           delivery: data.securityWiseDP.deliveryToTradedQuantity,
+          date: data.securityWiseDP.secWiseDelPosDate
         });
-        console.log("pushed to batch " + symbol);
+        console.log("pushed to batch " + JSON.stringify(data.securityWiseDP));
         batchCount++;
       }
-      if (batchCount === 5 || (i === symbols.length - 1 && batchCount > 0)) {
+      if (batchCount === 2 || (i === symbols.length - 1 && batchCount > 0)) {
         try {
           const mailTemplate = await readFile("../templates/stock_email.txt");
           let tableRows = "";
           batchData.forEach((stock) => {
             tableRows += `
                     <tr>
+                        <td>${stock.date}</td>
                         <td>${stock.symbol}</td>
                         <td>${stock.delivery}%</td>
                     </tr>
@@ -113,8 +110,12 @@ const scheduleTask = async () => {
         e
       );
     }
+   
+
   }
+  pickDataFromCacheToDb();
 };
+
 
 const scheduleFiiDiiReport = async () => {
   const nseIndia = new NseIndia();
@@ -166,7 +167,6 @@ const scheduleFiiDiiReport = async () => {
 
   // mailer(recipient, mailBody);
 };
-
 const scheduleCoorporateAnnouncments = async () => {
   const nseIndia = new NseIndia();
 
@@ -459,6 +459,30 @@ const giftNifty = async () => {
   note.color = (data.body.stockData.dayChange) > 0 ? "#345920" : "#5c2b29";
   await note.save();
 }
+
+
+const pickDataFromCacheToDb = async() => {
+  const getAsync = util.promisify(client.get).bind(client);
+
+  const result = await getAsync("deliveryreport");
+  const resultDate = await getAsync("deliveryreportlastupdated");
+
+  const mailTemplate = await readFile("../templates/stock_email.txt");
+
+  
+
+  if (result) {
+    const note = await Note.findById("66a25d1d34d7c9f59b2e4fd1");
+
+    note.title = "Delivery Report - " + resultDate;
+    note.content = mailTemplate.replace("<!-- Repeat rows as needed -->", result) + note.content;
+    note.createdAt =new Date(),
+    note.updatedAt = new Date(),
+    note.category = "Scheduler"
+    note.save();
+  }  
+}
+
 
 module.exports = {
   scheduleTask,

@@ -47,6 +47,7 @@
         <table>
             <thead>
                 <tr>
+                    <th><span style="color: rgb(0, 0, 0)">Date</span></th>
                     <th><span style="color: rgb(0, 0, 0)">Stock Name</span></th>
                     <th><span style="color: rgb(0, 0, 0)">Delivery Percentage</span></th>
                 </tr>
