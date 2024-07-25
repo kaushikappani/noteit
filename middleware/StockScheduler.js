@@ -435,9 +435,10 @@ const giftNifty = async () => {
       'sec-ch-ua-platform': '"macOS"',
     }
   };
+  const { data } = await axios.request(config);
+
   let dataNifty = { last: "", variation: "", percentChange :""};
   try {
-    const { data } = await axios.request(config);
 
     let dataIndices = await nseIndia.getDataByEndpoint(
       `/api/allIndices`
