@@ -435,15 +435,20 @@ const giftNifty = async () => {
       'sec-ch-ua-platform': '"macOS"',
     }
   };
-  
-  const { data } = await axios.request(config);
+  let dataNifty = {};
+  try {
+    const { data } = await axios.request(config);
 
-  let dataIndices= await nseIndia.getDataByEndpoint(
-    `/api/allIndices`
-  );
+    let dataIndices = await nseIndia.getDataByEndpoint(
+      `/api/allIndices`
+    );
 
-  dataNifty = dataIndices.data[0];
-  
+    dataNifty = dataIndices.data[0];
+  } catch (e) {
+    console.log("Nifty 50 fetch error");
+  }    
+
+
 
   const note = await Note.findById("6696a424d0450dec09316cbf");
   note.content = `<h2>Gify Nifty : ${data.body.stockData.currentPrice} , ${data.body.stockData.dayChange} , ${data.body.stockData.dayChangeP} % </h2> <br> <h2> Nifty 50 : ${dataNifty.last} ${dataNifty.variation} ${dataNifty.percentChange} % </h2>`;
