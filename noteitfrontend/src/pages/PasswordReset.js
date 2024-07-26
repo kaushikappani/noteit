@@ -1,7 +1,7 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Container, Form, Row } from "react-bootstrap";
-import { Link,useParams } from "react-router-dom";
+import {useParams } from "react-router-dom";
 import Loading from "../components/Loading";
 import "./page.css";
 import Header from "../components/Header";
@@ -13,7 +13,8 @@ const PasswordReset = () => {
     const [data, setData] = useState();
     const [error, setError] = useState();
     const handleSubmit = async (e) => {
-        e.preventDefault();
+      e.preventDefault();
+      setLoading(true);
         try {
             const config = {
               withCredentials: true,
@@ -22,10 +23,12 @@ const PasswordReset = () => {
               },
             };
             const { data } = await axios.post("/api/users/resetpassword/" + id, passwords, config);
-            setData(data);
+          setData(data);
+          setLoading(false);
         } catch (err) {
           console.log(err.message);
           setError(err);
+          setLoading(false);
         }
     }
   return (

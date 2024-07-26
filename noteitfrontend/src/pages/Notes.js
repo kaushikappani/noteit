@@ -51,7 +51,7 @@ const Notes = () => {
       const config = {
         withCredentials: true,
       };
-      const { data } = await axios.put(
+        await axios.put(
         `/api/notes/${id}`,
         { archived: true },
         config
@@ -93,7 +93,7 @@ const Notes = () => {
       const config = {
         withCredentials: true,
       };
-      const { data } = await axios.put(
+      await axios.put(
         `/api/notes/${id}`,
         { pinned: true },
         config
@@ -123,7 +123,7 @@ const Notes = () => {
       const config = {
         withCredentials: true,
       };
-      const { data } = await axios.put(`/api/notes/${id}`, { color }, config);
+      await axios.put(`/api/notes/${id}`, { color }, config);
       notify("Updated", {
         position: "top-right",
         autoClose: 2000,
