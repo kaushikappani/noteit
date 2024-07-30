@@ -18,6 +18,7 @@ import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import { Chip, List, ListItem, ListSubheader } from "@mui/material";
 import "./css/Aibutton.css"
+import GeminiLogo from "./GeminiLogo";
 
 
 export const Notemodel = ({ props }) => {
@@ -450,6 +451,7 @@ export const Notemodel = ({ props }) => {
                           onClick={(e) => generateAiSummary()}
                           
                         >
+                        <GeminiLogo />
                         Ai Summary
                         </Button>
                       </div> }
