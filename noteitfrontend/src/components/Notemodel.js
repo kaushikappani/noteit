@@ -28,6 +28,7 @@ export const Notemodel = ({ props }) => {
   const [user, setUser] = useState();
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [color, setColor] = useState(props.color);
   const [userAccessEmail, setUserAccessEmail] = useState();
@@ -308,10 +309,10 @@ export const Notemodel = ({ props }) => {
       const config = {
         withCredentials: true,
       };
-      setLoading(true);
+      setAiLoading(true);
       //eslint-disable-next-line
       const { data } = await axios.get(`api/notes/${props.id}/genai/summary`, config);
-      setLoading(false);
+      setAiLoading(false);
       setAlert({
         open: true,
         type: "success",
@@ -325,7 +326,7 @@ export const Notemodel = ({ props }) => {
         type: "warning",
         message: e.response ? e.response.data.message : e.message,
       });
-      setLoading(false);
+      setAiLoading(false);
     }
   }
 
@@ -389,6 +390,8 @@ export const Notemodel = ({ props }) => {
           </div>
         </CardContent>
       </div>
+      {loading && <Loading />}
+      
       <Modal
         open={open}
         onClose={handleClose}
@@ -396,8 +399,10 @@ export const Notemodel = ({ props }) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
+          <GeminiLogo aiLoading={aiLoading} />
+
           <div className="noteDiv">
-            {loading && <Loading />}
+           
             {user && (
               <Card>
                 <Card.Body>
@@ -449,10 +454,9 @@ export const Notemodel = ({ props }) => {
                         <Button
                           className="blinking-button"
                           onClick={(e) => generateAiSummary()}
-                          
                         >
-                        <GeminiLogo />
-                        Ai Summary
+                          <GeminiLogo />
+                            Ai Summary
                         </Button>
                       </div> }
                       

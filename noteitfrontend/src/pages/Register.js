@@ -91,9 +91,9 @@ const Register = () => {
                                 {message &&
                                     <p className="text-danger" style={{ justifyContent: "right", textAlign: "center" }}>{message}</p>
                                 }
-
+                                {loading && <Loading /> }
                                 <div className="d-grid mb-5">
-                                    <button className="btn btn-lg btn-primary" type="submit">{loading ? <Loading /> : "Sign Up"}</button>
+                                    <button className="btn btn-lg btn-primary" type="submit">Sign Up</button>
                                 </div>
                             </div>
                         </Form>

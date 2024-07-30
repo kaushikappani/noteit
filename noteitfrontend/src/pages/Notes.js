@@ -381,17 +381,19 @@ const Notes = () => {
                     })}
               </Masonry>
             </ResponsiveMasonry>
-            <button
-              style={buttonStyle}
-              className="btn btn-md btn-success"
-              type="button"
-            >
-              <Create setNotes={setNotes} fetchNotes={fetchNotes}>
-                <PencilSquare size={25} />
-              </Create>
-            </button>
+            
           </Container>
+          <button
+            style={buttonStyle}
+            className="btn btn-md btn-success"
+            type="button"
+          >
+            <Create setNotes={setNotes} fetchNotes={fetchNotes}>
+              <PencilSquare size={25} />
+            </Create>
+          </button>
         </div>
+        
       }
     </div>
   );

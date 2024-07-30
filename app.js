@@ -67,6 +67,7 @@ schedule.scheduleJob(rule, () => {
     scheduleCoorporateAnnouncments();
     scheduleCoorporateActions();
 });
+
 schedule.scheduleJob(rule2, () => {
     console.log('Scheduler triggered with rule2');
     scheduleCoorporateAnnouncments();

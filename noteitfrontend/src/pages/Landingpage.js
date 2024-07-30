@@ -6,7 +6,6 @@ import Loading from '../components/Loading';
 import "./page.css";
 import Header from '../components/Header';
 import { isMobile } from 'react-device-detect';
-import GeminiLogo from '../components/GeminiLogo';
 
 
 const Landingpage = ({ history }) => {
@@ -121,10 +120,11 @@ const Landingpage = ({ history }) => {
                       {error}
                     </p>
                   )}
+                  {loading && <Loading />}
                   <div className="d-grid mb-5">
                     <button className="btn btn-lg btn-primary" type="submit">
                       {" "}
-                      {loading ? <Loading /> : "Log In"}
+                      Log In
                     </button>
                   </div>
                   <p

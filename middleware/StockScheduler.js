@@ -167,6 +167,8 @@ const scheduleFiiDiiReport = async () => {
 
   // mailer(recipient, mailBody);
 };
+
+
 const scheduleCoorporateAnnouncments = async () => {
   const nseIndia = new NseIndia();
 
@@ -177,7 +179,7 @@ const scheduleCoorporateAnnouncments = async () => {
     const fromDateString = fromDate.format("DD-MM-YYYY");
     const dateString = `from_date=${fromDateString}&to_date=${toDateString}`;
     let data = await nseIndia.getDataByEndpoint(
-      `/api/corporate-announcements?index=equities`
+      `/api/corporate-announcements?index=equities&${dateString}`
     );
     // console.log(data);
     const mailTemplate = await readFile(
@@ -251,6 +253,7 @@ const scheduleCoorporateAnnouncments = async () => {
     console.error("Error in scheduleCoorporateAnnouncments ", e);
   }
 };
+
 
 const scheduleCoorporateActions = async () => {
   try {
