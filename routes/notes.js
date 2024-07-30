@@ -28,13 +28,18 @@ router.route("/").get(
             const notes = await Note.find({
                 user: req.user._id,
                 archived: false,
-            }).sort({ createdAt: -1 }).select("-user");
+            }).sort({ createdAt: -1 });
+
+            notes.forEach(n => {
+                client.set(`${n._id}_note`, JSON.stringify(n));
+            })
 
             // Modify notes by adding view and edit properties
             const modifiedNotes = notes.map(note => ({
                 ...note.toObject(),
                 view: true,
                 edit: true,
+                user : ""
             }));
 
             if (req.user.email === "kaushikappani@gmail.com") {
@@ -119,8 +124,9 @@ router.route("/create").post(
 router.route("/:id/:history").get(
     protect,
     asyncHandler(async (req, res) => {
+        const getAsync = util.promisify(client.get).bind(client);
+
         if (req.user.email === "kaushikappani@gmail.com" && req.params.id === "deliveryreport") {
-            const getAsync = util.promisify(client.get).bind(client);
 
             const result = await getAsync("deliveryreport");
             const resultDate = await getAsync("deliveryreportlastupdated");
@@ -150,39 +156,58 @@ router.route("/:id/:history").get(
             }
         }
 
+        let note = null;
 
-        const note = await Note.findById(req.params.id)
-            .select("-color")
-            .select("-archived")
-            .select("-pinned");
-        const owner = await User.findById(note.user).select("name email -_id");
-        const noteAccess = await NoteAccess.findOne({ note: note.id, user: req.user._id, isActive: true })
-        if (note.user.toString() !== req.user._id.toString() && noteAccess == null) {
-            res.status(401);
-            throw new Error("Oops! No Access to View");
+        note = await getAsync(`${req.params.id}_note`);
+        note = JSON.parse(note);
+        client.del(`${req.params.id}_note`);
+        if (note === null) {
+            console.log("DB call")
+            note = await Note.findById(req.params.id)
+                .select("-color")
+                .select("-archived")
+                .select("-pinned");
+            note = note.toObject();
         }
-        const noteHistory = await NoteHistory.findOne({ note: note.id });
+
+     
+        // const owner = await User.findById(note.user).select("name email -_id");
+        const noteUserId = note.user.toString();
+        const requestUserId = req.user._id.toString();
+
+        if (noteUserId !== requestUserId) {
+            const noteAccess = await NoteAccess.findOne({ note: note._id, user: req.user._id, isActive: true });
+            if (noteAccess == null) {
+                res.status(401);
+                throw new Error("Oops! No Access to View");
+            }
+        }
+        let noteHistory = null;
+
 
         switch (req.params.history) {
             case "h0":
                 break;
             case "h1":
+                noteHistory = await NoteHistory.findOne({ note: note._id });
                 note.content = noteHistory != null ? noteHistory.h1 : note.content;
                 break;
             case "h2":
+                noteHistory = await NoteHistory.findOne({ note: note._id });
                 note.content = noteHistory != null ? noteHistory.h2 : note.content;
                 break;
             case "h3":
+                noteHistory = await NoteHistory.findOne({ note: note._id });
                 note.content = noteHistory != null ? noteHistory.h3 : note.content;
                 break;
         }
         const edit = note.user.toString() === req.user._id.toString();
-        const modifiedNote = { ...note.toObject(), view: true, edit ,user:null};
+        const modifiedNote = { ...note, view: true, edit ,user:null};
 
-       
+       user = {name:"system",email:"system"}
 
         if (note) {
-            res.json({ note: modifiedNote, user: owner });
+            res.json({ note: modifiedNote, user: user });
         } else {
             res.status(400).json({ message: "Note not found" });
         }
