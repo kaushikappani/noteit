@@ -6,6 +6,7 @@ import Loading from '../components/Loading';
 import "./page.css";
 import Header from '../components/Header';
 import { isMobile } from 'react-device-detect';
+import GeminiLogo from '../components/GeminiLogo';
 
 
 const Landingpage = ({ history }) => {
