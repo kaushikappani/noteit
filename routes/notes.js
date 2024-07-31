@@ -31,8 +31,8 @@ router.route("/").get(
             }).sort({ createdAt: -1 });
 
             notes.forEach(n => {
-                client.set(`${n._id}_note`, JSON.stringify(n));
-            })
+                client.set(`${n._id}_note`, JSON.stringify(n), 'EX', 3600); 
+            });
 
             // Modify notes by adding view and edit properties
             const modifiedNotes = notes.map(note => ({
