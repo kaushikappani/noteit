@@ -159,11 +159,14 @@ router.route("/:id/:history").get(
         let note = null;
 
         note = await getAsync(`${req.params.id}_note`);
-        note = JSON.parse(note);
-        delete note.color;
-        delete note.archived;
-        delete note.pinned;
-        client.del(`${req.params.id}_note`);
+        if (note !== null) {
+            note = JSON.parse(note);
+            delete note.color;
+            delete note.archived;
+            delete note.pinned;
+            client.del(`${req.params.id}_note`); 
+        }
+  
         if (note === null) {
             console.log("DB call")
             note = await Note.findById(req.params.id)
