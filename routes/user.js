@@ -344,10 +344,11 @@ router.route("/verification/link").post(protect,asyncHandler(async (req, res) =>
 
 router.route("/upload/profile/pic").post(protect, upload.single('profilePicture'), asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
-
+    client.del(`${req.user._id}_user`); 
     let result = null;
     try {
         result = await cloudinary.uploader.upload(req.file.path, { public_id: `profilepic/${user._id}`, secure: true });
+        
     } catch (e) {
         console.log("Error While Uploading pic " + e)
         throw new Error("Error While Uploading pic")
