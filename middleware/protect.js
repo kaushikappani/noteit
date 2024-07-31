@@ -3,6 +3,8 @@ const { User } = require("../config/models");
 const asyncHandler = require("express-async-handler");
 const redis = require("redis");
 const client = require("./redis");
+const util = require('util');
+
 
 const protect = asyncHandler(async (req, res, next) => {
     let token;
@@ -10,8 +12,16 @@ const protect = asyncHandler(async (req, res, next) => {
         try {
             token = req.cookies.token;
             const decode = jwt.verify(token, process.env.JWT_SECRET);
-            req.user = await User.findById(decode.id).select("-password");
-
+            const getAsync = util.promisify(client.get).bind(client);
+            let result = await getAsync(`${decode.id}_user`);
+            if (result == null) {
+                console.log("db call");
+                req.user = await User.findById(decode.id).select("-password");
+                client.set(`${decode.id}_user`, JSON.stringify(req.user), 'EX', 3600 * 24); 
+            } else {
+                console.log("cache call");
+                req.user = JSON.parse(result);
+            }
             // Check if the token in Redis matches the one in the request
             await client.mget([decode.id + "_login_web", decode.id + "_login_mobile"], (err, result) => {
                 if (err) {

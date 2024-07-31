@@ -148,6 +148,7 @@ router.route("/info").get(protect, asyncHandler(async (req, res) => {
 
 router.route("/info").put(protect, asyncHandler(async (req, res) => {
     const { email, password, name, conformPassword } = req.body;
+    client.del(`${req.user._id}_user`); 
     const user = await User.findById(req.user._id);
     if (user) {
         user.name = name || user.name;
