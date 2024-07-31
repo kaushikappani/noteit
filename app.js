@@ -2,6 +2,7 @@ require("dotenv").config()
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const compression = require('compression')
 const connectDB = require("./config/db");
 const userRoutes = require("./routes/user");
 const notesRoute = require("./routes/notes");
@@ -14,6 +15,7 @@ const schedule = require('node-schedule');
 const moment = require('moment-timezone');
 const { scheduleTask, scheduleFiiDiiReport,
     scheduleCoorporateAnnouncments, scheduleCoorporateActions, giftNifty } = require("./middleware/StockScheduler");
+
 
 
 const timeZone = 'Asia/Kolkata';
@@ -40,6 +42,7 @@ app.use(express.json());
 connectDB();
 
 app.use(cookieParser());
+app.use(compression())
 app.use("/api/users", userRoutes)
 app.use("/api/notes", notesRoute)
 app.use("/api/stock", stockRoute)
