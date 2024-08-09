@@ -7,12 +7,13 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TableSortLabel from '@mui/material/TableSortLabel';
-import Button from '@mui/material/Button';
 import axios from 'axios';
 import Header from '../components/Header';
 import { Container } from 'react-bootstrap';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { BoxArrowUpRight } from 'react-bootstrap-icons';
+import { Download } from 'react-bootstrap-icons';
 
 const darkTheme = createTheme({
   palette: {
@@ -99,7 +100,7 @@ const StockScreener = () => {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-          {autoReload ? 'Stop Auto-Reload' : 'Start Auto-Reload'}
+         
       <Header page="stocks" fetchSummary={fetchSummary} loading={loading} autoReload={autoReload} handleAutoReloadToggle={handleAutoReloadToggle}  />
       <Container>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -191,7 +192,7 @@ const StockScreener = () => {
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                   <TableCell component="th" scope="row">
-                    <a href={`/api/stock/data/ai/report/${row.symbol}`}>{row.symbol}</a> 
+                    <a target="_blank" href={`/api/stock/data/ai/report/${row.symbol}`}>{row.symbol}</a> 
                   </TableCell>
                   <TableCell align="right">{row.currentPrice.toFixed(2)}</TableCell>
                   <TableCell style={{ color: row.daypnl >= 0 ? "green" : "red" }} align="right">{row.daypnl.toFixed(2)}</TableCell>
@@ -204,6 +205,9 @@ const StockScreener = () => {
               ))}
             </TableBody>
           </Table>
+          <a target="_blank" href={`/api/stock/data/page/report`}> <BoxArrowUpRight /> Open page</a> 
+          <a href={`/api/stock/data/excel/report`}> <Download /> Download</a> 
+
         </TableContainer>
       </Container>
     </ThemeProvider>
