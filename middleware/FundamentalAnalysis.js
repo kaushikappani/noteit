@@ -37,7 +37,13 @@ const createPages = async () => {
                 ],
             });
 
-            const result = await chatSession.sendMessage(JSON.stringify(data));
+            let cacheResult = await getAsync(`page_generated_${symbol}`);
+            let result = "";
+            if (cacheResult == null) {
+                result = await chatSession.sendMessage(JSON.stringify(data));
+            } else {
+                result = cacheResult;
+            }
 
             const pageData = result.response.text().replace('```html', "").replace('```', "");
 
@@ -46,12 +52,11 @@ const createPages = async () => {
                 console.log(`AI page Saved! for ${symbol}`);
             });
 
-            client.set(`page_generated_${symbol}`, "page generated!", 'PX', 24 * 60 * 60 * 1000, (err, data) => {
+            client.set(`page_generated_${symbol}`, pageData, 'PX', 24 * 60 * 60 * 1000, (err, data) => {
                 if (err) {
                     console.log(err)
                 }
             })
-
 
         }
         try {
