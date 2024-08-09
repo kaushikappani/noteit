@@ -39,7 +39,7 @@ const createPages = async () => {
             const getAsync = util.promisify(client.get).bind(client);
             let cacheResult = await getAsync(`page_generated_${symbol}`);
             let result = "";
-            const pageData = "";
+            let pageData = "";
             if (cacheResult == null) {
                 await new Promise((resolve) => setTimeout(resolve, 50000));
                 result = await chatSession.sendMessage(JSON.stringify(data));
