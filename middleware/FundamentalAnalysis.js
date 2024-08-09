@@ -17,7 +17,7 @@ const createPages = async () => {
         
         const model = genAI.getGenerativeModel({
             model: "gemini-1.5-flash",
-            systemInstruction: "Based on the JSON data analyses the perticular stock data and give important information like profits all paramenters in last 3-4 quarter have grown and share holding pattern has incresed in last 3-4 quarters give the proof with numbers and also give POSITIVE , neutral or NEGITIVE rating for each parameter Give the analysis ONLY inside in HTML fragments",
+            systemInstruction: "Based on the JSON data analyses the perticular stock data and give important information like profits all paramenters in last 3-4 quarter have grown and share holding pattern has incresed in last 3-4 quarters give the proof with numbers and also give POSITIVE , neutral or NEGITIVE rating for each parameter Give the analysis in HTML page",
         });
 
         const generationConfig = {
