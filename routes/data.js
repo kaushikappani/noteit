@@ -62,32 +62,34 @@ const allData = [
 
 const symbolQuantityObject = {
     "ARVIND": 20,
+    "BEL": 10,
+    "BHEL": 20,
     "DREAMFOLKS": 21,
     "EXIDEIND": 40,
     "FEDERALBNK": 41,
+    "HDFCBANK": 10,
     "INDHOTEL": 17,
     "ITC": 44,
-    "JIOFIN": 265,
+    "JIOFIN": 278,
     "KCP": 26,
-    "MOTHERSON": 115,
+    "KOTAKBANK": 10,
+    "MASFIN": 35,
+    "MOTHERSON": 125,
     "NHPC": 60,
     "PARKHOTELS": 22,
     "PNB": 160,
     "POWERGRID": 20,
-    "RECLTD": 66,
-    "SBIN": 34,
+    "PSUBANK": 5,
+    "RECLTD": 71,
+    "SBIN": 35,
     "SUZLON": 424,
     "TATAMOTORS": 10,
-    "TATAPOWER": 110,
-    "TITAGARH": 48,
-    "UJJIVANSFB": 286,
-    "VBL": 10,
-    "SHRIRAMFIN": 0,
-    "BEL": 10,
-    "BHEL": 20,
-    "KOTAKBANK": 10,
-    "HDFCBANK": 10
+    "TATAPOWER": 115,
+    "TITAGARH": 50,
+    "UJJIVANSFB": 350,
+    "VBL": 12
 };
+
 
 
 module.exports = { allData, symbolQuantityObject };

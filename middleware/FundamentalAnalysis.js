@@ -40,6 +40,7 @@ const createPages = async () => {
             let cacheResult = await getAsync(`page_generated_${symbol}`);
             let result = "";
             if (cacheResult == null) {
+                await new Promise((resolve) => setTimeout(resolve, 50000));
                 result = await chatSession.sendMessage(JSON.stringify(data));
             } else {
                 result = cacheResult;
@@ -69,7 +70,7 @@ const createPages = async () => {
             console.log(e);
         }
        
-        await new Promise((resolve) => setTimeout(resolve, 50000));
+       
     }
 
 }
