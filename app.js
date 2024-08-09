@@ -33,8 +33,8 @@ rule2.tz = 'Asia/Kolkata';
 
 const pagesTime = moment.tz(process.env.PAGES_TIME, 'HH:mm', timeZone);
 const pagesTimeRule = new schedule.RecurrenceRule();
-pagesTimeRule.hour = targetTime.hour();
-pagesTimeRule.minute = targetTime.minute();
+pagesTimeRule.hour = pagesTime.hour();
+pagesTimeRule.minute = pagesTime.minute();
 pagesTimeRule.tz = 'Asia/Kolkata';
 pagesTimeRule.dayOfWeek = new schedule.Range(1, 5);
 
