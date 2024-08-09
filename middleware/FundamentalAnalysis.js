@@ -39,14 +39,17 @@ const createPages = async () => {
             const getAsync = util.promisify(client.get).bind(client);
             let cacheResult = await getAsync(`page_generated_${symbol}`);
             let result = "";
+            const pageData = "";
             if (cacheResult == null) {
                 await new Promise((resolve) => setTimeout(resolve, 50000));
                 result = await chatSession.sendMessage(JSON.stringify(data));
+                pageData = result.response.text().replace('```html', "").replace('```', "");
+
             } else {
-                result = cacheResult;
+                pageData = cacheResult;
+                await new Promise((resolve) => setTimeout(resolve, 10000));
             }
 
-            const pageData = result.response.text().replace('```html', "").replace('```', "");
 
             fs.writeFile(`stockreports/${symbol}.html`, pageData, function (err) {
                 if (err) throw err;
@@ -61,7 +64,6 @@ const createPages = async () => {
 
         }
         try {
-            const getAsync = util.promisify(client.get).bind(client);
  
             await run();
         } catch(e){
