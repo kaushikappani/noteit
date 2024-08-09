@@ -62,10 +62,8 @@ const createPages = async () => {
         }
         try {
             const getAsync = util.promisify(client.get).bind(client);
-            let result = await getAsync(`page_generated_${symbol}`);
-            if (result == null) {
-                await run();
-            }
+ 
+            await run();
         } catch(e){
             console.log(e);
         }
