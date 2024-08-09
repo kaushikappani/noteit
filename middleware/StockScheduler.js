@@ -446,7 +446,7 @@ const giftNifty = async () => {
     let dataIndices = await nseIndia.getDataByEndpoint(
       `/api/allIndices`
     );
-    client.set("dataIndices", dataIndices);
+    // client.set("dataIndices", dataIndices);
 
     dataNifty = dataIndices.data[0];
   } catch (e) {
