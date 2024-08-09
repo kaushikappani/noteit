@@ -16,7 +16,6 @@ const path = require("path");
 const { scheduleTask, scheduleFiiDiiReport,
     scheduleCoorporateAnnouncments, scheduleCoorporateActions, giftNifty } = require("./middleware/StockScheduler");
 const { generateHtmlPage, createPages } = require("./middleware/FundamentalAnalysis");
-// createPages();
 const timeZone = 'Asia/Kolkata';
 
 const targetTime = moment.tz(process.env.TIME_RULE1, 'HH:mm', timeZone);

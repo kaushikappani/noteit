@@ -10,7 +10,6 @@ const { giftNifty } = require("../middleware/StockScheduler");
 const {
     GoogleGenerativeAI,
 } = require("@google/generative-ai");
-const  OpenAI = require("openai");
 
 
 // const { map } = require("draft-js/lib/DefaultDraftBlockRenderMap");

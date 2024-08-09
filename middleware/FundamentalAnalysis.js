@@ -2,6 +2,7 @@ const { allData, symbolQuantityObject } = require("../routes/data");
 const { fetchData } = require("./Scrapper");
 const fs = require("fs");
 const ExcelJS = require('exceljs');
+const util = require('util');
 
 const {
     GoogleGenerativeAI,
@@ -12,6 +13,7 @@ const createPages = async () => {
     const genAI = new GoogleGenerativeAI(apiKey);
     
     for (let i = 0; i < Object.keys(symbolQuantityObject).length; i++) {
+
         let symbol = Object.keys(symbolQuantityObject)[i];
         let data = await fetchData(symbol);
         
@@ -44,10 +46,20 @@ const createPages = async () => {
                 console.log(`AI page Saved! for ${symbol}`);
             });
 
+            client.set(`page_generated_${symbol}`, "page generated!", 'PX', 24 * 60 * 60 * 1000, (err, data) => {
+                if (err) {
+                    console.log(err)
+                }
+            })
+
 
         }
         try {
-            await run();
+            const getAsync = util.promisify(client.get).bind(client);
+            let result = await getAsync(`page_generated_${symbol}`);
+            if (result == null) {
+                await run();
+            }
         } catch(e){
             console.log(e);
         }
