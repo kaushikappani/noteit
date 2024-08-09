@@ -160,7 +160,7 @@ const Notes = () => {
       setNotes(data.modifiedNotes);
 
       setLoading(false);
-      setUser(data.user);
+      // setUser(data.user);
       console.log(searchText)
       if (searchText) {
         handleSearch(searchText)
@@ -174,8 +174,25 @@ const Notes = () => {
     
   };
 
+  const fetchUser = async () => {
+    console.log("fetch user");
+    try {
+      const config = {
+        withCredentials: true,
+      };
+      const { data } = await axios.get("/api/users/info", config);
+      setUser(data);
+    } catch (e) {
+      setAlert({
+        open: true,
+        type: "warning",
+        message: e.response ? e.response.data.message : e.message,
+      });
+      history.push("/");
+    }
+  };
+
   const fetchSharedNotes = async () => {
-    setLoading(true);
     try {
       const config = {
         withCredentials: true,
@@ -184,12 +201,11 @@ const Notes = () => {
       console.log(data)
       setSharedNotes(data.notes);
 
-      setLoading(false);
+    
     } catch (e) {
       console.log(e);
       localStorage.clear();
       history.push("/");
-      setLoading(false);
     }
   };
 
@@ -218,7 +234,7 @@ const Notes = () => {
   useEffect(() => {
     fetchNotes();
     fetchSharedNotes();
-    
+    fetchUser();
   }, []);
 
   return (

@@ -1,0 +1,525 @@
+
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Performance</title>
+    <style>
+      table { width: 100%; border-collapse: collapse; }
+      th, td { border: 1px solid black; padding: 8px; text-align: center; }
+      th { background-color: #f2f2f2; }
+    </style>
+  </head>
+  <body>
+    <table>
+      <thead>
+        <tr>
+          <th>Company Name</th><th>Current Price</th><th>PE</th><th>Sales +/ Revenue</th><th>Operating Profit</th><th>Net Profit +</th><th>OPM %</th><th>Promoters +</th><th>FIIs +</th><th>DIIs +</th></tr>
+      </thead>
+      <tbody><tr>
+      <td>360ONE</td><td>₹ 1,021</td><td>40.1</td><td></td><td>101.04529616724737</td><td>0.411522633744856</td><td>88.88888888888889</td><td></td><td>2.119582410629553</td><td>4.556354916067155</td></tr><tr>
+      <td>3MINDIA</td><td>₹ 37,440</td><td>69.0</td><td></td><td></td><td></td><td></td><td></td><td>3.5714285714285685</td><td></td></tr><tr>
+      <td>ABB</td><td>₹ 7,972</td><td>1,208</td><td></td><td>6.382978723404255</td><td>82.5</td><td></td><td></td><td>1.4297729184188388</td><td></td></tr><tr>
+      <td>ACC</td><td>₹ 2,352</td><td>21.9</td><td></td><td></td><td></td><td></td><td></td><td></td><td>0.7305194805194793</td></tr><tr>
+      <td>AIAENG</td><td>₹ 4,708</td><td>39.1</td><td></td><td></td><td></td><td></td><td></td><td></td><td>1.9970774476376039</td></tr><tr>
+      <td>APLAPOLLO</td><td>₹ 1,425</td><td>54.1</td><td></td><td></td><td>2.4096385542168677</td><td></td><td></td><td>2.80221570544151</td><td>5.974395448079657</td></tr><tr>
+      <td>AUBANK</td><td>₹ 627</td><td>137</td><td></td><td></td><td></td><td></td><td></td><td>0.5334010668021358</td><td></td></tr><tr>
+      <td>AARTIIND</td><td>₹ 748</td><td>64.7</td><td></td><td>9.266409266409266</td><td>6.451612903225806</td><td>6.666666666666667</td><td></td><td></td><td>7.598607888631104</td></tr><tr>
+      <td>AAVAS</td><td>₹ 1,645</td><td>26.6</td><td>7.480314960629922</td><td></td><td>21.367521367521366</td><td></td><td></td><td>3.103448275862085</td><td>1.6673614005835855</td></tr><tr>
+      <td>ABBOTINDIA</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>ACE</td><td>₹ 1,287</td><td>44.7</td><td></td><td></td><td></td><td></td><td></td><td>8.342245989304825</td><td></td></tr><tr>
+      <td>ADANIENSOL</td><td>₹ 1,104</td><td>122</td><td></td><td></td><td></td><td></td><td></td><td></td><td>4.473684210526326</td></tr><tr>
+      <td>ADANIENT</td><td>₹ 3,188</td><td>87.5</td><td></td><td></td><td></td><td>36.36363636363637</td><td></td><td></td><td>4.332755632582322</td></tr><tr>
+      <td>ADANIGREEN</td><td>₹ 1,775</td><td>209</td><td></td><td>100</td><td>102.90322580645162</td><td>16.43835616438356</td><td></td><td></td><td></td></tr><tr>
+      <td>ADANIPORTS</td><td>₹ 1,534</td><td>33.2</td><td></td><td>33.33333333333333</td><td>50</td><td>8.620689655172415</td><td></td><td>1.4018691588784984</td><td>5.405405405405411</td></tr><tr>
+      <td>ADANIPOWER</td><td>₹ 695</td><td>16.8</td><td></td><td>50</td><td>50</td><td>13.88888888888889</td><td></td><td></td><td>0.7092198581560291</td></tr><tr>
+      <td>ATGL</td><td>₹ 869</td><td>139</td><td></td><td>2.430555555555556</td><td>2.380952380952381</td><td>4</td><td></td><td></td><td>0.49019607843137664</td></tr><tr>
+      <td>AWL</td><td>₹ 385</td><td>84.3</td><td></td><td>73.38935574229691</td><td>99.36305732484077</td><td>33.33333333333333</td><td></td><td></td><td></td></tr><tr>
+      <td>ABCAPITAL</td><td>₹ 212</td><td>16.0</td><td></td><td></td><td>77800</td><td>12.121212121212121</td><td></td><td></td><td>7.549668874172177</td></tr><tr>
+      <td>ABFRL</td><td>₹ 324</td><td></td><td></td><td>26.056338028169012</td><td>-19.172932330827066</td><td>25</td><td></td><td>2.512820512820505</td><td></td></tr><tr>
+      <td>AEGISLOG</td><td>₹ 751</td><td>45.1</td><td></td><td></td><td></td><td></td><td></td><td></td><td>36.38211382113821</td></tr><tr>
+      <td>AETHER</td><td>₹ 878</td><td>126</td><td></td><td>330</td><td>-3100</td><td>166.66666666666669</td><td></td><td>30.630630630630616</td><td></td></tr><tr>
+      <td>AFFLE</td><td>₹ 1,597</td><td>70.3</td><td></td><td>6.122448979591836</td><td></td><td>5.263157894736842</td><td></td><td>3.4482758620689764</td><td>10.122282608695652</td></tr><tr>
+      <td>AJANTPHARM</td><td>₹ 2,999</td><td>44.3</td><td></td><td>18.705035971223023</td><td>21.182266009852217</td><td>11.538461538461538</td><td></td><td></td><td></td></tr><tr>
+      <td>APLLTD</td><td>₹ 1,130</td><td>35.3</td><td></td><td></td><td></td><td></td><td></td><td></td><td>0.5198180636777132</td></tr><tr>
+      <td>ALKEM</td><td>₹ 5,849</td><td>32.6</td><td></td><td>51.49253731343284</td><td>80.92105263157895</td><td>42.857142857142854</td><td></td><td></td><td>18.746001279590516</td></tr><tr>
+      <td>ALKYLAMINE</td><td>₹ 2,086</td><td>56.3</td><td></td><td></td><td></td><td>3.571428571428571</td><td></td><td>1.9736842105263175</td><td></td></tr><tr>
+      <td>ALLCARGO</td><td>₹ 60.2</td><td>45.9</td><td></td><td></td><td></td><td></td><td></td><td></td><td>0.3533568904593564</td></tr><tr>
+      <td>ALOKINDS</td><td>₹ 25.8</td><td></td><td></td><td>300</td><td>-4.166666666666666</td><td>Infinity</td><td></td><td>5.128205128205133</td><td>2.7027027027027053</td></tr><tr>
+      <td>ARE&M</td><td>₹ 1,506</td><td>28.3</td><td></td><td>6.585365853658537</td><td>8.26086956521739</td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>AMBER</td><td>₹ 4,322</td><td>90.4</td><td></td><td></td><td></td><td></td><td></td><td>9.391839876828334</td><td></td></tr><tr>
+      <td>AMBUJACEM</td><td>₹ 632</td><td>49.0</td><td></td><td></td><td>78900</td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>ANANDRATHI</td><td>₹ 3,640</td><td>62.3</td><td></td><td>34.24657534246575</td><td>28.07017543859649</td><td>2.5</td><td></td><td>3.292181069958832</td><td></td></tr><tr>
+      <td>ANGELONE</td><td>₹ 2,176</td><td>16.4</td><td></td><td></td><td></td><td></td><td></td><td></td><td>47.83983140147522</td></tr><tr>
+      <td>ANURAS</td><td>₹ 779</td><td>66.6</td><td></td><td>17.72151898734177</td><td>53.84615384615385</td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>APARINDS</td><td>₹ 8,278</td><td>40.0</td><td></td><td></td><td></td><td></td><td></td><td></td><td>4.391534391534401</td></tr><tr>
+      <td>APOLLOHOSP</td><td>₹ 6,588</td><td>106</td><td></td><td>4.234527687296417</td><td>1.574803149606299</td><td></td><td></td><td></td><td>8.081841432225055</td></tr><tr>
+      <td>APOLLOTYRE</td><td>₹ 492</td><td>18.4</td><td></td><td>90800</td><td></td><td></td><td></td><td></td><td>14.23374261027741</td></tr><tr>
+      <td>APTUS</td><td>₹ 310</td><td>24.1</td><td></td><td>8.090614886731391</td><td>4.878048780487805</td><td>2.4096385542168677</td><td></td><td>16.49642492339122</td><td>78.86497064579257</td></tr><tr>
+      <td>ACI</td><td>₹ 710</td><td>32.4</td><td></td><td></td><td></td><td>6.451612903225806</td><td></td><td>62.627986348122846</td><td></td></tr><tr>
+      <td>ASAHIINDIA</td><td>₹ 637</td><td>51.8</td><td></td><td>1.6853932584269662</td><td>5.47945205479452</td><td></td><td></td><td></td><td>2.0833333333333353</td></tr><tr>
+      <td>ASHOKLEY</td><td>₹ 253</td><td>29.8</td><td></td><td></td><td></td><td></td><td></td><td>2.7039627039627128</td><td>15.453802125919857</td></tr><tr>
+      <td>ASIANPAINT</td><td>₹ 3,041</td><td>57.5</td><td></td><td></td><td></td><td></td><td></td><td></td><td>5.943152454780373</td></tr><tr>
+      <td>ASTERDM</td><td>₹ 408</td><td>108</td><td></td><td>3.205128205128205</td><td>-350</td><td></td><td></td><td></td><td>19.343065693430674</td></tr><tr>
+      <td>ASTRAZEN</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td>2.1978021978021998</td><td>32.360742705570296</td></tr><tr>
+      <td>ASTRAL</td><td>₹ 2,031</td><td>100</td><td></td><td></td><td></td><td></td><td></td><td>5.937794533459009</td><td></td></tr><tr>
+      <td>ATUL</td><td>₹ 7,988</td><td>70.9</td><td></td><td>50.67567567567568</td><td>89.83050847457628</td><td>41.66666666666667</td><td></td><td>1.8890200708382543</td><td>0.5453837164004558</td></tr><tr>
+      <td>AUROPHARMA</td><td>₹ 1,450</td><td>26.0</td><td></td><td></td><td></td><td></td><td></td><td></td><td>6.400343642611676</td></tr><tr>
+      <td>AVANTIFEED</td><td>₹ 771</td><td>27.7</td><td></td><td>23.076923076923077</td><td>22.123893805309734</td><td>10</td><td></td><td>1.2048192771084332</td><td></td></tr><tr>
+      <td>DMART</td><td>₹ 4,988</td><td>122</td><td></td><td></td><td>37.47779751332149</td><td>28.57142857142857</td><td></td><td>11.622276029055701</td><td></td></tr><tr>
+      <td>AXISBANK</td><td>₹ 1,143</td><td>13.2</td><td>3.3333333333333335</td><td></td><td></td><td></td><td></td><td></td><td>5.0132802124833935</td></tr><tr>
+      <td>BEML</td><td>₹ 4,023</td><td>58.6</td><td></td><td></td><td></td><td></td><td></td><td></td><td>13.209668353007316</td></tr><tr>
+      <td>BLS</td><td>₹ 390</td><td>44.9</td><td></td><td>47.77777777777778</td><td>42.35294117647059</td><td>35</td><td></td><td></td><td>28.571428571428577</td></tr><tr>
+      <td>BSE</td><td>₹ 2,650</td><td>60.2</td><td></td><td>128.28947368421052</td><td>146.72897196261684</td><td>85.71428571428571</td><td></td><td></td><td></td></tr><tr>
+      <td>BAJAJ-AUTO</td><td>₹ 9,766</td><td>34.1</td><td></td><td></td><td></td><td></td><td></td><td></td><td>3.0696576151121575</td></tr><tr>
+      <td>BAJFINANCE</td><td>₹ 6,618</td><td>27.4</td><td>14.285714285714285</td><td></td><td></td><td></td><td></td><td>2.5790754257907422</td><td></td></tr><tr>
+      <td>BAJAJFINSV</td><td>₹ 1,560</td><td>29.8</td><td></td><td>10</td><td></td><td>11.76470588235294</td><td></td><td></td><td>3.683492496589353</td></tr><tr>
+      <td>BAJAJHLDNG</td><td>₹ 9,454</td><td>14.1</td><td></td><td>7200</td><td></td><td></td><td></td><td></td><td>5.418719211822661</td></tr><tr>
+      <td>BALAMINES</td><td>₹ 2,222</td><td>36.9</td><td></td><td></td><td></td><td></td><td></td><td>2.6422764227642253</td><td>7.43243243243244</td></tr><tr>
+      <td>BALKRISIND</td><td>₹ 3,059</td><td>41.1</td><td></td><td>25.87800369685767</td><td>59.67213114754099</td><td>4.166666666666666</td><td></td><td>3.0228758169934573</td><td>1.4565316340464283</td></tr><tr>
+      <td>BALRAMCHIN</td><td>₹ 491</td><td>22.9</td><td></td><td>205.30973451327435</td><td>123.07692307692308</td><td>166.66666666666669</td><td></td><td>8.16326530612245</td><td>8.76685934489401</td></tr><tr>
+      <td>BANDHANBNK</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>21.256038647343</td></tr><tr>
+      <td>BANKBARODA</td><td>₹ 246</td><td>6.68</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>BANKINDIA</td><td>₹ 119</td><td>7.83</td><td>6.25</td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>MAHABANK</td><td>₹ 61.9</td><td>9.78</td><td></td><td></td><td></td><td></td><td></td><td>15.384615384615378</td><td></td></tr><tr>
+      <td>BATAINDIA</td><td>₹ 1,443</td><td>52.4</td><td></td><td>1.6483516483516485</td><td>171.875</td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>BAYERCROP</td><td>₹ 6,599</td><td>603</td><td></td><td></td><td>112.5</td><td></td><td></td><td>0.276243093922646</td><td></td></tr><tr>
+      <td>BERGEPAINT</td><td>₹ 532</td><td>53.1</td><td></td><td>48.717948717948715</td><td>58.744394618834086</td><td>21.428571428571427</td><td></td><td></td><td>46.421663442940044</td></tr><tr>
+      <td>BDL</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td>3.7288135593220293</td><td></td></tr><tr>
+      <td>BEL</td><td>₹ 302</td><td>52.1</td><td></td><td>47300</td><td>79000</td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>BHARATFORG</td><td>₹ 1,637</td><td>78.9</td><td></td><td>15.241057542768274</td><td></td><td>20</td><td></td><td>3.3980582524271767</td><td></td></tr><tr>
+      <td>BHEL</td><td>₹ 302</td><td>1,048</td><td></td><td></td><td></td><td></td><td></td><td>3.8812785388127837</td><td></td></tr><tr>
+      <td>BPCL</td><td>₹ 333</td><td>7.42</td><td></td><td></td><td></td><td></td><td></td><td></td><td>0.046948356807502395</td></tr><tr>
+      <td>BHARTIARTL</td><td>₹ 1,464</td><td>73.3</td><td></td><td></td><td>100</td><td></td><td></td><td>1.1088295687884993</td><td></td></tr><tr>
+      <td>BIKAJI</td><td>₹ 815</td><td>72.9</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>BIOCON</td><td>₹ 337</td><td>25.9</td><td></td><td></td><td>286.5470852017937</td><td></td><td></td><td>4.7957371225577345</td><td>4.3827611395178945</td></tr><tr>
+      <td>BIRLACORPN</td><td>₹ 1,365</td><td>27.0</td><td></td><td></td><td></td><td></td><td></td><td></td><td>4.230769230769243</td></tr><tr>
+      <td>BSOFT</td><td>₹ 578</td><td>25.1</td><td></td><td></td><td></td><td></td><td></td><td></td><td>12.25147770016121</td></tr><tr>
+      <td>BLUEDART</td><td>₹ 7,927</td><td>64.1</td><td></td><td></td><td></td><td></td><td></td><td></td><td>7.84313725490196</td></tr><tr>
+      <td>BLUESTARCO</td><td>₹ 1,605</td><td>66.2</td><td></td><td></td><td>5.625</td><td>14.285714285714285</td><td></td><td>6.967984934086625</td><td></td></tr><tr>
+      <td>BBTC</td><td>₹ 2,363</td><td>14.8</td><td></td><td></td><td></td><td></td><td></td><td></td><td>14.173228346456687</td></tr><tr>
+      <td>BORORENEW</td><td>₹ 515</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>BOSCHLTD</td><td>₹ 32,019</td><td>49.5</td><td></td><td></td><td></td><td></td><td></td><td>45.3658536585366</td><td></td></tr><tr>
+      <td>BRIGADE</td><td>₹ 1,125</td><td>57.2</td><td></td><td></td><td></td><td>8</td><td></td><td>8.815612382234201</td><td></td></tr><tr>
+      <td>BRITANNIA</td><td>₹ 5,740</td><td>62.8</td><td></td><td></td><td></td><td></td><td></td><td></td><td>6.781829814459376</td></tr><tr>
+      <td>MAPMYINDIA</td><td>₹ 2,227</td><td>97.3</td><td></td><td>14.285714285714285</td><td>22.58064516129032</td><td></td><td></td><td></td><td>21.775898520084553</td></tr><tr>
+      <td>CCL</td><td>₹ 660</td><td>33.8</td><td></td><td>10.16949152542373</td><td>9.230769230769232</td><td>6.25</td><td></td><td>20.197044334975377</td><td></td></tr><tr>
+      <td>CESC</td><td>₹ 176</td><td>16.6</td><td></td><td></td><td></td><td></td><td></td><td>5.03485670023238</td><td>7.149621212121203</td></tr><tr>
+      <td>CGPOWER</td><td>₹ 713</td><td>121</td><td></td><td>15.140845070422534</td><td>2.9914529914529915</td><td>15.384615384615385</td><td></td><td></td><td>9.712586719524285</td></tr><tr>
+      <td>CIEINDIA</td><td>₹ 547</td><td>25.6</td><td></td><td></td><td></td><td>6.666666666666667</td><td></td><td></td><td>7.339955849889615</td></tr><tr>
+      <td>CRISIL</td><td>₹ 4,416</td><td>49.8</td><td></td><td>7.8125</td><td>8.695652173913043</td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>CSBBANK</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td>151.9269776876268</td><td>17.377666248431627</td></tr><tr>
+      <td>CAMPUS</td><td>₹ 294</td><td>83.0</td><td></td><td></td><td></td><td></td><td></td><td>13.793103448275875</td><td>21.18100128369704</td></tr><tr>
+      <td>CANFINHOME</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td>0.173761946133793</td><td></td></tr><tr>
+      <td>CANBK</td><td>₹ 111</td><td>6.43</td><td></td><td></td><td>33.33333333333333</td><td></td><td></td><td>12.677388836329232</td><td></td></tr><tr>
+      <td>CAPLIPOINT</td><td>₹ 1,501</td><td>23.9</td><td></td><td>4.827586206896552</td><td>3.3057851239669422</td><td>3.125</td><td></td><td>1.501501501501496</td><td>37.962962962962955</td></tr><tr>
+      <td>CGCL</td><td>₹ 208</td><td>58.7</td><td></td><td>5.376344086021505</td><td></td><td></td><td></td><td>18.82352941176471</td><td></td></tr><tr>
+      <td>CARBORUNIV</td><td>₹ 1,524</td><td>75.3</td><td></td><td></td><td></td><td></td><td></td><td>8.873720136518763</td><td></td></tr><tr>
+      <td>CASTROLIND</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td>4.942166140904318</td><td></td></tr><tr>
+      <td>CEATLTD</td><td>₹ 2,784</td><td>16.6</td><td></td><td></td><td>50.98039215686274</td><td></td><td></td><td></td><td>7.416719044626019</td></tr><tr>
+      <td>CELLO</td><td>₹ 929</td><td>62.5</td><td></td><td>0.7575757575757576</td><td>5.4945054945054945</td><td>4</td><td></td><td>31.6326530612245</td><td>9.02317880794702</td></tr><tr>
+      <td>CENTRALBK</td><td>₹ 59.7</td><td>16.6</td><td></td><td></td><td>15.66707466340269</td><td></td><td></td><td></td><td>0.3571428571428654</td></tr><tr>
+      <td>CDSL</td><td>₹ 2,565</td><td>55.9</td><td></td><td>4.054054054054054</td><td>3.875968992248062</td><td></td><td></td><td></td><td>16.830754805438367</td></tr><tr>
+      <td>CENTURYPLY</td><td>₹ 718</td><td>57.4</td><td></td><td></td><td></td><td></td><td></td><td></td><td>14.886285320468657</td></tr><tr>
+      <td>CENTURYTEX</td><td>₹ 2,191</td><td>214</td><td></td><td></td><td></td><td></td><td></td><td>14.209115281501337</td><td></td></tr><tr>
+      <td>CERA</td><td>₹ 10,420</td><td>56.8</td><td></td><td>55.73770491803278</td><td>46.15384615384615</td><td>21.428571428571427</td><td></td><td></td><td>10.43872919818456</td></tr><tr>
+      <td>CHALET</td><td>₹ 787</td><td>68.6</td><td></td><td></td><td></td><td></td><td></td><td>60.61320754716979</td><td>9.484956654767974</td></tr><tr>
+      <td>CHAMBLFERT</td><td>₹ 522</td><td>15.1</td><td></td><td>353.0120481927711</td><td>361.8556701030928</td><td>150</td><td></td><td>3.9999999999999973</td><td>3.111739745403108</td></tr><tr>
+      <td>CHEMPLASTS</td><td>₹ 519</td><td></td><td></td><td>490.4761904761905</td><td>-177.41935483870967</td><td>450</td><td></td><td>4.062788550323171</td><td>0.8525754884547141</td></tr><tr>
+      <td>CHENNPETRO</td><td>₹ 912</td><td>5.33</td><td></td><td>66200</td><td></td><td></td><td></td><td></td><td>5.3333333333333375</td></tr><tr>
+      <td>CHOLAHLDNG</td><td>₹ 1,550</td><td>15.0</td><td></td><td></td><td></td><td></td><td></td><td></td><td>1.0697305863708524</td></tr><tr>
+      <td>CHOLAFIN</td><td>₹ 1,349</td><td>31.0</td><td></td><td></td><td>94600</td><td></td><td></td><td>2.423076923076919</td><td></td></tr><tr>
+      <td>CIPLA</td><td>₹ 1,575</td><td>28.7</td><td></td><td></td><td></td><td>23.809523809523807</td><td></td><td>7.745933384972889</td><td>2.1118012422360315</td></tr><tr>
+      <td>CUB</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>10.338983050847448</td></tr><tr>
+      <td>CLEAN</td><td>₹ 1,606</td><td>68.1</td><td></td><td></td><td></td><td></td><td></td><td>2.8911564625850326</td><td></td></tr><tr>
+      <td>COALINDIA</td><td>₹ 530</td><td>8.95</td><td></td><td>27.27272727272727</td><td>25</td><td>30</td><td></td><td></td><td></td></tr><tr>
+      <td>COCHINSHIP</td><td>₹ 2,380</td><td>72.9</td><td></td><td></td><td></td><td>4.545454545454546</td><td></td><td></td><td>2.0408163265306047</td></tr><tr>
+      <td>COFORGE</td><td>₹ 5,878</td><td>51.1</td><td></td><td></td><td></td><td></td><td></td><td>18.371428571428574</td><td></td></tr><tr>
+      <td>COLPAL</td><td>₹ 3,452</td><td>218</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>CAMS</td><td>₹ 4,369</td><td>56.2</td><td></td><td>4.895104895104895</td><td>3.8834951456310676</td><td></td><td></td><td>5.076236519152095</td><td></td></tr><tr>
+      <td>CONCORDBIO</td><td>₹ 1,557</td><td>52.1</td><td></td><td></td><td></td><td></td><td></td><td>9.55315870570108</td><td>23.067776456599283</td></tr><tr>
+      <td>CONCOR</td><td>₹ 981</td><td>46.9</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>COROMANDEL</td><td>₹ 1,694</td><td>34.4</td><td></td><td>86.31178707224335</td><td>88.41463414634147</td><td>42.857142857142854</td><td></td><td>2.452316076294274</td><td>0.7755695588948142</td></tr><tr>
+      <td>CRAFTSMAN</td><td>₹ 5,270</td><td>44.3</td><td></td><td></td><td></td><td></td><td></td><td>25.57768924302788</td><td>34.06249999999999</td></tr><tr>
+      <td>CREDITACC</td><td>₹ 1,254</td><td>13.4</td><td></td><td></td><td>0.2518891687657431</td><td></td><td></td><td></td><td>3.109137055837565</td></tr><tr>
+      <td>CROMPTON</td><td>₹ 435</td><td>59.9</td><td></td><td>13.725490196078432</td><td>14.285714285714285</td><td>10</td><td></td><td>6.805469235550024</td><td>0.31086069555081347</td></tr><tr>
+      <td>CUMMINSIND</td><td>₹ 3,715</td><td>56.3</td><td></td><td></td><td></td><td></td><td></td><td>3.3986175115207367</td><td></td></tr><tr>
+      <td>CYIENT</td><td>₹ 1,680</td><td>26.7</td><td></td><td></td><td></td><td></td><td></td><td></td><td>4.515631030490151</td></tr><tr>
+      <td>DCMSHRIRAM</td><td>₹ 1,136</td><td>36.1</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>DLF</td><td>₹ 831</td><td>72.4</td><td></td><td></td><td></td><td></td><td></td><td></td><td>0.8385744234800846</td></tr><tr>
+      <td>DOMS</td><td>₹ 2,400</td><td>95.0</td><td></td><td>10.144927536231885</td><td>20.51282051282051</td><td></td><td></td><td>11.774744027303745</td><td></td></tr><tr>
+      <td>DABUR</td><td>₹ 624</td><td>59.8</td><td></td><td>40.557939914163086</td><td>44.868035190615835</td><td>17.647058823529413</td><td></td><td></td><td>7.945425361155685</td></tr><tr>
+      <td>DALBHARAT</td><td>₹ 1,749</td><td>35.6</td><td></td><td>2.293577981651376</td><td></td><td>20</td><td></td><td></td><td>7.92393026941363</td></tr><tr>
+      <td>DATAPATTNS</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td>2.67857142857142</td><td></td></tr><tr>
+      <td>DEEPAKFERT</td><td>₹ 995</td><td>23.8</td><td></td><td>5.93607305936073</td><td></td><td></td><td></td><td></td><td>99.36708860759492</td></tr><tr>
+      <td>DEEPAKNTR</td><td>₹ 3,076</td><td>52.1</td><td></td><td>2.6578073089700998</td><td></td><td></td><td></td><td>2.083333333333342</td><td>10.01556824078879</td></tr><tr>
+      <td>DELHIVERY</td><td>₹ 399</td><td></td><td></td><td>108.69565217391303</td><td>-179.41176470588235</td><td>100</td><td></td><td></td><td>12.283384301732927</td></tr><tr>
+      <td>DEVYANI</td><td>₹ 172</td><td>313</td><td></td><td>66.15384615384615</td><td>-144.89795918367346</td><td>50</td><td></td><td></td><td>16.311475409836067</td></tr><tr>
+      <td>DIVISLAB</td><td>₹ 4,830</td><td>76.6</td><td></td><td></td><td></td><td></td><td></td><td>10.081743869209813</td><td></td></tr><tr>
+      <td>DIXON</td><td>₹ 11,722</td><td>162</td><td></td><td>36.26373626373626</td><td>44.329896907216494</td><td></td><td></td><td>8.291316526610625</td><td></td></tr><tr>
+      <td>LALPATHLAB</td><td>₹ 3,198</td><td>69.8</td><td></td><td>17.24137931034483</td><td>25.581395348837212</td><td>3.7037037037037033</td><td></td><td></td><td>32.12765957446808</td></tr><tr>
+      <td>DRREDDY</td><td>₹ 7,014</td><td>21.0</td><td></td><td>100</td><td></td><td>7.6923076923076925</td><td></td><td></td><td>13.162206444565813</td></tr><tr>
+      <td>EIDPARRY</td><td>₹ 778</td><td>15.5</td><td></td><td>11.407766990291263</td><td>35.483870967741936</td><td>60</td><td></td><td>15.480225988700576</td><td>4.797979797979785</td></tr><tr>
+      <td>EIHOTEL</td><td>₹ 390</td><td>38.3</td><td></td><td></td><td></td><td></td><td></td><td>2.6666666666666607</td><td></td></tr><tr>
+      <td>EPL</td><td>₹ 216</td><td>27.5</td><td></td><td>4.371584699453552</td><td></td><td></td><td></td><td>4.032997250229143</td><td></td></tr><tr>
+      <td>EASEMYTRIP</td><td>₹ 39.5</td><td>46.1</td><td></td><td></td><td></td><td></td><td></td><td></td><td>6.122448979591832</td></tr><tr>
+      <td>EICHERMOT</td><td>₹ 4,831</td><td>31.6</td><td></td><td></td><td></td><td></td><td></td><td></td><td>7.24637681159421</td></tr><tr>
+      <td>ELECON</td><td>₹ 582</td><td>36.7</td><td></td><td></td><td></td><td></td><td></td><td>20.052770448548806</td><td>11.353711790393003</td></tr><tr>
+      <td>ELGIEQUIP</td><td>₹ 630</td><td>61.5</td><td></td><td></td><td></td><td></td><td></td><td></td><td>0.6036217303822987</td></tr><tr>
+      <td>EMAMILTD</td><td>₹ 798</td><td>47.1</td><td></td><td>2.3923444976076556</td><td>2.7210884353741496</td><td></td><td></td><td>4.1604754829123225</td><td></td></tr><tr>
+      <td>ENDURANCE</td><td>₹ 2,565</td><td>56.4</td><td></td><td>30.100334448160538</td><td>38.15789473684211</td><td>16.666666666666664</td><td></td><td>11.296534017971757</td><td></td></tr><tr>
+      <td>ENGINERSIN</td><td>₹ 223</td><td>31.5</td><td></td><td></td><td></td><td></td><td></td><td>3.566333808844508</td><td>2.1323529411764777</td></tr><tr>
+      <td>EQUITASBNK</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td>0.769230769230762</td><td>0.46449900464499194</td></tr><tr>
+      <td>ERIS</td><td>₹ 1,198</td><td>43.1</td><td></td><td>68.91891891891892</td><td>11.25</td><td>29.629629629629626</td><td></td><td>2.2424667133847254</td><td>3.838771593090209</td></tr><tr>
+      <td>ESCORTS</td><td>₹ 3,688</td><td>38.7</td><td></td><td>24.521072796934863</td><td>16.26984126984127</td><td>16.666666666666664</td><td></td><td>10.085470085470098</td><td>6.358974358974351</td></tr><tr>
+      <td>EXIDEIND</td><td>₹ 493</td><td>47.9</td><td></td><td>5.580357142857143</td><td>18.817204301075268</td><td></td><td></td><td>1.252763448784082</td><td></td></tr><tr>
+      <td>FDC</td><td>₹ 489</td><td>25.3</td><td></td><td>162.5</td><td>158.69565217391303</td><td>91.66666666666666</td><td></td><td></td><td></td></tr><tr>
+      <td>NYKAA</td><td>₹ 192</td><td>1,702</td><td></td><td></td><td></td><td>1.2681159420289907</td><td></td><td>1.5503875968992262</td><td>6.5850815850815785</td></tr><tr>
+      <td>FEDERALBNK</td><td>₹ 198</td><td>12.0</td><td></td><td></td><td></td><td></td><td></td><td>0.2100105005250218</td><td></td></tr><tr>
+      <td>FACT</td><td>₹ 982</td><td>162</td><td></td><td></td><td></td><td></td><td></td><td>9.090909090909086</td><td></td></tr><tr>
+      <td>FINEORG</td><td>₹ 5,240</td><td>37.7</td><td></td><td></td><td></td><td></td><td></td><td>10.514541387024623</td><td>3.345724907063192</td></tr><tr>
+      <td>FINCABLES</td><td>₹ 1,491</td><td>34.9</td><td></td><td>20.8955223880597</td><td>23.178807947019866</td><td>9.090909090909092</td><td></td><td>0.518134715025911</td><td>6.049149338374286</td></tr><tr>
+      <td>FINPIPE</td><td>₹ 291</td><td>33.6</td><td></td><td></td><td>203.63636363636363</td><td>5.88235294117647</td><td></td><td>7.644305772230893</td><td>9.132420091324201</td></tr><tr>
+      <td>FSL</td><td>₹ 284</td><td>38.2</td><td></td><td>8</td><td>0.7462686567164178</td><td></td><td></td><td></td><td>1.2973533990659056</td></tr><tr>
+      <td>FIVESTAR</td><td>₹ 704</td><td>131</td><td></td><td></td><td></td><td></td><td></td><td>2.479486264716376</td><td></td></tr><tr>
+      <td>FORTIS</td><td>₹ 490</td><td>57.6</td><td></td><td></td><td></td><td></td><td></td><td>0.3012048192771097</td><td>3.7572254335260165</td></tr><tr>
+      <td>GAIL</td><td>₹ 227</td><td>13.2</td><td></td><td>33.33333333333333</td><td>50</td><td>16.666666666666664</td><td></td><td>7.268877911079741</td><td></td></tr><tr>
+      <td>GMMPFAUDLR</td><td>₹ 1,341</td><td>40.0</td><td></td><td></td><td></td><td></td><td></td><td>0.22573363431151566</td><td>11.102603369065845</td></tr><tr>
+      <td>GMRINFRA</td><td>₹ 99.5</td><td></td><td></td><td>22.122571001494766</td><td>-65.4320987654321</td><td>10</td><td></td><td></td><td></td></tr><tr>
+      <td>GRSE</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td>19.938650306748478</td><td></td></tr><tr>
+      <td>GICRE</td><td>₹ 389</td><td>10.2</td><td></td><td>100</td><td>100</td><td>141.66666666666669</td><td></td><td>20.689655172413797</td><td></td></tr><tr>
+      <td>GILLETTE</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td>159.15492957746483</td><td></td></tr><tr>
+      <td>GLAND</td><td>₹ 2,026</td><td>46.3</td><td></td><td></td><td></td><td></td><td></td><td>91.64345403899722</td><td>30.122869599682904</td></tr><tr>
+      <td>GLAXO</td><td>₹ 2,875</td><td>63.3</td><td></td><td></td><td></td><td></td><td></td><td>15.517241379310335</td><td></td></tr><tr>
+      <td>GLS</td><td>₹ 915</td><td>31.9</td><td></td><td></td><td></td><td></td><td></td><td></td><td>11.347517730496465</td></tr><tr>
+      <td>GLENMARK</td><td>₹ 1,473</td><td></td><td></td><td>-341.1483253588517</td><td>-99.69788519637463</td><td>-300</td><td></td><td></td><td>4.266467065868266</td></tr><tr>
+      <td>MEDANTA</td><td>₹ 1,132</td><td>62.9</td><td></td><td>3.910614525139665</td><td></td><td></td><td></td><td>6.942148760330577</td><td>3.121951219512198</td></tr><tr>
+      <td>GPIL</td><td>₹ 1,103</td><td>15.1</td><td></td><td>24.012158054711247</td><td>31.05022831050228</td><td>36.36363636363637</td><td></td><td>35.37906137184115</td><td></td></tr><tr>
+      <td>GODFRYPHLP</td><td>₹ 4,430</td><td>25.7</td><td></td><td>41.48936170212766</td><td>6.511627906976744</td><td>21.052631578947366</td><td></td><td>0.6505576208178465</td><td>24.999999999999993</td></tr><tr>
+      <td>GODREJCP</td><td>₹ 1,445</td><td>84.2</td><td></td><td></td><td>-45200</td><td></td><td></td><td></td><td>4.026845637583906</td></tr><tr>
+      <td>GODREJIND</td><td>₹ 882</td><td>575</td><td></td><td></td><td></td><td></td><td></td><td>1.262626262626258</td><td>3.0864197530864086</td></tr><tr>
+      <td>GODREJPROP</td><td>₹ 2,921</td><td>72.6</td><td></td><td></td><td>8.577405857740587</td><td></td><td></td><td>0.8088978766430684</td><td>1.079136690647491</td></tr><tr>
+      <td>GRANULES</td><td>₹ 659</td><td>32.5</td><td></td><td>1.171875</td><td>3.8461538461538463</td><td></td><td></td><td>4.190086867654575</td><td>31.869158878504678</td></tr><tr>
+      <td>GRAPHITE</td><td>₹ 520</td><td>33.8</td><td></td><td>-1230</td><td>1375</td><td>-1700</td><td></td><td></td><td></td></tr><tr>
+      <td>GRASIM</td><td>₹ 2,573</td><td>31.1</td><td></td><td></td><td></td><td></td><td></td><td>7.795275590551183</td><td></td></tr><tr>
+      <td>GESHIP</td><td>₹ 1,333</td><td>6.67</td><td></td><td></td><td></td><td></td><td></td><td></td><td>4.578313253012036</td></tr><tr>
+      <td>GRINDWELL</td><td>₹ 2,423</td><td>70.7</td><td></td><td>6.4</td><td></td><td>5.555555555555555</td><td></td><td>3.8507821901323736</td><td>1.5094339622641522</td></tr><tr>
+      <td>GAEL</td><td>₹ 129</td><td>16.9</td><td></td><td></td><td></td><td>25</td><td></td><td>0.47393364928911047</td><td></td></tr><tr>
+      <td>FLUOROCHEM</td><td>₹ 3,396</td><td>85.7</td><td></td><td>15.53398058252427</td><td>26.25</td><td></td><td></td><td>15.299334811529944</td><td>9.589041095890408</td></tr><tr>
+      <td>GUJGASLTD</td><td>₹ 611</td><td>34.6</td><td></td><td></td><td></td><td></td><td></td><td>15.860215053763424</td><td></td></tr><tr>
+      <td>GMDCLTD</td><td>₹ 369</td><td>20.1</td><td></td><td>2.9268292682926833</td><td></td><td></td><td></td><td></td><td>33.33333333333333</td></tr><tr>
+      <td>GNFC</td><td>₹ 667</td><td>19.7</td><td></td><td>72.61904761904762</td><td>34.02061855670103</td><td>75</td><td></td><td></td><td></td></tr><tr>
+      <td>GPPL</td><td>₹ 230</td><td>27.0</td><td></td><td></td><td>66.66666666666666</td><td></td><td></td><td>1.201529219006021</td><td></td></tr><tr>
+      <td>GSFC</td><td>₹ 231</td><td>17.1</td><td></td><td>323.0769230769231</td><td>262.5</td><td>400</td><td></td><td></td><td>7.692307692307704</td></tr><tr>
+      <td>GSPL</td><td>₹ 327</td><td>11.1</td><td></td><td></td><td></td><td></td><td></td><td>1.084875558391831</td><td></td></tr><tr>
+      <td>HEG</td><td>₹ 2,059</td><td>25.6</td><td></td><td></td><td></td><td></td><td></td><td></td><td>26.011560693641613</td></tr><tr>
+      <td>HBLPOWER</td><td>₹ 611</td><td>51.7</td><td></td><td></td><td></td><td></td><td></td><td>1.525054466230943</td><td>62.121212121212125</td></tr><tr>
+      <td>HCLTECH</td><td>₹ 1,590</td><td>26.3</td><td></td><td></td><td>33.33333333333333</td><td></td><td></td><td></td><td>5.484949832775922</td></tr><tr>
+      <td>HDFCAMC</td><td>₹ 4,130</td><td>42.6</td><td></td><td>10.204081632653061</td><td>11.645101663585953</td><td></td><td></td><td>2.9485257371314333</td><td></td></tr><tr>
+      <td>HDFCBANK</td><td>₹ 1,650</td><td>18.4</td><td>2.5316455696202533</td><td></td><td></td><td></td><td></td><td></td><td>5.610561056105625</td></tr><tr>
+      <td>HDFCLIFE</td><td>₹ 702</td><td>92.4</td><td></td><td>13.090909090909092</td><td>16.2621359223301</td><td></td><td></td><td></td><td>41.74022698612863</td></tr><tr>
+      <td>HFCL</td><td>₹ 133</td><td>51.4</td><td></td><td></td><td>1.834862385321101</td><td></td><td></td><td></td><td>30.1056338028169</td></tr><tr>
+      <td>HAPPSTMNDS</td><td>₹ 776</td><td>49.5</td><td></td><td>2.4691358024691357</td><td>20</td><td></td><td></td><td>13.219616204690816</td><td>10.894941634241254</td></tr><tr>
+      <td>HAPPYFORGE</td><td>₹ 1,239</td><td>48.0</td><td></td><td>1.0309278350515463</td><td></td><td>3.571428571428571</td><td></td><td>100</td><td></td></tr><tr>
+      <td>HAVELLS</td><td>₹ 1,799</td><td>81.1</td><td></td><td></td><td></td><td></td><td></td><td>2.013693113169553</td><td></td></tr><tr>
+      <td>HEROMOTOCO</td><td>₹ 5,207</td><td>27.6</td><td></td><td></td><td>94200</td><td></td><td></td><td>3.2492222606291095</td><td></td></tr><tr>
+      <td>HSCL</td><td>₹ 476</td><td>52.6</td><td></td><td>6.666666666666667</td><td>6.956521739130435</td><td>6.666666666666667</td><td></td><td>0.5847953216374318</td><td>7.075471698113203</td></tr><tr>
+      <td>HINDALCO</td><td>₹ 623</td><td>13.7</td><td></td><td>20</td><td>50</td><td>9.090909090909092</td><td></td><td>1.3422818791946287</td><td></td></tr><tr>
+      <td>HAL</td><td>₹ 4,724</td><td>41.5</td><td></td><td>400</td><td>300</td><td>66.66666666666666</td><td></td><td></td><td></td></tr><tr>
+      <td>HINDCOPPER</td><td>₹ 303</td><td>99.3</td><td></td><td>111.21495327102804</td><td>96.82539682539682</td><td>48.148148148148145</td><td></td><td>2.8753993610223736</td><td></td></tr><tr>
+      <td>HINDPETRO</td><td>₹ 377</td><td>8.11</td><td></td><td></td><td>31600</td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>HINDUNILVR</td><td>₹ 2,747</td><td>62.5</td><td></td><td></td><td></td><td>4.3478260869565215</td><td></td><td></td><td>6.661619984859947</td></tr><tr>
+      <td>HINDZINC</td><td>₹ 594</td><td>30.9</td><td></td><td></td><td></td><td>2.083333333333333</td><td></td><td>23.333333333333336</td><td>1.0067114093959666</td></tr><tr>
+      <td>POWERINDIA</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td>44.25287356321838</td><td></td></tr><tr>
+      <td>HOMEFIRST</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>1.0135135135135218</td></tr><tr>
+      <td>HONASA</td><td>₹ 474</td><td>122</td><td></td><td>39.39393939393939</td><td>33.33333333333333</td><td>14.285714285714285</td><td></td><td>14.1571194762684</td><td>9.11376492771841</td></tr><tr>
+      <td>HONAUT</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>1.6393442622950907</td></tr><tr>
+      <td>HUDCO</td><td>₹ 292</td><td>27.6</td><td></td><td></td><td>34.8747591522158</td><td></td><td></td><td>41.36125654450263</td><td>2.194907813871817</td></tr><tr>
+      <td>ICICIBANK</td><td>₹ 1,172</td><td>18.2</td><td>4.761904761904762</td><td></td><td></td><td></td><td></td><td>1.5858834040652081</td><td></td></tr><tr>
+      <td>ICICIGI</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td>3.8611713665943626</td><td>7.456140350877178</td></tr><tr>
+      <td>ICICIPRULI</td><td>₹ 740</td><td>123</td><td></td><td>-112.45421245421245</td><td>28.735632183908045</td><td>-100</td><td></td><td></td><td>3.2786885245901773</td></tr><tr>
+      <td>ISEC</td><td>₹ 746</td><td>12.4</td><td></td><td></td><td></td><td></td><td></td><td></td><td>35.77235772357723</td></tr><tr>
+      <td>IDBI</td><td>₹ 98.2</td><td>16.8</td><td></td><td></td><td></td><td></td><td></td><td>2.222222222222224</td><td>6.666666666666673</td></tr><tr>
+      <td>IDFCFIRSTB</td><td>₹ 72.9</td><td>19.1</td><td></td><td></td><td></td><td></td><td></td><td></td><td>61.538461538461554</td></tr><tr>
+      <td>IDFC</td><td>₹ 108</td><td>20.0</td><td></td><td></td><td></td><td></td><td></td><td></td><td>6.505847953216379</td></tr><tr>
+      <td>IIFL</td><td>₹ 423</td><td>11.0</td><td></td><td></td><td></td><td></td><td></td><td>4.015099519560735</td><td></td></tr><tr>
+      <td>IRB</td><td>₹ 62.0</td><td>61.2</td><td></td><td>6.490066225165562</td><td></td><td>16.216216216216218</td><td></td><td></td><td></td></tr><tr>
+      <td>IRCON</td><td>₹ 265</td><td>25.8</td><td></td><td></td><td></td><td>37.5</td><td></td><td></td><td>121.3740458015267</td></tr><tr>
+      <td>ITC</td><td>₹ 496</td><td>30.4</td><td></td><td></td><td></td><td></td><td></td><td></td><td>0.5941499085923335</td></tr><tr>
+      <td>ITI</td><td>₹ 290</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>49.999999999999986</td></tr><tr>
+      <td>INDIACEM</td><td>₹ 367</td><td></td><td></td><td></td><td>-195.08196721311475</td><td></td><td></td><td>32.93142426526</td><td></td></tr><tr>
+      <td>INDIAMART</td><td>₹ 2,796</td><td>46.0</td><td></td><td>40.25974025974026</td><td>14.000000000000002</td><td>37.5</td><td></td><td>1.2564991334488853</td><td>11.41509433962265</td></tr><tr>
+      <td>INDIANB</td><td>₹ 578</td><td>8.52</td><td>7.142857142857142</td><td></td><td></td><td></td><td></td><td>1.7013232514177665</td><td></td></tr><tr>
+      <td>IEX</td><td>₹ 193</td><td>46.3</td><td></td><td></td><td></td><td></td><td></td><td>7.0707070707070665</td><td>14.684287812041116</td></tr><tr>
+      <td>INDHOTEL</td><td>₹ 618</td><td>68.5</td><td></td><td></td><td></td><td></td><td></td><td>11.11565181855334</td><td></td></tr><tr>
+      <td>IOC</td><td>₹ 169</td><td>7.75</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>IOB</td><td>₹ 61.7</td><td>41.5</td><td></td><td></td><td></td><td></td><td></td><td></td><td>0.7751937984496131</td></tr><tr>
+      <td>IRCTC</td><td>₹ 927</td><td>64.1</td><td></td><td></td><td></td><td></td><td></td><td></td><td>8.0188679245283</td></tr><tr>
+      <td>IRFC</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td>2.77777777777778</td><td>21.348314606741578</td></tr><tr>
+      <td>INDIGOPNTS</td><td>₹ 1,418</td><td>47.6</td><td></td><td></td><td></td><td></td><td></td><td>7.11513583441137</td><td></td></tr><tr>
+      <td>IGL</td><td>₹ 537</td><td>19.4</td><td></td><td>11.324376199616124</td><td>10.854503464203233</td><td>14.285714285714285</td><td></td><td></td><td>3.6333608587943953</td></tr><tr>
+      <td>INDUSTOWER</td><td>₹ 415</td><td>16.9</td><td></td><td></td><td></td><td>7.017543859649122</td><td></td><td>41.15853658536586</td><td>71.4141414141414</td></tr><tr>
+      <td>INDUSINDBK</td><td>₹ 1,350</td><td>11.6</td><td></td><td></td><td></td><td></td><td></td><td></td><td>5.695977216091141</td></tr><tr>
+      <td>NAUKRI</td><td>₹ 7,214</td><td>145</td><td></td><td>2.941176470588235</td><td>194.3181818181818</td><td></td><td></td><td>3.979294726625689</td><td></td></tr><tr>
+      <td>INFY</td><td>₹ 1,771</td><td>27.6</td><td></td><td>12.5</td><td></td><td>4.3478260869565215</td><td></td><td></td><td>4.660303200449197</td></tr><tr>
+      <td>INOXWIND</td><td>₹ 174</td><td>305</td><td></td><td>33.33333333333333</td><td>35.13513513513514</td><td>10.526315789473683</td><td></td><td>41.18268215417105</td><td></td></tr><tr>
+      <td>INTELLECT</td><td>₹ 940</td><td>42.7</td><td></td><td></td><td>2.73972602739726</td><td></td><td></td><td></td><td>37.99472295514513</td></tr><tr>
+      <td>INDIGO</td><td>₹ 4,282</td><td>21.2</td><td></td><td>66.66666666666666</td><td>100</td><td>18.181818181818183</td><td></td><td>3.254437869822483</td><td>2.19560878243513</td></tr><tr>
+      <td>IPCALAB</td><td>₹ 1,366</td><td>60.9</td><td></td><td></td><td></td><td></td><td></td><td>3.2350142721217874</td><td></td></tr><tr>
+      <td>JBCHEPHARM</td><td>₹ 1,930</td><td>51.0</td><td></td><td>41.41414141414141</td><td>40.476190476190474</td><td>21.73913043478261</td><td></td><td>10.036166365280284</td><td></td></tr><tr>
+      <td>JKCEMENT</td><td>₹ 4,240</td><td>38.2</td><td></td><td></td><td></td><td></td><td></td><td>11.24371859296483</td><td></td></tr><tr>
+      <td>JBMA</td><td>₹ 1,845</td><td>120</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>JKLAKSHMI</td><td>₹ 821</td><td>21.2</td><td></td><td></td><td></td><td></td><td></td><td>0.4428697962799001</td><td></td></tr><tr>
+      <td>JKPAPER</td><td>₹ 486</td><td>8.65</td><td></td><td></td><td></td><td></td><td></td><td>30.561555075593954</td><td>53.908355795148246</td></tr><tr>
+      <td>JMFINANCIL</td><td>₹ 97.2</td><td>14.0</td><td></td><td></td><td>-127.74480712166172</td><td>5.555555555555555</td><td></td><td></td><td>2.009456264775413</td></tr><tr>
+      <td>JSWENERGY</td><td>₹ 703</td><td>63.0</td><td></td><td></td><td>54.78260869565217</td><td>16.666666666666664</td><td></td><td>83.63201911589009</td><td></td></tr><tr>
+      <td>JSWINFRA</td><td>₹ 318</td><td>59.3</td><td></td><td></td><td></td><td></td><td></td><td>77.35042735042738</td><td></td></tr><tr>
+      <td>JSWSTEEL</td><td>₹ 905</td><td>31.8</td><td></td><td></td><td>86600</td><td></td><td></td><td></td><td>7.237512742099889</td></tr><tr>
+      <td>JAIBALAJI</td><td>₹ 944</td><td>18.3</td><td></td><td>31.12033195020747</td><td></td><td>38.46153846153847</td><td></td><td></td><td></td></tr><tr>
+      <td>J&KBANK</td><td>₹ 113</td><td>6.69</td><td></td><td></td><td></td><td></td><td></td><td>2.4320457796852635</td><td></td></tr><tr>
+      <td>JINDALSAW</td><td>₹ 653</td><td>11.8</td><td></td><td></td><td></td><td></td><td></td><td>2.7285129604365648</td><td>29.4314381270903</td></tr><tr>
+      <td>JSL</td><td>₹ 665</td><td>21.6</td><td></td><td></td><td>28.942115768463072</td><td>18.181818181818183</td><td></td><td>7.969275084013444</td><td></td></tr><tr>
+      <td>JINDALSTEL</td><td>₹ 916</td><td>16.7</td><td></td><td></td><td></td><td>16.666666666666664</td><td></td><td>5.951383067896067</td><td>4.141208418194157</td></tr><tr>
+      <td>JIOFIN</td><td>₹ 326</td><td>130</td><td></td><td>7.5</td><td>0.6430868167202572</td><td>6.493506493506493</td><td></td><td></td><td></td></tr><tr>
+      <td>JUBLFOOD</td><td>₹ 599</td><td>145</td><td></td><td>22.58064516129032</td><td></td><td></td><td></td><td></td><td>14.810518174787324</td></tr><tr>
+      <td>JUBLINGREA</td><td>₹ 709</td><td>64.9</td><td></td><td>20.87912087912088</td><td>68.96551724137932</td><td>37.5</td><td></td><td></td><td>3.4558823529411815</td></tr><tr>
+      <td>JUBLPHARMA</td><td>₹ 861</td><td>58.7</td><td></td><td></td><td>-877.4193548387096</td><td></td><td></td><td>2.3084994753410353</td><td>7.692307692307682</td></tr><tr>
+      <td>JWL</td><td>₹ 556</td><td>65.5</td><td></td><td></td><td></td><td>23.076923076923077</td><td></td><td>28.98550724637682</td><td>149.99999999999997</td></tr><tr>
+      <td>JUSTDIAL</td><td>₹ 1,291</td><td>78.7</td><td></td><td>18.333333333333332</td><td>26.08695652173913</td><td>13.043478260869565</td><td></td><td>30.885122410546153</td><td>8.31295843520782</td></tr><tr>
+      <td>JYOTHYLAB</td><td>₹ 545</td><td>53.4</td><td></td><td>23.14814814814815</td><td>30.76923076923077</td><td>12.5</td><td></td><td></td><td>8.057228915662654</td></tr><tr>
+      <td>KPRMILL</td><td>₹ 895</td><td>37.9</td><td></td><td></td><td></td><td></td><td></td><td>7.75862068965518</td><td>0.7437457741717459</td></tr><tr>
+      <td>KEI</td><td>₹ 4,224</td><td>62.5</td><td></td><td></td><td></td><td></td><td></td><td></td><td>1.595092024539865</td></tr><tr>
+      <td>KNRCON</td><td>₹ 367</td><td>13.7</td><td></td><td>65.929203539823</td><td>150.73529411764704</td><td>13.043478260869565</td><td></td><td>14.72650771388499</td><td>0.952068286277082</td></tr><tr>
+      <td>KPITTECH</td><td>₹ 1,754</td><td>72.6</td><td></td><td>5.88235294117647</td><td>22.89156626506024</td><td></td><td></td><td></td><td>18.85714285714286</td></tr><tr>
+      <td>KRBL</td><td>₹ 285</td><td>13.4</td><td></td><td></td><td></td><td></td><td></td><td>18.62464183381087</td><td>100</td></tr><tr>
+      <td>KSB</td><td>₹ 925</td><td>73.9</td><td></td><td>49.18032786885246</td><td>51.11111111111111</td><td>27.27272727272727</td><td></td><td>3.065134099616861</td><td>0.39880358923231235</td></tr><tr>
+      <td>KAJARIACER</td><td>₹ 1,448</td><td>57.0</td><td></td><td></td><td></td><td>7.142857142857142</td><td></td><td></td><td>11.722199919710953</td></tr><tr>
+      <td>KPIL</td><td>₹ 1,241</td><td>42.1</td><td></td><td></td><td></td><td></td><td></td><td>23.133414932680544</td><td>4.514207149404214</td></tr><tr>
+      <td>KALYANKJIL</td><td>₹ 537</td><td>87.9</td><td></td><td>22.875816993464053</td><td>29.927007299270077</td><td></td><td></td><td>0.42654028436018887</td><td>6.8181818181818175</td></tr><tr>
+      <td>KANSAINER</td><td>₹ 294</td><td>35.6</td><td></td><td>84.35754189944134</td><td>97.36842105263158</td><td>50</td><td></td><td>7.83898305084746</td><td></td></tr><tr>
+      <td>KARURVYSYA</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>KAYNES</td><td>₹ 4,273</td><td>130</td><td></td><td></td><td></td><td></td><td></td><td>0.563777307963355</td><td></td></tr><tr>
+      <td>KEC</td><td>₹ 833</td><td>54.7</td><td></td><td></td><td></td><td></td><td></td><td>1.6867469879518142</td><td></td></tr><tr>
+      <td>KFINTECH</td><td>₹ 1,084</td><td>68.6</td><td></td><td></td><td></td><td></td><td></td><td>36.28212791392708</td><td>2.3355576739752073</td></tr><tr>
+      <td>KOTAKBANK</td><td>₹ 1,770</td><td>18.9</td><td></td><td></td><td>40</td><td></td><td></td><td></td><td>18.333333333333346</td></tr><tr>
+      <td>KIMS</td><td>₹ 2,243</td><td>56.9</td><td></td><td>12.578616352201259</td><td>31.944444444444443</td><td>4</td><td></td><td>6.634787806335921</td><td></td></tr><tr>
+      <td>LTF</td><td>₹ 166</td><td>16.8</td><td></td><td></td><td>23.869801084990957</td><td>8.928571428571429</td><td></td><td></td><td>33.94706559263523</td></tr><tr>
+      <td>LTTS</td><td>₹ 4,903</td><td>39.7</td><td></td><td></td><td></td><td></td><td></td><td></td><td>8.105872622001657</td></tr><tr>
+      <td>LICHSGFIN</td><td>₹ 638</td><td>7.39</td><td></td><td></td><td></td><td></td><td></td><td>2.6560424966799534</td><td></td></tr><tr>
+      <td>LTIM</td><td>₹ 5,372</td><td>34.8</td><td></td><td></td><td></td><td>5.88235294117647</td><td></td><td></td><td>4.747774480712157</td></tr><tr>
+      <td>LT</td><td>₹ 3,592</td><td>37.2</td><td></td><td></td><td></td><td></td><td></td><td></td><td>2.12710084033614</td></tr><tr>
+      <td>LATENTVIEW</td><td>₹ 491</td><td>61.3</td><td></td><td></td><td></td><td></td><td></td><td>0.41841004184099523</td><td></td></tr><tr>
+      <td>LAURUSLABS</td><td>₹ 426</td><td>156</td><td></td><td></td><td></td><td></td><td></td><td></td><td>15.110356536502556</td></tr><tr>
+      <td>LXCHEM</td><td>₹ 268</td><td>63.6</td><td></td><td></td><td></td><td></td><td></td><td>23.52941176470589</td><td></td></tr><tr>
+      <td>LEMONTREE</td><td>₹ 120</td><td>65.5</td><td></td><td></td><td></td><td></td><td></td><td>1.919527500922848</td><td></td></tr><tr>
+      <td>LICI</td><td>₹ 1,134</td><td>17.2</td><td></td><td></td><td></td><td>Infinity</td><td></td><td>35.7142857142857</td><td>10.588235294117645</td></tr><tr>
+      <td>LINDEINDIA</td><td>₹ 7,695</td><td>147</td><td></td><td>2.793296089385475</td><td>8.571428571428571</td><td></td><td></td><td>31.168831168831158</td><td></td></tr><tr>
+      <td>LLOYDSME</td><td>₹ 762</td><td>28.6</td><td></td><td>56.98689956331878</td><td>101.08303249097472</td><td>3.4482758620689653</td><td></td><td>67.27272727272727</td><td>1685.7142857142853</td></tr><tr>
+      <td>LUPIN</td><td>₹ 2,114</td><td>42.6</td><td></td><td></td><td>119.0217391304348</td><td>10</td><td></td><td>5.631492618917448</td><td></td></tr><tr>
+      <td>MMTC</td><td>₹ 100</td><td>62.2</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>MRF</td><td>₹ 1,36,912</td><td>28.2</td><td></td><td></td><td>44.19191919191919</td><td>14.285714285714285</td><td></td><td></td><td>1.6083254493850514</td></tr><tr>
+      <td>MTARTECH</td><td>₹ 1,813</td><td>99.5</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>LODHA</td><td>₹ 1,246</td><td>64.3</td><td></td><td>75500</td><td></td><td>3.8461538461538463</td><td></td><td>1.6393442622950845</td><td></td></tr><tr>
+      <td>MGL</td><td>₹ 1,805</td><td>14.9</td><td></td><td>10.632911392405063</td><td>14.682539682539684</td><td>8.333333333333332</td><td></td><td>3.110674525212833</td><td></td></tr><tr>
+      <td>MAHSEAMLES</td><td>₹ 580</td><td>8.88</td><td></td><td></td><td></td><td></td><td></td><td></td><td>38.05774278215222</td></tr><tr>
+      <td>M&MFIN</td><td>₹ 301</td><td>17.9</td><td></td><td></td><td></td><td></td><td></td><td></td><td>7.1653268088081115</td></tr><tr>
+      <td>M&M</td><td>₹ 2,749</td><td>31.0</td><td></td><td>16.666666666666664</td><td></td><td></td><td></td><td>0.3592814371257451</td><td>0.19135093761959707</td></tr><tr>
+      <td>MHRIL</td><td>₹ 434</td><td>73.1</td><td></td><td></td><td></td><td></td><td></td><td>1.5209125475285186</td><td></td></tr><tr>
+      <td>MAHLIFE</td><td>₹ 560</td><td>75.3</td><td></td><td>-22.22222222222222</td><td></td><td>-94.1952506596306</td><td></td><td>6.798245614035099</td><td></td></tr><tr>
+      <td>MANAPPURAM</td><td>₹ 205</td><td>7.92</td><td></td><td></td><td></td><td></td><td></td><td>3.157236636448895</td><td></td></tr><tr>
+      <td>MRPL</td><td>₹ 205</td><td>13.5</td><td></td><td>30200</td><td>7200</td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>MANKIND</td><td>₹ 2,135</td><td>43.7</td><td></td><td>15.397631133671744</td><td>13.836477987421384</td><td></td><td></td><td>17.325227963525847</td><td></td></tr><tr>
+      <td>MARICO</td><td>₹ 653</td><td>55.6</td><td></td><td>41.6289592760181</td><td>48.125</td><td>26.31578947368421</td><td></td><td></td><td>13.496932515337425</td></tr><tr>
+      <td>MARUTI</td><td>₹ 12,224</td><td>26.2</td><td></td><td></td><td></td><td></td><td></td><td></td><td>2.704135737009552</td></tr><tr>
+      <td>MASTEK</td><td>₹ 2,733</td><td>27.8</td><td></td><td></td><td></td><td></td><td></td><td></td><td>0.4243281471004153</td></tr><tr>
+      <td>MASFIN</td><td>₹ 282</td><td>19.2</td><td>4.899135446685879</td><td></td><td>4.285714285714286</td><td></td><td></td><td>100</td><td>41.53952843273232</td></tr><tr>
+      <td>MFSL</td><td>₹ 1,092</td><td>111</td><td></td><td></td><td></td><td></td><td></td><td></td><td>2.0541082164328666</td></tr><tr>
+      <td>MAXHEALTH</td><td>₹ 883</td><td>81.4</td><td></td><td>1.3089005235602094</td><td></td><td></td><td></td><td></td><td>2.6737967914438405</td></tr><tr>
+      <td>MAZDOCK</td><td>₹ 4,917</td><td>51.2</td><td></td><td></td><td>5.741626794258373</td><td></td><td></td><td>2.521008403361347</td><td>25.757575757575747</td></tr><tr>
+      <td>MEDPLUS</td><td>₹ 643</td><td>101</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>METROBRAND</td><td>₹ 1,353</td><td>89.2</td><td></td><td></td><td>57.57575757575758</td><td></td><td></td><td>13.805970149253719</td><td></td></tr><tr>
+      <td>METROPOLIS</td><td>₹ 2,060</td><td>83.1</td><td></td><td>23.076923076923077</td><td>37.03703703703704</td><td>9.090909090909092</td><td></td><td></td><td>10.297666934835085</td></tr><tr>
+      <td>MINDACORP</td><td>₹ 511</td><td>49.6</td><td></td><td></td><td></td><td></td><td></td><td>19.72386587771203</td><td>0.1456310679611533</td></tr><tr>
+      <td>MSUMI</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>0.06165228113441161</td></tr><tr>
+      <td>MOTILALOFS</td><td>₹ 607</td><td>13.0</td><td></td><td></td><td>21.931034482758623</td><td>3.4482758620689653</td><td></td><td></td><td></td></tr><tr>
+      <td>MPHASIS</td><td>₹ 2,720</td><td>32.9</td><td></td><td></td><td>3.0534351145038165</td><td></td><td></td><td>23.45013477088949</td><td>45.513601299228604</td></tr><tr>
+      <td>MCX</td><td>₹ 4,378</td><td>128</td><td></td><td>30.392156862745097</td><td>26.136363636363637</td><td>1.7857142857142856</td><td></td><td></td><td>0.6683081252198426</td></tr><tr>
+      <td>MUTHOOTFIN</td><td>₹ 1,879</td><td>17.5</td><td>33.33333333333333</td><td></td><td></td><td></td><td></td><td>4.201680672268903</td><td></td></tr><tr>
+      <td>NATCOPHARM</td><td>₹ 1,440</td><td>18.6</td><td></td><td>85.44776119402985</td><td>81.2206572769953</td><td>34.285714285714285</td><td></td><td>8.116480793060711</td><td></td></tr><tr>
+      <td>NBCC</td><td>₹ 185</td><td>62.4</td><td></td><td>107.6923076923077</td><td>23.684210526315788</td><td>20</td><td></td><td>2.3094688221708926</td><td></td></tr><tr>
+      <td>NCC</td><td>₹ 324</td><td>26.5</td><td></td><td></td><td></td><td>12.5</td><td></td><td></td><td>7.2436500470366845</td></tr><tr>
+      <td>NHPC</td><td>₹ 97.8</td><td>27.2</td><td></td><td></td><td></td><td>14.893617021276595</td><td></td><td>31.764705882352956</td><td></td></tr><tr>
+      <td>NLCINDIA</td><td>₹ 265</td><td>18.3</td><td></td><td></td><td>397.3684210526316</td><td>255.55555555555554</td><td></td><td></td><td>3.288490284005975</td></tr><tr>
+      <td>NMDC</td><td>₹ 222</td><td>11.2</td><td></td><td></td><td></td><td></td><td></td><td>1.269841269841271</td><td>1.5613910574875844</td></tr><tr>
+      <td>NSLNISP</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>NTPC</td><td>₹ 411</td><td>18.6</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>NH</td><td>₹ 1,234</td><td>31.3</td><td></td><td>3.050847457627119</td><td>5.7591623036649215</td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>NATIONALUM</td><td>₹ 177</td><td>19.2</td><td></td><td></td><td>111.67728237791931</td><td>30.434782608695656</td><td></td><td>16.01779755283648</td><td>1.5940488841657847</td></tr><tr>
+      <td>NAVINFLUOR</td><td>₹ 3,550</td><td>80.7</td><td></td><td></td><td></td><td>5.555555555555555</td><td></td><td>15.735388567758504</td><td></td></tr><tr>
+      <td>NESTLEIND</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>1.8888888888888882</td></tr><tr>
+      <td>NETWORK18</td><td>₹ 99.9</td><td></td><td></td><td>-22.105263157894736</td><td>-4.3478260869565215</td><td>-37.5</td><td></td><td></td><td>19.99999999999999</td></tr><tr>
+      <td>NAM-INDIA</td><td>₹ 656</td><td>34.6</td><td></td><td>8.59106529209622</td><td></td><td>1.6129032258064515</td><td></td><td>19.48998178506374</td><td></td></tr><tr>
+      <td>NUVAMA</td><td>₹ 6,334</td><td>31.1</td><td></td><td>6.25</td><td>22.099447513812155</td><td>4</td><td></td><td></td><td>13.492063492063485</td></tr><tr>
+      <td>NUVOCO</td><td>₹ 334</td><td>87.9</td><td></td><td></td><td></td><td></td><td></td><td>2.0408163265306074</td><td></td></tr><tr>
+      <td>OBEROIRLTY</td><td>₹ 1,788</td><td>29.7</td><td></td><td>3.2953105196451205</td><td></td><td></td><td></td><td>6.426886792452829</td><td></td></tr><tr>
+      <td>ONGC</td><td>₹ 333</td><td>9.18</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>OIL</td><td>₹ 644</td><td>13.4</td><td></td><td></td><td></td><td>8.333333333333332</td><td></td><td></td><td></td></tr><tr>
+      <td>OLECTRA</td><td>₹ 1,562</td><td>167</td><td></td><td></td><td></td><td></td><td></td><td></td><td>5.555555555555561</td></tr><tr>
+      <td>PAYTM</td><td>₹ 512</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>2.7737226277372318</td></tr><tr>
+      <td>OFSS</td><td>₹ 10,564</td><td>39.3</td><td></td><td>15.39509536784741</td><td>10.178571428571429</td><td>8.88888888888889</td><td></td><td></td><td>11.988304093567256</td></tr><tr>
+      <td>POLICYBZR</td><td>₹ 1,452</td><td>647</td><td></td><td></td><td></td><td></td><td></td><td>5.3297937512762905</td><td></td></tr><tr>
+      <td>PCBL</td><td>₹ 396</td><td>29.9</td><td></td><td>15.483870967741936</td><td>6.306306306306306</td><td>6.25</td><td></td><td></td><td>14.260249554367196</td></tr><tr>
+      <td>PIIND</td><td>₹ 4,488</td><td>39.0</td><td></td><td>31.90045248868778</td><td>21.35135135135135</td><td>12</td><td></td><td></td><td>6.86517783291977</td></tr><tr>
+      <td>PNBHOUSING</td><td>₹ 819</td><td>13.4</td><td></td><td></td><td></td><td></td><td></td><td></td><td>59.15697674418604</td></tr><tr>
+      <td>PNCINFRA</td><td>₹ 466</td><td>13.2</td><td></td><td>70.37037037037037</td><td>114.05405405405405</td><td>33.33333333333333</td><td></td><td></td><td></td></tr><tr>
+      <td>PVRINOX</td><td>₹ 1,501</td><td></td><td></td><td></td><td></td><td></td><td></td><td>7.559523809523807</td><td></td></tr><tr>
+      <td>PAGEIND</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>5.802707930367505</td></tr><tr>
+      <td>PATANJALI</td><td>₹ 1,800</td><td></td><td></td><td>327.36842105263156</td><td>557.5</td><td>100</td><td></td><td></td><td>18.28793774319067</td></tr><tr>
+      <td>PERSISTENT</td><td>₹ 4,699</td><td>61.8</td><td></td><td>0.22026431718061676</td><td></td><td></td><td></td><td></td><td>9.080370942812989</td></tr><tr>
+      <td>PETRONET</td><td>₹ 367</td><td>14.0</td><td></td><td></td><td></td><td>50</td><td></td><td></td><td>13.104661389621814</td></tr><tr>
+      <td>PHOENIXLTD</td><td>₹ 3,363</td><td>55.1</td><td></td><td></td><td></td><td>22.916666666666664</td><td></td><td>7.891529555149288</td><td></td></tr><tr>
+      <td>PIDILITIND</td><td>₹ 3,133</td><td>84.9</td><td></td><td>41.21739130434783</td><td>87.82894736842105</td><td>20</td><td></td><td>2.475685234305918</td><td>0.44792833146697564</td></tr><tr>
+      <td>PEL</td><td>₹ 969</td><td>60.7</td><td></td><td></td><td>-6950</td><td></td><td></td><td></td><td>1.2130401819560286</td></tr><tr>
+      <td>PPLPHARMA</td><td>₹ 182</td><td>598</td><td></td><td></td><td></td><td></td><td></td><td>2.7141922825376126</td><td>6.848184818481849</td></tr><tr>
+      <td>POLYMED</td><td>₹ 1,879</td><td>67.0</td><td></td><td>7.216494845360824</td><td>8.823529411764707</td><td>3.8461538461538463</td><td></td><td></td><td>29.542302357836338</td></tr><tr>
+      <td>POLYCAB</td><td>₹ 6,649</td><td>56.1</td><td></td><td></td><td></td><td></td><td></td><td>13.963210702341136</td><td></td></tr><tr>
+      <td>POONAWALLA</td><td>₹ 366</td><td>23.2</td><td>6.885245901639345</td><td></td><td></td><td></td><td></td><td>1.1597938144329878</td><td>16.523235800344235</td></tr><tr>
+      <td>PFC</td><td>₹ 501</td><td>7.98</td><td></td><td></td><td></td><td></td><td></td><td>4.304828388598013</td><td></td></tr><tr>
+      <td>POWERGRID</td><td>₹ 346</td><td>20.5</td><td></td><td></td><td></td><td>4.819277108433735</td><td></td><td></td><td>6.946264744429885</td></tr><tr>
+      <td>PRAJIND</td><td>₹ 672</td><td>43.1</td><td></td><td></td><td></td><td></td><td></td><td></td><td>21.621621621621614</td></tr><tr>
+      <td>PRESTIGE</td><td>₹ 1,718</td><td>51.4</td><td></td><td></td><td>30.08474576271186</td><td>10.526315789473683</td><td></td><td>4.794520547945203</td><td></td></tr><tr>
+      <td>PRINCEPIPE</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td>25.048543689320386</td><td></td></tr><tr>
+      <td>PRSMJOHNSN</td><td>₹ 166</td><td></td><td></td><td>18.91891891891892</td><td>-40</td><td>60</td><td></td><td></td><td>17.623762376237636</td></tr><tr>
+      <td>PGHH</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>0.33090668431502784</td></tr><tr>
+      <td>PNB</td><td>₹ 115</td><td>10.8</td><td>3.571428571428571</td><td></td><td></td><td></td><td></td><td>14.315352697095424</td><td></td></tr><tr>
+      <td>QUESS</td><td>₹ 708</td><td>30.8</td><td></td><td></td><td>14.285714285714285</td><td></td><td></td><td>4.117647058823523</td><td>1.5769944341372906</td></tr><tr>
+      <td>RRKABEL</td><td>₹ 1,636</td><td>64.1</td><td></td><td></td><td></td><td></td><td></td><td>57.21153846153846</td><td>44.397011739594454</td></tr><tr>
+      <td>RBLBANK</td><td>₹ 217</td><td>10.2</td><td></td><td></td><td></td><td></td><td></td><td>13.24582338902147</td><td>0.7952286282306169</td></tr><tr>
+      <td>RECLTD</td><td>₹ 587</td><td>10.6</td><td></td><td></td><td></td><td></td><td></td><td>2.6117528879959795</td><td></td></tr><tr>
+      <td>RHIM</td><td>₹ 598</td><td>90.6</td><td></td><td>26.495726495726498</td><td></td><td>23.076923076923077</td><td></td><td>25.396825396825406</td><td></td></tr><tr>
+      <td>RITES</td><td>₹ 684</td><td>38.6</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>RADICO</td><td>₹ 1,694</td><td>83.5</td><td></td><td>24.166666666666668</td><td>42.592592592592595</td><td>18.181818181818183</td><td></td><td>1.291711517761044</td><td></td></tr><tr>
+      <td>RVNL</td><td>₹ 518</td><td>74.2</td><td></td><td></td><td></td><td></td><td></td><td>34.913793103448285</td><td>9.54692556634304</td></tr><tr>
+      <td>RAILTEL</td><td>₹ 469</td><td>80.3</td><td></td><td>55.4054054054054</td><td>78.94736842105263</td><td>18.75</td><td></td><td></td><td>8.333333333333323</td></tr><tr>
+      <td>RAINBOW</td><td>₹ 1,227</td><td>59.0</td><td></td><td></td><td></td><td></td><td></td><td>3.078202995008328</td><td></td></tr><tr>
+      <td>RAJESHEXPO</td><td>₹ 295</td><td>25.9</td><td></td><td></td><td></td><td></td><td></td><td></td><td>0.36101083032490205</td></tr><tr>
+      <td>RKFORGE</td><td>₹ 935</td><td>49.2</td><td></td><td></td><td></td><td></td><td></td><td></td><td>15.718157181571806</td></tr><tr>
+      <td>RCF</td><td>₹ 203</td><td>57.5</td><td></td><td>129.76190476190476</td><td>763.6363636363636</td><td>150</td><td></td><td></td><td>2.9411764705882213</td></tr><tr>
+      <td>RATNAMANI</td><td>₹ 3,555</td><td>40.2</td><td></td><td>23</td><td>45.11278195488722</td><td></td><td></td><td></td><td>2.7261462205699982</td></tr><tr>
+      <td>RTNINDIA</td><td>₹ 80.0</td><td>23.5</td><td></td><td></td><td></td><td></td><td></td><td>1.080432172869146</td><td>40.00000000000001</td></tr><tr>
+      <td>RAYMOND</td><td>₹ 1,920</td><td>23.3</td><td></td><td></td><td></td><td></td><td></td><td>7.31034482758621</td><td>5.808656036446467</td></tr><tr>
+      <td>REDINGTON</td><td>₹ 190</td><td>12.5</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>RELIANCE</td><td>₹ 2,949</td><td>29.0</td><td></td><td></td><td></td><td></td><td></td><td></td><td>1.8845700824499427</td></tr><tr>
+      <td>RBA</td><td>₹ 106</td><td></td><td></td><td></td><td>-43.47826086956522</td><td></td><td></td><td></td><td>22.548596112311024</td></tr><tr>
+      <td>ROUTE</td><td>₹ 1,592</td><td>28.8</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>SBFC</td><td>₹ 81.3</td><td>32.5</td><td>6.810035842293908</td><td></td><td>6.756756756756757</td><td></td><td></td><td>65.03496503496503</td><td>20.02956393200295</td></tr><tr>
+      <td>SBICARD</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td>1.513387660069858</td><td></td></tr><tr>
+      <td>SBILIFE</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>3.1168831168831197</td></tr><tr>
+      <td>SJVN</td><td>₹ 139</td><td>64.4</td><td></td><td></td><td></td><td></td><td></td><td>1.6949152542372898</td><td>17.261904761904763</td></tr><tr>
+      <td>SKFINDIA</td><td>₹ 5,413</td><td>48.6</td><td></td><td>23.837209302325583</td><td>32.57575757575758</td><td>12.5</td><td></td><td>17.134416543574595</td><td></td></tr><tr>
+      <td>SRF</td><td>₹ 2,554</td><td>61.6</td><td></td><td></td><td></td><td></td><td></td><td></td><td>3.7570444583594216</td></tr><tr>
+      <td>SAFARI</td><td>₹ 2,308</td><td>66.1</td><td></td><td></td><td>2.3255813953488373</td><td></td><td></td><td></td><td>6.384015594541904</td></tr><tr>
+      <td>SAMMAANCAP</td><td>₹ 160</td><td>6.53</td><td></td><td></td><td>5.2805280528052805</td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>MOTHERSON</td><td>₹ 188</td><td>44.4</td><td></td><td></td><td></td><td>22.22222222222222</td><td></td><td>3.536977491961425</td><td></td></tr><tr>
+      <td>SANOFI</td><td>₹ 6,603</td><td>31.0</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>SAPPHIRE</td><td>₹ 1,600</td><td>289</td><td></td><td>20.631374453618257</td><td>301.4705882352941</td><td>6.07361963190183</td><td></td><td>5.275459098497502</td><td></td></tr><tr>
+      <td>SAREGAMA</td><td>₹ 480</td><td>48.6</td><td></td><td></td><td></td><td></td><td></td><td>7.289719626168212</td><td>24.806201550387602</td></tr><tr>
+      <td>SCHAEFFLER</td><td>₹ 3,961</td><td>68.0</td><td></td><td>13.939393939393941</td><td>11.363636363636363</td><td></td><td></td><td>30.82191780821919</td><td></td></tr><tr>
+      <td>SCHNEIDER</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td>1.5544041450777215</td><td>5.747126436781606</td></tr><tr>
+      <td>SHREECEM</td><td>₹ 24,297</td><td>41.7</td><td></td><td>92600</td><td></td><td></td><td></td><td></td><td>5.271828665568359</td></tr><tr>
+      <td>RENUKA</td><td>₹ 46.2</td><td></td><td></td><td></td><td></td><td></td><td></td><td>2.083333333333342</td><td></td></tr><tr>
+      <td>SHRIRAMFIN</td><td>₹ 2,958</td><td>14.7</td><td></td><td></td><td></td><td></td><td></td><td>0.7050092764378526</td><td></td></tr><tr>
+      <td>SHYAMMETL</td><td>₹ 745</td><td>18.9</td><td></td><td>10.407239819004525</td><td>26.36363636363636</td><td>16.666666666666664</td><td></td><td></td><td>21.123595505617963</td></tr><tr>
+      <td>SIEMENS</td><td>₹ 6,890</td><td>105</td><td></td><td>47.31543624161073</td><td>58.69565217391305</td><td>25</td><td></td><td>3.493975903614447</td><td></td></tr><tr>
+      <td>SIGNATURE</td><td>₹ 1,415</td><td>657</td><td></td><td></td><td></td><td></td><td></td><td>36.781609195402304</td><td>4.5275590551181</td></tr><tr>
+      <td>SOBHA</td><td>₹ 1,708</td><td>400</td><td></td><td></td><td></td><td>7.248157248157246</td><td></td><td></td><td>2.36559139784945</td></tr><tr>
+      <td>SOLARINDS</td><td>₹ 10,334</td><td>101</td><td></td><td>26.836158192090398</td><td>23.868312757201647</td><td>22.727272727272727</td><td></td><td>23.934426229508198</td><td></td></tr><tr>
+      <td>SONACOMS</td><td>₹ 680</td><td>72.4</td><td></td><td>0.8097165991902834</td><td></td><td></td><td></td><td></td><td>2.53736531108794</td></tr><tr>
+      <td>SONATSOFTW</td><td>₹ 602</td><td>40.8</td><td></td><td>22.22222222222222</td><td></td><td></td><td></td><td></td><td>13.175853018372694</td></tr><tr>
+      <td>STARHEALTH</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>35.54757630161579</td></tr><tr>
+      <td>SBIN</td><td>₹ 824</td><td>10.1</td><td>0.8547008547008548</td><td></td><td></td><td></td><td></td><td>0.5410279531109152</td><td></td></tr><tr>
+      <td>SAIL</td><td>₹ 129</td><td>13.8</td><td></td><td></td><td>8100</td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>SWSOLAR</td><td>₹ 673</td><td></td><td></td><td></td><td>245.00000000000003</td><td>8.433734939759034</td><td></td><td></td><td></td></tr><tr>
+      <td>STLTECH</td><td>₹ 141</td><td></td><td></td><td>58.490566037735846</td><td>-41.46341463414634</td><td>40</td><td></td><td>54.780876494023914</td><td>486.5</td></tr><tr>
+      <td>SUMICHEM</td><td>₹ 516</td><td>59.4</td><td></td><td>15</td><td>15.454545454545453</td><td></td><td></td><td>11.678832116788314</td><td>7.541478129713424</td></tr><tr>
+      <td>SPARC</td><td>₹ 219</td><td></td><td></td><td>-12.264150943396226</td><td>-9.433962264150944</td><td>-13.145539906103288</td><td></td><td></td><td></td></tr><tr>
+      <td>SUNPHARMA</td><td>₹ 1,735</td><td>39.5</td><td></td><td></td><td></td><td>16</td><td></td><td></td><td>2.458578300374136</td></tr><tr>
+      <td>SUNTV</td><td>₹ 917</td><td>19.1</td><td></td><td>37.476099426386234</td><td>34.93975903614458</td><td>1.8518518518518516</td><td></td><td></td><td>26.615384615384624</td></tr><tr>
+      <td>SUNDARMFIN</td><td>₹ 3,809</td><td>27.6</td><td></td><td></td><td></td><td></td><td></td><td>29.56586826347305</td><td></td></tr><tr>
+      <td>SUNDRMFAST</td><td>₹ 1,353</td><td>53.0</td><td></td><td>8.333333333333332</td><td>6.7164179104477615</td><td></td><td></td><td>4.447974583002387</td><td>0.2683843263553447</td></tr><tr>
+      <td>SUNTECK</td><td>₹ 579</td><td>120</td><td></td><td>-1120</td><td>-1110</td><td>-202.85714285714283</td><td></td><td>0.9814612868047967</td><td>2.0879120879120827</td></tr><tr>
+      <td>SUPREMEIND</td><td>₹ 5,133</td><td>57.8</td><td></td><td></td><td></td><td></td><td></td><td>1.499189627228529</td><td>0.7887817703768611</td></tr><tr>
+      <td>SUVENPHAR</td><td>₹ 973</td><td>103</td><td></td><td>9.58904109589041</td><td>15.09433962264151</td><td>20.689655172413794</td><td></td><td>2.725366876310289</td><td>1.0440835266821535</td></tr><tr>
+      <td>SUZLON</td><td>₹ 76.5</td><td>112</td><td></td><td>3.6414565826330536</td><td>18.89763779527559</td><td>12.5</td><td></td><td>10.01532958610118</td><td>45.55555555555556</td></tr><tr>
+      <td>SWANENERGY</td><td>₹ 689</td><td>71.6</td><td></td><td></td><td></td><td></td><td></td><td>6.093189964157704</td><td>3.349616189811587</td></tr><tr>
+      <td>SYNGENE</td><td>₹ 837</td><td>70.7</td><td></td><td></td><td></td><td></td><td></td><td></td><td>6.202531645569623</td></tr><tr>
+      <td>SYRMA</td><td>₹ 416</td><td>74.4</td><td></td><td></td><td></td><td></td><td></td><td></td><td>11.206896551724146</td></tr><tr>
+      <td>TV18BRDCST</td><td>₹ 46.8</td><td></td><td></td><td>-32.298136645962735</td><td>-12.408759124087592</td><td>-42.857142857142854</td><td></td><td>0.27173913043477677</td><td></td></tr><tr>
+      <td>TVSMOTOR</td><td>₹ 2,581</td><td>71.6</td><td></td><td></td><td>17.718446601941746</td><td></td><td></td><td>1.0561689870379376</td><td></td></tr><tr>
+      <td>TVSSCS</td><td>₹ 190</td><td></td><td></td><td>5.049688005546557</td><td>38.847583643122675</td><td>0.4207573632538604</td><td></td><td>4.3478260869565135</td><td></td></tr><tr>
+      <td>TMB</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td>6.376811594202891</td><td></td></tr><tr>
+      <td>TANLA</td><td>₹ 935</td><td>22.7</td><td></td><td>18.125</td><td>8.461538461538462</td><td>18.75</td><td></td><td></td><td>13.63636363636363</td></tr><tr>
+      <td>TATACHEM</td><td>₹ 1,042</td><td>34.2</td><td></td><td>29.571106094808126</td><td>-122.59215219976218</td><td>15.384615384615385</td><td></td><td></td><td></td></tr><tr>
+      <td>TATACOMM</td><td>₹ 1,888</td><td>65.4</td><td></td><td></td><td>3.4161490683229814</td><td>5.263157894736842</td><td></td><td></td><td>0.07610350076103338</td></tr><tr>
+      <td>TCS</td><td>₹ 4,229</td><td>32.2</td><td></td><td></td><td></td><td></td><td></td><td></td><td>3.675777568331768</td></tr><tr>
+      <td>TATACONSUM</td><td>₹ 1,186</td><td>88.5</td><td></td><td>5.873015873015873</td><td>36.32075471698113</td><td></td><td></td><td></td><td>7.475560667050033</td></tr><tr>
+      <td>TATAELXSI</td><td>₹ 6,876</td><td>420</td><td></td><td></td><td>7.142857142857142</td><td></td><td></td><td></td><td>2.9702970297029805</td></tr><tr>
+      <td>TATAINVEST</td><td>₹ 6,029</td><td>82.8</td><td></td><td>167.3469387755102</td><td>118.33333333333333</td><td>6.976744186046512</td><td></td><td>4.444444444444448</td><td>4.3478260869565135</td></tr><tr>
+      <td>TATAMTRDVR</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td>9.176394293125817</td><td></td></tr><tr>
+      <td>TATAMOTORS</td><td>₹ 1,068</td><td>11.6</td><td></td><td></td><td></td><td>7.142857142857142</td><td></td><td></td><td></td></tr><tr>
+      <td>TATAPOWER</td><td>₹ 418</td><td>36.4</td><td></td><td>50</td><td></td><td>20</td><td></td><td>0.6355932203389884</td><td>0.12928248222365593</td></tr><tr>
+      <td>TATASTEEL</td><td>₹ 152</td><td>117</td><td></td><td></td><td>65.58558558558558</td><td>9.090909090909092</td><td></td><td>0.35696073431922637</td><td></td></tr><tr>
+      <td>TATATECH</td><td>₹ 989</td><td>61.7</td><td></td><td></td><td>3.1847133757961785</td><td></td><td></td><td>48.18181818181816</td><td>17.880794701986755</td></tr><tr>
+      <td>TTML</td><td>₹ 92.9</td><td></td><td></td><td>21.052631578947366</td><td>-37.86407766990291</td><td>18.181818181818183</td><td></td><td></td><td>16.666666666666682</td></tr><tr>
+      <td>TECHM</td><td>₹ 1,507</td><td>58.5</td><td></td><td></td><td>30.271084337349397</td><td>33.33333333333333</td><td></td><td></td><td>4.214819850441871</td></tr><tr>
+      <td>TEJASNET</td><td>₹ 1,207</td><td>124</td><td></td><td></td><td></td><td></td><td></td><td></td><td>3.151260504201688</td></tr><tr>
+      <td>NIACL</td><td>₹ 252</td><td>37.8</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>RAMCOCEM</td><td>₹ 800</td><td>59.3</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>THERMAX</td><td>₹ 4,356</td><td>87.2</td><td></td><td></td><td></td><td></td><td></td><td>23.77450980392157</td><td></td></tr><tr>
+      <td>TIMKEN</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td>74.02777777777777</td><td>8.255715495342926</td></tr><tr>
+      <td>TITAGARH</td><td>₹ 1,349</td><td>61.9</td><td></td><td></td><td></td><td></td><td></td><td>13.259988419224083</td><td>2.988338192419826</td></tr><tr>
+      <td>TITAN</td><td>₹ 3,332</td><td>85.7</td><td></td><td></td><td></td><td></td><td></td><td></td><td>3.790087463556857</td></tr><tr>
+      <td>TORNTPHARM</td><td>₹ 3,338</td><td>67.5</td><td></td><td>2.378255945639864</td><td>1.7817371937639197</td><td></td><td></td><td>0.5657708628005662</td><td>0.27972027972027375</td></tr><tr>
+      <td>TORNTPOWER</td><td>₹ 1,792</td><td>37.7</td><td></td><td></td><td>122.81879194630872</td><td>23.52941176470588</td><td></td><td>31.71874999999999</td><td></td></tr><tr>
+      <td>TRENT</td><td>₹ 6,275</td><td>178</td><td></td><td>30.425531914893618</td><td></td><td>7.142857142857142</td><td></td><td>3.953748601268192</td><td></td></tr><tr>
+      <td>TRIDENT</td><td>₹ 37.9</td><td>58.6</td><td></td><td>9.75609756097561</td><td>25.423728813559322</td><td>8.333333333333332</td><td></td><td></td><td>19.99999999999999</td></tr><tr>
+      <td>TRIVENI</td><td>₹ 380</td><td>23.2</td><td></td><td></td><td></td><td></td><td></td><td></td><td>2.5581395348837286</td></tr><tr>
+      <td>TRITURBINE</td><td>₹ 696</td><td>76.5</td><td></td><td>6.666666666666667</td><td>5.263157894736842</td><td>5</td><td></td><td>0.917094644167278</td><td></td></tr><tr>
+      <td>TIINDIA</td><td>₹ 4,008</td><td>90.6</td><td></td><td>17.073170731707318</td><td>15.867158671586715</td><td>20</td><td></td><td></td><td>4.662162162162158</td></tr><tr>
+      <td>UCOBANK</td><td>₹ 51.6</td><td>30.8</td><td>20</td><td></td><td>3.1598513011152414</td><td></td><td></td><td></td><td></td></tr><tr>
+      <td>UNOMINDA</td><td>₹ 1,006</td><td>65.1</td><td></td><td></td><td></td><td></td><td></td><td>14.266842800528401</td><td></td></tr><tr>
+      <td>UPL</td><td>₹ 555</td><td></td><td></td><td></td><td></td><td></td><td></td><td>2.5862068965517166</td><td>2.609262883235488</td></tr><tr>
+      <td>UTIAMC</td><td>₹ 1,000</td><td>16.2</td><td></td><td>53.94736842105263</td><td>51.38121546961326</td><td>20</td><td></td><td>5.025125628140701</td><td></td></tr><tr>
+      <td>UJJIVANSFB</td><td>₹</td><td></td><td></td><td></td><td></td><td></td><td></td><td>609.1954022988506</td><td>214.59227467811158</td></tr><tr>
+      <td>ULTRACEMCO</td><td>₹ 11,300</td><td>46.4</td><td></td><td></td><td></td><td></td><td></td><td>2.311161217587374</td><td></td></tr><tr>
+      <td>UNIONBANK</td><td>₹ 123</td><td>6.62</td><td></td><td></td><td></td><td></td><td></td><td>9.185185185185187</td><td></td></tr><tr>
+      <td>UBL</td><td>₹ 1,945</td><td>115</td><td></td><td>99.3006993006993</td><td>112.19512195121952</td><td>71.42857142857143</td><td></td><td></td><td>1.612903225806439</td></tr><tr>
+      <td>UNITDSPR</td><td>₹ 1,455</td><td>74.8</td><td></td><td>113.17365269461077</td><td>101.2448132780083</td><td>116.66666666666667</td><td></td><td></td><td>14.09942950285249</td></tr><tr>
+      <td>USHAMART</td><td>₹ 347</td><td>25.0</td><td></td><td></td><td></td><td></td><td></td><td></td><td>35.55555555555555</td></tr><tr>
+      <td>VGUARD</td><td>₹ 474</td><td>70.6</td><td></td><td>21.875</td><td>30.263157894736842</td><td>10</td><td></td><td>4.1979010494752655</td><td></td></tr><tr>
+      <td>VIPIND</td><td>₹ 450</td><td>10,816</td><td></td><td>529.7573435504471</td><td>-116.91792294807371</td><td>407.8947368421052</td><td></td><td></td><td>8.517350157728707</td></tr><tr>
+      <td>VAIBHAVGBL</td><td>₹ 300</td><td>38.3</td><td></td><td>7.547169811320755</td><td>28.57142857142857</td><td>14.285714285714285</td><td></td><td></td><td></td></tr><tr>
+      <td>VTL</td><td>₹ 519</td><td>20.5</td><td></td><td>12.987012987012985</td><td>18.81188118811881</td><td>15.384615384615385</td><td></td><td></td><td>0.6650544135429228</td></tr><tr>
+      <td>VARROC</td><td>₹ 553</td><td>16.1</td><td></td><td></td><td></td><td></td><td></td><td>0.47393364928911047</td><td>4.855967078189299</td></tr><tr>
+      <td>VBL</td><td>₹ 1,509</td><td>81.0</td><td></td><td></td><td></td><td>21.73913043478261</td><td></td><td></td><td>9.134615384615381</td></tr><tr>
+      <td>MANYAVAR</td><td>₹ 1,121</td><td>70.8</td><td></td><td></td><td></td><td></td><td></td><td>11.19311193111929</td><td></td></tr><tr>
+      <td>VEDL</td><td>₹ 429</td><td>26.7</td><td></td><td>12.5</td><td>150</td><td>12</td><td></td><td>23.264907135874868</td><td>5.886332882273349</td></tr><tr>
+      <td>VIJAYA</td><td>₹ 835</td><td>68.5</td><td></td><td></td><td></td><td></td><td></td><td></td><td>3.3173076923076814</td></tr><tr>
+      <td>IDEA</td><td>₹ 16.1</td><td></td><td></td><td></td><td></td><td></td><td></td><td>0.8681925808997588</td><td></td></tr><tr>
+      <td>VOLTAS</td><td>₹ 1,429</td><td>191</td><td></td><td>-2000</td><td>-496.42857142857144</td><td>-Infinity</td><td></td><td>2.5152957171991788</td><td></td></tr><tr>
+      <td>WELCORP</td><td>₹ 658</td><td>14.4</td><td></td><td>13.333333333333334</td><td></td><td>71.42857142857143</td><td></td><td></td><td></td></tr><tr>
+      <td>WELSPUNLIV</td><td>₹ 177</td><td>25.0</td><td></td><td></td><td>41.98473282442748</td><td></td><td></td><td></td><td>0.9191176470588203</td></tr><tr>
+      <td>WESTLIFE</td><td>₹ 800</td><td>286</td><td></td><td>4.924596289870543</td><td>327.63157894736844</td><td></td><td></td><td>19.224137931034488</td><td></td></tr><tr>
+      <td>WHIRLPOOL</td><td>₹ 2,090</td><td>88.9</td><td></td><td>46.52777777777778</td><td>83.54430379746836</td><td></td><td></td><td>38.02163833075734</td><td></td></tr><tr>
+      <td>WIPRO</td><td>₹ 491</td><td>23.0</td><td></td><td></td><td>50</td><td></td><td></td><td>2.2988505747126458</td><td></td></tr><tr>
+      <td>YESBANK</td><td>₹ 23.9</td><td>51.6</td><td></td><td></td><td>10.492505353319057</td><td></td><td></td><td>23.034984098137194</td><td></td></tr><tr>
+      <td>ZFCVINDIA</td><td>₹ 15,424</td><td>71.9</td><td></td><td></td><td></td><td></td><td></td><td>66.96428571428571</td><td>34.43246670894103</td></tr><tr>
+      <td>ZEEL</td><td>₹ 138</td><td>32.8</td><td></td><td>29.04761904761905</td><td>807.6923076923076</td><td>30</td><td></td><td></td><td></td></tr><tr>
+      <td>ZENSARTECH</td><td>₹ 772</td><td>26.3</td><td></td><td></td><td></td><td></td><td></td><td></td><td>8.61380490587563</td></tr><tr>
+      <td>ZOMATO</td><td>₹ 267</td><td>391</td><td></td><td>105.8139534883721</td><td>44.57142857142857</td><td>100</td><td></td><td></td><td>3.3376963350785327</td></tr><tr>
+      <td>ZYDUSLIFE</td><td>₹ 1,301</td><td>31.4</td><td></td><td>100</td><td></td><td>17.24137931034483</td><td></td><td></td><td>0.07968127490039671</td></tr><tr>
+      <td>ECLERX</td><td>₹ 2,481</td><td>23.8</td><td></td><td></td><td></td><td></td><td></td><td></td><td>1.6451756336149446</td></tr></tbody>
+    </table>
+  </body>
+  </html>

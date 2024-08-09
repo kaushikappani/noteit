@@ -191,7 +191,7 @@ const StockScreener = () => {
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                   <TableCell component="th" scope="row">
-                    {row.symbol}
+                    <a href={`/api/stock/data/ai/report/${row.symbol}`}>{row.symbol}</a> 
                   </TableCell>
                   <TableCell align="right">{row.currentPrice.toFixed(2)}</TableCell>
                   <TableCell style={{ color: row.daypnl >= 0 ? "green" : "red" }} align="right">{row.daypnl.toFixed(2)}</TableCell>

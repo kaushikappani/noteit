@@ -29,7 +29,6 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
     category:""
   });
   const [open, setOpen] = useState(false);
-  const [user, setUser] = useState({});
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -55,22 +54,7 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
     zIndex: 100,
     border: "0px",
   };
-  const fetchUser = async () => {
-    console.log("fetch user");
-    try {
-      const config = {
-        withCredentials: true,
-      };
-      setLoading(true);
-      const { data } = await axios.get("/api/users/info", config);
-      setUser(data);
-      setLoading(false);
-    } catch (e) {
-      setLoading(false);
-      setError(e.response ? e.response.data.message : e.message);
-      history.push("/");
-    }
-  };
+  
   const submitHandler = async (e) => {
     e.preventDefault();
    
@@ -97,16 +81,6 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
       localStorage.removeItem("newNote")
       setLoading(false);
       setOpen(false);
-      // toast.success("Note Created", {
-      //   position: "top-right",
-      //   autoClose: 2000,
-      //   hideProgressBar: false,
-      //   closeOnClick: true,
-      //   pauseOnHover: true,
-      //   draggable: true,
-      //   progress: undefined,
-      //   theme: "dark",
-      // });
       setAlert({
         open: true,
         type: "success",
@@ -132,7 +106,6 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
     return text;
   };
   useEffect(() => {
-    fetchUser();
     //eslint-disable-next-line
   }, []);
   const changeEditor = (e) => {

@@ -288,13 +288,13 @@ router.route("/:id").put(
             } else if (note.content != content) {
                 if (noteHistory == null) {
                     const newNotehistory = new NoteHistory({ note: note.id, h1: note.content, h2: "", h3: "" });
-                    const res = await newNotehistory.save();
+                    const res =  newNotehistory.save();
     
                 } else {
                     noteHistory.h3 = noteHistory.h2;
                     noteHistory.h2 = noteHistory.h1;
                     noteHistory.h1 = note.content;
-                    const res = await noteHistory.save();
+                    const res =  noteHistory.save();
                 }
             }
             if (note.user.toString() !== req.user._id.toString()) {

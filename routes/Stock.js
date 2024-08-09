@@ -2,10 +2,12 @@ const express = require("express");
 const { stockProtect } = require("../middleware/protect");
 const router = express.Router();
 const allData = require("./data");
-
+const path = require("path");
 const { symbolQuantityObject } = require("./data");
 
 const { NseIndia } = require("stock-nse-india");
+const { fetchData } = require("../middleware/Scrapper");
+const { generateReport } = require("../middleware/FundamentalAnalysis");
 
 
 
@@ -87,17 +89,40 @@ router.route("/summary").get(stockProtect, async (req, res) => {
 });
 
 
+router.route("/data/:symbol").get(async (req, res) => {
+    const data = await fetchData(req.params.symbol);
+    res.json(data);
+
+})
+
+
+router.route("/data/excel/report").get(stockProtect,(req, res) => {
+    __dirname = path.resolve();
+    res.sendFile(path.resolve(__dirname, "stockreports", "report.xlsx"));
+})
+
+router.route("/data/page/report").get(stockProtect,(req, res) => {
+    __dirname = path.resolve();
+    res.sendFile(path.resolve(__dirname, "stockreports", "table.html"));
+})
+
+router.route("/data/ai/report/:symbol").get(stockProtect, (req, res) => {
+    __dirname = path.resolve();
+    res.sendFile(path.resolve(__dirname, "stockreports", `${req.params.symbol}.html`));
+})
+
 
 router.route("/all").get(stockProtect,async (req, res) => {
     const nseIndia = new NseIndia();
     let data = "";
+    let da = await generateReport();
     try {
         data = await nseIndia.getDataByEndpoint("/api/fiidiiTradeReact");
     } catch (e) {
         res.json({e});
         console.log(JSON.stringify(e));
    }
-    res.json(data );
+    res.json(da );
 })
 
 module.exports = router;
