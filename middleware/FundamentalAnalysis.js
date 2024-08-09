@@ -44,10 +44,10 @@ const createPages = async () => {
                 await new Promise((resolve) => setTimeout(resolve, 50000));
                 result = await chatSession.sendMessage(JSON.stringify(data));
                 pageData = result.response.text().replace('```html', "").replace('```', "");
-
             } else {
+                console.log("AI page from Cache");
                 pageData = cacheResult;
-                await new Promise((resolve) => setTimeout(resolve, 10000));
+                await new Promise((resolve) => setTimeout(resolve, 1000));
             }
 
 
