@@ -36,7 +36,7 @@ const createPages = async () => {
                 history: [
                 ],
             });
-
+            const getAsync = util.promisify(client.get).bind(client);
             let cacheResult = await getAsync(`page_generated_${symbol}`);
             let result = "";
             if (cacheResult == null) {

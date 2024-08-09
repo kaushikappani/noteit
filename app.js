@@ -18,6 +18,8 @@ const { scheduleTask, scheduleFiiDiiReport,
 const { generateHtmlPage, createPages } = require("./middleware/FundamentalAnalysis");
 const timeZone = 'Asia/Kolkata';
 
+// createPages();
+
 const targetTime = moment.tz(process.env.TIME_RULE1, 'HH:mm', timeZone);
 const rule = new schedule.RecurrenceRule();
 rule.hour = targetTime.hour();
