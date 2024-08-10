@@ -45,7 +45,7 @@ const createPages = async () => {
                 result = await chatSession.sendMessage(JSON.stringify(data));
                 pageData = result.response.text().replace('```html', "").replace('```', "");
             } else {
-                console.log("AI page from Cache");
+                console.log(symbol+" AI page from Cache");
                 pageData = cacheResult;
                 await new Promise((resolve) => setTimeout(resolve, 1000));
             }
