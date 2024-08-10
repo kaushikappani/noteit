@@ -89,7 +89,7 @@ router.route("/summary").get(stockProtect, async (req, res) => {
 });
 
 
-router.route("/data/:symbol").get(async (req, res) => {
+router.route("/data/:symbol").get(stockProtect,async (req, res) => {
     const data = await fetchData(req.params.symbol);
     res.json(data);
 

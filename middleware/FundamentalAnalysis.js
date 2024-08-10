@@ -44,6 +44,11 @@ const createPages = async () => {
                 await new Promise((resolve) => setTimeout(resolve, 50000));
                 result = await chatSession.sendMessage(JSON.stringify(data));
                 pageData = result.response.text().replace('```html', "").replace('```', "");
+                client.set(`page_generated_${symbol}`, pageData, 'PX', 24 * 60 * 60 * 1000, (err, data) => {
+                    if (err) {
+                        console.log(err)
+                    }
+                })
             } else {
                 console.log(symbol+" AI page from Cache");
                 pageData = cacheResult;
@@ -56,11 +61,7 @@ const createPages = async () => {
                 console.log(`AI page Saved! for ${symbol}`);
             });
 
-            client.set(`page_generated_${symbol}`, pageData, 'PX', 24 * 60 * 60 * 1000, (err, data) => {
-                if (err) {
-                    console.log(err)
-                }
-            })
+           
 
         }
         try {
