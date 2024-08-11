@@ -44,7 +44,7 @@ const createPages = async () => {
                 await new Promise((resolve) => setTimeout(resolve, 50000));
                 result = await chatSession.sendMessage(JSON.stringify(data));
                 pageData = result.response.text().replace('```html', "").replace('```', "");
-                client.set(`page_generated_${symbol}`, pageData, 'PX', 24 * 60 * 60 * 1000, (err, data) => {
+                client.set(`page_generated_${symbol}`, pageData, 'PX', 7*24 * 60 * 60 * 1000, (err, data) => {
                     if (err) {
                         console.log(err)
                     }
