@@ -30,17 +30,18 @@ const createPages = async () => {
             responseMimeType: "text/plain",
         };
         async function run() {
-            const chatSession = model.startChat({
-                generationConfig,
-
-                history: [
-                ],
-            });
+            
             const getAsync = util.promisify(client.get).bind(client);
             let cacheResult = await getAsync(`page_generated_${symbol}`);
             let result = "";
             let pageData = "";
             if (cacheResult == null) {
+                const chatSession = model.startChat({
+                    generationConfig,
+
+                    history: [
+                    ],
+                });
                 await new Promise((resolve) => setTimeout(resolve, 50000));
                 result = await chatSession.sendMessage(JSON.stringify(data));
                 pageData = result.response.text().replace('```html', "").replace('```', "");

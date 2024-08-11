@@ -3,14 +3,14 @@ const axios = require("axios");
 var fs = require('fs');
 
 const fetchHtml = async (url) => {
-    console.log(url);
+   
     const response = await axios.get(url);
     return response.data;
 };
 
 
 const fetchData = async (symbol) => {
-    console.log(symbol);
+    
     try {
    
         let url = `https://www.screener.in/company/${symbol}/consolidated/`;
@@ -124,7 +124,7 @@ const fetchData = async (symbol) => {
 
 
     } catch (e) {
-        console.log(e);
+        console.log(`error in scraping ${symbol}`);
     }
 }
 
