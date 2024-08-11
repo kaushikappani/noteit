@@ -37,7 +37,6 @@ const pagesTimeRule = new schedule.RecurrenceRule();
 pagesTimeRule.hour = pagesTime.hour();
 pagesTimeRule.minute = pagesTime.minute();
 pagesTimeRule.tz = 'Asia/Kolkata';
-pagesTimeRule.dayOfWeek = new schedule.Range(1, 7);
 
 
 app.use(bodyParser.urlencoded({
