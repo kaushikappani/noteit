@@ -92,7 +92,6 @@ schedule.scheduleJob(pagesTimeRule, () => {
 })
 
 giftNifty();
-scheduleCoorporateActions();
 
 const server=app.listen(process.env.PORT, () => {
     console.log(`server running ${process.env.PORT}`)
