@@ -260,10 +260,10 @@ const scheduleCoorporateActions = async () => {
     const nseIndia = new NseIndia();
 
     const toDate = moment().tz("Asia/Kolkata");
-    const fromDate = toDate.clone().subtract(1, "weeks");
-    const toDateString = toDate.format("DD-MM-YYYY");
-    const fromDateString = fromDate.format("DD-MM-YYYY");
-    const dateString = `from_date=${fromDateString}&to_date=${toDateString}`;
+    const fromDate = toDate.clone().add(1, "weeks");
+    const today = toDate.format("DD-MM-YYYY");
+    const nextweek = fromDate.format("DD-MM-YYYY");
+    const dateString = `from_date=${today}&to_date=${nextweek}`;
 
     let data = await nseIndia.getDataByEndpoint(
       `/api/corporates-corporateActions?index=equities&${dateString}`
