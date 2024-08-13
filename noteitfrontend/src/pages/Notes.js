@@ -310,12 +310,11 @@ const Notes = () => {
                     })}
               </Masonry>
             </ResponsiveMasonry>
-          </Container>
-          <Container style={{ marginTop: "20px" }}>
+
             {notes?.length > 0 && (
               <Typography
                 sx={{ fontSize: 14 }}
-                style={{ color: "#c7dee5" }}
+                style={{ color: "#c7dee5",marginTop:"20px" }}
                 gutterBottom
               >
                 OTHERS
@@ -396,18 +395,19 @@ const Notes = () => {
                       );
                     })}
               </Masonry>
+              
             </ResponsiveMasonry>
-            
+            <button
+              style={buttonStyle}
+              className="btn btn-md btn-success"
+              type="button"
+            >
+              <Create setNotes={setNotes} fetchNotes={fetchNotes}>
+                <PencilSquare size={25} />
+              </Create>
+            </button>
           </Container>
-          <button
-            style={buttonStyle}
-            className="btn btn-md btn-success"
-            type="button"
-          >
-            <Create setNotes={setNotes} fetchNotes={fetchNotes}>
-              <PencilSquare size={25} />
-            </Create>
-          </button>
+          
         </div>
         
       }
