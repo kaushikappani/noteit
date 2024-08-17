@@ -6,6 +6,7 @@ const util = require("util");
 const moment = require("moment-timezone");
 const { Note, User } = require("../config/models");
 const axios = require("axios");
+const { scrapGlobalIndices } = require("./Scrapper");
 
 const tradeData = async (symbol, nseIndia) => {
   const data = await nseIndia.getEquityTradeInfo(symbol);
@@ -439,7 +440,6 @@ const giftNifty = async () => {
     }
   };
   const { data } = await axios.request(config);
-
   let dataNifty = { last: "", variation: "", percentChange :""};
   try {
 
@@ -484,8 +484,52 @@ const pickDataFromCacheToDb = async() => {
     note.updatedAt = new Date(),
     note.category = "Scheduler"
     note.save();
-  }  
+  }
+  
 }
+
+
+const getGlobalIndices = async () => {
+  const data = await scrapGlobalIndices();
+
+  let htmlContent = `
+    <table border="1">
+        <thead>
+            <tr>
+                <th><span style="color: rgb(0, 0, 0)">Index</span></th>
+                <th><span style="color: rgb(0, 0, 0)">Price</span></th>
+                <th><span style="color: rgb(0, 0, 0)">Price Change</span></th>
+                <th><span style="color: rgb(0, 0, 0)">Last Updated</span></th>
+            </tr>
+        </thead>
+        <tbody>
+    `;
+
+  data.forEach(item => {
+    const isPositiveChange = !item.priceChange.startsWith('-');
+    htmlContent += `
+            <tr>
+                <td><span style="color: ${isPositiveChange ? 'green' : 'red'}">${item.indicesName}</span></td>
+                <td><span style="color: ${isPositiveChange ? 'green' : 'red'}">${item.price}</span></td>
+                <td><span style="color: ${isPositiveChange ? 'green' : 'red'}">${item.priceChange}</span></td>
+                <td><span style="color: ${isPositiveChange ? 'green' : 'red'}">${item.lastUpdated}</span></td>
+            </tr>
+        `;
+  });
+
+  htmlContent += `
+        </tbody>
+    </table>
+    `;
+  const note = await Note.findById("66c08f5b8e14b9427c397442");
+  const date = moment.tz("Asia/Kolkata");
+
+  note.title = `Global Indices ${date.toString()}`
+  note.content = htmlContent;
+  await note.save();
+  return data;
+}
+
 
 
 module.exports = {
@@ -494,5 +538,6 @@ module.exports = {
   scheduleCoorporateAnnouncments,
   scheduleCoorporateActions,
   getCogencisNews,
-  giftNifty
+  giftNifty,
+  getGlobalIndices
 };

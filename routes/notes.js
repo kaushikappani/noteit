@@ -6,7 +6,7 @@ const { protect, stockProtect } = require("../middleware/protect");
 const client = require("../middleware/redis");
 const util = require('util');
 const { readFile } = require("../middleware/mailer");
-const { giftNifty } = require("../middleware/StockScheduler");
+const { giftNifty, getGlobalIndices } = require("../middleware/StockScheduler");
 const {
     GoogleGenerativeAI,
 } = require("@google/generative-ai");
@@ -22,7 +22,7 @@ router.route("/").get(
         try {
             // Fetch notes from the database
             if (req.user.email === "kaushikappani@gmail.com") {
-                await giftNifty();
+                await Promise.all([giftNifty(), getGlobalIndices()]);
             }
             const notes = await Note.find({
                 user: req.user._id,
@@ -41,33 +41,7 @@ router.route("/").get(
                 user : ""
             }));
 
-            if (req.user.email === "kaushikappani@gmail.com") {
-                const getAsync = util.promisify(client.get).bind(client);
 
-                const result = await getAsync("deliveryreport");
-                const resultDate = await getAsync("deliveryreportlastupdated");
-
-                const mailTemplate = await readFile("../templates/stock_email.txt");
-
-                if (result) {
-                    const deliveryreport = {
-                        _id: "deliveryreport",
-                        title: "Delivery Report - " + resultDate,
-                        content: mailTemplate.replace("<!-- Repeat rows as needed -->", result),
-                        pinned: false,
-                        archived: false,
-                        color: "#202124",
-                        view: true,
-                        edit: false,
-                        createdAt: new Date(),
-                        updatedAt: new Date(),
-                        category : "Scheduler"
-                    };
-                    modifiedNotes.push(deliveryreport);
-                }
-            }
-
-            
             const user = {
                 email: req.user.email,
                 name: req.user.name,
@@ -125,36 +99,6 @@ router.route("/:id/:history").get(
     asyncHandler(async (req, res) => {
         const getAsync = util.promisify(client.get).bind(client);
 
-        if (req.user.email === "kaushikappani@gmail.com" && req.params.id === "deliveryreport") {
-
-            const result = await getAsync("deliveryreport");
-            const resultDate = await getAsync("deliveryreportlastupdated");
-
-            const mailTemplate = await readFile("../templates/stock_email.txt");
-
-            if (result) {
-                const deliveryreport = {
-                    _id: "deliveryreport",
-                    title: "Delivery Report - " + resultDate,
-                    content: mailTemplate.replace("<!-- Repeat rows as needed -->", result),
-                    pinned: true,
-                    archived: false,
-                    color: "#202124",
-                    view: true,
-                    edit: false,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                    category : "Scheduler"
-                };
-                let user = {
-                    "name": "Scheduler",
-                    "email": "Scheduler"
-                }
-
-                res.json({ note: deliveryreport,user})
-            }
-        }
-
         let note = null;
 
         note = await getAsync(`${req.params.id}_note`);
@@ -179,13 +123,16 @@ router.route("/:id/:history").get(
         // const owner = await User.findById(note.user).select("name email -_id");
         const noteUserId = note.user.toString();
         const requestUserId = req.user._id.toString();
-
+        let user = {};
         if (noteUserId !== requestUserId) {
+            
             const noteAccess = await NoteAccess.findOne({ note: note._id, user: req.user._id, isActive: true });
             if (noteAccess == null) {
                 res.status(401);
                 throw new Error("Oops! No Access to View");
             }
+            const owner = await User.findById(note.user);
+            user = { name: owner.name, email: owner.email };
         }
         let noteHistory = null;
 
@@ -209,7 +156,6 @@ router.route("/:id/:history").get(
         const edit = note.user.toString() === req.user._id.toString();
         const modifiedNote = { ...note, view: true, edit ,user:null};
 
-       user = {name:"system",email:"system"}
 
         if (note) {
             res.json({ note: modifiedNote, user: user });

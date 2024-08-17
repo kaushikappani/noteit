@@ -15,10 +15,7 @@ const fetchData = async (symbol) => {
    
         let url = `https://www.screener.in/company/${symbol}/consolidated/`;
         let html = await fetchHtml(url);
-        // fs.writeFile('stockreports/'+symbol+".html", html, function (err) {
-        //     if (err) throw err;
-        //     console.log('Saved!');
-        // });
+
         const $ = cheerio.load(html);
 
         const topBar = $("#top");
@@ -109,23 +106,40 @@ const fetchData = async (symbol) => {
             name, currentPrice, priceChange, stockPEValue, cons, pros, resultsQuarterly: results, resultsYearly: pandl, shareHoldingPattern
         }
 
-        // console.log("shareHoldingPattern",shareHoldingPattern)
-        // console.log("results",results);
-        // console.log("pandl",pandl);
-
-        // console.log("Pros: ", pros);
-        // console.log("Cons: ", cons)
-
-        // console.log("name", name)
-        // console.log("currentPrice", currentPrice)
-        // console.log("priceChange", priceChange)
-        // console.log("stockPEValue", stockPEValue)
-
-
-
     } catch (e) {
         console.log(`error in scraping ${symbol}`);
     }
 }
 
-module.exports = { fetchData };
+
+const scrapGlobalIndices = async() => {
+    let url = `https://www.5paisa.com/share-market-today/global-indices`;
+    let html = await fetchHtml(url);
+
+    // fs.writeFile('stockreports/globalindices.html', html, function (err) {
+    //     if (err) throw err;
+    //     console.log('Saved!');
+    // });
+
+    const $ = cheerio.load(html);
+
+    let indicesData = [];
+
+    $('table tbody tr').each((index, element) => {
+        const indicesName = $(element).find('td a').eq(0).text().trim();
+        const lastUpdated = $(element).find('td span').eq(0).text().trim();
+        const price = $(element).find('td').eq(1).text().trim();
+        const priceChange = $(element).find('td').eq(2).text().trim();
+        indicesData.push({
+            indicesName,
+            price,
+            priceChange,
+            lastUpdated
+        });
+    });
+    return indicesData;
+
+
+}
+
+module.exports = { fetchData, scrapGlobalIndices };

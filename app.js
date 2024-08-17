@@ -14,7 +14,7 @@ const schedule = require('node-schedule');
 const moment = require('moment-timezone');
 const path = require("path");
 const { scheduleTask, scheduleFiiDiiReport,
-    scheduleCoorporateAnnouncments, scheduleCoorporateActions, giftNifty } = require("./middleware/StockScheduler");
+    scheduleCoorporateAnnouncments, scheduleCoorporateActions, giftNifty, getGlobalIndices } = require("./middleware/StockScheduler");
 const { generateHtmlPage, createPages } = require("./middleware/FundamentalAnalysis");
 const timeZone = 'Asia/Kolkata';
 
@@ -90,8 +90,6 @@ schedule.scheduleJob(pagesTimeRule, () => {
     createPages();
     generateHtmlPage();
 })
-
-giftNifty();
 
 const server=app.listen(process.env.PORT, () => {
     console.log(`server running ${process.env.PORT}`)
