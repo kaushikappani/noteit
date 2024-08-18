@@ -72,3 +72,61 @@ if (req.user.email === "kaushikappani@gmail.com" && req.params.id === "deliveryr
 //     if (err) throw err;
 //     console.log('Saved!');
 // });
+
+
+const getCogencisNews = async () => {
+    const token = await getCogencisToken();
+    console.log(token);
+    let config = {
+        method: "get",
+        maxBodyLength: Infinity,
+        url: "https://data.cogencis.com/api/v1/web/news/landingpage?pageSize=10",
+        headers: {
+            "sec-ch-ua":
+                '"Google Chrome";v="125", "Chromium";v="125", "Not.A/Brand";v="24"',
+            Accept: "application/json, text/plain, */*",
+            Referer: "",
+            "sec-ch-ua-mobile": "?0",
+            Authorization: `Bearer ${token}`,
+            "User-Agent":
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
+            "sec-ch-ua-platform": '"macOS"',
+        },
+    };
+
+    const { data } = await axios.request(config);
+
+    let newsString = "";
+
+    data.response.data.forEach((category) => {
+        category.data.forEach((news) => {
+            newsString += `
+            <tr>
+            <td>${category.header}</td>
+            <td>${news.headline}</td>
+            <td>${news.synopsis}</td>
+            <td><a href="${news.sourceLink}" target="_blank">${news.sourceLink}</a></td>            
+            <td>${news.sourceName}</td>
+        </tr>
+        `;
+        });
+    });
+    const date = moment.tz("Asia/Kolkata");
+
+    const note = await Note.findById("66927412fb8bb584f9e35e72");
+
+    const mailTemplate = await readFile(
+        "../templates/stock_news.txt"
+    );
+
+    const mailHtml = mailTemplate.replace(
+        "<!-- Repeat rows as needed -->",
+        newsString
+    );
+
+    note.content = mailHtml
+    note.title = "News Updates as of " + date.toString();
+    note.save();
+
+
+};

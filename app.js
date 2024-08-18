@@ -16,6 +16,7 @@ const path = require("path");
 const { scheduleTask, scheduleFiiDiiReport,
     scheduleCoorporateAnnouncments, scheduleCoorporateActions, giftNifty, getGlobalIndices } = require("./middleware/StockScheduler");
 const { generateHtmlPage, createPages } = require("./middleware/FundamentalAnalysis");
+const bot = require("./middleware/telegramBot");
 const timeZone = 'Asia/Kolkata';
 
 // createPages();
@@ -78,6 +79,8 @@ schedule.scheduleJob(rule, () => {
     scheduleCoorporateAnnouncments();
     scheduleCoorporateActions();
 });
+
+
 
 schedule.scheduleJob(rule2, () => {
     console.log('Scheduler triggered with rule2');

@@ -366,62 +366,7 @@ const getCogencisToken = async () => {
   }
 };
 
-const getCogencisNews = async () => {
-  const token = await getCogencisToken();
-  console.log(token);
-  let config = {
-    method: "get",
-    maxBodyLength: Infinity,
-    url: "https://data.cogencis.com/api/v1/web/news/landingpage?pageSize=10",
-    headers: {
-      "sec-ch-ua":
-        '"Google Chrome";v="125", "Chromium";v="125", "Not.A/Brand";v="24"',
-      Accept: "application/json, text/plain, */*",
-      Referer: "",
-      "sec-ch-ua-mobile": "?0",
-      Authorization: `Bearer ${token}`,
-      "User-Agent":
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-      "sec-ch-ua-platform": '"macOS"',
-    },
-  };
 
-  const { data } = await axios.request(config);
-
-  let newsString = "";
-
-    data.response.data.forEach((category) => {
-        category.data.forEach((news) => {
-      newsString += `
-            <tr>
-            <td>${category.header}</td>
-            <td>${news.headline}</td>
-            <td>${news.synopsis}</td>
-            <td><a href="${news.sourceLink}" target="_blank">${news.sourceLink}</a></td>            
-            <td>${news.sourceName}</td>
-        </tr>
-        `;
-    });
-  });
-    const date = moment.tz("Asia/Kolkata");
-
-    const note = await Note.findById("66927412fb8bb584f9e35e72");
-
-    const mailTemplate = await readFile(
-        "../templates/stock_news.txt"
-    );
-
-    const mailHtml = mailTemplate.replace(
-        "<!-- Repeat rows as needed -->",
-        newsString
-    );
-
-    note.content = mailHtml
-    note.title = "News Updates as of " + date.toString();
-    note.save();
-
-
-};
 
 const giftNifty = async () => {
   const nseIndia = new NseIndia();
@@ -453,15 +398,19 @@ const giftNifty = async () => {
     console.log("Nifty 50 fetch error");
   }    
 
-
-
-  const note = await Note.findById("6696a424d0450dec09316cbf");
-  note.content = `<h2>Gify Nifty : ${data.body.stockData.currentPrice} , ${data.body.stockData.dayChange} , ${data.body.stockData.dayChangeP} % </h2> <br> <h2> Nifty 50 : ${dataNifty.last} ${dataNifty.variation} ${dataNifty.percentChange} % </h2>`;
+  const noteId = "6696a424d0450dec09316cbf";
   const date = moment.tz("Asia/Kolkata");
-  note.title = "Gify Nifty As of " + date.toString();
+  const content = `<h2>Gify Nifty : ${data.body.stockData.currentPrice} , ${data.body.stockData.dayChange} , ${data.body.stockData.dayChangeP} % </h2> <br> <h2> Nifty 50 : ${dataNifty.last} ${dataNifty.variation} ${dataNifty.percentChange} % </h2>`;
+  const title = "Gify Nifty As of " + date.toString();
+  const color = (data.body.stockData.dayChange) > 0 ? "#345920" : "#5c2b29";
 
-  note.color = (data.body.stockData.dayChange) > 0 ? "#345920" : "#5c2b29";
-  await note.save();
+  await Note.findByIdAndUpdate(noteId, {
+    content: content,
+    title: title,
+    color: color
+  });
+
+  return { giftNifty : data.body.stockData, dataNifty };
 }
 
 
@@ -521,13 +470,17 @@ const getGlobalIndices = async () => {
         </tbody>
     </table>
     `;
-  const note = await Note.findById("66c08f5b8e14b9427c397442");
+  const noteId = "66c08f5b8e14b9427c397442";
   const date = moment.tz("Asia/Kolkata");
+  const title = `Global Indices ${date.toString()}`;
+  const content = htmlContent;
 
-  note.title = `Global Indices ${date.toString()}`
-  note.content = htmlContent;
-  await note.save();
-  return data;
+  await Note.findByIdAndUpdate(noteId, {
+    title: title,
+    content: content
+  });
+
+  return htmlContent;
 }
 
 
@@ -537,7 +490,6 @@ module.exports = {
   scheduleFiiDiiReport,
   scheduleCoorporateAnnouncments,
   scheduleCoorporateActions,
-  getCogencisNews,
   giftNifty,
   getGlobalIndices
 };

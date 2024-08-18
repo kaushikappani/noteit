@@ -6,9 +6,9 @@ const path = require("path");
 const { symbolQuantityObject } = require("./data");
 
 const { NseIndia } = require("stock-nse-india");
-const { fetchData } = require("../middleware/Scrapper");
+const { fetchData, scrapGlobalIndices } = require("../middleware/Scrapper");
 const { generateReport } = require("../middleware/FundamentalAnalysis");
-const { getGlobalIndices } = require("../middleware/StockScheduler");
+const { getGlobalIndices, giftNifty } = require("../middleware/StockScheduler");
 
 
 
@@ -116,7 +116,7 @@ router.route("/data/ai/report/:symbol").get(stockProtect, (req, res) => {
 router.route("/all").get(stockProtect,async (req, res) => {
     const nseIndia = new NseIndia();
     let data = "";
-    let da = await getGlobalIndices();
+    let da = await giftNifty();
     try {
         data = await nseIndia.getDataByEndpoint("/api/fiidiiTradeReact");
     } catch (e) {
