@@ -336,37 +336,6 @@ const scheduleCoorporateActions = async () => {
   }
 };
 
-const getCogencisToken = async () => {
-  let data = JSON.stringify({
-    username: "digitalsalt",
-    password: "N&8YV#62Ou",
-  });
-
-  let config = {
-    method: "post",
-    maxBodyLength: Infinity,
-    url: "https://data.cogencis.com/api/v1/login",
-    headers: {
-      accept: "application/json; charset=UTF-8",
-      "accept-language": "*",
-      "content-type": "application/json",
-      origin: "https://iinvest.cogencis.com",
-
-      "user-agent":
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36",
-
-    },
-    data: data,
-  };
-  try {
-    const response = await axios.request(config);
-    return response.data.response.token;
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-
 
 const giftNifty = async () => {
   const nseIndia = new NseIndia();

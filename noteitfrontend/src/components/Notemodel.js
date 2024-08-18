@@ -370,6 +370,7 @@ export const Notemodel = ({ props }) => {
                 setContents={modifyText(props.content)}
                 lang="en"
               />
+             
             </Typography>
             <Typography sx={{ fontSize: 14 }} gutterBottom>
               <ReactTimeAgo
