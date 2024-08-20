@@ -6,7 +6,7 @@ services:
   repo: https://github.com/kaushikappani/noteit
   plan: free
   envVars:
-  - fromGroup: Noteit-v2-dev
+  - fromGroup: noteit-prod-2
   region: singapore
   # buildCommand: rm -rf node_modules package-lock.json && npm i
   buildCommand : npm install
