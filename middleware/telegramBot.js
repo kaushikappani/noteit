@@ -249,7 +249,7 @@ bot.onText(/^\/global/, async (msg) => {
             
             await image.writeAsync('./summary.png');
             await bot.sendPhoto(chatId, "./summary.png", { caption: 'Portfolio' });
-
+            fs.unlinkSync("./summary.png");
 
             // bot.sendMessage(chatId, messageContent, { parse_mode: "HTML" });
         }
