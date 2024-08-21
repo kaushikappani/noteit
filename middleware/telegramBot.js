@@ -89,8 +89,16 @@ bot.onText(/^\/global/, async (msg) => {
             data.forEach(async(item, index) => {
                 const y = 150 + index * 50;
                 const isPositive = !item.priceChange.startsWith('-');
-                const emoji = isPositive ? "🟢" : "🔴";
-
+                if (isPositive) {
+                    image.scan(0, y, 1500, 300, function (x, y, idx) {
+                        this.setPixelColor(Jimp.rgbaToInt(76, 187, 23, 150), x, y);
+                    }); 
+                } else {
+                    image.scan(0, y, 1500, 500, function (x, y, idx) {
+                        this.setPixelColor(Jimp.rgbaToInt(255, 68, 51, 150), x, y);
+                    });
+                }
+                
                 image.print(font, 50, y, item.indicesName)
                     .print(font, 400, y, item.price)
                     .print(font, 650, y, item.priceChange)
@@ -115,40 +123,31 @@ bot.onText(/^\/global/, async (msg) => {
             const nifty50DayChange = giftn.dataNifty.variation;
             const nifty50DayChangeP = giftn.dataNifty.percentChange;
 
-            const image2 = await Jimp.create(imageWidth, imageHeight, '#ffffff');
-            function printCell(image2, text, x, y, width) {
-                // Draw a rectangle for the cell
-                image2.scan(x, y, width, 30, function (x, y, idx) {
-                    this.setPixelColor(Jimp.rgbaToInt(220, 220, 220, 255), x, y);
+            const image2 = await Jimp.create(500, 300, '#ffffff');
+
+            const isPositive2 = nifty50Price - giftNiftyPrice;
+            const y = 0;
+            if (isPositive2) {
+                image2.scan(0, y, 1500, 300, function (x, y, idx) {
+                    this.setPixelColor(Jimp.rgbaToInt(76, 187, 23, 150), x, y);
                 });
-                // Print the text centered in the cell
-                const textWidth = Jimp.measureText(font, text);
-                image2.print(font, x + (width - textWidth) / 2, y + 5, text);
+            } else {
+                image2.scan(0, y, 1500, 500, function (x, y, idx) {
+                    this.setPixelColor(Jimp.rgbaToInt(255, 68, 51, 150), x, y);
+                });
             }
 
-            // Add table headers
-            const headers = ["Item", "Price", "Day Change", "Day Change %"];
-            const headerWidth = imageWidth / headers.length;
-            headers.forEach((header, index) => {
-                printCell(image2, header, index * headerWidth, 0, headerWidth);
-            });
-
-            // Add table rows
-            const rows = [
-                ["Gift Nifty", giftNiftyPrice, giftNiftyDayChange, giftNiftyDayChangeP],
-                ["Nifty 50", nifty50Price, nifty50DayChange, nifty50DayChangeP]
-            ];
-
-            rows.forEach((row, rowIndex) => {
-                row.forEach((cell, cellIndex) => {
-                    printCell(image2, cell, cellIndex * headerWidth, 50 + rowIndex * 30, headerWidth);
-                });
-            });
+            image2
+                .print(font, 10, 10, `Gift Nifty Price: ${giftNiftyPrice}`)
+                .print(font, 10, 40, `Day Change: ${giftNiftyDayChange} (${giftNiftyDayChangeP}%)`)
+                .print(font, 10, 60,  "-------------------------------")
+                .print(font, 10, 80, `Nifty 50 Price: ${nifty50Price}`)
+                .print(font, 10, 115, `Day Change: ${nifty50DayChange} (${nifty50DayChangeP}%)`);
             
-            await image2.writeAsync("./gift-nifty.png");
-            await bot.sendPhoto(chatId, "./gift-nifty.png", { caption: 'Gift Nifty' });
-
-
+            await image2.writeAsync('./gift-nifty.png');
+            await bot.sendPhoto(chatId, "./gift-nifty.png", { caption: 'Gift Nifty.' });
+            fs.unlinkSync("./gift-nifty.png");
+            
         } catch (error) {
             console.error('Error generating image:', error);
         }
