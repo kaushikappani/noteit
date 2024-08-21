@@ -70,7 +70,7 @@ bot.onText(/^\/global/, async (msg) => {
     if (chatId === 1375808164) {  // Change to your chat ID if needed
         const data = await scrapGlobalIndices();
 
-        const imageWidth = 1500;
+        const imageWidth = 1300;
         const imageHeight = 800;
 
         try {
@@ -123,7 +123,7 @@ bot.onText(/^\/global/, async (msg) => {
             const nifty50DayChange = giftn.dataNifty.variation;
             const nifty50DayChangeP = giftn.dataNifty.percentChange;
 
-            const image2 = await Jimp.create(500, 300, '#ffffff');
+            const image2 = await Jimp.create(450, 200, '#ffffff');
 
             const isPositive2 = nifty50Price - giftNiftyPrice;
             const y = 0;
@@ -170,12 +170,13 @@ bot.onText(/^\/global/, async (msg) => {
                 }
             });
             const results = await Promise.all(dataPromises);
+
             let total = 0;
             let worth = 0;
             let gainers = [];
             let losers = [];
-
-            results.forEach((result) => {
+            
+            results.forEach((result,index) => {
                 if (result) {
                     const { symbol, equityDetails } = result;
                     const quantity = symbolQuantityObject[symbol];
@@ -197,7 +198,45 @@ bot.onText(/^\/global/, async (msg) => {
             gainers.sort((a, b) => b.portfolioChange - a.portfolioChange); // Descending order
             losers.sort((a, b) => a.portfolioChange - b.portfolioChange); // Ascending order
 
-            const topGainers = gainers;
+            const imageWidth = 1300;
+            const imageHeight = 1000;
+            const image = await Jimp.create(imageWidth, imageHeight, '#ffffff');
+            const font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
+            const fontBig = await Jimp.loadFont(Jimp.FONT_SANS_64_BLACK);
+
+            image.print(fontBig, 50, 20, `Dat P&L :${total.toFixed(2) }`)
+                .print(fontBig, 50, 80, `Worth: ${worth.toFixed(2) }`)
+
+            gainers.forEach((g, index) => {
+                const y = 150 + index * 50;
+             
+                image.print(font, 50, y, {
+                    text: g.symbol, alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
+                    alignmentY: Jimp.VERTICAL_ALIGN_TOP,
+                }, imageWidth, imageHeight);
+                    image.print(font, 400, y, {
+                        text: g.portfolioChange.toFixed(2),
+                        alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
+                        alignmentY: Jimp.VERTICAL_ALIGN_TOP,
+                    }, imageWidth, imageHeight)
+            })
+
+            losers.forEach((g, index) => {
+                const y = 150 + index * 50;
+             
+                image.print(font, 650, y, {
+                    text: g.symbol, alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
+                    alignmentY: Jimp.VERTICAL_ALIGN_TOP,
+                }, imageWidth, imageHeight);
+                image.print(font, 1000, y, {
+                    text: g.portfolioChange.toFixed(2),
+                    alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
+                    alignmentY: Jimp.VERTICAL_ALIGN_TOP,
+                }, imageWidth, imageHeight)
+            })
+
+    
+            const topGainers = gainers; 
             const topLosers = losers;
 
             let messageContent = `<b>Day P&L:</b> ${total.toFixed(2)}
@@ -207,9 +246,12 @@ bot.onText(/^\/global/, async (msg) => {
 
         <b>Top Losers (Value): </b>
         ${topLosers.map(l => `${l.symbol}: ${l.portfolioChange.toFixed(2)}`).join('\n')}`;
+            
+            await image.writeAsync('./summary.png');
+            await bot.sendPhoto(chatId, "./summary.png", { caption: 'Portfolio' });
 
 
-            bot.sendMessage(chatId, messageContent, { parse_mode: "HTML" });
+            // bot.sendMessage(chatId, messageContent, { parse_mode: "HTML" });
         }
     });
 
