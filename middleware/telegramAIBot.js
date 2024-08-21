@@ -61,7 +61,7 @@ aibot.on('message', async (msg) => {
                 ],
             });
 
-            await aibot.sendMessage(chatId, output,);
+            await aibot.sendMessage(chatId, output, { parse_mode: "markdown" });
 
         }
         await run();
