@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@google/generative-ai": "^0.15.0",
+    "@jimp/plugin-color": "^0.22.12",
     "bcryptjs": "^2.4.3",
     "cheerio": "^1.0.0-rc.12",
     "cloudinary": "^2.2.0",
@@ -22,6 +23,7 @@
     "express-async-handler": "^1.1.4",
     "form-data": "^4.0.0",
     "googleapis": "^126.0.0",
+    "jimp": "^0.22.12",
     "jsonwebtoken": "^9.0.2",
     "mailgun.js": "^9.2.0",
     "moment-timezone": "^0.5.45",

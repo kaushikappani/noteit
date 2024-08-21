@@ -116,7 +116,7 @@ router.route("/data/ai/report/:symbol").get(stockProtect, (req, res) => {
 router.route("/all").get(stockProtect,async (req, res) => {
     const nseIndia = new NseIndia();
     let data = "";
-    let da = await giftNifty();
+    let da = await scrapGlobalIndices();
     try {
         data = await nseIndia.getDataByEndpoint("/api/fiidiiTradeReact");
     } catch (e) {
