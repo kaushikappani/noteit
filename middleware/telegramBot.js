@@ -115,8 +115,8 @@ bot.onText(/^\/global/, async (msg) => {
 
 
 bot.onText(/^\/portfolio/, async (msg) => {
-    await bot.sendChatAction(chatId, 'typing');
     const chatId = msg.chat.id;
+    await bot.sendChatAction(chatId, 'typing');
     if (chatId === 1375808164) {
         const symbols = Object.keys(symbolQuantityObject);
         const dataPromises = symbols.map(async (symbol) => {
