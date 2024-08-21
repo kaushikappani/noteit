@@ -13,55 +13,11 @@ bot.on('polling_error', (error) => {
     console.error('Polling error:', error);
 });
 
-    // bot.onText(/^\/global/, async(msg) => {
-    //     const chatId = msg.chat.id;
-    //     console.log(typeof chatId);
-    //     if (chatId === 1375808164) {
-    //         const data = await scrapGlobalIndices();
-    //         const html = data.map(item => {
-    //             const isPositive = !item.priceChange.startsWith("-");
-    //             const emoji = isPositive ? "🟢" : "🔴";
-    //             return `
-    //         <b>${item.indicesName}</b> ${emoji}
-    //         Price: ${item.price}
-    //         Price Change: ${item.priceChange}
-    //         Last Updated: ${item.lastUpdated}`;
-    //         }).join('\n\n');
-
-    //         bot.sendMessage(chatId, html, { parse_mode: "HTML" });
-
-    //         const giftn = await giftNifty();
-
-    //         const giftNiftyPrice = giftn.giftNifty.currentPrice;
-    //         const giftNiftyDayChange = giftn.giftNifty.dayChange;
-    //         const giftNiftyDayChangeP = giftn.giftNifty.dayChangeP;
-
-    //         const nifty50Price = giftn.dataNifty.last;
-    //         const nifty50DayChange = giftn.dataNifty.variation;
-    //         const nifty50DayChangeP = giftn.dataNifty.percentChange;
-
-    //         // Format the message content
-    //         const emoji = giftNiftyPrice - nifty50Price > 0 ? "🟢" : "🔴";
-    //         const messageContent = `
-    //         <b>Gift Nifty</b> ${emoji}
-    //         Price: ${giftNiftyPrice}
-    //         Change: ${giftNiftyDayChange} (${giftNiftyDayChangeP}%)
-
-    //         <b>Nifty 50</b>
-    //         Price: ${nifty50Price}
-    //         Change: ${nifty50DayChange} (${nifty50DayChangeP}%)`;
-
-    //         // Send the message via Telegram bot
-    //         bot.sendMessage(chatId, messageContent, { parse_mode: "HTML" });
-    //     }
-
-    // });
-
-    const getData = async (symbol) => {
-        const nseIndia = new NseIndia();
-        const data = await nseIndia.getEquityDetails(symbol);
-        return data;
-    }
+const getData = async (symbol) => {
+    const nseIndia = new NseIndia();
+    const data = await nseIndia.getEquityDetails(symbol);
+    return data;
+}
 
 
 bot.onText(/^\/global/, async (msg) => {
@@ -77,7 +33,7 @@ bot.onText(/^\/global/, async (msg) => {
             // Create a new image with white background
             const image = await Jimp.create(imageWidth, imageHeight, '#ffffff');
             const font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
- 
+
             // Add header
             image.print(font, 50, 20, 'Global Indices')
                 .print(font, 50, 100, 'Index')
@@ -86,19 +42,19 @@ bot.onText(/^\/global/, async (msg) => {
                 .print(font, 950, 100, 'Last Updated');
 
             // Add data rows
-            data.forEach(async(item, index) => {
+            data.forEach(async (item, index) => {
                 const y = 150 + index * 50;
                 const isPositive = !item.priceChange.startsWith('-');
                 if (isPositive) {
                     image.scan(0, y, 1500, 300, function (x, y, idx) {
                         this.setPixelColor(Jimp.rgbaToInt(76, 187, 23, 150), x, y);
-                    }); 
+                    });
                 } else {
                     image.scan(0, y, 1500, 500, function (x, y, idx) {
                         this.setPixelColor(Jimp.rgbaToInt(255, 68, 51, 150), x, y);
                     });
                 }
-                
+
                 image.print(font, 50, y, item.indicesName)
                     .print(font, 400, y, item.price)
                     .print(font, 650, y, item.priceChange)
@@ -140,14 +96,14 @@ bot.onText(/^\/global/, async (msg) => {
             image2
                 .print(font, 10, 10, `Gift Nifty Price: ${giftNiftyPrice}`)
                 .print(font, 10, 40, `Day Change: ${giftNiftyDayChange} (${giftNiftyDayChangeP}%)`)
-                .print(font, 10, 60,  "-------------------------------")
+                .print(font, 10, 60, "-------------------------------")
                 .print(font, 10, 80, `Nifty 50 Price: ${nifty50Price}`)
                 .print(font, 10, 115, `Day Change: ${nifty50DayChange} (${nifty50DayChangeP}%)`);
-            
+
             await image2.writeAsync('./gift-nifty.png');
             await bot.sendPhoto(chatId, "./gift-nifty.png", { caption: 'Gift Nifty.' });
             fs.unlinkSync("./gift-nifty.png");
-            
+
         } catch (error) {
             console.error('Error generating image:', error);
         }
@@ -155,104 +111,104 @@ bot.onText(/^\/global/, async (msg) => {
 });
 
 
-    bot.onText(/^\/portfolio/,async (msg) => {
-        const chatId = msg.chat.id;
-        if (chatId === 1375808164) {
-            const symbols = Object.keys(symbolQuantityObject);
-            const dataPromises = symbols.map(async (symbol) => {
-                try {
-                    const equityDetails = await getData(symbol)
+bot.onText(/^\/portfolio/, async (msg) => {
+    const chatId = msg.chat.id;
+    if (chatId === 1375808164) {
+        const symbols = Object.keys(symbolQuantityObject);
+        const dataPromises = symbols.map(async (symbol) => {
+            try {
+                const equityDetails = await getData(symbol)
 
-                    return { symbol, equityDetails };
-                } catch (error) {
-                    console.error(`Error fetching data for symbol ${symbol}: ${error}`);
-                    return null;
+                return { symbol, equityDetails };
+            } catch (error) {
+                console.error(`Error fetching data for symbol ${symbol}: ${error}`);
+                return null;
+            }
+        });
+        const results = await Promise.all(dataPromises);
+
+        let total = 0;
+        let worth = 0;
+        let gainers = [];
+        let losers = [];
+
+        results.forEach((result, index) => {
+            if (result) {
+                const { symbol, equityDetails } = result;
+                const quantity = symbolQuantityObject[symbol];
+                const currentPrice = parseFloat(equityDetails.priceInfo.lastPrice);
+                const change = parseFloat(equityDetails.priceInfo.change);
+
+                total += change * quantity;
+                worth += currentPrice * quantity;
+
+                const portfolioChange = change * quantity;
+                if (portfolioChange > 0) {
+                    gainers.push({ symbol, portfolioChange });
+                } else if (portfolioChange < 0) {
+                    losers.push({ symbol, portfolioChange });
                 }
-            });
-            const results = await Promise.all(dataPromises);
+            }
+        })
 
-            let total = 0;
-            let worth = 0;
-            let gainers = [];
-            let losers = [];
-            
-            results.forEach((result,index) => {
-                if (result) {
-                    const { symbol, equityDetails } = result;
-                    const quantity = symbolQuantityObject[symbol];
-                    const currentPrice = parseFloat(equityDetails.priceInfo.lastPrice);
-                    const change = parseFloat(equityDetails.priceInfo.change);
+        gainers.sort((a, b) => b.portfolioChange - a.portfolioChange); // Descending order
+        losers.sort((a, b) => a.portfolioChange - b.portfolioChange); // Ascending order
 
-                    total += change * quantity;
-                    worth += currentPrice * quantity;
+        const imageWidth = 1300;
+        const imageHeight = 1000;
+        const image = await Jimp.create(imageWidth, imageHeight, '#ffffff');
+        const font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
+        const fontBig = await Jimp.loadFont(Jimp.FONT_SANS_64_BLACK);
 
-                    const portfolioChange = change * quantity;
-                    if (portfolioChange > 0) {
-                        gainers.push({ symbol, portfolioChange });
-                    } else if (portfolioChange < 0) {
-                        losers.push({ symbol, portfolioChange });
-                    }
-                }
-            })
+        image.print(fontBig, 50, 20, `Dat P&L :${total.toFixed(2)}`)
+            .print(fontBig, 50, 80, `Worth: ${worth.toFixed(2)}`)
 
-            gainers.sort((a, b) => b.portfolioChange - a.portfolioChange); // Descending order
-            losers.sort((a, b) => a.portfolioChange - b.portfolioChange); // Ascending order
+        gainers.forEach((g, index) => {
+            const y = 150 + index * 50;
 
-            const imageWidth = 1300;
-            const imageHeight = 1000;
-            const image = await Jimp.create(imageWidth, imageHeight, '#ffffff');
-            const font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
-            const fontBig = await Jimp.loadFont(Jimp.FONT_SANS_64_BLACK);
+            image.print(font, 50, y, {
+                text: g.symbol, alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
+                alignmentY: Jimp.VERTICAL_ALIGN_TOP,
+            }, imageWidth, imageHeight);
+            image.print(font, 400, y, {
+                text: g.portfolioChange.toFixed(2),
+                alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
+                alignmentY: Jimp.VERTICAL_ALIGN_TOP,
+            }, imageWidth, imageHeight)
+        })
 
-            image.print(fontBig, 50, 20, `Dat P&L :${total.toFixed(2) }`)
-                .print(fontBig, 50, 80, `Worth: ${worth.toFixed(2) }`)
+        losers.forEach((g, index) => {
+            const y = 150 + index * 50;
 
-            gainers.forEach((g, index) => {
-                const y = 150 + index * 50;
-             
-                image.print(font, 50, y, {
-                    text: g.symbol, alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
-                    alignmentY: Jimp.VERTICAL_ALIGN_TOP,
-                }, imageWidth, imageHeight);
-                    image.print(font, 400, y, {
-                        text: g.portfolioChange.toFixed(2),
-                        alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
-                        alignmentY: Jimp.VERTICAL_ALIGN_TOP,
-                    }, imageWidth, imageHeight)
-            })
+            image.print(font, 650, y, {
+                text: g.symbol, alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
+                alignmentY: Jimp.VERTICAL_ALIGN_TOP,
+            }, imageWidth, imageHeight);
+            image.print(font, 1000, y, {
+                text: g.portfolioChange.toFixed(2),
+                alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
+                alignmentY: Jimp.VERTICAL_ALIGN_TOP,
+            }, imageWidth, imageHeight)
+        })
 
-            losers.forEach((g, index) => {
-                const y = 150 + index * 50;
-             
-                image.print(font, 650, y, {
-                    text: g.symbol, alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
-                    alignmentY: Jimp.VERTICAL_ALIGN_TOP,
-                }, imageWidth, imageHeight);
-                image.print(font, 1000, y, {
-                    text: g.portfolioChange.toFixed(2),
-                    alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
-                    alignmentY: Jimp.VERTICAL_ALIGN_TOP,
-                }, imageWidth, imageHeight)
-            })
 
-    
-            const topGainers = gainers; 
-            const topLosers = losers;
+        const topGainers = gainers;
+        const topLosers = losers;
 
-            let messageContent = `<b>Day P&L:</b> ${total.toFixed(2)}
+        let messageContent = `<b>Day P&L:</b> ${total.toFixed(2)}
         <b>Worth:</b> ${worth.toFixed(2)}
         <b>Top Gainers (Value) </b>:
         ${topGainers.map(g => `${g.symbol}: ${g.portfolioChange.toFixed(2)}`).join('\n')}
 
         <b>Top Losers (Value): </b>
         ${topLosers.map(l => `${l.symbol}: ${l.portfolioChange.toFixed(2)}`).join('\n')}`;
-            
-            await image.writeAsync('./summary.png');
-            await bot.sendPhoto(chatId, "./summary.png", { caption: 'Portfolio' });
-            fs.unlinkSync("./summary.png");
 
-            // bot.sendMessage(chatId, messageContent, { parse_mode: "HTML" });
-        }
-    });
+        await image.writeAsync('./summary.png');
+        await bot.sendPhoto(chatId, "./summary.png", { caption: 'Portfolio' });
+        fs.unlinkSync("./summary.png");
 
-    module.exports = bot;
+        // bot.sendMessage(chatId, messageContent, { parse_mode: "HTML" });
+    }
+});
+
+module.exports = bot;
