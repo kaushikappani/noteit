@@ -206,3 +206,14 @@ const getCogencisToken = async () => {
 //     }
 
 // });
+
+
+let messageContent = `<b>Day P&L:</b> ${total.toFixed(2)}
+        <b>Worth:</b> ${worth.toFixed(2)}
+        <b>Top Gainers (Value) </b>:
+        ${topGainers.map(g => `${g.symbol}: ${g.portfolioChange.toFixed(2)}`).join('\n')}
+
+        <b>Top Losers (Value): </b>
+        ${topLosers.map(l => `${l.symbol}: ${l.portfolioChange.toFixed(2)}`).join('\n')}`;
+
+// bot.sendMessage(chatId, messageContent, { parse_mode: "HTML" });

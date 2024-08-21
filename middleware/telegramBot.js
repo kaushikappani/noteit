@@ -160,12 +160,15 @@ bot.onText(/^\/portfolio/, async (msg) => {
         const font = await Jimp.loadFont(Jimp.FONT_SANS_32_BLACK);
         const fontBig = await Jimp.loadFont(Jimp.FONT_SANS_64_BLACK);
 
-        image.print(fontBig, 50, 20, `Dat P&L :${total.toFixed(2)}`)
+        image.print(fontBig, 50, 20, `Day P&L :${total.toFixed(2)}`)
             .print(fontBig, 50, 80, `Worth: ${worth.toFixed(2)}`)
 
         gainers.forEach((g, index) => {
             const y = 150 + index * 50;
 
+            image.scan(50, y, 550, 50, function (x, y, idx) {
+                this.setPixelColor(Jimp.rgbaToInt(52, 89, 32, 150), x, y); // Red with some transparency
+            });
             image.print(font, 50, y, {
                 text: g.symbol, alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
                 alignmentY: Jimp.VERTICAL_ALIGN_TOP,
@@ -179,6 +182,10 @@ bot.onText(/^\/portfolio/, async (msg) => {
 
         losers.forEach((g, index) => {
             const y = 150 + index * 50;
+
+            image.scan(650, y, 550, 50, function (x, y, idx) {
+                this.setPixelColor(Jimp.rgbaToInt(250, 0, 0, 150), x, y); // Green with some transparency
+            });
 
             image.print(font, 650, y, {
                 text: g.symbol, alignmentX: Jimp.HORIZONTAL_ALIGN_LEFT,
@@ -195,19 +202,10 @@ bot.onText(/^\/portfolio/, async (msg) => {
         const topGainers = gainers;
         const topLosers = losers;
 
-        let messageContent = `<b>Day P&L:</b> ${total.toFixed(2)}
-        <b>Worth:</b> ${worth.toFixed(2)}
-        <b>Top Gainers (Value) </b>:
-        ${topGainers.map(g => `${g.symbol}: ${g.portfolioChange.toFixed(2)}`).join('\n')}
-
-        <b>Top Losers (Value): </b>
-        ${topLosers.map(l => `${l.symbol}: ${l.portfolioChange.toFixed(2)}`).join('\n')}`;
-
         await image.writeAsync('./summary.png');
         await bot.sendPhoto(chatId, "./summary.png", { caption: 'Portfolio' });
         fs.unlinkSync("./summary.png");
 
-        // bot.sendMessage(chatId, messageContent, { parse_mode: "HTML" });
     }
 });
 
