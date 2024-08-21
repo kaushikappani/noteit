@@ -17,6 +17,8 @@ const { scheduleTask, scheduleFiiDiiReport,
     scheduleCoorporateAnnouncments, scheduleCoorporateActions, giftNifty, getGlobalIndices } = require("./middleware/StockScheduler");
 const { generateHtmlPage, createPages } = require("./middleware/FundamentalAnalysis");
 const bot = require("./middleware/telegramBot");
+const aibot = require("./middleware/telegramAIBot");
+
 const timeZone = 'Asia/Kolkata';
 
 // createPages();

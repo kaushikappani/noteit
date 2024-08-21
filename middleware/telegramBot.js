@@ -9,8 +9,9 @@ const token = process.env.TELEGRAM_BOT_TOKEN;
 
 const bot = new TelegramBot(token, { polling: true });
 
+
 bot.on('polling_error', (error) => {
-    console.error('Polling error:', error);
+    console.error('Polling error:');
 });
 
 const getData = async (symbol) => {
@@ -22,6 +23,7 @@ const getData = async (symbol) => {
 
 bot.onText(/^\/global/, async (msg) => {
     const chatId = msg.chat.id;
+    await bot.sendChatAction(chatId, 'typing');
 
     if (chatId === 1375808164) {  // Change to your chat ID if needed
         const data = await scrapGlobalIndices();
@@ -111,7 +113,9 @@ bot.onText(/^\/global/, async (msg) => {
 });
 
 
+
 bot.onText(/^\/portfolio/, async (msg) => {
+    await bot.sendChatAction(chatId, 'typing');
     const chatId = msg.chat.id;
     if (chatId === 1375808164) {
         const symbols = Object.keys(symbolQuantityObject);
@@ -197,10 +201,6 @@ bot.onText(/^\/portfolio/, async (msg) => {
                 alignmentY: Jimp.VERTICAL_ALIGN_TOP,
             }, imageWidth, imageHeight)
         })
-
-
-        const topGainers = gainers;
-        const topLosers = losers;
 
         await image.writeAsync('./summary.png');
         await bot.sendPhoto(chatId, "./summary.png", { caption: 'Portfolio' });
