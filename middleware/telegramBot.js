@@ -83,7 +83,7 @@ bot.onText(/^\/global/, async (msg) => {
 
             const image2 = await Jimp.create(450, 200, '#ffffff');
 
-            const isPositive2 = nifty50Price - giftNiftyPrice;
+            const isPositive2 = giftNiftyPrice - nifty50Price ;
             const y = 0;
             if (isPositive2) {
                 image2.scan(0, y, 1500, 300, function (x, y, idx) {
