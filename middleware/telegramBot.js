@@ -85,7 +85,7 @@ bot.onText(/^\/global/, async (msg) => {
 
             const isPositive2 = giftNiftyPrice - nifty50Price ;
             const y = 0;
-            if (isPositive2) {
+            if (isPositive2 > 0) {
                 image2.scan(0, y, 1500, 300, function (x, y, idx) {
                     this.setPixelColor(Jimp.rgbaToInt(76, 187, 23, 150), x, y);
                 });
