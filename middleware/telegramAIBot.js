@@ -1,7 +1,7 @@
 const TelegramBot = require('node-telegram-bot-api');
 const token = process.env.TELEGRAM_BOT_TOKEN_AI;
 const {
-    GoogleGenerativeAI
+    GoogleGenerativeAI, HarmBlockThreshold, HarmCategory
 } = require("@google/generative-ai");
 const client = require('./redis');
 const aibot = new TelegramBot(token, { polling: true });
@@ -17,6 +17,29 @@ const fs = require('fs');
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey);
 const fileManager = new GoogleAIFileManager(apiKey);
+
+const safetySettings = [
+    {
+        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+    },
+    {
+        category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+    },
+    {
+        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+    },
+    {
+        category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+    },
+    {
+        category: HarmCategory.HARM_CATEGORY_UNSPECIFIED,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+    },
+];
 
 aibot.on('message', async (msg) => {
     const chatId = msg.chat.id;
@@ -51,7 +74,8 @@ aibot.on('message', async (msg) => {
                     // Start chat session with Gemini
                     const model = genAI.getGenerativeModel({
                         model: "gemini-1.5-flash",
-                        systemInstruction: "you are personal AI chat bot, learn from the chat history about the person and respond and you have access to my notes which is provided in cacheContext",
+                        safetySettings,
+                        systemInstruction: "you are personal AI chat bot, learn from the chat history about the person and respond.",
                     });
 
                     const generationConfig = {
@@ -111,7 +135,8 @@ aibot.on('message', async (msg) => {
                 // Handle text messages
                 const model = genAI.getGenerativeModel({
                     model: "gemini-1.5-flash",
-                    systemInstruction: "you are personal AI chat bot, learn from the chat history about the person and respond and you have access to my notes which is provided in cacheContext",
+                    safetySettings,
+                    systemInstruction: "you are personal AI chat bot, learn from the chat history about the person.",
                 });
 
                 const generationConfig = {
