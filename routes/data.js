@@ -88,7 +88,7 @@ const symbolQuantityObject = {
     "TITAGARH": 50,
     "UJJIVANSFB": 350,
     "VBL": 12,
-    "MOM30IETF":115
+    "MOM30IETF":157
 };
 
 
