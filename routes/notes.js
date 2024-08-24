@@ -306,7 +306,7 @@ router.route("/:id/genai/summary").get(stockProtect,asyncHandler(async (req, res
         const genAI = new GoogleGenerativeAI(apiKey);
 
         const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash",
+            model: "gemini-1.5-pro",
             systemInstruction: "You are a summary button in a notes app you should generate detailed summary output ONLY on HTML",
         });
 
