@@ -25,6 +25,10 @@ router.route("/").get(protect, async (req, res) => {
 
 router.route("/remove/:id").delete(protect, async (req, res) => {
     const exp = await Expenses.findById(req.params.id);
+    if (exp.user.toString() !== req.user._id.toString()) {
+        res.status(401);
+        throw new Error("You cannot edit other notes");
+    }
     if (exp) {
         await exp.remove();
     } else {
