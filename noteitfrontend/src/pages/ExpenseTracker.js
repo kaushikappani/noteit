@@ -137,7 +137,7 @@ const ExpenseTracker = () => {
     };
 
     const generateBarChartData = (groupedExpenses) => {
-        const months = Object.keys(groupedExpenses);
+        const months = Object.keys(groupedExpenses).reverse();
         const categories = [...new Set(expenses.map(expense => expense.category))];
 
         const dataset = categories.map(category => {
