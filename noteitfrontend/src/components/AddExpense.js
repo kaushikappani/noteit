@@ -25,7 +25,8 @@ const AddExpense = ({ fetchExpenses,children}) => {
         borderRadius: "0%",
         zIndex: 100,
         border: "0px",
-        backgroundColor:"#222"
+        backgroundColor: "#222",
+        padding : "20px"
     };
 
     const handleOpen = () => setOpen(true);

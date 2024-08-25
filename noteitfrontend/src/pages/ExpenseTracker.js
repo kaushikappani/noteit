@@ -5,7 +5,7 @@ import { Container, Table } from 'react-bootstrap';
 import { Bar, Pie } from 'react-chartjs-2';
 import 'chart.js/auto'; // Important to automatically register the chart components
 import './Expense.css'; // Import the CSS file
-import { PlusCircle, Trash, Trash2Fill } from 'react-bootstrap-icons';
+import { PlusCircle, Trash } from 'react-bootstrap-icons';
 import AddExpense from '../components/AddExpense';
 
 const ExpenseTracker = () => {
@@ -19,72 +19,68 @@ const ExpenseTracker = () => {
         height: "60px",
         width: "60px",
         float: "right",
-        position: "sticky",
-        bottom: "5px",
-        zIndex: "1000000"
+        position: "fixed",
+        bottom: "20px",
+        right: "20px",
+        zIndex: "1000",
     };
 
     const fetchUser = async () => {
-        setLoading(true)
+        setLoading(true);
         try {
             const config = {
                 withCredentials: true,
             };
             const { data } = await axios.get("/api/users/info", config);
             setUser(data);
-            setLoading(false)
         } catch (e) {
             setAlert({
                 open: true,
                 type: "warning",
                 message: e.response ? e.response.data.message : e.message,
             });
-            setLoading(false)
+        } finally {
+            setLoading(false);
         }
     };
 
     const fetchExpenses = async () => {
-        setLoading(true)
+        setLoading(true);
         try {
             const config = {
                 withCredentials: true,
             };
-            const { data } = await axios.get("/api/expenses",config);
+            const { data } = await axios.get("/api/expenses", config);
             setExpenses(data);
-            setLoading(false)
-
         } catch (e) {
             setAlert({
                 open: true,
                 type: "warning",
                 message: e.response ? e.response.data.message : e.message,
             });
-            setLoading(false)
+        } finally {
+            setLoading(false);
         }
-
     };
 
-    const expRemove = async(id) => {
-        setLoading(true)
+    const expRemove = async (id) => {
+        setLoading(true);
         try {
             const config = {
                 withCredentials: true,
             };
-            const { data } = await axios.delete("/api/expenses/remove/"+id, config);
+            await axios.delete(`/api/expenses/remove/${id}`, config);
             await fetchExpenses();
-            setLoading(false)
-
         } catch (e) {
             setAlert({
                 open: true,
                 type: "warning",
                 message: e.response ? e.response.data.message : e.message,
             });
-            setLoading(false)
+        } finally {
+            setLoading(false);
         }
-
-    }
-
+    };
 
     useEffect(() => {
         fetchUser();
@@ -109,8 +105,8 @@ const ExpenseTracker = () => {
         }, {});
     };
 
-
     const groupedExpenses = groupExpensesByMonth(expenses);
+    console.log(groupedExpenses)
 
     const categoryColors = {
         "Investments": "#4CAF50", // Green
@@ -156,28 +152,28 @@ const ExpenseTracker = () => {
     };
 
     return (
-        <div>
+        <div className="expense-tracker">
             <Container>
                 <Header page="expense" user={user} loading={loading} fetchNotes={fetchExpenses} />
 
                 {Object.keys(groupedExpenses).map(month => (
                     <div key={month} className="expense-month">
                         <h3>{month}</h3>
-                        <p><strong>Total Expenses: ₹</strong> {groupedExpenses[month].total}</p>
+                        <p><strong>Total Expenses: ₹</strong> {groupedExpenses[month].total} , <strong>Spends : ₹</strong> {groupedExpenses[month].total - groupedExpenses[month].byCategory.Investments}</p>
                         <div className="expense-content">
                             <div className="pie-chart-container">
-                                <Pie data={generatePieChartData(groupedExpenses[month].byCategory)} />
+                                <Pie data={generatePieChartData(groupedExpenses[month].byCategory)} options={{ responsive: true }} />
                             </div>
                             <div className="table-container">
                                 <h3>All Expenses</h3>
-                                <Table striped bordered hover>
+                                <Table striped bordered hover responsive>
                                     <thead>
                                         <tr>
                                             <th>Description</th>
                                             <th>Category</th>
                                             <th>Cost</th>
                                             <th>Date</th>
-                                           
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -186,10 +182,12 @@ const ExpenseTracker = () => {
                                                 <td>{expense.description}</td>
                                                 <td>{expense.category}</td>
                                                 <td>₹{expense.cost}</td>
-                                                <td>{new Date(expense.date).toLocaleDateString()}
+                                                <td>{new Date(expense.date).toLocaleDateString()}</td>
+                                                <td>
+                                                    <button onClick={() => expRemove(expense._id)} className="btn btn-danger btn-sm">
+                                                        <Trash />
+                                                    </button>
                                                 </td>
-                                                <button onClick={() => { expRemove(expense._id) }}> <Trash style={{ color: "white" }} /> </button>
-                                               
                                             </tr>
                                         ))}
                                     </tbody>
@@ -197,6 +195,7 @@ const ExpenseTracker = () => {
                                         <tr>
                                             <td colSpan="2"><strong>Total</strong></td>
                                             <td><strong>₹ {groupedExpenses[month].total}</strong></td>
+                                            <td></td>
                                             <td></td>
                                         </tr>
                                     </tfoot>
@@ -211,15 +210,11 @@ const ExpenseTracker = () => {
                     <Bar data={generateBarChartData(groupedExpenses)} options={{ responsive: true }} />
                 </div>
 
-
-               
-                <button style={buttonStyle} className="btn btn-md btn-success">
-                    
+                <button style={buttonStyle} className="btn btn-success">
                     <AddExpense fetchExpenses={fetchExpenses}>
                         <PlusCircle />
                     </AddExpense>
-                    </button>
-            
+                </button>
             </Container>
         </div>
     );

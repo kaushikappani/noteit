@@ -1,4 +1,4 @@
-/* ExpenseTracker.css */
+\/* ExpenseTracker.css */
 
 .expense-month {
     margin-bottom: 2rem;
@@ -8,6 +8,8 @@
     display: flex;
     flex-wrap: wrap;
     gap: 2rem;
+    overflow-x: hidden;
+    /* Prevent horizontal overflow */
 }
 
 .pie-chart-container {
@@ -18,11 +20,58 @@
 .table-container {
     flex: 2;
     min-width: 300px;
+    overflow-x: auto;
+    /* Enable horizontal scrolling */
+}
+
+table {
+    width: 100%;
+    /* Ensure table fits within the container */
+    border-collapse: collapse;
+    /* Collapse borders for better appearance */
+}
+
+th,
+td {
+    padding: 8px;
+    /* Add padding to table cells */
+    text-align: left;
+    font-size: 14px;
+    /* Adjust font size for readability */
+    border: 1px solid #ddd;
+    /* Add border for better readability */
 }
 
 /* Responsive design for mobile view */
 @media (max-width: 768px) {
     .expense-content {
         flex-direction: column;
+        padding: 0 10px;
+        /* Add padding to prevent content from touching the edges */
+    }
+
+    .pie-chart-container,
+    .table-container {
+        min-width: auto;
+        /* Remove min-width constraint */
+    }
+
+    .table-container {
+        max-width: 100%;
+        /* Ensure container does not exceed viewport width */
+    }
+
+    .pie-chart-container {
+        width: 100%;
+        /* Ensure chart fits the container width */
+        height: 250px;
+        /* Adjust height for better visibility */
+    }
+
+    .bar-chart-container {
+        width: 100%;
+        /* Ensure chart fits the container width */
+        height: 250px;
+        /* Adjust height for better visibility */
     }
 }
