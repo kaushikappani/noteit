@@ -3,15 +3,20 @@ import Header from '../components/Header';
 import axios from 'axios';
 import { Container, Table } from 'react-bootstrap';
 import { Bar, Pie } from 'react-chartjs-2';
-import 'chart.js/auto'; // Important to automatically register the chart components
+import 'chart.js/auto';
 import './Expense.css'; // Import the CSS file
 import { PlusCircle, Trash } from 'react-bootstrap-icons';
 import AddExpense from '../components/AddExpense';
+import Notification from '../components/Notification';
 
 const ExpenseTracker = () => {
     const [loading, setLoading] = useState(false);
     const [user, setUser] = useState();
-    const [alert, setAlert] = useState();
+    const [alert, setAlert] = useState({
+        open: false,
+        type: "",
+        message: ""
+    })
     const [expenses, setExpenses] = useState([]);
 
     const buttonStyle = {
@@ -28,9 +33,7 @@ const ExpenseTracker = () => {
     const fetchUser = async () => {
         setLoading(true);
         try {
-            const config = {
-                withCredentials: true,
-            };
+            const config = { withCredentials: true };
             const { data } = await axios.get("/api/users/info", config);
             setUser(data);
         } catch (e) {
@@ -47,9 +50,7 @@ const ExpenseTracker = () => {
     const fetchExpenses = async () => {
         setLoading(true);
         try {
-            const config = {
-                withCredentials: true,
-            };
+            const config = { withCredentials: true };
             const { data } = await axios.get("/api/expenses", config);
             setExpenses(data);
         } catch (e) {
@@ -66,11 +67,14 @@ const ExpenseTracker = () => {
     const expRemove = async (id) => {
         setLoading(true);
         try {
-            const config = {
-                withCredentials: true,
-            };
+            const config = { withCredentials: true };
             await axios.delete(`/api/expenses/remove/${id}`, config);
             await fetchExpenses();
+            setAlert({
+                open: true,
+                type: "success",
+                message: "Removed!"
+            })
         } catch (e) {
             setAlert({
                 open: true,
@@ -106,7 +110,6 @@ const ExpenseTracker = () => {
     };
 
     const groupedExpenses = groupExpensesByMonth(expenses);
-    console.log(groupedExpenses)
 
     const categoryColors = {
         "Investments": "#4CAF50", // Green
@@ -126,7 +129,7 @@ const ExpenseTracker = () => {
                 {
                     label: 'Expenses by Category',
                     data,
-                    backgroundColor: labels.map(label => categoryColors[label] || '#CCCCCC'), // Default to grey if category color not specified
+                    backgroundColor: labels.map(label => categoryColors[label] || '#CCCCCC'),
                     hoverBackgroundColor: labels.map(label => categoryColors[label] || '#CCCCCC'),
                 },
             ],
@@ -141,7 +144,7 @@ const ExpenseTracker = () => {
             return {
                 label: category,
                 data: months.map(month => groupedExpenses[month].byCategory[category] || 0),
-                backgroundColor: categoryColors[category] || '#CCCCCC', // Default to grey if category color not specified
+                backgroundColor: categoryColors[category] || '#CCCCCC',
             };
         });
 
@@ -151,9 +154,16 @@ const ExpenseTracker = () => {
         };
     };
 
+    const getRowClass = (category) => {
+        const color = categoryColors[category] || '#CCCCCC';
+        return { backgroundColor: `${color}3F` }; // Add opacity
+    };
+
     return (
         <div className="expense-tracker">
-            <Container>
+            <Notification alert={alert} setAlert={setAlert} />
+
+            <Container style= {{padding:"0px"}}>
                 <Header page="expense" user={user} loading={loading} fetchNotes={fetchExpenses} />
 
                 {Object.keys(groupedExpenses).map(month => (
@@ -178,7 +188,7 @@ const ExpenseTracker = () => {
                                     </thead>
                                     <tbody>
                                         {groupedExpenses[month].expenses.reverse().map(expense => (
-                                            <tr key={expense._id}>
+                                            <tr key={expense._id} style={getRowClass(expense.category)}>
                                                 <td>{expense.description}</td>
                                                 <td>{expense.category}</td>
                                                 <td>₹{expense.cost}</td>

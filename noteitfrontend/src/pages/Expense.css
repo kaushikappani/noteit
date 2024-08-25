@@ -75,3 +75,9 @@ td {
         /* Adjust height for better visibility */
     }
 }
+
+
+.table-container .table tbody tr:hover {
+    background-color: rgba(0, 0, 0, 1);
+   
+}

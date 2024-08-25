@@ -25,7 +25,12 @@ router.route("/").get(protect, async (req, res) => {
 
 router.route("/remove/:id").delete(protect, async (req, res) => {
     const exp = await Expenses.findById(req.params.id);
-    await exp.remove();
+    if (exp) {
+        await exp.remove();
+    } else {
+        throw new Error({message:"No expense Found"})
+    }
+   
     res.status(200).json({message:"Deleted!"})
 })
 

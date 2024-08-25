@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { Link, useHistory } from 'react-router-dom';
-import { Archive, CloudCheck, Grid } from "react-bootstrap-icons";
+import { Archive, CloudCheck, CurrencyRupee, Grid } from "react-bootstrap-icons";
 import { Spinner } from 'react-bootstrap';
 import Icon from "./noteIcon.jpg";
 import axios from "axios";
@@ -35,6 +35,8 @@ const Header = (props) => {
                                     <Nav.Link as={Link} to="/archived"><Archive size={23} /></Nav.Link> :
                                     <Nav.Link as={Link} to="/notes"><Grid size={23} /></Nav.Link>
                                 }
+                                <Nav.Link as={Link} to="/expensetracker"><CurrencyRupee size={23} /></Nav.Link>
+                                {/* <Nav.link as={Link} to="/expensetracker"> <CurrencyRupee size={23} /> </Nav.link> */}
                                 <NavDropdown title={props.user.name} id="basic-nav-dropdown">
                                     <NavDropdown.Item as={Link} to="/profile">Profile</NavDropdown.Item>
                                     <NavDropdown.Divider />

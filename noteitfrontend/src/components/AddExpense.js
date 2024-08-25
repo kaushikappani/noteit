@@ -3,6 +3,8 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { Button, Form } from 'react-bootstrap';
 import axios from 'axios';
+import Notification from './Notification';
+import { numberToWords } from './utils';
 
 const AddExpense = ({ fetchExpenses,children}) => {
     const [open, setOpen] = useState(false);
@@ -14,6 +16,12 @@ const AddExpense = ({ fetchExpenses,children}) => {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState();
+    const [costInWords, setCostInWords] = useState("");
+    const [alert, setAlert] = useState({
+        open: false,
+        type: "",
+        message: ""
+    })
     const style = {
         position: "absolute",
         top: "50%",
@@ -53,7 +61,12 @@ const AddExpense = ({ fetchExpenses,children}) => {
                 cost: "",
                 category: "",
                 description: "",
-                date: ""
+                date: new Date().toISOString().split("T")[0]
+            })
+            setAlert({
+                open: true,
+                type: "success",
+                message: "Expense - Added"
             })
             fetchExpenses();
         } catch (e) {
@@ -80,7 +93,7 @@ const AddExpense = ({ fetchExpenses,children}) => {
                 cost: "",
                 category: "",
                 description: "",
-                date: ""
+                date: new Date().toISOString().split("T")[0]
             })
             fetchExpenses();
         } catch (e) {
@@ -96,6 +109,8 @@ const AddExpense = ({ fetchExpenses,children}) => {
     },[])
   return (
       <div>
+          <Notification alert={alert} setAlert={setAlert} />
+
           <div onClick={handleOpen}>{children}</div>
           <Modal
               className="model"
@@ -122,7 +137,7 @@ const AddExpense = ({ fetchExpenses,children}) => {
                               required
                           />
                       </Form.Group>
-
+                      <p> {costInWords}</p>
                       {/* Category Field */}
                       <Form.Group controlId="formCategory" className="mb-3">
                           <Form.Label>Category</Form.Label>
@@ -184,7 +199,7 @@ const AddExpense = ({ fetchExpenses,children}) => {
                       </Button>
 
                       <Button onClick = {saveAndAddOther} variant="secondry" >
-                          Save and add Other
+                          Save & add another
                       </Button>
                   </Form>
               </Box>
