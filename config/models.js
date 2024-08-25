@@ -110,4 +110,36 @@ const noteAccessModel = mongoose.Schema(
 )
 
 const NoteAccess = mongoose.model("NoteAccess", noteAccessModel);
-module.exports = { User, Note, NoteHistory, NoteAccess }
+
+
+const expensesModel = mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
+  cost: {
+    type: Number,
+    require:true
+  },
+  category: {
+    type: String,
+    require:true
+  },
+  description: {
+    type: String,
+    require: true
+  },
+  date: {
+    type: Date,
+    require:true
+  }
+
+}, {
+  timestamps: true,
+})
+
+
+const Expenses = mongoose.model("Expenses", expensesModel);
+
+module.exports = { User, Note, NoteHistory, NoteAccess, Expenses }

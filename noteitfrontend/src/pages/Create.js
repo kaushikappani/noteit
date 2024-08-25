@@ -13,9 +13,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import Notification from "../components/Notification"
 
-
-import { Input } from '@mui/material';
-
 import SunEditorComponent from '../components/SunEditorComponent';
 
 const Create = ({ children, setNotes ,fetchNotes}) => {
@@ -156,17 +153,6 @@ const Create = ({ children, setNotes ,fetchNotes}) => {
                     />
                   </Form.Group>
                   Content
-                  {/* <Editor
-                    autoFocus
-                    dark
-                    className="big"
-                    defaultValue={note.content}
-                    onChange={(e) => changeEditor(e)}
-                  /> */}
-
-                  {/* <ReactQuill
-
-                    style={{ height: "40vh" }} theme="snow" value={note.content} onChange={(value, viewUpdate) => changeEditor(value)} /> */}
                   
                   <SunEditorComponent data={note.content} changeEditor={changeEditor} editorRef={editorRef} />
              

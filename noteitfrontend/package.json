@@ -1,6 +1,6 @@
 {
   "name": "noteitfrontend",
-  "version": "10.0.1",
+  "version": "12.0.0",
   "private": true,
   "proxy": "http://localhost:5500",
   "dependencies": {

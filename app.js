@@ -7,6 +7,7 @@ const connectDB = require("./config/db");
 const userRoutes = require("./routes/user");
 const notesRoute = require("./routes/notes");
 const stockRoute = require("./routes/Stock")
+const expenseRoutes = require("./routes/expenses")
 const { errorHandler, notFound } = require("./middleware/error");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser")
@@ -57,7 +58,7 @@ app.use(compression())
 app.use("/api/users", userRoutes)
 app.use("/api/notes", notesRoute)
 app.use("/api/stock", stockRoute)
-
+app.use("/api/expenses", expenseRoutes);
 
 __dirname = path.resolve();
 if (process.env.NODE_ENV === "production") {

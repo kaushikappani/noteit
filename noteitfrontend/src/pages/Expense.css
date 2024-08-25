@@ -1,0 +1,28 @@
+/* ExpenseTracker.css */
+
+.expense-month {
+    margin-bottom: 2rem;
+}
+
+.expense-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.pie-chart-container {
+    flex: 1;
+    min-width: 300px;
+}
+
+.table-container {
+    flex: 2;
+    min-width: 300px;
+}
+
+/* Responsive design for mobile view */
+@media (max-width: 768px) {
+    .expense-content {
+        flex-direction: column;
+    }
+}
