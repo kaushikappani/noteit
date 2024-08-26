@@ -169,9 +169,15 @@ const ExpenseTracker = () => {
 
     const filterExpenses = (month, expenses) => {
         const category = filters[month];
-        if (!category) return expenses;
-        return expenses.filter(expense => expense.category === category);
+        if (!category) {
+            const total = expenses.reduce((sum, expense) => sum + expense.cost, 0);
+            return { filteredExpenses: expenses, total };
+        }
+        const filteredExpenses = expenses.filter(expense => expense.category === category);
+        const total = filteredExpenses.reduce((sum, expense) => sum + expense.cost, 0);
+        return { filteredExpenses, total };
     };
+
 
     return (
         <div className="expense-tracker">
@@ -198,9 +204,8 @@ const ExpenseTracker = () => {
                                     <thead>
                                         <tr>
                                             <th>Description</th>
-                                            <th>Category
-                                                <Form.Group controlId={`categoryFilter-${month}`}>
-                                                    <Form.Label>Filter by Category:</Form.Label>
+                                            <th>
+                                                <Form.Group controlId={`categoryFilter-${month}`} className="dark-theme">
                                                     <Form.Control
                                                         as="select"
                                                         value={filters[month] || ""}
@@ -212,6 +217,7 @@ const ExpenseTracker = () => {
                                                         ))}
                                                     </Form.Control>
                                                 </Form.Group>
+
                                             </th>
                                             <th>Cost</th>
                                             <th>Date</th>
@@ -219,7 +225,7 @@ const ExpenseTracker = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {filterExpenses(month, groupedExpenses[month].expenses).reverse().map(expense => (
+                                        {filterExpenses(month, groupedExpenses[month].expenses).filteredExpenses.reverse().map(expense => (
                                             <tr key={expense._id} style={getRowClass(expense.category)}>
                                                 <td>{expense.description}</td>
                                                 <td>{expense.category}</td>
@@ -236,11 +242,12 @@ const ExpenseTracker = () => {
                                     <tfoot>
                                         <tr>
                                             <td colSpan="2"><strong>Total</strong></td>
-                                            <td><strong>₹ {groupedExpenses[month].total}</strong></td>
+                                            <td><strong>₹ {filterExpenses(month, groupedExpenses[month].expenses).total}</strong></td>
                                             <td></td>
                                             <td></td>
                                         </tr>
                                     </tfoot>
+
                                 </Table>
                             </div>
                         </div>

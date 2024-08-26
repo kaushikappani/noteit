@@ -81,3 +81,36 @@ td {
     background-color: rgba(0, 0, 0, 1);
    
 }
+
+/* Dark theme styles */
+.dark-theme .form-group {
+    background-color: #2c2c2c;
+    /* Dark background color */
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 15px;
+}
+
+.dark-theme .form-control {
+    background-color: #3b3b3b;
+    /* Dark input background */
+    color: #ffffff;
+    /* White text */
+    border: 1px solid #555555;
+    /* Darker border */
+}
+
+.dark-theme .form-control:focus {
+    background-color: #484848;
+    /* Slightly lighter on focus */
+    color: #ffffff;
+    border-color: #777777;
+    /* Lighter border on focus */
+    box-shadow: none;
+    /* Remove default focus outline */
+}
+
+.dark-theme .form-control::placeholder {
+    color: #aaaaaa;
+    /* Placeholder color */
+}
