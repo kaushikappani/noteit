@@ -8,8 +8,7 @@ import './Expense.css'; // Import the CSS file
 import { PlusCircle, Trash } from 'react-bootstrap-icons';
 import AddExpense from '../components/AddExpense';
 import Notification from '../components/Notification';
-import { BottomNavigation } from '@mui/material';
-import LabelBottomNavigation from '../components/BottomNavigationComponent';
+
 
 const ExpenseTracker = () => {
     const [loading, setLoading] = useState(false);

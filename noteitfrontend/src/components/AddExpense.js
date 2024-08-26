@@ -4,7 +4,7 @@ import Modal from "@mui/material/Modal";
 import { Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 import Notification from './Notification';
-import { numberToWords } from './utils';
+
 
 const AddExpense = ({ fetchExpenses,children}) => {
     const [open, setOpen] = useState(false);
@@ -24,12 +24,12 @@ const AddExpense = ({ fetchExpenses,children}) => {
     })
     const style = {
         position: "absolute",
-        top: "50%",
+        top: "40%",
         left: "50%",
         transform: "translate(-50%, -50%)",
-        width: "100%",  // Increase width
-        maxWidth: "500px",  // Increase max width
-        maxHeight: "100vh",  // Increase max height
+        width: "100%",  
+        maxWidth: "500px", 
+        maxHeight: "100vh", 
         borderRadius: "0%",
         zIndex: 100,
         border: "0px",
@@ -118,6 +118,7 @@ const AddExpense = ({ fetchExpenses,children}) => {
               onClose={handleClose}
               aria-labelledby="modal-modal-title"
               aria-describedby="modal-modal-description"
+ 
           >
 
               <Box style={style}>
