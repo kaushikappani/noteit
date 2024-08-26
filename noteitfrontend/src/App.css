@@ -67,3 +67,16 @@ html{
 .ql-editor::-webkit-scrollbar {
   display: none;
 }
+
+.no-arrow .dropdown-toggle::after {
+  display: none;
+}
+
+.dropdown-left .dropdown-menu {
+  right: 0;
+  left: auto;
+}
+
+.icon-spacing {
+  margin-right: 5px;
+}

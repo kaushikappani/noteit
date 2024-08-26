@@ -5,7 +5,7 @@ import { Archive, CloudCheck, CurrencyRupee, Grid } from "react-bootstrap-icons"
 import { Spinner } from 'react-bootstrap';
 import Icon from "./noteIcon.jpg";
 import axios from "axios";
-import { Button } from '@mui/material';
+import { Button, Avatar } from '@mui/material';
 
 const Header = (props) => {
     const history = useHistory();
@@ -29,15 +29,25 @@ const Header = (props) => {
                         <Navbar.Toggle aria-controls="navbarScroll" />
                         <Navbar.Collapse id="navbarScroll" className="justify-content-end">
                             <Nav className="mr-auto">
-                                {props.loading && <Nav.Link><Spinner animation="border" size="sm" /></Nav.Link>}
-                                {!props.loading && <Nav.Link onClick={props.fetchNotes}><CloudCheck size={23} /></Nav.Link>}
+                                {props.loading && <Nav.Link className="icon-spacing"><Spinner animation="border" size="sm" /></Nav.Link>}
+                                {!props.loading && <Nav.Link onClick={props.fetchNotes} className="icon-spacing"><CloudCheck size={23} /></Nav.Link>}
                                 {props.page === "notes" ?
-                                    <Nav.Link as={Link} to="/archived"><Archive size={23} /></Nav.Link> :
-                                    <Nav.Link as={Link} to="/notes"><Grid size={23} /></Nav.Link>
+                                    <Nav.Link as={Link} to="/archived" className="icon-spacing"><Archive size={23} /></Nav.Link> :
+                                    <Nav.Link as={Link} to="/notes" className="icon-spacing"><Grid size={23} /></Nav.Link>
                                 }
-                                <Nav.Link as={Link} to="/expensetracker"><CurrencyRupee size={23} /></Nav.Link>
-                                {/* <Nav.link as={Link} to="/expensetracker"> <CurrencyRupee size={23} /> </Nav.link> */}
-                                <NavDropdown title={props.user.name} id="basic-nav-dropdown">
+                                <Nav.Link as={Link} to="/expensetracker" className="icon-spacing"><CurrencyRupee size={23} /></Nav.Link>
+                                <NavDropdown
+                                    title={
+                                        <Avatar
+                                            sx={{ width: 33, height: 33 }}
+                                            alt={props.user.name}
+                                            src={props.user.pic}
+                                        />
+                                    }
+                                    id="basic-nav-dropdown"
+                                    className="no-arrow dropdown-left"
+                                    align="end"
+                                >
                                     <NavDropdown.Item as={Link} to="/profile">Profile</NavDropdown.Item>
                                     <NavDropdown.Divider />
                                     <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
@@ -49,7 +59,7 @@ const Header = (props) => {
                     <Nav className="mr-auto">
                         {props.page === "stocks" && <>
                             {props.loading && <Nav.Link><Spinner animation="border" size="sm" /></Nav.Link>}
-                            {!props.loading && <Nav.Link onClick={props.fetchSummary}><CloudCheck size={23} /></Nav.Link>}
+                            {!props.loading && <Nav.Link onClick={props.fetchSummary} className="icon-spacing"><CloudCheck size={23} /></Nav.Link>}
                             <Button variant="contained" color="primary" onClick={props.handleAutoReloadToggle}>
                                 {props.autoReload ? 'Stop Auto-Reload' : 'Start Auto-Reload'}
                             </Button>
