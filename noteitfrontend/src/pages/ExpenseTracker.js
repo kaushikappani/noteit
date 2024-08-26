@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import axios from 'axios';
-import { Container, Table } from 'react-bootstrap';
+import { Container, Table, Form } from 'react-bootstrap';
 import { Bar, Pie } from 'react-chartjs-2';
 import 'chart.js/auto';
 import './Expense.css'; // Import the CSS file
 import { PlusCircle, Trash } from 'react-bootstrap-icons';
 import AddExpense from '../components/AddExpense';
 import Notification from '../components/Notification';
-
 
 const ExpenseTracker = () => {
     const [loading, setLoading] = useState(false);
@@ -17,8 +16,9 @@ const ExpenseTracker = () => {
         open: false,
         type: "",
         message: ""
-    })
+    });
     const [expenses, setExpenses] = useState([]);
+    const [filters, setFilters] = useState({});
 
     const buttonStyle = {
         borderRadius: "100%",
@@ -75,7 +75,7 @@ const ExpenseTracker = () => {
                 open: true,
                 type: "success",
                 message: "Removed!"
-            })
+            });
         } catch (e) {
             setAlert({
                 open: true,
@@ -160,17 +160,34 @@ const ExpenseTracker = () => {
         return { backgroundColor: `${color}3F` }; // Add opacity
     };
 
+    const handleFilterChange = (month, value) => {
+        setFilters({
+            ...filters,
+            [month]: value,
+        });
+    };
+
+    const filterExpenses = (month, expenses) => {
+        const category = filters[month];
+        if (!category) return expenses;
+        return expenses.filter(expense => expense.category === category);
+    };
+
     return (
         <div className="expense-tracker">
             <Notification alert={alert} setAlert={setAlert} />
 
-            <Container style= {{padding:"0px"}}>
+            <Container style={{ padding: "0px" }}>
                 <Header page="expense" user={user} loading={loading} fetchNotes={fetchExpenses} />
 
                 {Object.keys(groupedExpenses).map(month => (
                     <div key={month} className="expense-month">
                         <h3>{month}</h3>
-                        <p><strong>Total Expenses: ₹</strong> {groupedExpenses[month].total} , <strong>Spends : ₹</strong> {groupedExpenses[month].total - groupedExpenses[month].byCategory.Investments}</p>
+                        <p><strong>Total Expenses: ₹</strong> {groupedExpenses[month].total} , <strong>Spends: ₹</strong> {groupedExpenses[month].total - groupedExpenses[month].byCategory.Investments}</p>
+
+                        {/* Category Filter Dropdown */}
+                        
+
                         <div className="expense-content">
                             <div className="pie-chart-container">
                                 <Pie data={generatePieChartData(groupedExpenses[month].byCategory)} options={{ responsive: true }} />
@@ -181,14 +198,28 @@ const ExpenseTracker = () => {
                                     <thead>
                                         <tr>
                                             <th>Description</th>
-                                            <th>Category</th>
+                                            <th>Category
+                                                <Form.Group controlId={`categoryFilter-${month}`}>
+                                                    <Form.Label>Filter by Category:</Form.Label>
+                                                    <Form.Control
+                                                        as="select"
+                                                        value={filters[month] || ""}
+                                                        onChange={(e) => handleFilterChange(month, e.target.value)}
+                                                    >
+                                                        <option value="">All Categories</option>
+                                                        {Object.keys(categoryColors).map(category => (
+                                                            <option key={category} value={category}>{category}</option>
+                                                        ))}
+                                                    </Form.Control>
+                                                </Form.Group>
+                                            </th>
                                             <th>Cost</th>
                                             <th>Date</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {groupedExpenses[month].expenses.reverse().map(expense => (
+                                        {filterExpenses(month, groupedExpenses[month].expenses).reverse().map(expense => (
                                             <tr key={expense._id} style={getRowClass(expense.category)}>
                                                 <td>{expense.description}</td>
                                                 <td>{expense.category}</td>
@@ -229,6 +260,6 @@ const ExpenseTracker = () => {
             </Container>
         </div>
     );
-}
+};
 
 export default ExpenseTracker;
