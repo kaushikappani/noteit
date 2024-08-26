@@ -228,7 +228,6 @@ const ExpenseTracker = () => {
                     </AddExpense>
                 </button>
             </Container>
-            <LabelBottomNavigation />
         </div>
     );
 }

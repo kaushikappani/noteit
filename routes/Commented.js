@@ -217,3 +217,50 @@ let messageContent = `<b>Day P&L:</b> ${total.toFixed(2)}
         ${topLosers.map(l => `${l.symbol}: ${l.portfolioChange.toFixed(2)}`).join('\n')}`;
 
 // bot.sendMessage(chatId, messageContent, { parse_mode: "HTML" });
+
+
+
+const excelFilePath = path.join(__dirname, 'NEW UCC COMBINED BULK UPLOAD.xlsx');
+
+// Create a new instance of a workbook
+const workbook = new ExcelJS.Workbook();
+
+// Read the Excel file
+workbook.xlsx.readFile("/Users/appanikaushik/Desktop/Projects/noteit/NEW UCC COMBINED BULK UPLOAD.xlsx")
+    .then(() => {
+        // Get the first worksheet
+        const worksheet = workbook.worksheets[0];
+
+        // Get the first row (assumed to be the header row)
+        const headerRow = worksheet.getRow(2);
+
+        headerRow.eachCell((cell, colNumber) => {
+            let header = cell.value;
+
+            // Ensure header is a string
+            if (typeof header !== 'string') {
+                header = String(header);
+            }
+
+            const fieldName = convertToFieldName(header);
+            const columnName = header.toUpperCase();
+
+            console.log(`@CsvBindByName(column = "${columnName}")`);
+            console.log(`@CsvBindByPosition(position = ${colNumber - 1})`);
+            console.log(`private String ${fieldName};\n`);
+        });
+    })
+    .catch(error => {
+        console.error('Error reading the Excel file:', error);
+    });
+
+function convertToFieldName(header) {
+    return header
+        .toLowerCase()
+        .replace(/\s(.)/g, function (match, group1) {
+            return group1.toUpperCase();
+        })
+        .replace(/\s+/g, '')
+        .replace()
+        .replace(/[()]/g, '');
+}
