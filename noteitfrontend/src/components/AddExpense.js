@@ -43,7 +43,7 @@ const AddExpense = ({ fetchExpenses,children}) => {
     };
     const submitHandler = async(e) => {
         e.preventDefault();
-
+        setLoading(true);
         try {
             const config = {
                 withCredentials: true,
@@ -51,8 +51,7 @@ const AddExpense = ({ fetchExpenses,children}) => {
                     "Content-Type": "application/json",
                 },
             };
-            setLoading(true);
-            //eslint-disable-next-line
+            
             const { data } = await axios.post("/api/expenses/add", expense, config);
             
             setLoading(false);
@@ -76,7 +75,9 @@ const AddExpense = ({ fetchExpenses,children}) => {
         }
     }
 
-    const saveAndAddOther = async() => {
+    const saveAndAddOther = async () => {
+        setLoading(true);
+
         try {
             const config = {
                 withCredentials: true,
@@ -84,7 +85,6 @@ const AddExpense = ({ fetchExpenses,children}) => {
                     "Content-Type": "application/json",
                 },
             };
-            setLoading(true);
             //eslint-disable-next-line
             const { data } = await axios.post("/api/expenses/add", expense, config);
 
@@ -194,7 +194,7 @@ const AddExpense = ({ fetchExpenses,children}) => {
                       </Form.Group>
 
                       {/* Submit Button */}
-                      <Button variant="primary" type="submit">
+                      <Button disabled={loading} variant="primary" type="submit">
                           Save
                       </Button>
 
