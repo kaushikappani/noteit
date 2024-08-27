@@ -229,12 +229,13 @@ const Notes = () => {
     fetchNotes();
     fetchSharedNotes();
 
-    window.addEventListener('focus', fetchNotes);
+   
   }
   useEffect(() => {
     fetchNotes();
     fetchSharedNotes();
     fetchUser();
+    window.addEventListener('focus', fetchNotes);
   }, []);
 
   return (
