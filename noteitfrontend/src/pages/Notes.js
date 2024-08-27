@@ -8,6 +8,7 @@ import { Input, Typography } from "@mui/material";
 import { Container } from "react-bootstrap";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import Notification from "../components/Notification";
+import PullToRefresh from "react-pull-to-refresh";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -225,6 +226,8 @@ const Notes = () => {
 
   };
 
+
+
   const reload = () => {
     fetchNotes();
     fetchSharedNotes();
@@ -236,6 +239,7 @@ const Notes = () => {
     fetchSharedNotes();
     fetchUser();
     window.addEventListener('focus', fetchNotes);
+
   }, []);
 
   return (
@@ -251,7 +255,7 @@ const Notes = () => {
       <Notification alert={alert} setAlert={setAlert} />
 
       {
-        <div>
+        <PullToRefresh onRefresh={reload}>
           <Container>
             <Input
               startAdornment={
@@ -409,7 +413,7 @@ const Notes = () => {
             </button>
           </Container>
           
-        </div>
+        </PullToRefresh>
         
       }
     </div>

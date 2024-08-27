@@ -8,6 +8,8 @@ import './Expense.css'; // Import the CSS file
 import { PlusCircle, Trash } from 'react-bootstrap-icons';
 import AddExpense from '../components/AddExpense';
 import Notification from '../components/Notification';
+import PullToRefresh from "react-pull-to-refresh";
+
 
 const ExpenseTracker = () => {
     const [loading, setLoading] = useState(false);
@@ -186,84 +188,86 @@ const ExpenseTracker = () => {
             <Container style={{ padding: "0px" }}>
                 <Header page="expense" user={user} loading={loading} fetchNotes={fetchExpenses} />
 
-                {Object.keys(groupedExpenses).map(month => (
-                    <div key={month} className="expense-month">
-                        <h3>{month}</h3>
-                        <p><strong>Total Expenses: ₹</strong> {groupedExpenses[month].total} , <strong>Spends: ₹</strong> {groupedExpenses[month].total - groupedExpenses[month].byCategory.Investments}</p>
+                <PullToRefresh onRefresh={fetchExpenses}>
+                    {Object.keys(groupedExpenses).map(month => (
+                        <div key={month} className="expense-month">
+                            <h3>{month}</h3>
+                            <p><strong>Total Expenses: ₹</strong> {groupedExpenses[month].total} , <strong>Spends: ₹</strong> {groupedExpenses[month].total - groupedExpenses[month].byCategory.Investments}</p>
 
-                        {/* Category Filter Dropdown */}
-                        
+                            {/* Category Filter Dropdown */}
 
-                        <div className="expense-content">
-                            <div className="pie-chart-container">
-                                <Pie data={generatePieChartData(groupedExpenses[month].byCategory)} options={{ responsive: true }} />
-                            </div>
-                            <div className="table-container">
-                                <h3>All Expenses</h3>
-                                <Table striped bordered hover responsive>
-                                    <thead>
-                                        <tr>
-                                            <th>Description</th>
-                                            <th>
-                                                <Form.Group controlId={`categoryFilter-${month}`} className="dark-theme">
-                                                    <Form.Control
-                                                        as="select"
-                                                        value={filters[month] || ""}
-                                                        onChange={(e) => handleFilterChange(month, e.target.value)}
-                                                    >
-                                                        <option value="">All Categories</option>
-                                                        {Object.keys(categoryColors).map(category => (
-                                                            <option key={category} value={category}>{category}</option>
-                                                        ))}
-                                                    </Form.Control>
-                                                </Form.Group>
 
-                                            </th>
-                                            <th>Cost</th>
-                                            <th>Date</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {filterExpenses(month, groupedExpenses[month].expenses).filteredExpenses.reverse().map(expense => (
-                                            <tr key={expense._id} style={getRowClass(expense.category)}>
-                                                <td>{expense.description}</td>
-                                                <td>{expense.category}</td>
-                                                <td>₹{expense.cost}</td>
-                                                <td>{new Date(expense.date).toLocaleDateString()}</td>
-                                                <td>
-                                                    <button onClick={() => expRemove(expense._id)} className="btn btn-danger btn-sm">
-                                                        <Trash />
-                                                    </button>
-                                                </td>
+                            <div className="expense-content">
+                                <div className="pie-chart-container">
+                                    <Pie data={generatePieChartData(groupedExpenses[month].byCategory)} options={{ responsive: true }} />
+                                </div>
+                                <div className="table-container">
+                                    <h3>All Expenses</h3>
+                                    <Table striped bordered hover responsive>
+                                        <thead>
+                                            <tr>
+                                                <th>Description</th>
+                                                <th>
+                                                    <Form.Group controlId={`categoryFilter-${month}`} className="dark-theme">
+                                                        <Form.Control
+                                                            as="select"
+                                                            value={filters[month] || ""}
+                                                            onChange={(e) => handleFilterChange(month, e.target.value)}
+                                                        >
+                                                            <option value="">All Categories</option>
+                                                            {Object.keys(categoryColors).map(category => (
+                                                                <option key={category} value={category}>{category}</option>
+                                                            ))}
+                                                        </Form.Control>
+                                                    </Form.Group>
+
+                                                </th>
+                                                <th>Cost</th>
+                                                <th>Date</th>
+                                                <th>Actions</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colSpan="2"><strong>Total</strong></td>
-                                            <td><strong>₹ {filterExpenses(month, groupedExpenses[month].expenses).total}</strong></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                    </tfoot>
+                                        </thead>
+                                        <tbody>
+                                            {filterExpenses(month, groupedExpenses[month].expenses).filteredExpenses.reverse().map(expense => (
+                                                <tr key={expense._id} style={getRowClass(expense.category)}>
+                                                    <td>{expense.description}</td>
+                                                    <td>{expense.category}</td>
+                                                    <td>₹{expense.cost}</td>
+                                                    <td>{new Date(expense.date).toLocaleDateString()}</td>
+                                                    <td>
+                                                        <button onClick={() => expRemove(expense._id)} className="btn btn-danger btn-sm">
+                                                            <Trash />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colSpan="2"><strong>Total</strong></td>
+                                                <td><strong>₹ {filterExpenses(month, groupedExpenses[month].expenses).total}</strong></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
 
-                                </Table>
+                                    </Table>
+                                </div>
                             </div>
                         </div>
+                    ))}
+
+                    <div className="bar-chart-container">
+                        <h3>Monthly Expenses by Category</h3>
+                        <Bar data={generateBarChartData(groupedExpenses)} options={{ responsive: true }} />
                     </div>
-                ))}
 
-                <div className="bar-chart-container">
-                    <h3>Monthly Expenses by Category</h3>
-                    <Bar data={generateBarChartData(groupedExpenses)} options={{ responsive: true }} />
-                </div>
-
-                <button style={buttonStyle} className="btn btn-success">
-                    <AddExpense fetchExpenses={fetchExpenses}>
-                        <PlusCircle />
-                    </AddExpense>
-                </button>
+                    <button style={buttonStyle} className="btn btn-success">
+                        <AddExpense fetchExpenses={fetchExpenses}>
+                            <PlusCircle />
+                        </AddExpense>
+                    </button>
+                </PullToRefresh>
             </Container>
         </div>
     );

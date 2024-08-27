@@ -2,7 +2,7 @@
   "name": "noteitfrontend",
   "version": "12.1.0",
   "private": true,
-  "proxy": "http://localhost:5500",
+  "proxy": "https://noteit-prod.onrender.com",
   "dependencies": {
     "@babel/preset-env": "^7.24.8",
     "@emotion/react": "^11.7.1",
@@ -32,6 +32,7 @@
     "react-google-calendar-api": "^2.0.3",
     "react-google-login": "^5.2.2",
     "react-markdown": "^7.0.1",
+    "react-pull-to-refresh": "^2.0.1",
     "react-quill": "^0.0.2",
     "react-redux": "^7.2.5",
     "react-responsive-masonry": "^2.1.4",
