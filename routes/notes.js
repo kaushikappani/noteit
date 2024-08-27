@@ -21,9 +21,9 @@ router.route("/").get(
     asyncHandler(async (req, res) => {
         try {
             // Fetch notes from the database
-            if (req.user.email === "kaushikappani@gmail.com") {
-                await Promise.all([giftNifty(), getGlobalIndices()]);
-            }
+            // if (req.user.email === "kaushikappani@gmail.com") {
+            //     await Promise.all([giftNifty(), getGlobalIndices()]);
+            // }
             const notes = await Note.find({
                 user: req.user._id,
                 archived: false,
