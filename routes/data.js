@@ -91,6 +91,38 @@ const symbolQuantityObject = {
     "MOM30IETF":157
 };
 
+const symbolQuantityObjectBO = {
+    "ARVIND.NS": 20,
+    "BEL.NS": 10,
+    "BHEL.NS": 20,
+    "DREAMFOLKS.NS": 21,
+    "EXIDEIND.NS": 40,
+    "FEDERALBNK.NS": 41,
+    "HDFCBANK.NS": 11,
+    "INDHOTEL.NS": 17,
+    "ITC.NS": 44,
+    "JIOFIN.NS": 282,
+    "KCP.NS": 26,
+    "KOTAKBANK.NS": 10,
+    "MASFIN.NS": 40,
+    "MOTHERSON.NS": 125,
+    "NHPC.NS": 60,
+    "PARKHOTELS.NS": 22,
+    "PNB.NS": 160,
+    "POWERGRID.NS": 20,
+    "PSUBANK.NS": 5,
+    "RECLTD.NS": 71,
+    "SBIN.NS": 35,
+    "SUZLON.NS": 424,
+    "TATAMOTORS.NS": 10,
+    "TATAPOWER.NS": 115,
+    "TITAGARH.NS": 50,
+    "UJJIVANSFB.NS": 350,
+    "VBL.NS": 12,
+    "MOM30IETF.NS": 157
+};
 
 
-module.exports = { allData, symbolQuantityObject };
+
+
+module.exports = { allData, symbolQuantityObject, symbolQuantityObjectBO };

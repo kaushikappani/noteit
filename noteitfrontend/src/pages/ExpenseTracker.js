@@ -8,7 +8,6 @@ import './Expense.css'; // Import the CSS file
 import { PlusCircle, Trash } from 'react-bootstrap-icons';
 import AddExpense from '../components/AddExpense';
 import Notification from '../components/Notification';
-import PullToRefresh from "react-pull-to-refresh";
 
 
 const ExpenseTracker = () => {
@@ -188,7 +187,6 @@ const ExpenseTracker = () => {
             <Container style={{ padding: "0px" }}>
                 <Header page="expense" user={user} loading={loading} fetchNotes={fetchExpenses} />
 
-                <PullToRefresh onRefresh={fetchExpenses}>
                     {Object.keys(groupedExpenses).map(month => (
                         <div key={month} className="expense-month">
                             <h3>{month}</h3>
@@ -267,7 +265,6 @@ const ExpenseTracker = () => {
                             <PlusCircle />
                         </AddExpense>
                     </button>
-                </PullToRefresh>
             </Container>
         </div>
     );

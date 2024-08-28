@@ -9,6 +9,7 @@ const { NseIndia } = require("stock-nse-india");
 const { fetchData, scrapGlobalIndices } = require("../middleware/Scrapper");
 const { generateReport } = require("../middleware/FundamentalAnalysis");
 const { getGlobalIndices, giftNifty } = require("../middleware/StockScheduler");
+const yahooFinance = require('yahoo-finance2').default;
 
 
 
@@ -24,71 +25,117 @@ const tradeData = async (symbol) => {
     return data;
 }
 
+// router.route("/summary").get(stockProtect, async (req, res) => {
+//     let total = 0;
+//     let worth = 0;
+//     let payload = [];
+
+//     try {
+//         const symbols = Object.keys(symbolQuantityObject);
+
+//         // Fetch all equity details and trade info concurrently
+//         const dataPromises = symbols.map(async (symbol) => {
+//             try {
+//                 const [equityDetails, tradeInfo] = await Promise.all([
+//                     getData(symbol),
+//                     tradeData(symbol)
+//                 ]);
+
+//                 return { symbol, equityDetails, tradeInfo };
+//             } catch (error) {
+//                 console.error(`Error fetching data for symbol ${symbol}: ${error}`);
+//                 return null;
+//             }
+//         });
+
+//         // Wait for all promises to resolve
+//         const results = await Promise.all(dataPromises);
+
+//         // Process the results
+//         results.forEach((result) => {
+//             if (result) {
+//                 const { symbol, equityDetails, tradeInfo } = result;
+//                 const quantity = symbolQuantityObject[symbol];
+
+//                 const currentPrice = parseFloat(equityDetails.priceInfo.lastPrice);
+//                 const change = parseFloat(equityDetails.priceInfo.change);
+//                 const pChange = parseFloat(equityDetails.priceInfo.pChange);
+//                 const deliveryToTradedQuantity = parseFloat(tradeInfo.securityWiseDP.deliveryToTradedQuantity);
+//                 const date = equityDetails.metadata.lastUpdateTime;
+//                 const pdSectorPe = parseFloat(equityDetails.metadata.pdSectorPe);
+//                 const pdSymbolPe = parseFloat(equityDetails.metadata.pdSymbolPe);
+
+//                 payload.push({
+//                     currentPrice,
+//                     daypnl: change * quantity,
+//                     symbol,
+//                     pChange,
+//                     change,
+//                     deliveryToTradedQuantity,
+//                     date,
+//                     pdSectorPe,
+//                     pdSymbolPe,
+//                     currentValue:currentPrice * quantity
+//                 });
+
+//                 total += change * quantity;
+//                 worth += currentPrice * quantity;
+//             }
+//         });
+
+//         res.json({ payload, total, worth });
+//     } catch (e) {
+//         console.error(`Error processing data: ${e}`);
+//         res.status(500).json({ error: 'Error processing data' });
+//     }
+// });
+
+
 router.route("/summary").get(stockProtect, async (req, res) => {
     let total = 0;
     let worth = 0;
     let payload = [];
 
     try {
-        const symbols = Object.keys(symbolQuantityObject);
-
-        // Fetch all equity details and trade info concurrently
-        const dataPromises = symbols.map(async (symbol) => {
-            try {
-                const [equityDetails, tradeInfo] = await Promise.all([
-                    getData(symbol),
-                    tradeData(symbol)
-                ]);
-
-                return { symbol, equityDetails, tradeInfo };
-            } catch (error) {
-                console.error(`Error fetching data for symbol ${symbol}: ${error}`);
-                return null;
-            }
-        });
-
-        // Wait for all promises to resolve
-        const results = await Promise.all(dataPromises);
-
-        // Process the results
-        results.forEach((result) => {
-            if (result) {
-                const { symbol, equityDetails, tradeInfo } = result;
-                const quantity = symbolQuantityObject[symbol];
-
-                const currentPrice = parseFloat(equityDetails.priceInfo.lastPrice);
-                const change = parseFloat(equityDetails.priceInfo.change);
-                const pChange = parseFloat(equityDetails.priceInfo.pChange);
-                const deliveryToTradedQuantity = parseFloat(tradeInfo.securityWiseDP.deliveryToTradedQuantity);
-                const date = equityDetails.metadata.lastUpdateTime;
-                const pdSectorPe = parseFloat(equityDetails.metadata.pdSectorPe);
-                const pdSymbolPe = parseFloat(equityDetails.metadata.pdSymbolPe);
-
+        const symbols = Object.keys(allData.symbolQuantityObjectBO);
+        try {
+            const stockData = await yahooFinance.quote(symbols)
+            
+            stockData.forEach((r) => {
+                const quantity = allData.symbolQuantityObjectBO[r.symbol];
+                const currentPrice = parseFloat(r.regularMarketPrice);
+                const change = parseFloat(r.regularMarketChange);
+                const pChange = parseFloat(r.regularMarketChangePercent);
+                // const deliveryToTradedQuantity = parseFloat(tradeInfo.securityWiseDP.deliveryToTradedQuantity);
+                const date = r.regularMarketTime;
+                // const pdSectorPe = parseFloat(r.trailingPE);
+                const pdSymbolPe = parseFloat(r.trailingPE);
                 payload.push({
                     currentPrice,
                     daypnl: change * quantity,
-                    symbol,
+                    symbol: r.symbol,
                     pChange,
                     change,
-                    deliveryToTradedQuantity,
                     date,
-                    pdSectorPe,
                     pdSymbolPe,
+                    pdSectorPe: 0,
+                    deliveryToTradedQuantity: 0,
                     currentValue:currentPrice * quantity
                 });
-
                 total += change * quantity;
                 worth += currentPrice * quantity;
-            }
-        });
+         })
+            
+            res.json({ payload, total, worth });
+        } catch (error) {
+            console.error('Error fetching stock data:', error);
+        }
 
-        res.json({ payload, total, worth });
     } catch (e) {
         console.error(`Error processing data: ${e}`);
         res.status(500).json({ error: 'Error processing data' });
     }
 });
-
 
 router.route("/data/:symbol").get(stockProtect,async (req, res) => {
     const data = await fetchData(req.params.symbol);

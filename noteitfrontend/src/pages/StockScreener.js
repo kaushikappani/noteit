@@ -85,6 +85,8 @@ const StockScreener = () => {
       }, 10000);
     }
     return () => clearInterval(intervalId);
+    window.addEventListener('focus', fetchSummary);
+
   }, [autoReload]);
 
   const handleRequestSort = (event, property) => {

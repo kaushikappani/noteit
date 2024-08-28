@@ -8,7 +8,6 @@ import { Input, Typography } from "@mui/material";
 import { Container } from "react-bootstrap";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import Notification from "../components/Notification";
-import PullToRefresh from "react-pull-to-refresh";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -255,7 +254,7 @@ const Notes = () => {
       <Notification alert={alert} setAlert={setAlert} />
 
       {
-        <PullToRefresh onRefresh={reload}>
+        <div>
           <Container>
             <Input
               startAdornment={
@@ -413,7 +412,7 @@ const Notes = () => {
             </button>
           </Container>
           
-        </PullToRefresh>
+        </div>
         
       }
     </div>

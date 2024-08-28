@@ -19,6 +19,7 @@ const { scheduleTask, scheduleFiiDiiReport,
 const { generateHtmlPage, createPages } = require("./middleware/FundamentalAnalysis");
 const bot = require("./middleware/telegramBot");
 const aibot = require("./middleware/telegramAIBot");
+const yahooFinance = require('yahoo-finance2').default;
 
 const timeZone = 'Asia/Kolkata';
 
@@ -105,6 +106,10 @@ schedule.scheduleJob(rule3, () => {
     giftNifty();
     getGlobalIndices();
 })
+
+
+
+
 
 const server=app.listen(process.env.PORT, () => {
     console.log(`server running ${process.env.PORT}`)
