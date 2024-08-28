@@ -239,6 +239,10 @@ const Notes = () => {
     fetchUser();
     window.addEventListener('focus', fetchNotes);
 
+    return () => {
+      window.removeEventListener('focus', fetchNotes);
+    }
+
   }, []);
 
   return (

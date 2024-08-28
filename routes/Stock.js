@@ -7,8 +7,7 @@ const { symbolQuantityObject } = require("./data");
 
 const { NseIndia } = require("stock-nse-india");
 const { fetchData, scrapGlobalIndices } = require("../middleware/Scrapper");
-const { generateReport } = require("../middleware/FundamentalAnalysis");
-const { getGlobalIndices, giftNifty } = require("../middleware/StockScheduler");
+
 const yahooFinance = require('yahoo-finance2').default;
 
 
@@ -109,6 +108,7 @@ router.route("/summary").get(stockProtect, async (req, res) => {
                 const date = r.regularMarketTime;
                 // const pdSectorPe = parseFloat(r.trailingPE);
                 const pdSymbolPe = parseFloat(r.trailingPE);
+                const rating = r.averageAnalystRating;
                 payload.push({
                     currentPrice,
                     daypnl: change * quantity,
@@ -119,6 +119,7 @@ router.route("/summary").get(stockProtect, async (req, res) => {
                     pdSymbolPe,
                     pdSectorPe: 0,
                     deliveryToTradedQuantity: 0,
+                    rating,
                     currentValue:currentPrice * quantity
                 });
                 total += change * quantity;

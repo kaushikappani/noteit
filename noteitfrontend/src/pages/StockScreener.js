@@ -52,7 +52,10 @@ const StockScreener = () => {
         fetchSummary();
       }, 10000);
     }
-    return () => clearInterval(intervalId);
+    return () => {
+      window.removeEventListener('focus', fetchSummary);
+      if (intervalId) clearInterval(intervalId);
+    };
   }, [autoReload]);
 
   const handleAutoReloadToggle = () => {
@@ -151,10 +154,9 @@ const StockTable = ({ sortedPayload, handleSort, renderSortSymbol }) => (
         <th onClick={() => handleSort('currentPrice')} align="right">Current Price{renderSortSymbol('currentPrice')}</th>
         <th onClick={() => handleSort('daypnl')} align="right">Day P&L{renderSortSymbol('daypnl')}</th>
         <th onClick={() => handleSort('change')} align="right">Change{renderSortSymbol('change')}</th>
-        <th onClick={() => handleSort('deliveryToTradedQuantity')} align="right">Delivery to Traded Quantity{renderSortSymbol('deliveryToTradedQuantity')}</th>
         <th onClick={() => handleSort('currentValue')} align="right">Current Value{renderSortSymbol('currentValue')}</th>
-        <th onClick={() => handleSort('pdSectorPe')} align="right">Sector PE{renderSortSymbol('pdSectorPe')}</th>
         <th onClick={() => handleSort('pdSymbolPe')} align="right">PE{renderSortSymbol('pdSymbolPe')}</th>
+        <th onClick={() => handleSort('rating')} align="right">Rating{renderSortSymbol('rating')}</th>
       </tr>
     </thead>
     <tbody>
@@ -164,10 +166,9 @@ const StockTable = ({ sortedPayload, handleSort, renderSortSymbol }) => (
           <td align="right">{row.currentPrice.toFixed(2)}</td>
           <td style={{ color: row.daypnl >= 0 ? "green" : "red" }} align="right">{row.daypnl.toFixed(2)}</td>
           <td style={{ color: row.pChange >= 0 ? "green" : "red" }} align="right">{row.change.toFixed(2)} , {row.pChange.toFixed(2)} % </td>
-          <td style={{ color: row.deliveryToTradedQuantity >= 40 ? "green" : "red" }} align="right">{row.deliveryToTradedQuantity.toFixed(2)}</td>
           <td align="right">{row.currentValue.toFixed(2)}</td>
-          <td align="right">{row.pdSectorPe ? row.pdSectorPe.toFixed(2) : '-'}</td>
           <td align="right">{row.pdSymbolPe ? row.pdSymbolPe.toFixed(2) : '-'}</td>
+          <td align="right">{row.rating ? row.rating : '-'}</td>
         </tr>
       ))}
     </tbody>
