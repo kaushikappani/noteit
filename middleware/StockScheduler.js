@@ -338,48 +338,52 @@ const scheduleCoorporateActions = async () => {
 
 
 const giftNifty = async () => {
-  const nseIndia = new NseIndia();
-  let config = {
-    method: 'get',
-    maxBodyLength: Infinity,
-    url: 'https://pearl.trendlyne.com/clientapi/pearlapi/global/stock/getStockEOD/1392617',
-    headers: {
-      'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
-      'sec-ch-ua-mobile': '?0',
-      'UserId': '5PAISAAPI',
-      'requestCode': '5paisaapi',
-      'password': '5nadynsiitnienny',
-      'KEY': '5260c06e20fb53c4521b8cf1f2eb0ba616634e44',
-      'sec-ch-ua-platform': '"macOS"',
-    }
-  };
-  const { data } = await axios.request(config);
-  let dataNifty = { last: "", variation: "", percentChange :""};
   try {
+    const nseIndia = new NseIndia();
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: 'https://pearl.trendlyne.com/clientapi/pearlapi/global/stock/getStockEOD/1392617',
+      headers: {
+        'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
+        'sec-ch-ua-mobile': '?0',
+        'UserId': '5PAISAAPI',
+        'requestCode': '5paisaapi',
+        'password': '5nadynsiitnienny',
+        'KEY': '5260c06e20fb53c4521b8cf1f2eb0ba616634e44',
+        'sec-ch-ua-platform': '"macOS"',
+      }
+    };
+    const { data } = await axios.request(config);
+    let dataNifty = { last: "", variation: "", percentChange: "" };
+    try {
 
-    let dataIndices = await nseIndia.getDataByEndpoint(
-      `/api/allIndices`
-    );
-    // client.set("dataIndices", dataIndices);
+      let dataIndices = await nseIndia.getDataByEndpoint(
+        `/api/allIndices`
+      );
+      // client.set("dataIndices", dataIndices);
 
-    dataNifty = dataIndices.data[0];
+      dataNifty = dataIndices.data[0];
+    } catch (e) {
+      console.log("Nifty 50 fetch error");
+    }
+
+    const noteId = "6696a424d0450dec09316cbf";
+    const date = moment.tz("Asia/Kolkata");
+    const content = `<h2>Gify Nifty : ${data.body.stockData.currentPrice} , ${data.body.stockData.dayChange} , ${data.body.stockData.dayChangeP} % </h2> <br> <h2> Nifty 50 : ${dataNifty.last} ${dataNifty.variation} ${dataNifty.percentChange} % </h2>`;
+    const title = "Gify Nifty As of " + date.toString();
+    const color = (data.body.stockData.dayChange) > 0 ? "#345920" : "#5c2b29";
+
+    await Note.findByIdAndUpdate(noteId, {
+      content: content,
+      title: title,
+      color: color
+    });
+
+    return { giftNifty: data.body.stockData, dataNifty };
   } catch (e) {
-    console.log("Nifty 50 fetch error");
-  }    
-
-  const noteId = "6696a424d0450dec09316cbf";
-  const date = moment.tz("Asia/Kolkata");
-  const content = `<h2>Gify Nifty : ${data.body.stockData.currentPrice} , ${data.body.stockData.dayChange} , ${data.body.stockData.dayChangeP} % </h2> <br> <h2> Nifty 50 : ${dataNifty.last} ${dataNifty.variation} ${dataNifty.percentChange} % </h2>`;
-  const title = "Gify Nifty As of " + date.toString();
-  const color = (data.body.stockData.dayChange) > 0 ? "#345920" : "#5c2b29";
-
-  await Note.findByIdAndUpdate(noteId, {
-    content: content,
-    title: title,
-    color: color
-  });
-
-  return { giftNifty : data.body.stockData, dataNifty };
+    console.log(e);
+ }
 }
 
 
