@@ -78,6 +78,7 @@ const StockScreener = () => {
 
   useEffect(() => {
     fetchSummary();
+    window.addEventListener('focus', fetchSummary);
     let intervalId;
     if (autoReload) {
       intervalId = setInterval(() => {
@@ -85,7 +86,6 @@ const StockScreener = () => {
       }, 10000);
     }
     return () => clearInterval(intervalId);
-    window.addEventListener('focus', fetchSummary);
 
   }, [autoReload]);
 

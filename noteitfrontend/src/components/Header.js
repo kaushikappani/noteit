@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { Link, useHistory } from 'react-router-dom';
-import { Archive, CloudCheck, CurrencyRupee, Grid } from "react-bootstrap-icons";
+import { Archive, CloudCheck, CurrencyExchange, CurrencyRupee, GraphUp, Grid } from "react-bootstrap-icons";
 import { Spinner } from 'react-bootstrap';
 import Icon from "./noteIcon.jpg";
 import axios from "axios";
@@ -35,7 +35,9 @@ const Header = (props) => {
                                     <Nav.Link as={Link} to="/archived" className="icon-spacing"><Archive size={23} /></Nav.Link> :
                                     <Nav.Link as={Link} to="/notes" className="icon-spacing"><Grid size={23} /></Nav.Link>
                                 }
+                                <Nav.Link as={Link} to="/stock/screener" className="icon-spacing"><CurrencyExchange size={23} /></Nav.Link>
                                 <Nav.Link as={Link} to="/expensetracker" className="icon-spacing"><CurrencyRupee size={23} /></Nav.Link>
+
                                 <NavDropdown
                                     title={
                                         <Avatar
