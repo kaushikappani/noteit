@@ -22,6 +22,8 @@ const StockScreener = () => {
   const [success, setSuccess] = useState();
   const [loading, setLoading] = useState(false);
   const [autoReload, setAutoReload] = useState(false);
+  const [sortColumn, setSortColumn] = useState(null);
+  const [sortOrder, setSortOrder] = useState('asc');
 
   const fetchSummary = async () => {
     try {
@@ -56,6 +58,29 @@ const StockScreener = () => {
     setAutoReload(prev => !prev);
   };
 
+  const handleSort = (column) => {
+    if (sortColumn === column) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortOrder('asc');
+    }
+  };
+
+  const sortedPayload = payload.sort((a, b) => {
+    if (sortColumn) {
+      const valueA = a[sortColumn];
+      const valueB = b[sortColumn];
+
+      if (typeof valueA === 'number') {
+        return sortOrder === 'asc' ? valueA - valueB : valueB - valueA;
+      } else {
+        return sortOrder === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
+      }
+    }
+    return 0;
+  });
+
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
@@ -72,18 +97,18 @@ const StockScreener = () => {
             <Table striped bordered hover responsive>
               <thead>
                 <tr>
-                  <th>Symbol</th>
-                  <th align="right">Current Price</th>
-                  <th align="right">Day P&L</th>
-                  <th align="right">Change</th>
-                  <th align="right">Delivery to Traded Quantity</th>
-                  <th align="right">Current Value</th>
-                  <th align="right">Sector PE</th>
-                  <th align="right">PE</th>
+                  <th onClick={() => handleSort('symbol')}>Symbol</th>
+                  <th onClick={() => handleSort('currentPrice')} align="right">Current Price</th>
+                  <th onClick={() => handleSort('daypnl')} align="right">Day P&L</th>
+                  <th onClick={() => handleSort('change')} align="right">Change</th>
+                  <th onClick={() => handleSort('deliveryToTradedQuantity')} align="right">Delivery to Traded Quantity</th>
+                  <th onClick={() => handleSort('currentValue')} align="right">Current Value</th>
+                  <th onClick={() => handleSort('pdSectorPe')} align="right">Sector PE</th>
+                  <th onClick={() => handleSort('pdSymbolPe')} align="right">PE</th>
                 </tr>
               </thead>
               <tbody>
-                {payload.map((row) => (
+                {sortedPayload.map((row) => (
                   <tr key={row.symbol}>
                     <td><a target="_blank" href={`/api/stock/data/ai/report/${row.symbol}`}>{row.symbol}</a></td>
                     <td align="right">{row.currentPrice.toFixed(2)}</td>
