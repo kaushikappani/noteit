@@ -25,6 +25,8 @@ const StockScreener = () => {
   const [sortOrder, setSortOrder] = useState('asc');
   const [lastUpdate, setLastUpdate] = useState(new Date());
 
+
+
   const fetchSummary = async () => {
     try {
       const config = {
@@ -35,6 +37,7 @@ const StockScreener = () => {
       setPayload(data.payload);
       setTotalPrice(data.total.toFixed(2));
       setWorth(data.worth.toFixed(2));
+      console.log(typeof data.worth.toFixed(2))
       setLastUpdate(new Date());
       setLoading(false);
     } catch (e) {
@@ -85,6 +88,7 @@ const StockScreener = () => {
     return 0;
   });
 
+
   const renderSortSymbol = (column) => {
     if (sortColumn === column) {
       return sortOrder === 'asc' ? ' ↑' : ' ↓';
@@ -105,7 +109,12 @@ const StockScreener = () => {
       <Container fluid>
         <Row>
           <Col xs={12} md={4}>
-            <SummaryCard totalPrice={totalPrice} worth={worth} lastUpdate={lastUpdate} />
+            <SummaryCard
+              totalPrice={totalPrice}
+              worth={worth}
+              lastUpdate={lastUpdate}
+              payload = {payload}
+            />
           </Col>
           <Col xs={12} md={8}>
             <StockTable
@@ -121,31 +130,62 @@ const StockScreener = () => {
   );
 };
 
-const SummaryCard = ({ totalPrice, worth, lastUpdate }) => {
+
+const SummaryCard = ({ totalPrice, worth, lastUpdate, payload }) => {
+  let sortedPayload = [];
+
+  if (payload) {
+    sortedPayload = payload.sort((a, b) => b.daypnl - a.daypnl);
+  }
+
+  worth = parseFloat(worth);
+  totalPrice = parseFloat(totalPrice);
+  
   const isPositive = (value) => value >= 0;
   const totalPricePercent = ((totalPrice / worth) * 100).toFixed(2);
+
+  // Function to format numbers with commas
+  const formatNumber = (num) => {
+    return num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
 
   return (
     <Card className="summary-card">
       <Card.Body>
-        <Card.Title>Summary</Card.Title>
-        <Card.Text>
-          <strong>P&L: </strong>
-          <span style={{ color: isPositive(totalPrice) ? 'green' : 'red' }}>
-            {totalPrice} ({totalPricePercent}%)
-          </span>
-          <br />
-          <strong>Total Worth: </strong>
-          <span>
-            {worth}
-          </span>
-          <br />
-          <small>Last Update: {lastUpdate.toLocaleTimeString()}</small>
-        </Card.Text>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div>
+            <div style={{ color: '#BBBBBB' }}><strong>Current Value</strong></div>
+            <div style={{ marginTop: '8px', fontSize: '20px' }}>{formatNumber(worth)}</div>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ color: '#BBBBBB' }}><strong>Day P&L</strong></div>
+            <div style={{ marginTop: '8px', color: isPositive(totalPrice) ? 'green' : 'red', fontSize: '20px' }}>
+              {formatNumber(totalPrice)} <span style={{fontSize:"15px"}}>({totalPricePercent}%)</span>
+            </div>
+          </div>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
+          <div>
+            <div style={{ color: '#BBBBBB' }}><strong>Top gainer</strong></div>
+            <div style={{ marginTop: '8px', color: 'green' }}>
+              
+              {sortedPayload[0] ? sortedPayload[0].symbol : "..."} <span style={{ fontSize: "15px" }} >({sortedPayload[0] ? sortedPayload[0].pChange.toFixed(2) : "..."}%)</span> 
+            </div>
+          </div>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ color: '#BBBBBB' }}><strong>Top loser</strong></div>
+            <div style={{ marginTop: '8px', color: 'red' }}>
+              {/* Replace with actual values */}
+              {sortedPayload[sortedPayload.length - 1] ? sortedPayload[sortedPayload.length - 1].symbol : "..."} <span style={{ fontSize: "15px" }}>({sortedPayload[sortedPayload.length - 1] ? sortedPayload[sortedPayload.length - 1].pChange.toFixed(2) : "..."}%)</span>
+            </div>
+          </div>
+        </div>
+        <small style={{ marginTop: '20px', display: 'block' }}>Last Update: {lastUpdate.toLocaleTimeString()}</small>
       </Card.Body>
     </Card>
   );
 };
+
 const StockTable = ({ sortedPayload, handleSort, renderSortSymbol }) => (
   <Table striped bordered hover responsive>
     <thead>

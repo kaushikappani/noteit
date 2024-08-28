@@ -98,7 +98,7 @@ router.route("/summary").get(stockProtect, async (req, res) => {
     try {
         const symbols = Object.keys(allData.symbolQuantityObjectBO);
         try {
-            const stockData = await yahooFinance.quote(symbols)
+            const stockData = await yahooFinance.quote(symbols);
             stockData.forEach((r) => {
                 const quantity = allData.symbolQuantityObjectBO[r.symbol];
                 const currentPrice = parseFloat(r.regularMarketPrice);
