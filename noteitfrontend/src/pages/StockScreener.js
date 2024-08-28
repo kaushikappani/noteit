@@ -74,8 +74,10 @@ const StockScreener = () => {
     }
   };
 
-  const sortedPayload = payload.sort((a, b) => {
-    if (sortColumn) {
+  const sortedPayload = React.useMemo(() => {
+    if (!sortColumn) return payload;
+
+    return [...payload].sort((a, b) => {
       const valueA = a[sortColumn];
       const valueB = b[sortColumn];
 
@@ -84,9 +86,9 @@ const StockScreener = () => {
       } else if (typeof valueA === 'string' && typeof valueB === 'string') {
         return sortOrder === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
       }
-    }
-    return 0;
-  });
+      return 0;
+    });
+  }, [payload, sortColumn, sortOrder]);
 
 
   const renderSortSymbol = (column) => {
@@ -196,7 +198,7 @@ const StockTable = ({ sortedPayload, handleSort, renderSortSymbol }) => (
         <th onClick={() => handleSort('change')} align="right">Change{renderSortSymbol('change')}</th>
         <th onClick={() => handleSort('currentValue')} align="right">Current Value{renderSortSymbol('currentValue')}</th>
         <th onClick={() => handleSort('pdSymbolPe')} align="right">PE{renderSortSymbol('pdSymbolPe')}</th>
-        <th onClick={() => handleSort('rating')} align="right">Rating{renderSortSymbol('rating')}</th>
+        <th align="right">Rating</th>
       </tr>
     </thead>
     <tbody>
