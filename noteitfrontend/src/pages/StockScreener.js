@@ -204,7 +204,7 @@ const StockTable = ({ sortedPayload, handleSort, renderSortSymbol }) => (
     <tbody>
       {sortedPayload.map((row) => (
         <tr key={row.symbol}>
-          <td><a target="_blank" href={`/api/stock/data/ai/report/${row.symbol}`}>{row.symbol}</a></td>
+          <td><a target="_blank" href={`/api/stock/data/ai/report/${row.symbol}`}>{row.symbol} ({ row.quantity}) </a></td>
           <td align="right">{row.currentPrice.toFixed(2)}</td>
           <td style={{ color: row.daypnl >= 0 ? "green" : "red" }} align="right">{row.daypnl.toFixed(2)}</td>
           <td style={{ color: row.pChange >= 0 ? "green" : "red" }} align="right">{row.change.toFixed(2)} , {row.pChange.toFixed(2)} % </td>

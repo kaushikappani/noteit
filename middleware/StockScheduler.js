@@ -111,7 +111,7 @@ const scheduleTask = async () => {
         e
       );
     }
-   
+
 
   }
   pickDataFromCacheToDb();
@@ -163,7 +163,7 @@ const scheduleFiiDiiReport = async () => {
       html: mailHtml,
     };
   } catch (e) {
-    console.error("Error in scheduleFiiDiiReport ",e);
+    console.error("Error in scheduleFiiDiiReport ", e);
   }
 
   // mailer(recipient, mailBody);
@@ -383,11 +383,11 @@ const giftNifty = async () => {
     return { giftNifty: data.body.stockData, dataNifty };
   } catch (e) {
     console.log(e);
- }
+  }
 }
 
 
-const pickDataFromCacheToDb = async() => {
+const pickDataFromCacheToDb = async () => {
   const getAsync = util.promisify(client.get).bind(client);
 
   const result = await getAsync("deliveryreport");
@@ -395,19 +395,19 @@ const pickDataFromCacheToDb = async() => {
 
   const mailTemplate = await readFile("../templates/stock_email.txt");
 
-  
+
 
   if (result) {
     const note = await Note.findById("66a25d1d34d7c9f59b2e4fd1");
 
     note.title = "Delivery Report - " + resultDate;
     note.content = mailTemplate.replace("<!-- Repeat rows as needed -->", result) + note.content;
-    note.createdAt =new Date(),
-    note.updatedAt = new Date(),
-    note.category = "Scheduler"
+    note.createdAt = new Date(),
+      note.updatedAt = new Date(),
+      note.category = "Scheduler"
     note.save();
   }
-  
+
 }
 
 
