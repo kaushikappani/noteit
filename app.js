@@ -1,6 +1,5 @@
 require("dotenv").config()
 const express = require("express");
-const app = express();
 const cors = require("cors");
 const compression = require('compression')
 const connectDB = require("./config/db");
@@ -21,6 +20,9 @@ const bot = require("./middleware/telegramBot");
 const aibot = require("./middleware/telegramAIBot");
 const yahooFinance = require('yahoo-finance2').default;
 
+const app = express();
+app.use(compression())
+
 const timeZone = 'Asia/Kolkata';
 
 // createPages();
@@ -37,7 +39,7 @@ app.use(express.json());
 connectDB();
 
 app.use(cookieParser());
-app.use(compression())
+
 app.use("/api/users", userRoutes)
 app.use("/api/notes", notesRoute)
 app.use("/api/stock", stockRoute)

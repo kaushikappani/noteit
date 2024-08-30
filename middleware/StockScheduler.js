@@ -354,37 +354,45 @@ const giftNifty = async () => {
         'sec-ch-ua-platform': '"macOS"',
       }
     };
-    const { data } = await axios.request(config);
+
+    let data;
+    try {
+      const response = await axios.request(config);
+      data = response.data;
+    } catch (axiosError) {
+      console.error("Error fetching Gift Nifty data:", axiosError.message);
+      throw new Error("Failed to fetch Gift Nifty data");
+    }
+
     let dataNifty = { last: "", variation: "", percentChange: "" };
     try {
-
-      let dataIndices = await nseIndia.getDataByEndpoint(
-        `/api/allIndices`
-      );
-      // client.set("dataIndices", dataIndices);
-
-      dataNifty = dataIndices.data[0];
-    } catch (e) {
-      console.log("Nifty 50 fetch error");
+      let dataIndices = await nseIndia.getDataByEndpoint(`/api/allIndices`);
+      dataNifty = dataIndices.data[0] || dataNifty;
+    } catch (niftyError) {
+      console.error("Nifty 50 fetch error:", niftyError.message);
+      throw new Error("Failed to fetch Nifty 50 data");
     }
 
     const noteId = "6696a424d0450dec09316cbf";
     const date = moment.tz("Asia/Kolkata");
-    const content = `<h2>Gify Nifty : ${data.body.stockData.currentPrice} , ${data.body.stockData.dayChange} , ${data.body.stockData.dayChangeP} % </h2> <br> <h2> Nifty 50 : ${dataNifty.last} ${dataNifty.variation} ${dataNifty.percentChange} % </h2>`;
+    const content = `<h2>Gify Nifty : ${data.body.stockData.currentPrice}, ${data.body.stockData.dayChange}, ${data.body.stockData.dayChangeP}%</h2><br><h2>Nifty 50 : ${dataNifty.last} ${dataNifty.variation} ${dataNifty.percentChange}%</h2>`;
     const title = "Gify Nifty As of " + date.toString();
-    const color = (data.body.stockData.dayChange) > 0 ? "#345920" : "#5c2b29";
+    const color = (data.body.stockData.dayChange > 0) ? "#345920" : "#5c2b29";
 
-    await Note.findByIdAndUpdate(noteId, {
-      content: content,
-      title: title,
-      color: color
-    });
+    try {
+      await Note.findByIdAndUpdate(noteId, { content, title, color });
+    } catch (dbError) {
+      console.error("Error updating note:", dbError.message);
+      throw new Error("Failed to update note");
+    }
 
     return { giftNifty: data.body.stockData, dataNifty };
   } catch (e) {
-    console.log(e);
+    console.error("Gift Nifty process failed:", e.message);
+    // You might want to throw the error again or return a specific response
   }
-}
+};
+
 
 
 const pickDataFromCacheToDb = async () => {
