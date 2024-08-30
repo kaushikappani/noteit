@@ -105,7 +105,7 @@ rule3.minute = new schedule.Range(0, 59); // This will run the job every minute.
 rule3.tz = 'Asia/Kolkata';
 
 schedule.scheduleJob(rule3, () => {
-    giftNifty();
+    // giftNifty();
     getGlobalIndices();
 })
 

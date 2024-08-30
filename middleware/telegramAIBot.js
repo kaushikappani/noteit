@@ -71,7 +71,7 @@ aibot.on('message', async (msg) => {
                     const model = genAI.getGenerativeModel({
                         model: "gemini-1.5-flash",
                         safetySettings,
-                        systemInstruction: "you are personal AI chat bot, learn from the chat history about the person and respond.",
+                        systemInstruction: "You are personal AI telegram chat bot, learn from the chat history about the person and respond.",
                     });
 
                     const generationConfig = {
@@ -132,7 +132,7 @@ aibot.on('message', async (msg) => {
                 const model = genAI.getGenerativeModel({
                     model: "gemini-1.5-flash",
                     safetySettings,
-                    systemInstruction: "you are personal AI chat bot, learn from the chat history about the person.",
+                    systemInstruction: "You are personal AI telegram chat bot, learn from the chat history about the person and respond.",
                 });
 
                 const generationConfig = {

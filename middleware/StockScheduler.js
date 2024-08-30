@@ -389,7 +389,6 @@ const giftNifty = async () => {
     return { giftNifty: data.body.stockData, dataNifty };
   } catch (e) {
     console.error("Gift Nifty process failed:", e.message);
-    // You might want to throw the error again or return a specific response
   }
 };
 

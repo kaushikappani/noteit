@@ -166,12 +166,12 @@ router.route("/all").get(stockProtect,async (req, res) => {
     let data = "";
     let da = await scrapGlobalIndices();
     try {
-        data = await nseIndia.getDataByEndpoint("/api/fiidiiTradeReact");
+        data = await nseIndia.getDataByEndpoint("/api/nifty-market-rate");
     } catch (e) {
         res.json({e});
         console.log(JSON.stringify(e));
    }
-    res.json(da );
+    res.json(data );
 })
 
 module.exports = router;
