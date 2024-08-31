@@ -19,7 +19,8 @@ router.route("/add").post(protect, async (req, res) => {
 })
 
 router.route("/").get(protect, async (req, res) => {
-    const exp = await Expenses.find({ user: req.user._id }).sort({ date:-1 });
+    const exp = await Expenses.find({ user: req.user._id }).sort({ date: -1,createdAt:-1 }).select("-createdAt").select("-updatedAt").select("-user");
+    
     return res.status(200).json(exp);
 })
 
