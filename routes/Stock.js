@@ -4,7 +4,6 @@ const router = express.Router();
 const allData = require("./data");
 const path = require("path");
 const { symbolQuantityObject } = require("./data");
-
 const { NseIndia } = require("stock-nse-india");
 const { fetchData, scrapGlobalIndices } = require("../middleware/Scrapper");
 
@@ -96,11 +95,11 @@ router.route("/summary").get(stockProtect, async (req, res) => {
     let payload = [];
 
     try {
-        const symbols = Object.keys(allData.symbolQuantityObjectBO);
+        const symbols = Object.keys(allData.symbolQuantityObject).map(symbol => `${symbol}.NS`);
         try {
             const stockData = await yahooFinance.quote(symbols);
             stockData.forEach((r) => {
-                const quantity = allData.symbolQuantityObjectBO[r.symbol];
+                const quantity = allData.symbolQuantityObject[r.symbol.replace('.NS', '')];
                 const currentPrice = parseFloat(r.regularMarketPrice);
                 const change = parseFloat(r.regularMarketChange);
                 const pChange = parseFloat(r.regularMarketChangePercent);
@@ -162,15 +161,13 @@ router.route("/data/ai/report/:symbol").get(stockProtect, (req, res) => {
 
 
 router.route("/all").get(stockProtect,async (req, res) => {
-    const nseIndia = new NseIndia();
+
     let data = "";
-    let da = await scrapGlobalIndices();
     try {
-        data = await nseIndia.getDataByEndpoint("/api/nifty-market-rate");
-    } catch (e) {
-        res.json({e});
-        console.log(JSON.stringify(e));
-   }
+        console.log(data);
+    } catch (err) {
+        console.error(err);
+    }
     res.json(data );
 })
 

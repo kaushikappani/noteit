@@ -72,10 +72,9 @@ bot.onText(/^\/global/, async (msg) => {
 
             // Clean up the image file if necessary
             fs.unlinkSync(imagePath);
-            const giftn = await giftNifty();
-            const giftNiftyPrice = giftn.giftNifty.currentPrice;
-            const giftNiftyDayChange = giftn.giftNifty.dayChange;
-            const giftNiftyDayChangeP = giftn.giftNifty.dayChangeP;
+            const giftn = await giftNifty(data);
+            const giftNiftyPrice = giftn.giftNifty.price;
+            const giftNiftyDayChange = giftn.giftNifty.priceChange;
 
             const nifty50Price = giftn.dataNifty.last;
             const nifty50DayChange = giftn.dataNifty.variation;
@@ -83,7 +82,7 @@ bot.onText(/^\/global/, async (msg) => {
 
             const image2 = await Jimp.create(450, 200, '#ffffff');
 
-            const isPositive2 = giftNiftyPrice - nifty50Price ;
+            const isPositive2 = parseFloat(giftNiftyPrice.split(' ')[0])- nifty50Price ;
             const y = 0;
             if (isPositive2 > 0) {
                 image2.scan(0, y, 1500, 300, function (x, y, idx) {
@@ -97,7 +96,7 @@ bot.onText(/^\/global/, async (msg) => {
 
             image2
                 .print(font, 10, 10, `Gift Nifty Price: ${giftNiftyPrice}`)
-                .print(font, 10, 40, `Day Change: ${giftNiftyDayChange} (${giftNiftyDayChangeP}%)`)
+                .print(font, 10, 40, `Day Change: ${giftNiftyDayChange}`)
                 .print(font, 10, 60, "-------------------------------")
                 .print(font, 10, 80, `Nifty 50 Price: ${nifty50Price}`)
                 .print(font, 10, 115, `Day Change: ${nifty50DayChange} (${nifty50DayChangeP}%)`);

@@ -337,28 +337,16 @@ const scheduleCoorporateActions = async () => {
 };
 
 
-const giftNifty = async () => {
+const giftNifty = async (globalIndices) => {
   try {
     const nseIndia = new NseIndia();
-    let config = {
-      method: 'get',
-      maxBodyLength: Infinity,
-      url: 'https://pearl.trendlyne.com/clientapi/pearlapi/global/stock/getStockEOD/1392617',
-      headers: {
-        'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Google Chrome";v="126"',
-        'sec-ch-ua-mobile': '?0',
-        'UserId': '5PAISAAPI',
-        'requestCode': '5paisaapi',
-        'password': '5nadynsiitnienny',
-        'KEY': '5260c06e20fb53c4521b8cf1f2eb0ba616634e44',
-        'sec-ch-ua-platform': '"macOS"',
-      }
-    };
 
     let data;
     try {
-      const response = await axios.request(config);
-      data = response.data;
+
+      data = globalIndices.find(item => item.indicesName === 'Gift Nifty');
+
+
     } catch (axiosError) {
       console.error("Error fetching Gift Nifty data:", axiosError.message);
       throw new Error("Failed to fetch Gift Nifty data");
@@ -375,9 +363,9 @@ const giftNifty = async () => {
 
     const noteId = "6696a424d0450dec09316cbf";
     const date = moment.tz("Asia/Kolkata");
-    const content = `<h2>Gify Nifty : ${data.body.stockData.currentPrice}, ${data.body.stockData.dayChange}, ${data.body.stockData.dayChangeP}%</h2><br><h2>Nifty 50 : ${dataNifty.last} ${dataNifty.variation} ${dataNifty.percentChange}%</h2>`;
+    const content = `<h2>Gify Nifty : ${data.price}, ${data.priceChange} </h2><br><h2>Nifty 50 : ${dataNifty.last} , ${dataNifty.variation} ${dataNifty.percentChange}%</h2>`;
     const title = "Gify Nifty As of " + date.toString();
-    const color = (data.body.stockData.dayChange > 0) ? "#345920" : "#5c2b29";
+    const color = (parseFloat(data.priceChange.split(' ')[0]) > 0) ? "#345920" : "#5c2b29";
 
     try {
       await Note.findByIdAndUpdate(noteId, { content, title, color });
@@ -386,7 +374,7 @@ const giftNifty = async () => {
       throw new Error("Failed to update note");
     }
 
-    return { giftNifty: data.body.stockData, dataNifty };
+    return { giftNifty: data, dataNifty };
   } catch (e) {
     console.error("Gift Nifty process failed:", e.message);
   }
@@ -420,7 +408,7 @@ const pickDataFromCacheToDb = async () => {
 
 const getGlobalIndices = async () => {
   const data = await scrapGlobalIndices();
-
+  giftNifty(data);
   let htmlContent = `
     <table border="1">
         <thead>
