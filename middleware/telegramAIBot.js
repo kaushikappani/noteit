@@ -11,6 +11,7 @@ const { GoogleAIFileManager } = require("@google/generative-ai/server");
 const request = require('request');
 const path = require('path');
 const fs = require('fs');
+const telegramifyMarkdown = require('telegramify-markdown');
 
 
 
@@ -122,7 +123,7 @@ aibot.on('message', async (msg) => {
                     await client.rpush(`chatHistory:${chatId}`, JSON.stringify(aiMessage));
 
                     // Send response back to Telegram
-                    await aibot.sendMessage(chatId, result.response.text());
+                    await aibot.sendMessage(chatId, telegramifyMarkdown(result.response.text()), { parse_mode: 'MarkdownV2' });
 
                     // Clean up the downloaded file
                     fs.unlinkSync(filePath);
@@ -166,8 +167,8 @@ aibot.on('message', async (msg) => {
                     parts: [{ text: result.response.text() }],
                 };
                 await client.rpush(`chatHistory:${chatId}`, JSON.stringify(aiMessage));
-
-                await aibot.sendMessage(chatId, result.response.text());
+                console.log(result.response.text());
+                await aibot.sendMessage(chatId, telegramifyMarkdown(result.response.text(), 'remove'), { parse_mode: 'MarkdownV2' });
             }
         }
     } catch (e) {
@@ -175,6 +176,9 @@ aibot.on('message', async (msg) => {
         await aibot.sendMessage(chatId, "Unable to process your message");
     }
 });
+
+
+
 
 
 aibot.onText(/^\/clear/, async (msg) => {
