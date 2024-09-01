@@ -95,11 +95,11 @@ router.route("/summary").get(stockProtect, async (req, res) => {
     let payload = [];
 
     try {
-        const symbols = Object.keys(allData.symbolQuantityObject).map(symbol => `${symbol}.NS`);
+        const symbols = [...Object.keys(symbolQuantityObject).map(symbol => `${symbol}.NS`), "^NSEI", "^NSEBANK"];
         try {
             const stockData = await yahooFinance.quote(symbols);
             stockData.forEach((r) => {
-                const quantity = allData.symbolQuantityObject[r.symbol.replace('.NS', '')];
+                const quantity = symbolQuantityObject[r.symbol.replace('.NS', '')] || 0;
                 const currentPrice = parseFloat(r.regularMarketPrice);
                 const change = parseFloat(r.regularMarketChange);
                 const pChange = parseFloat(r.regularMarketChangePercent);
@@ -111,7 +111,7 @@ router.route("/summary").get(stockProtect, async (req, res) => {
                 payload.push({
                     currentPrice,
                     daypnl: change * quantity,
-                    symbol: r.symbol.substring(0, r.symbol.length - 3),
+                    symbol: r.symbol.replace('.NS', ''),
                     pChange,
                     change,
                     date,
@@ -126,7 +126,7 @@ router.route("/summary").get(stockProtect, async (req, res) => {
                 worth += currentPrice * quantity;
          })
             
-            res.json({ payload, total, worth });
+            res.json({ payload: payload.slice(0,-2), total, worth,index : payload.slice(-2) });
         } catch (error) {
             console.error('Error fetching stock data:', error);
         }

@@ -5,6 +5,8 @@ import Header from '../components/Header';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { BoxArrowUpRight, Download } from 'react-bootstrap-icons';
+import SummaryCard from '../components/SummaryCard';
+import StockTable from '../components/StockTable';
 
 
 const darkTheme = createTheme({
@@ -24,8 +26,7 @@ const StockScreener = () => {
   const [sortColumn, setSortColumn] = useState(null);
   const [sortOrder, setSortOrder] = useState('asc');
   const [lastUpdate, setLastUpdate] = useState(new Date());
-
-
+  const [indexData, setIndexData] = useState([]);  
 
   const fetchSummary = async () => {
     try {
@@ -35,6 +36,7 @@ const StockScreener = () => {
       setLoading(true);
       const { data } = await axios.get("/api/stock/summary", config);
       setPayload(data.payload);
+      setIndexData(data.index); 
       setTotalPrice(data.total.toFixed(2));
       setWorth(data.worth.toFixed(2));
       console.log(typeof data.worth.toFixed(2))
@@ -108,6 +110,7 @@ const StockScreener = () => {
         autoReload={autoReload}
         handleAutoReloadToggle={handleAutoReloadToggle}
       />
+
       <Container fluid>
         <Row>
           <Col xs={12} md={4}>
@@ -115,7 +118,8 @@ const StockScreener = () => {
               totalPrice={totalPrice}
               worth={worth}
               lastUpdate={lastUpdate}
-              payload = {payload}
+              payload={payload}
+              index={indexData} 
             />
           </Col>
           <Col xs={12} md={8}>
@@ -133,89 +137,6 @@ const StockScreener = () => {
 };
 
 
-const SummaryCard = ({ totalPrice, worth, lastUpdate, payload }) => {
-  let sortedPayload = [];
-
-  if (payload) {
-    sortedPayload = payload.sort((a, b) => b.daypnl - a.daypnl);
-  }
-
-  worth = parseFloat(worth);
-  totalPrice = parseFloat(totalPrice);
-  
-  const isPositive = (value) => value >= 0;
-  const totalPricePercent = ((totalPrice / worth) * 100).toFixed(2);
-
-  // Function to format numbers with commas
-  const formatNumber = (num) => {
-    return num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  };
-
-  return (
-    <Card className="summary-card">
-      <Card.Body>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <div>
-            <div style={{ color: '#BBBBBB' }}><strong>Current Value</strong></div>
-            <div style={{ marginTop: '8px', fontSize: '20px' }}>{formatNumber(worth)}</div>
-          </div>
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ color: '#BBBBBB' }}><strong>Day P&L</strong></div>
-            <div style={{ marginTop: '8px', color: isPositive(totalPrice) ? 'green' : 'red', fontSize: '20px' }}>
-              {formatNumber(totalPrice)} <span style={{fontSize:"15px"}}>({totalPricePercent}%)</span>
-            </div>
-          </div>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-          <div>
-            <div style={{ color: '#BBBBBB' }}><strong>Top gainer</strong></div>
-            <div style={{ marginTop: '8px', color: 'green' }}>
-              
-              {sortedPayload[0] ? sortedPayload[0].symbol : "..."} <span style={{ fontSize: "15px" }} >({sortedPayload[0] ? sortedPayload[0].pChange.toFixed(2) : "..."}%)</span> 
-            </div>
-          </div>
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ color: '#BBBBBB' }}><strong>Top loser</strong></div>
-            <div style={{ marginTop: '8px', color: 'red' }}>
-              {/* Replace with actual values */}
-              {sortedPayload[sortedPayload.length - 1] ? sortedPayload[sortedPayload.length - 1].symbol : "..."} <span style={{ fontSize: "15px" }}>({sortedPayload[sortedPayload.length - 1] ? sortedPayload[sortedPayload.length - 1].pChange.toFixed(2) : "..."}%)</span>
-            </div>
-          </div>
-        </div>
-        <small style={{ marginTop: '20px', display: 'block' }}>Last Update: {lastUpdate.toLocaleTimeString()}</small>
-      </Card.Body>
-    </Card>
-  );
-};
-
-const StockTable = ({ sortedPayload, handleSort, renderSortSymbol }) => (
-  <Table striped bordered hover responsive>
-    <thead>
-      <tr>
-        <th onClick={() => handleSort('symbol')}>Symbol{renderSortSymbol('symbol')}</th>
-        <th onClick={() => handleSort('currentPrice')} align="right">Current Price{renderSortSymbol('currentPrice')}</th>
-        <th onClick={() => handleSort('daypnl')} align="right">Day P&L{renderSortSymbol('daypnl')}</th>
-        <th onClick={() => handleSort('change')} align="right">Change{renderSortSymbol('change')}</th>
-        <th onClick={() => handleSort('currentValue')} align="right">Current Value{renderSortSymbol('currentValue')}</th>
-        <th onClick={() => handleSort('pdSymbolPe')} align="right">PE{renderSortSymbol('pdSymbolPe')}</th>
-        <th align="right">Rating</th>
-      </tr>
-    </thead>
-    <tbody>
-      {sortedPayload.map((row) => (
-        <tr key={row.symbol}>
-          <td><a target="_blank" href={`/api/stock/data/ai/report/${row.symbol}`}>{row.symbol} ({ row.quantity}) </a></td>
-          <td align="right">{row.currentPrice.toFixed(2)}</td>
-          <td style={{ color: row.daypnl >= 0 ? "green" : "red" }} align="right">{row.daypnl.toFixed(2)}</td>
-          <td style={{ color: row.pChange >= 0 ? "green" : "red" }} align="right">{row.change.toFixed(2)} , {row.pChange.toFixed(2)} % </td>
-          <td align="right">{row.currentValue.toFixed(2)}</td>
-          <td align="right">{row.pdSymbolPe ? row.pdSymbolPe.toFixed(2) : '-'}</td>
-          <td align="right">{row.rating ? row.rating : '-'}</td>
-        </tr>
-      ))}
-    </tbody>
-  </Table>
-);
 
 const ActionLinks = () => (
   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px' }}>
