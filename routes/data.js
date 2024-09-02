@@ -86,9 +86,9 @@ const symbolQuantityObject = {
     "TATAMOTORS": 10,
     "TATAPOWER": 115,
     "TITAGARH": 50,
-    "UJJIVANSFB": 400,
+    "UJJIVANSFB": 410,
     "VBL": 13,
-    "MOM30IETF": 173,
+    "MOM30IETF": 188,
     "UNIECOM":5
 };
 
