@@ -26,7 +26,7 @@ const SummaryCard = ({ totalPrice, worth, lastUpdate, payload, index }) => {
                         <div key={item.symbol} style={{ marginRight: '15px', textAlign: 'center' }}>
                             <div style={{ color: '#BBBBBB', fontSize: '12px' }}><strong>{item.symbol === "^NSEI" ? "NIFTY 50" : "NIFTY BANK"}</strong></div>
                             <div style={{ color: 'green', fontSize: '16px' }}>
-                                {formatNumber(item.currentPrice)} <span style={{ fontSize: '12px', color: '#BBBBBB' }}>({(item.pChange * 100).toFixed(2)}%)</span>
+                                {formatNumber(item.currentPrice)} <span style={{ fontSize: '12px', color: '#BBBBBB' }}>{item.change.toFixed(1)}, {(item.pChange.toFixed(1))}%</span>
                             </div>
                         </div>
                     ))}
