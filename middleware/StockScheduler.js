@@ -194,7 +194,6 @@ const scheduleCoorporateAnnouncments = async () => {
     data.forEach((item) => {
       let rowStyle = "";
       if (item.symbol in symbolQuantityObject) {
-        console.log(`Found ${item.symbol}`);
         rowStyle = 'style="background-color: green;"';
 
         matchedRows += `
