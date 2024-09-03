@@ -15,7 +15,6 @@ const protect = asyncHandler(async (req, res, next) => {
             const getAsync = util.promisify(client.get).bind(client);
             let result = await getAsync(`${decode.id}_user`);
             if (result == null) {
-                console.log("db call");
                 req.user = await User.findById(decode.id).select("-password");
                 client.set(`${decode.id}_user`, JSON.stringify(req.user), 'EX', 3600 * 24); 
             } else {
@@ -57,7 +56,6 @@ const stockProtect = asyncHandler(async (req, res, next) => {
             const getAsync = util.promisify(client.get).bind(client);
             let result = await getAsync(`${decode.id}_user`);
             if (result == null) {
-                console.log("db call");
                 req.user = await User.findById(decode.id).select("-password");
                 client.set(`${decode.id}_user`, JSON.stringify(req.user), 'EX', 3600 * 24);
             } else {

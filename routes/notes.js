@@ -111,7 +111,6 @@ router.route("/:id/:history").get(
         }
   
         if (note === null) {
-            console.log("DB call")
             note = await Note.findById(req.params.id)
                 .select("-color")
                 .select("-archived")
