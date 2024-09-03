@@ -7,7 +7,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { BoxArrowUpRight, Download } from 'react-bootstrap-icons';
 import SummaryCard from '../components/SummaryCard';
 import StockTable from '../components/StockTable';
-import StockDoughnutChart from '../components/StockDoughnutChart';
+// import StockDoughnutChart from '../components/StockDoughnutChart';
 
 
 
@@ -123,10 +123,10 @@ const StockScreener = () => {
               payload={payload}
               index={indexData} 
             />
-            <StockDoughnutChart
+            {/* <StockDoughnutChart
               payload={payload}
               worth={worth}
-            />
+            /> */}
           </Col>
 
           <Col xs={12} md={8}>
