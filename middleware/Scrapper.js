@@ -113,33 +113,31 @@ const fetchData = async (symbol) => {
 
 
 const scrapGlobalIndices = async() => {
-    let url = `https://www.5paisa.com/share-market-today/global-indices`;
-    let html = await fetchHtml(url);
+    try {
+        let url = `https://www.5paisa.com/share-market-today/global-indices`;
+        let html = await fetchHtml(url);
 
-    // fs.writeFile('stockreports/globalindices.html', html, function (err) {
-    //     if (err) throw err;
-    //     console.log('Saved!');
-    // });
+        const $ = cheerio.load(html);
 
-    const $ = cheerio.load(html);
+        let indicesData = [];
 
-    let indicesData = [];
-
-    $('table tbody tr').each((index, element) => {
-        const indicesName = $(element).find('td a').eq(0).text().trim();
-        const lastUpdated = $(element).find('td span').eq(0).text().trim();
-        const price = $(element).find('td').eq(1).text().trim();
-        const priceChange = $(element).find('td').eq(2).text().trim();
-        indicesData.push({
-            indicesName,
-            price,
-            priceChange,
-            lastUpdated
+        $('table tbody tr').each((index, element) => {
+            const indicesName = $(element).find('td a').eq(0).text().trim();
+            const lastUpdated = $(element).find('td span').eq(0).text().trim();
+            const price = $(element).find('td').eq(1).text().trim();
+            const priceChange = $(element).find('td').eq(2).text().trim();
+            indicesData.push({
+                indicesName,
+                price,
+                priceChange,
+                lastUpdated
+            });
         });
-    });
-    return indicesData;
-
-
+        return indicesData;
+    } catch (e) {
+        throw new Error("Failed to fetch Gift Nifty data in scrapper");
+        console.log(e);
+   }
 }
 
 module.exports = { fetchData, scrapGlobalIndices };
