@@ -29,7 +29,6 @@ const scheduleTask = async () => {
       const nseIndia = new NseIndia();
       const symbol = symbols[i];
       const data = await tradeData(symbol, nseIndia);
-      console.log("delivery " + data.securityWiseDP.deliveryToTradedQuantity);
       if (data.securityWiseDP && data.securityWiseDP.deliveryToTradedQuantity > process.env.DELIVERY_QUANTITY_THRESHOLD) {
         //threshold to be configurable
         batchData.push({
@@ -281,7 +280,6 @@ const scheduleCoorporateActions = async () => {
     data.forEach((item) => {
       let rowStyle = "";
       if (item.symbol in symbolQuantityObject) {
-        console.log(`Found ${item.symbol}`);
         rowStyle = 'style="background-color: green;"';
 
         matchedRows += `

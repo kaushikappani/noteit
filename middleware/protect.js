@@ -19,7 +19,6 @@ const protect = asyncHandler(async (req, res, next) => {
                 req.user = await User.findById(decode.id).select("-password");
                 client.set(`${decode.id}_user`, JSON.stringify(req.user), 'EX', 3600 * 24); 
             } else {
-                console.log("cache call");
                 req.user = JSON.parse(result);
             }
             // Check if the token in Redis matches the one in the request
@@ -62,7 +61,6 @@ const stockProtect = asyncHandler(async (req, res, next) => {
                 req.user = await User.findById(decode.id).select("-password");
                 client.set(`${decode.id}_user`, JSON.stringify(req.user), 'EX', 3600 * 24);
             } else {
-                console.log("cache call");
                 req.user = JSON.parse(result);
             }
 
