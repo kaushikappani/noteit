@@ -31,6 +31,7 @@
     "react-draft-wysiwyg": "^1.15.0",
     "react-google-calendar-api": "^2.0.3",
     "react-google-login": "^5.2.2",
+    "react-heatmap-grid": "^0.9.0",
     "react-markdown": "^7.0.1",
     "react-pull-to-refresh": "^2.0.1",
     "react-quill": "^0.0.2",

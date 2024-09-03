@@ -10141,6 +10141,11 @@ react-google-login@^5.2.2:
     "@types/react" "*"
     prop-types "^15.6.0"
 
+react-heatmap-grid@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.npmjs.org/react-heatmap-grid/-/react-heatmap-grid-0.9.0.tgz"
+  integrity sha512-kJ+aHrNoyrzDTI09UyAEDORdRGc4iAyqii3liCNx3hs/Gg80baSpukiG/Wyoz3fR1Mr9+dzswXlC9Vl2SLQeDg==
+
 react-is@^16.13.1:
   version "16.13.1"
   resolved "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"

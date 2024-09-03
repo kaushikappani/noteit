@@ -7,6 +7,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { BoxArrowUpRight, Download } from 'react-bootstrap-icons';
 import SummaryCard from '../components/SummaryCard';
 import StockTable from '../components/StockTable';
+import StockDoughnutChart from '../components/StockDoughnutChart';
+
 
 
 const darkTheme = createTheme({
@@ -121,7 +123,12 @@ const StockScreener = () => {
               payload={payload}
               index={indexData} 
             />
+            <StockDoughnutChart
+              payload={payload}
+              worth={worth}
+            />
           </Col>
+
           <Col xs={12} md={8}>
             <StockTable
               sortedPayload={sortedPayload}
