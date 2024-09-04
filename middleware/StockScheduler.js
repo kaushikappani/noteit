@@ -401,9 +401,10 @@ const pickDataFromCacheToDb = async () => {
 
 
 const getGlobalIndices = async () => {
-  const data = await scrapGlobalIndices();
-  giftNifty(data);
-  let htmlContent = `
+  try {
+    const data = await scrapGlobalIndices();
+    giftNifty(data);
+    let htmlContent = `
     <table border="1">
         <thead>
             <tr>
@@ -416,9 +417,9 @@ const getGlobalIndices = async () => {
         <tbody>
     `;
 
-  data.forEach(item => {
-    const isPositiveChange = !item.priceChange.startsWith('-');
-    htmlContent += `
+    data.forEach(item => {
+      const isPositiveChange = !item.priceChange.startsWith('-');
+      htmlContent += `
             <tr>
                 <td><span style="color: ${isPositiveChange ? 'green' : 'red'}">${item.indicesName}</span></td>
                 <td><span style="color: ${isPositiveChange ? 'green' : 'red'}">${item.price}</span></td>
@@ -426,23 +427,25 @@ const getGlobalIndices = async () => {
                 <td><span style="color: ${isPositiveChange ? 'green' : 'red'}">${item.lastUpdated}</span></td>
             </tr>
         `;
-  });
+    });
 
-  htmlContent += `
+    htmlContent += `
         </tbody>
     </table>
     `;
-  const noteId = "66c08f5b8e14b9427c397442";
-  const date = moment.tz("Asia/Kolkata");
-  const title = `Global Indices ${date.toString()}`;
-  const content = htmlContent;
+    const noteId = "66c08f5b8e14b9427c397442";
+    const date = moment.tz("Asia/Kolkata");
+    const title = `Global Indices ${date.toString()}`;
+    const content = htmlContent;
 
-  await Note.findByIdAndUpdate(noteId, {
-    title: title,
-    content: content
-  });
+    await Note.findByIdAndUpdate(noteId, {
+      title: title,
+      content: content
+    });
 
-  return htmlContent;
+    return htmlContent;
+  } catch (e) {
+    console.log(e);
 }
 
 
