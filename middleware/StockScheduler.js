@@ -446,6 +446,7 @@ const getGlobalIndices = async () => {
     return htmlContent;
   } catch (e) {
     console.log(e);
+  }
 }
 
 
@@ -457,4 +458,4 @@ module.exports = {
   scheduleCoorporateActions,
   giftNifty,
   getGlobalIndices
-};
+}
