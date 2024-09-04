@@ -346,7 +346,6 @@ const giftNifty = async (globalIndices) => {
 
     } catch (axiosError) {
       console.error("Error fetching Gift Nifty data:", axiosError.message);
-      throw new Error("Failed to fetch Gift Nifty data");
     }
 
     let dataNifty = { last: "", variation: "", percentChange: "" };
@@ -355,7 +354,6 @@ const giftNifty = async (globalIndices) => {
       dataNifty = dataIndices.data[0] || dataNifty;
     } catch (niftyError) {
       console.error("Nifty 50 fetch error:", niftyError.message);
-      throw new Error("Failed to fetch Nifty 50 data");
     }
 
     const noteId = "6696a424d0450dec09316cbf";
@@ -368,7 +366,6 @@ const giftNifty = async (globalIndices) => {
       await Note.findByIdAndUpdate(noteId, { content, title, color });
     } catch (dbError) {
       console.error("Error updating note:", dbError.message);
-      throw new Error("Failed to update note");
     }
 
     return { giftNifty: data, dataNifty };

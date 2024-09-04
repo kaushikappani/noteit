@@ -135,7 +135,6 @@ const scrapGlobalIndices = async() => {
         });
         return indicesData;
     } catch (e) {
-        throw new Error("Failed to fetch Gift Nifty data in scrapper");
         console.log(e);
    }
 }
