@@ -2,24 +2,24 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 const userSchema = mongoose.Schema({
-    name: {
-        type: String,
-        required: true
-    }, email: {
-        type: String,
-        required: true,
-        unique: true
-    }, password: {
-        type: String,
-        required: true
-    }, pic: {
-        type: String,
-        default: "https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png"
-    }, verified: {
-        type: Boolean,
-        required: true,
-        default: false
-    }
+  name: {
+    type: String,
+    required: true
+  }, email: {
+    type: String,
+    required: true,
+    unique: true
+  }, password: {
+    type: String,
+    required: true
+  }, pic: {
+    type: String,
+    default: "https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png"
+  }, verified: {
+    type: Boolean,
+    required: true,
+    default: false
+  }
 }, { timestamps: true })
 
 const User = mongoose.model("User", userSchema);
@@ -45,11 +45,11 @@ const noteModel = mongoose.Schema(
     },
     pinned: {
       type: Boolean,
-      default:false
+      default: false
     },
     archived: {
       type: Boolean,
-      default:false
+      default: false
     },
     color: {
       type: String,
@@ -102,7 +102,7 @@ const noteAccessModel = mongoose.Schema(
     },
     isActive: {
       type: Boolean,
-      require:true
+      require: true
     }
   }, {
   timestamps: true,
@@ -120,11 +120,11 @@ const expensesModel = mongoose.Schema({
   },
   cost: {
     type: Number,
-    require:true
+    require: true
   },
   category: {
     type: String,
-    require:true
+    require: true
   },
   description: {
     type: String,
@@ -132,8 +132,13 @@ const expensesModel = mongoose.Schema({
   },
   date: {
     type: Date,
-    require:true
-  }
+    require: true
+  },
+  isActive: {
+    type: Boolean,
+    require: true,
+    default: true
+  },
 
 }, {
   timestamps: true,

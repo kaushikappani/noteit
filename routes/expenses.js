@@ -19,7 +19,7 @@ router.route("/add").post(protect, async (req, res) => {
 })
 
 router.route("/").get(protect, async (req, res) => {
-    const exp = await Expenses.find({ user: req.user._id }).sort({ date: -1,createdAt:-1 }).select("-createdAt").select("-updatedAt").select("-user");
+    const exp = await Expenses.find({ user: req.user._id ,isActive : true}).sort({ date: -1,createdAt:-1 }).select("-createdAt").select("-updatedAt").select("-user");
     
     return res.status(200).json(exp);
 })
@@ -31,7 +31,8 @@ router.route("/remove/:id").delete(protect, async (req, res) => {
         throw new Error("You cannot edit other notes");
     }
     if (exp) {
-        await exp.remove();
+        exp.isActive = false;
+        await exp.save();
     } else {
         throw new Error({message:"No expense Found"})
     }
