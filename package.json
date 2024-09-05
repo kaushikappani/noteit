@@ -1,6 +1,6 @@
 {
   "name": "noteit",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -42,6 +42,7 @@
     "stock-nse-india": "^1.1.5",
     "telegramify-markdown": "^1.2.2",
     "util": "^0.12.5",
+    "web-push": "^3.6.7",
     "yahoo-finance2": "^2.11.3"
   }
 }

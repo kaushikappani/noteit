@@ -7,7 +7,7 @@ const moment = require("moment-timezone");
 const { Note, User } = require("../config/models");
 const axios = require("axios");
 const { scrapGlobalIndices } = require("./Scrapper");
-
+const {sendNotification} = require("../config/webPush")
 const tradeData = async (symbol, nseIndia) => {
   const data = await nseIndia.getEquityTradeInfo(symbol);
   return data;
@@ -194,6 +194,7 @@ const scheduleCoorporateAnnouncments = async () => {
     data.forEach((item) => {
       let rowStyle = "";
       if (item.symbol in symbolQuantityObject) {
+       
         rowStyle = 'style="background-color: green;"';
 
         matchedRows += `
@@ -254,6 +255,7 @@ const scheduleCoorporateAnnouncments = async () => {
 };
 
 
+
 const scheduleCoorporateActions = async () => {
   try {
     const nseIndia = new NseIndia();
@@ -279,6 +281,11 @@ const scheduleCoorporateActions = async () => {
     data.forEach((item) => {
       let rowStyle = "";
       if (item.symbol in symbolQuantityObject) {
+        let notiReq = {
+          title: item.symbol,
+          body: item.subject,
+        }
+        triggerNotifications(notiReq);
         rowStyle = 'style="background-color: green;"';
 
         matchedRows += `
@@ -332,6 +339,7 @@ const scheduleCoorporateActions = async () => {
 
   }
 };
+
 
 
 const giftNifty = async (globalIndices) => {
@@ -450,6 +458,30 @@ const getGlobalIndices = async () => {
 }
 
 
+const triggerNotifications = async (req) => {
+  console.log("Triggering notifications...");
+
+  const getAsync = util.promisify(client.smembers).bind(client); // Use smembers to get all set members
+  const data = JSON.stringify({
+    title: req.title,
+    body: req.body,
+  });
+
+  try {
+    // Retrieve all subscriptions from the set
+    let subscriptions = await getAsync('notification_subs');
+    console.log(subscriptions);
+
+    // Send notifications to each subscription
+    subscriptions.forEach(subscription => {
+      sendNotification(JSON.parse(subscription), data);
+    });
+  } catch (err) {
+    console.error('Error retrieving subscriptions:', err);
+  }
+}
+
+
 
 module.exports = {
   scheduleTask,
@@ -457,5 +489,5 @@ module.exports = {
   scheduleCoorporateAnnouncments,
   scheduleCoorporateActions,
   giftNifty,
-  getGlobalIndices
+  getGlobalIndices,
 }

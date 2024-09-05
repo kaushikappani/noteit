@@ -42,6 +42,64 @@ const Notes = () => {
     message: "",
   });
 
+  function sendSubscriptionToServer(subscription, user) {
+    return fetch('/api/webpush/subscribe', {
+      method: 'POST',
+      body: JSON.stringify({ subscription, user }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error('Failed to send subscription to server');
+        }
+        return response.json();
+      })
+      .catch(function (error) {
+        console.error('Error sending subscription to server:', error);
+      });
+  }
+
+  function subscribeUser(user) {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then(function (registration) {
+        if (!registration.pushManager) {
+          console.log('Push manager unavailable.');
+          return;
+        }
+
+        registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array("BMW33keysXHJ-xrCQrBsCWZscmQK02RehvanDFhipdeq1ImmDOblKRbAU3_LJQkJXtXdfhZV3wS4cKmjhW-qSeY"),
+        })
+          .then(function (subscription) {
+            console.log('User is subscribed:', subscription);
+            sendSubscriptionToServer(subscription, user);  // Send this subscription object to your server
+          })
+          .catch(function (err) {
+            console.log('Failed to subscribe the user: ', err);
+          });
+      });
+    }
+  }
+
+  function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding)
+      .replace(/\-/g, '+')
+      .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }
+
+
   const archive = async (id) => {
     setLoading(true);
     try {
@@ -182,6 +240,7 @@ const Notes = () => {
       };
       const { data } = await axios.get("/api/users/info", config);
       setUser(data);
+      subscribeUser(data);
     } catch (e) {
       setAlert({
         open: true,
@@ -225,18 +284,15 @@ const Notes = () => {
 
   };
 
-
-
   const reload = () => {
     fetchNotes();
     fetchSharedNotes();
-
-   
   }
   useEffect(() => {
     fetchNotes();
     fetchSharedNotes();
     fetchUser();
+   
     window.addEventListener('focus', fetchNotes);
 
     return () => {

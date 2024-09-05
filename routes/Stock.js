@@ -1,10 +1,9 @@
 const express = require("express");
 const { stockProtect } = require("../middleware/protect");
 const router = express.Router();
-const allData = require("./data");
 const path = require("path");
 const { symbolQuantityObject } = require("./data");
-const { fetchData, scrapGlobalIndices } = require("../middleware/Scrapper");
+const { fetchData } = require("../middleware/Scrapper");
 
 const yahooFinance = require('yahoo-finance2').default;
 
