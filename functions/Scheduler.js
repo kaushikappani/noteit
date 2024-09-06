@@ -136,7 +136,7 @@ async function checkPnl() {
             // P&L changed by more than 1000
             let notiReq = {
                 title: "P&L Change Alert",
-                body: `P&L changed by ${Math.abs(currentPnl - lastPnl)}. Current P&L: ${currentPnl}`
+                body: `P&L changed by ${Math.abs((currentPnl - lastPnl).toFixed(2))}. Current P&L: ${currentPnl.toFixed(2)}`
             };
             triggerNotifications(notiReq);
         }
