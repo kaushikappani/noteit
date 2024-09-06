@@ -125,4 +125,39 @@ schedule.scheduleJob(sevenAmRule, async() => {
 });
 
 
+let lastPnl = 0; // to store the last P&L value
+
+async function checkPnl() {
+    try {
+        let pf = await fetchStockData(symbolQuantityObject); // Fetch current P&L
+        let currentPnl = pf.total;
+
+        if (lastPnl !== null && Math.abs(currentPnl - lastPnl) > 1000) {
+            // P&L changed by more than 1000
+            let notiReq = {
+                title: "P&L Change Alert",
+                body: `P&L changed by more than 1000. Current P&L: ${currentPnl}`
+            };
+            triggerNotifications(notiReq);
+        }
+
+        lastPnl = currentPnl; // Update lastPnl with current value
+
+    } catch (error) {
+        console.error('Error fetching stock data:', error);
+    }
+}
+
+const checkEveryFiveMinutesRule = new schedule.RecurrenceRule();
+checkEveryFiveMinutesRule.minute = new schedule.Range(0, 59, 5); // every 5 minutes
+checkEveryFiveMinutesRule.hour = new schedule.Range(9, 15); // between 9 AM and 3 PM
+checkEveryFiveMinutesRule.dayOfWeek = new schedule.Range(1, 5); // Monday to Friday
+checkEveryFiveMinutesRule.tz = timeZone;
+
+schedule.scheduleJob(checkEveryFiveMinutesRule, async () => {
+    console.log('Scheduler triggered at:', moment().format('HH:mm'));
+    await checkPnl();
+});
+
+
 module.exports = schedule;
