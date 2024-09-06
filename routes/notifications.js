@@ -2,9 +2,10 @@ const express = require("express");
 const client = require("../middleware/redis");
 const router = express.Router();
 const util = require("util");
+const { stockProtect } = require("../middleware/protect")
 
 
-router.route("/subscribe").post((req, res) => {
+router.route("/subscribe").post(stockProtect , (req, res) => {
     const subscription = req.body.subscription;
     const user = req.body.user;
 

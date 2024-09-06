@@ -131,6 +131,11 @@ const scheduleFiiDiiReport = async () => {
     const note = await Note.findById("664ca1d9ac1930ca8b3f5945");
 
     data.forEach((item) => {
+      let notiReq = {
+        title: `${item.category} ${item.date} Report`,
+        body: `Net Value = ${item.netValue}`,
+      }
+      triggerNotifications(notiReq);
       tableRows += `
             <tr>
                 <td>${item.category}</td>
@@ -141,6 +146,7 @@ const scheduleFiiDiiReport = async () => {
             </tr>
         `;
     });
+
 
     const mailHtml = mailTemplate.replace(
       "<!-- Repeat rows as needed -->",
@@ -161,6 +167,9 @@ const scheduleFiiDiiReport = async () => {
       text: "Mail Sent By Scheduler",
       html: mailHtml,
     };
+
+ 
+
   } catch (e) {
     console.error("Error in scheduleFiiDiiReport ", e);
   }
@@ -490,4 +499,5 @@ module.exports = {
   scheduleCoorporateActions,
   giftNifty,
   getGlobalIndices,
+  triggerNotifications
 }

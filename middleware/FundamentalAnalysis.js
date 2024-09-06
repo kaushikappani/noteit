@@ -8,6 +8,7 @@ const {
     GoogleGenerativeAI,
 } = require("@google/generative-ai");
 const client = require("./redis");
+const { triggerNotifications } = require("./StockScheduler");
 const createPages = async () => {
     const apiKey = process.env.GEMINI_API_KEY;
     const genAI = new GoogleGenerativeAI(apiKey);
@@ -74,6 +75,13 @@ const createPages = async () => {
        
        
     }
+
+    let notiReq = {
+        title: "AI pages Generated",
+        body : "Check out the pages generated"
+    }
+
+    triggerNotifications()
 
 }
 
