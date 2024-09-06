@@ -4,55 +4,18 @@ const router = express.Router();
 const path = require("path");
 const { symbolQuantityObject } = require("./data");
 const { fetchData } = require("../middleware/Scrapper");
+const fetchStockData = require("../functions/StockData");
 
 const yahooFinance = require('yahoo-finance2').default;
 
 
 router.route("/summary").get(stockProtect, async (req, res) => {
-    let total = 0;
-    let worth = 0;
-    let payload = [];
-
     try {
-        const symbols = [...Object.keys(symbolQuantityObject).map(symbol => `${symbol}.NS`), "^NSEI", "^NSEBANK"];
-        try {
-            const stockData = await yahooFinance.quote(symbols);
-            stockData.forEach((r) => {
-                const quantity = symbolQuantityObject[r.symbol.replace('.NS', '')] || 0;
-                const currentPrice = parseFloat(r.regularMarketPrice);
-                const change = parseFloat(r.regularMarketChange);
-                const pChange = parseFloat(r.regularMarketChangePercent);
-                // const deliveryToTradedQuantity = parseFloat(tradeInfo.securityWiseDP.deliveryToTradedQuantity);
-                const date = r.regularMarketTime;
-                // const pdSectorPe = parseFloat(r.trailingPE);
-                const pdSymbolPe = parseFloat(r.trailingPE);
-                const rating = r.averageAnalystRating;
-                payload.push({
-                    currentPrice,
-                    daypnl: change * quantity,
-                    symbol: r.symbol.replace('.NS', ''),
-                    pChange,
-                    change,
-                    date,
-                    pdSymbolPe,
-                    pdSectorPe: 0,
-                    deliveryToTradedQuantity: 0,
-                    rating,
-                    quantity,
-                    currentValue:currentPrice * quantity
-                });
-                total += change * quantity;
-                worth += currentPrice * quantity;
-         })
-            
-            res.json({ payload: payload.slice(0,-2), total, worth,index : payload.slice(-2) });
-        } catch (error) {
-            console.error('Error fetching stock data:', error);
-        }
+        const stockSummary = await fetchStockData(symbolQuantityObject);
 
-    } catch (e) {
-        console.error(`Error processing data: ${e}`);
-        res.status(500).json({ error: 'Error processing data' });
+        res.json(stockSummary);
+    } catch (error) {
+        res.status(500).json({ error: 'Error fetching stock data' });
     }
 });
 

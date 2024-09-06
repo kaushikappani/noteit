@@ -26,18 +26,18 @@ router.route("/subscribe").post(stockProtect , (req, res) => {
 });
 
 
-router.route("/trigger-notification").post(async(req, res)=> {
-    const data = JSON.stringify({
-        title: 'New Notification',
-        body: 'This is a push notification',
-    });
+// router.route("/trigger-notification").post(async(req, res)=> {
+//     const data = JSON.stringify({
+//         title: 'New Notification',
+//         body: 'This is a push notification',
+//     });
 
-    subscriptions.forEach(subscription => {
-        sendNotification(subscription, data);
-    });
+//     subscriptions.forEach(subscription => {
+//         sendNotification(subscription, data);
+//     });
 
-    res.status(200).json({ message: 'Notification sent' });
-})
+//     res.status(200).json({ message: 'Notification sent' });
+// })
 
 
 
