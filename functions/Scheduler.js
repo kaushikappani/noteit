@@ -132,7 +132,7 @@ async function checkPnl() {
         let pf = await fetchStockData(symbolQuantityObject); // Fetch current P&L
         let currentPnl = pf.total;
 
-        if (lastPnl !== null && Math.abs(currentPnl - lastPnl) > 1000) {
+        if (lastPnl !== null && Math.abs(currentPnl - lastPnl) > process.env.PANDL_CHANGE_THRESHOLD) {
             // P&L changed by more than 1000
             let notiReq = {
                 title: "P&L Change Alert",
