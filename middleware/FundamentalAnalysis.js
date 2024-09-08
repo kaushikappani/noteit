@@ -81,7 +81,7 @@ const createPages = async () => {
         body : "Check out the pages generated"
     }
 
-    triggerNotifications()
+    triggerNotifications(notiReq);
 
 }
 
