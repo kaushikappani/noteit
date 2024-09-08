@@ -23,7 +23,7 @@ const aibot = require("./middleware/telegramAIBot");
 const app = express();
 app.use(compression())
 
-const timeZone = 'Asia/Kolkata';
+const timeZone = process.env.TIME_ZONE;
 
 // createPages();
 

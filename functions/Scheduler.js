@@ -7,7 +7,7 @@ const { symbolQuantityObject } = require('../routes/data');
 const { scrapGlobalIndices } = require('../middleware/Scrapper');
 
 
-const timeZone = 'Asia/Kolkata';
+const timeZone = process.env.TIME_ZONE;
 
 // First scheduler
 const targetTime = moment.tz(process.env.TIME_RULE1, 'HH:mm', timeZone);

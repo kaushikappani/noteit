@@ -1,4 +1,6 @@
 const webPush = require('web-push');
+const client = require('../middleware/redis');
+const util = require("util");
 
 // VAPID keys should be generated only once.
 const vapidKeys = {
@@ -13,10 +15,28 @@ webPush.setVapidDetails(
 );
 
 // Send Notification
-const sendNotification = (subscription, dataToSend = '') => {
-    webPush.sendNotification(subscription, dataToSend)
-        .then(response => console.log('Push notification sent', response))
-        .catch(err => console.error('Error sending notification', err));
+const sendNotification = async (subscription, dataToSend = '') => {
+    const redisKey = `notification:${subscription.endpoint}:${dataToSend}`;
+
+    const getAsync = util.promisify(client.get).bind(client)
+
+    const notificationExists = await getAsync(redisKey);
+
+    console.log(notificationExists)
+
+    if (!notificationExists) {
+        // If the notification hasn't been sent in the last 6 hours, send it
+        webPush.sendNotification(subscription, dataToSend)
+            .then(response => {
+                console.log('Push notification sent', response);
+                // Store the notification with a 6-hour expiration in Redis
+                client.set(redisKey, 'sent', 'EX', 6 * 60 * 60); // 6 hours in seconds
+            })
+            .catch(err => console.error('Error sending notification', err));
+    } else {
+        console.log('Notification already sent within the last 6 hours');
+    }
 };
+
 
 module.exports = { sendNotification };

@@ -56,7 +56,7 @@ const scheduleTask = async () => {
           const getAsync = util.promisify(client.get).bind(client);
 
           const cacheData = await getAsync("deliveryreport");
-          const catchDate = moment.tz("Asia/Kolkata");
+          const catchDate = moment.tz(process.env.TIME_ZONE);
 
           await client.set(
             "deliveryreport",
@@ -126,7 +126,7 @@ const scheduleFiiDiiReport = async () => {
     console.log(data);
     const mailTemplate = await readFile("../templates/stock_fii_dii_report.txt");
     let tableRows = "";
-    const catchDate = moment.tz("Asia/Kolkata");
+    const catchDate = moment.tz(process.env.TIME_ZONE);
 
     const note = await Note.findById("664ca1d9ac1930ca8b3f5945");
 
@@ -182,7 +182,7 @@ const scheduleCoorporateAnnouncments = async () => {
   const nseIndia = new NseIndia();
 
   try {
-    const toDate = moment().tz("Asia/Kolkata");
+    const toDate = moment().tz(process.env.TIME_ZONE);
     const fromDate = toDate.clone().subtract(1, "days");
     const toDateString = toDate.format("DD-MM-YYYY");
     const fromDateString = fromDate.format("DD-MM-YYYY");
@@ -195,7 +195,7 @@ const scheduleCoorporateAnnouncments = async () => {
       "../templates/stock_coorporate_annoucements.txt"
     );
     let tableRows = "";
-    const catchDate = moment.tz("Asia/Kolkata");
+    const catchDate = moment.tz(process.env.TIME_ZONE);
 
     let matchedRows = "";
     let otherRows = "";
@@ -203,7 +203,11 @@ const scheduleCoorporateAnnouncments = async () => {
     data.forEach((item) => {
       let rowStyle = "";
       if (item.symbol in symbolQuantityObject) {
-       
+        let notiReq = {
+          title: item.symbol + " " + item.desc,
+          body: item.attchmntText,
+        }
+        triggerNotifications(notiReq);
         rowStyle = 'style="background-color: green;"';
 
         matchedRows += `
@@ -263,13 +267,15 @@ const scheduleCoorporateAnnouncments = async () => {
   }
 };
 
+scheduleCoorporateAnnouncments();
+
 
 
 const scheduleCoorporateActions = async () => {
   try {
     const nseIndia = new NseIndia();
 
-    const toDate = moment().tz("Asia/Kolkata");
+    const toDate = moment().tz(process.env.TIME_ZONE);
     const fromDate = toDate.clone().add(1, "weeks");
     const today = toDate.format("DD-MM-YYYY");
     const nextweek = fromDate.format("DD-MM-YYYY");
@@ -282,7 +288,7 @@ const scheduleCoorporateActions = async () => {
       "../templates/stock_coorporate_actions.txt"
     );
     let tableRows = "";
-    const catchDate = moment.tz("Asia/Kolkata");
+    const catchDate = moment.tz(process.env.TIME_ZONE);
 
     let matchedRows = "";
     let otherRows = "";
@@ -374,7 +380,7 @@ const giftNifty = async (globalIndices) => {
     }
 
     const noteId = "6696a424d0450dec09316cbf";
-    const date = moment.tz("Asia/Kolkata");
+    const date = moment.tz(process.env.TIME_ZONE);
     const content = `<h2>Gify Nifty : ${data.price}, ${data.priceChange} </h2><br><h2>Nifty 50 : ${dataNifty.last} , ${dataNifty.variation} ${dataNifty.percentChange}%</h2>`;
     const title = "Gify Nifty As of " + date.toString();
     const color = (parseFloat(data.priceChange.split(' ')[0]) > 0) ? "#345920" : "#5c2b29";
@@ -451,7 +457,7 @@ const getGlobalIndices = async () => {
     </table>
     `;
     const noteId = "66c08f5b8e14b9427c397442";
-    const date = moment.tz("Asia/Kolkata");
+    const date = moment.tz(process.env.TIME_ZONE);
     const title = `Global Indices ${date.toString()}`;
     const content = htmlContent;
 
@@ -489,6 +495,8 @@ const triggerNotifications = async (req) => {
     console.error('Error retrieving subscriptions:', err);
   }
 }
+
+
 
 
 
