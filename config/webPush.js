@@ -29,8 +29,9 @@ const sendNotification = async (subscription, dataToSend = '') => {
         webPush.sendNotification(subscription, dataToSend)
             .then(response => {
                 console.log('Push notification sent', response);
-                // Store the notification with a 6-hour expiration in Redis
-                client.set(redisKey, 'sent', 'EX', 6 * 60 * 60); // 6 hours in seconds
+                // Store the notification with a 6-hour expiration in 
+                let coolDown = process.env.NOTIFICATION_COOL_DOWN_HOURS || 6;
+                client.set(redisKey, 'sent', 'EX', coolDown * 60 * 60); // 6 hours in seconds
             })
             .catch(err => console.error('Error sending notification', err));
     } else {
