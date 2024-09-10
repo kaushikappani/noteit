@@ -22,6 +22,8 @@ const sendNotification = async (subscription, dataToSend = '') => {
 
     const notificationExists = await getAsync(redisKey);
 
+    let coolDown = process.env.NOTIFICATION_COOL_DOWN_HOURS || 6;
+
     console.log(notificationExists)
 
     if (!notificationExists) {
@@ -30,12 +32,12 @@ const sendNotification = async (subscription, dataToSend = '') => {
             .then(response => {
                 console.log('Push notification sent', response);
                 // Store the notification with a 6-hour expiration in 
-                let coolDown = process.env.NOTIFICATION_COOL_DOWN_HOURS || 6;
+              
                 client.set(redisKey, 'sent', 'EX', coolDown * 60 * 60); // 6 hours in seconds
             })
             .catch(err => console.error('Error sending notification', err));
     } else {
-        console.log('Notification already sent within the last 6 hours');
+        console.log(`Notification already sent within the last ${coolDown} hours`);
     }
 };
 
