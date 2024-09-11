@@ -379,8 +379,8 @@ const giftNifty = async (globalIndices) => {
 
     const noteId = "6696a424d0450dec09316cbf";
     const date = moment.tz(process.env.TIME_ZONE);
-    const content = `<h2>Gify Nifty : ${data.price}, ${data.priceChange} </h2><br><h2>Nifty 50 : ${dataNifty.last} , ${dataNifty.variation} ${dataNifty.percentChange}%</h2>`;
-    const title = "Gify Nifty As of " + date.toString();
+    const content = `<h2>Gift Nifty : ${data.price}, ${data.priceChange} </h2><br><h2>Nifty 50 : ${dataNifty.last} , ${dataNifty.variation} ${dataNifty.percentChange}%</h2>`;
+    const title = "Gift Nifty As of " + date.toString();
     const color = (parseFloat(data.priceChange.split(' ')[0]) > 0) ? "#345920" : "#5c2b29";
 
     try {

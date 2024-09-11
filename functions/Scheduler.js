@@ -117,7 +117,7 @@ schedule.scheduleJob(sevenAmRule, async() => {
 
     let notiReq = {
         title: "Market Start : GIft Nifty",
-        body: `Gify Nifty : ${gn.giftNifty.price}, ${gn.giftNifty.priceChange} `
+        body: `Gift Nifty : ${gn.giftNifty.price}, ${gn.giftNifty.priceChange} `
     }
     triggerNotifications(notiReq);
     

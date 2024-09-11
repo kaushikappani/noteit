@@ -73,7 +73,7 @@ const symbolQuantityObject = {
     "JIOFIN": 288,
     "KCP": 26,
     "KOTAKBANK": 14,
-    "MASFIN": 42,
+    "MASFIN": 43,
     "MOTHERSON": 127,
     "NHPC": 60,
     "PARKHOTELS": 22,
@@ -86,7 +86,7 @@ const symbolQuantityObject = {
     "TATAMOTORS": 10,
     "TATAPOWER": 115,
     "TITAGARH": 50,
-    "UJJIVANSFB": 411,
+    "UJJIVANSFB": 413,
     "VBL": 14,
     "MOM30IETF": 188,
     "UNIECOM":5
