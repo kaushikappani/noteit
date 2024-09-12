@@ -167,7 +167,6 @@ aibot.on('message', async (msg) => {
                     parts: [{ text: result.response.text() }],
                 };
                 await client.rpush(`chatHistory:${chatId}`, JSON.stringify(aiMessage));
-                console.log(result.response.text());
                 await aibot.sendMessage(chatId, telegramifyMarkdown(result.response.text(), 'remove'), { parse_mode: 'MarkdownV2' });
             }
         }

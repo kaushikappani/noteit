@@ -87,7 +87,7 @@ const symbolQuantityObject = {
     "TATAPOWER": 115,
     "TITAGARH": 50,
     "UJJIVANSFB": 413,
-    "VBL": 14,
+    "VBL": 35,
     "MOM30IETF": 188,
     "UNIECOM":5
 };
