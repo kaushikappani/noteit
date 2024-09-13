@@ -177,9 +177,6 @@ aibot.on('message', async (msg) => {
 });
 
 
-
-
-
 aibot.onText(/^\/clear/, async (msg) => {
     const chatId = msg.chat.id;
     await client.del(`chatHistory:${chatId}`);

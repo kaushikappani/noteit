@@ -78,7 +78,10 @@ const createPages = async () => {
 
     let notiReq = {
         title: "AI pages Generated",
-        body : "Check out the pages generated"
+        body: "Check out the pages generated",
+        data: {
+            url: "/stock/screener",
+        },
     }
 
     triggerNotifications(notiReq);

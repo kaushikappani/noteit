@@ -79,7 +79,10 @@ schedule.scheduleJob(morningRule, async() => {
     let pf = await fetchStockData(symbolQuantityObject);
     let notiReq = {
         title: "Portfolio Start",
-        body: `P&l = ${pf.total.toFixed(2)}`
+        body: `P&l = ${pf.total.toFixed(2)}`,
+        data: {
+            url: "/stock/screener",
+        },
     }
     triggerNotifications(notiReq);
 });
@@ -97,7 +100,10 @@ schedule.scheduleJob(eveningRule, async() => {
     let pf = await fetchStockData(symbolQuantityObject);
     let notiReq = {
         title: "Todays Close",
-        body: `P&l = ${pf.total.toFixed(2)}`
+        body: `P&l = ${pf.total.toFixed(2)}`,
+        data: {
+            url: "/stock/screener",
+        },
     }
     triggerNotifications(notiReq);
 });
