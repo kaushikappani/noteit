@@ -26,7 +26,7 @@ const sendNotification = async (subscription, dataToSend = '') => {
 
     console.log(notificationExists)
 
-    // if (!notificationExists) {
+    if (!notificationExists) {
         // If the notification hasn't been sent in the last 6 hours, send it
         webPush.sendNotification(subscription, dataToSend)
             .then(response => {
@@ -36,9 +36,9 @@ const sendNotification = async (subscription, dataToSend = '') => {
                 client.set(redisKey, 'sent', 'EX', coolDown * 60 * 60); // 6 hours in seconds
             })
             .catch(err => console.error('Error sending notification', err));
-    // } else {
-    //     console.log(`Notification already sent within the last ${coolDown} hours`);
-    // }
+    } else {
+        console.log(`Notification already sent within the last ${coolDown} hours`);
+    }
 };
 
 

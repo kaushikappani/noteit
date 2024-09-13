@@ -479,14 +479,20 @@ const getGlobalIndices = async () => {
 const triggerNotifications = async (req) => {
   console.log("Triggering notifications...");
 
+  let msgReq = {
+    title: req.title,
+    body: req.body,
+    data: {
+      url : req.data ? req.data.url : "/" 
+    }
+  }
+
   const getAsync = util.promisify(client.smembers).bind(client); // Use smembers to get all set members
-  const data = JSON.stringify(req);
+  const data = JSON.stringify(msgReq);
 
   try {
     // Retrieve all subscriptions from the set
     let subscriptions = await getAsync('notification_subs');
-    console.log(subscriptions);
-
     // Send notifications to each subscription
     subscriptions.forEach(subscription => {
       sendNotification(JSON.parse(subscription), data);
