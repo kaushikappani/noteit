@@ -25,7 +25,6 @@ schedule.scheduleJob(rule, () => {
     scheduleCoorporateActions();
 });
 
-scheduleFiiDiiReport();
 
 
 // Second scheduler
