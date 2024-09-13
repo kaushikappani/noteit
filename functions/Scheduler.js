@@ -79,7 +79,7 @@ schedule.scheduleJob(morningRule, async() => {
     let pf = await fetchStockData(symbolQuantityObject);
     let notiReq = {
         title: "Portfolio Start",
-        body: `P&l = ${pf.total}`
+        body: `P&l = ${pf.total.toFixed(2)}`
     }
     triggerNotifications(notiReq);
 });
@@ -97,7 +97,7 @@ schedule.scheduleJob(eveningRule, async() => {
     let pf = await fetchStockData(symbolQuantityObject);
     let notiReq = {
         title: "Todays Close",
-        body: `P&l = ${pf.total}`
+        body: `P&l = ${pf.total.toFixed(2)}`
     }
     triggerNotifications(notiReq);
 });
@@ -155,7 +155,7 @@ checkEveryFiveMinutesRule.dayOfWeek = new schedule.Range(1, 5); // Monday to Fri
 checkEveryFiveMinutesRule.tz = timeZone;
 
 schedule.scheduleJob(checkEveryFiveMinutesRule, async () => {
-    console.log('Scheduler triggered at:', moment().format('HH:mm'));
+    console.log('Scheduler triggered at:', moment().tz(timeZone).format('HH:mm'));
     await checkPnl();
 });
 

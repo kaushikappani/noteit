@@ -5,8 +5,6 @@ const jwt = require("jsonwebtoken");
 const { protect, stockProtect } = require("../middleware/protect");
 const client = require("../middleware/redis");
 const util = require('util');
-const { readFile } = require("../middleware/mailer");
-const { giftNifty, getGlobalIndices } = require("../middleware/StockScheduler");
 const {
     GoogleGenerativeAI,
 } = require("@google/generative-ai");

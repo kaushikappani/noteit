@@ -206,6 +206,9 @@ const scheduleCoorporateAnnouncments = async () => {
         let notiReq = {
           title: item.symbol + " " + item.desc,
           body: item.attchmntText,
+          data: {
+            url: item.attchmntFile,
+          },
         }
         triggerNotifications(notiReq);
         rowStyle = 'style="background-color: green;"';
@@ -268,6 +271,7 @@ const scheduleCoorporateAnnouncments = async () => {
 };
 
 
+scheduleCoorporateAnnouncments();
 
 const scheduleCoorporateActions = async () => {
   try {
@@ -297,6 +301,7 @@ const scheduleCoorporateActions = async () => {
         let notiReq = {
           title: item.symbol,
           body: item.subject,
+          
         }
         triggerNotifications(notiReq);
         rowStyle = 'style="background-color: green;"';
@@ -475,10 +480,7 @@ const triggerNotifications = async (req) => {
   console.log("Triggering notifications...");
 
   const getAsync = util.promisify(client.smembers).bind(client); // Use smembers to get all set members
-  const data = JSON.stringify({
-    title: req.title,
-    body: req.body,
-  });
+  const data = JSON.stringify(req);
 
   try {
     // Retrieve all subscriptions from the set
