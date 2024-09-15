@@ -25,8 +25,6 @@ schedule.scheduleJob(rule, () => {
     scheduleCoorporateActions();
 });
 
-
-
 // Second scheduler
 const rule2 = new schedule.RecurrenceRule();
 rule2.minute = 0;

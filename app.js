@@ -6,6 +6,7 @@ const connectDB = require("./config/db");
 const userRoutes = require("./routes/user");
 const notesRoute = require("./routes/notes");
 const stockRoute = require("./routes/Stock")
+const newsRoutes = require("./routes/news")
 const expenseRoutes = require("./routes/expenses")
 const webPushRoutes = require("./routes/notifications")
 const { errorHandler, notFound } = require("./middleware/error");
@@ -47,6 +48,7 @@ app.use("/api/notes", notesRoute)
 app.use("/api/stock", stockRoute)
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/webpush", webPushRoutes)
+app.use("/api/news", newsRoutes);
 
 
 __dirname = path.resolve();
@@ -63,7 +65,6 @@ if (process.env.NODE_ENV === "production") {
 
 app.use(errorHandler)
 app.use(notFound)
-
 
 const server=app.listen(process.env.PORT, () => {
     console.log(`server running ${process.env.PORT}`)

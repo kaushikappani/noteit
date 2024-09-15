@@ -493,9 +493,9 @@ const triggerNotifications = async (req) => {
     // Retrieve all subscriptions from the set
     let subscriptions = await getAsync('notification_subs');
     // Send notifications to each subscription
-    subscriptions.forEach(subscription => {
-      sendNotification(JSON.parse(subscription), data);
-    });
+    for (const subscription of subscriptions) {
+      await sendNotification(JSON.parse(subscription), data);
+    }
   } catch (err) {
     console.error('Error retrieving subscriptions:', err);
   }

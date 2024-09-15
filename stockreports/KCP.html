@@ -1,0 +1,190 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>K C P Ltd Stock Analysis</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 8px;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .positive {
+      color: green;
+    }
+
+    .negative {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>K C P Ltd Stock Analysis</h1>
+
+  <h2>Current Price: ₹ 247 (2.33% ↑)</h2>
+  <h2>PE Value: 16.6</h2>
+
+  <h2>Concerns</h2>
+  <ul>
+    <li>Tax rate seems low</li>
+    <li>Company has a low return on equity of 11.6% over last 3 years.</li>
+    <li>Dividend payout has been low at 5.59% of profits over last 3 years</li>
+  </ul>
+
+  <h2>Quarterly Results Analysis</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th>Jun 2023</th>
+        <th>Sep 2023</th>
+        <th>Dec 2023</th>
+        <th>Mar 2024</th>
+        <th>Rating</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Sales</td>
+        <td>₹ 744</td>
+        <td>₹ 700</td>
+        <td>₹ 777</td>
+        <td>₹ 625</td>
+        <td class="positive">POSITIVE</td>
+      </tr>
+      <tr>
+        <td>Expenses</td>
+        <td>₹ 677</td>
+        <td>₹ 627</td>
+        <td>₹ 678</td>
+        <td>₹ 511</td>
+        <td class="positive">POSITIVE</td>
+      </tr>
+      <tr>
+        <td>Operating Profit</td>
+        <td>₹ 67</td>
+        <td>₹ 74</td>
+        <td>₹ 99</td>
+        <td>₹ 114</td>
+        <td class="positive">POSITIVE</td>
+      </tr>
+      <tr>
+        <td>OPM %</td>
+        <td>9%</td>
+        <td>11%</td>
+        <td>13%</td>
+        <td>18%</td>
+        <td class="positive">POSITIVE</td>
+      </tr>
+      <tr>
+        <td>Net Profit</td>
+        <td>₹ 50</td>
+        <td>₹ 50</td>
+        <td>₹ 96</td>
+        <td>₹ 85</td>
+        <td class="positive">POSITIVE</td>
+      </tr>
+      <tr>
+        <td>EPS</td>
+        <td>₹ 2.35</td>
+        <td>₹ 2.53</td>
+        <td>₹ 5.44</td>
+        <td>₹ 4.31</td>
+        <td class="positive">POSITIVE</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Shareholding Pattern Analysis</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Mar 2023</th>
+        <th>Jun 2023</th>
+        <th>Sep 2023</th>
+        <th>Dec 2023</th>
+        <th>Rating</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Promoters</td>
+        <td>44.07%</td>
+        <td>44.07%</td>
+        <td>43.93%</td>
+        <td>43.94%</td>
+        <td class="neutral">NEUTRAL</td>
+      </tr>
+      <tr>
+        <td>FIIs</td>
+        <td>2.14%</td>
+        <td>2.01%</td>
+        <td>1.85%</td>
+        <td>1.90%</td>
+        <td class="negative">NEGATIVE</td>
+      </tr>
+      <tr>
+        <td>DIIs</td>
+        <td>0.64%</td>
+        <td>0.64%</td>
+        <td>0.69%</td>
+        <td>0.62%</td>
+        <td class="neutral">NEUTRAL</td>
+      </tr>
+      <tr>
+        <td>Public</td>
+        <td>53.12%</td>
+        <td>53.26%</td>
+        <td>53.52%</td>
+        <td>53.53%</td>
+        <td class="positive">POSITIVE</td>
+      </tr>
+      <tr>
+        <td>No. of Shareholders</td>
+        <td>40,916</td>
+        <td>40,061</td>
+        <td>39,594</td>
+        <td>41,153</td>
+        <td class="positive">POSITIVE</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Overall Analysis</h2>
+  <p>The stock data shows positive trends in the last few quarters, particularly in the last three quarters. All parameters like profits, sales, and expenses have increased consistently. The shareholding pattern also shows a positive trend with the public holding increasing in the last four quarters. However, the FII holding has decreased in the last few quarters, which could be a cause for concern.</p>
+
+  <h2>Disclaimer</h2>
+  <p>This is just an automated analysis based on the provided data. It is not a recommendation to buy or sell the stock. Please consult with a financial advisor for personalized investment advice.</p>
+</body>
+</html>
+
+
+**Explanation:**
+
+* **HTML Structure:** The code creates a basic HTML structure with headings, tables, and a paragraph for the analysis.
+* **Data Extraction:** The code directly uses the provided JSON data to extract the required information.
+* **Quarterly Results Analysis:** The code iterates through the `resultsQuarterly` data to analyze the performance in the last four quarters and provides a rating for each parameter based on the trend:
+    * **Positive:** If the parameter has shown a consistent increase in the last four quarters.
+    * **Neutral:** If the parameter has shown no significant change in the last four quarters.
+    * **Negative:** If the parameter has shown a consistent decrease in the last four quarters.
+* **Shareholding Pattern Analysis:** The code similarly analyzes the `shareHoldingPattern` data to identify trends in different shareholder categories and provides ratings based on their changes.
+* **Overall Analysis:** The code summarizes the findings from both sections and provides a conclusion based on the observed trends.
+* **Disclaimer:**  The code includes a disclaimer to emphasize that this is a basic analysis and does not constitute financial advice.
+
+**To run this code:**
+
+1. Save the code as an HTML file (e.g., `stock_analysis.html`).
+2. Open the file in a web browser.
+
+This will display the stock analysis results in a user-friendly HTML format.

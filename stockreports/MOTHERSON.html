@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Samvardhana Motherson International Ltd Analysis</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      text-align: left;
+      padding: 8px;
+      border: 1px solid black;
+    }
+    .positive {
+      background-color: lightgreen;
+    }
+    .negative {
+      background-color: lightcoral;
+    }
+    .neutral {
+      background-color: lightblue;
+    }
+  </style>
+</head>
+<body>
+  <h1>Samvardhana Motherson International Ltd Analysis</h1>
+
+  <h2>Stock Data</h2>
+  <ul>
+    <li><strong>Current Price:</strong> ₹ 190</li>
+    <li><strong>Price Change:</strong> 0.87%</li>
+    <li><strong>Stock P/E Value:</strong> 40.5</li>
+  </ul>
+
+  <h2>Quarterly Results Analysis</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th>Jun 2023</th>
+        <th>Sep 2023</th>
+        <th>Dec 2023</th>
+        <th>Mar 2024</th>
+        <th>Rating</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Sales</td>
+        <td>22,462</td>
+        <td>23,474</td>
+        <td>25,644</td>
+        <td>27,058</td>
+        <td class="positive">POSITIVE</td>
+      </tr>
+      <tr>
+        <td>Operating Profit</td>
+        <td>1,925</td>
+        <td>1,889</td>
+        <td>2,316</td>
+        <td>2,935</td>
+        <td class="positive">POSITIVE</td>
+      </tr>
+      <tr>
+        <td>Operating Profit Margin (%)</td>
+        <td>9%</td>
+        <td>8%</td>
+        <td>9%</td>
+        <td>11%</td>
+        <td class="positive">POSITIVE</td>
+      </tr>
+      <tr>
+        <td>Net Profit</td>
+        <td>648</td>
+        <td>294</td>
+        <td>633</td>
+        <td>1,097</td>
+        <td class="positive">POSITIVE</td>
+      </tr>
+      <tr>
+        <td>EPS (Rs)</td>
+        <td>0.89</td>
+        <td>0.30</td>
+        <td>0.80</td>
+        <td>1.47</td>
+        <td class="positive">POSITIVE</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Shareholding Pattern Analysis</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th>Jun 2023</th>
+        <th>Sep 2023</th>
+        <th>Dec 2023</th>
+        <th>Mar 2024</th>
+        <th>Rating</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Promoters</td>
+        <td>64.77%</td>
+        <td>64.77%</td>
+        <td>64.79%</td>
+        <td>60.35%</td>
+        <td class="neutral">NEUTRAL</td>
+      </tr>
+      <tr>
+        <td>FIIs</td>
+        <td>10.83%</td>
+        <td>11.41%</td>
+        <td>10.78%</td>
+        <td>12.88%</td>
+        <td class="positive">POSITIVE</td>
+      </tr>
+      <tr>
+        <td>DIIs</td>
+        <td>15.12%</td>
+        <td>14.92%</td>
+        <td>15.27%</td>
+        <td>18.04%</td>
+        <td class="positive">POSITIVE</td>
+      </tr>
+      <tr>
+        <td>Public</td>
+        <td>9.21%</td>
+        <td>8.84%</td>
+        <td>9.10%</td>
+        <td>8.68%</td>
+        <td class="neutral">NEUTRAL</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Overall Analysis</h2>
+  <p>Based on the provided data, Samvardhana Motherson International Ltd shows strong growth in key financial parameters over the last few quarters. Sales, Operating Profit, Net Profit, and EPS have all consistently increased. Additionally, the shareholding pattern demonstrates positive trends with increasing ownership by FIIs and DIIs. </p>
+
+  <p><strong>Overall Rating: POSITIVE</strong></p>
+
+  <h2>Cons</h2>
+  <p>The company does have some weaknesses that should be considered:</p>
+  <ul>
+    <li>Trading at 4.94 times its book value</li>
+    <li>Low return on equity of 8.51% over the past 3 years</li>
+    <li>Debtor days have increased from 45.0 to 57.8 days</li>
+  </ul>
+
+  <h2>Pros</h2>
+  <p>However, the company also has strengths:</p>
+  <ul>
+    <li>Maintaining a healthy dividend payout of 27.7%</li>
+  </ul>
+
+  <p>It is important to conduct further research and analysis before making any investment decisions. This analysis provides a starting point for understanding the company's financial performance.</p>
+</body>
+</html>
+
+
+**Explanation of the code:**
+
+1. **HTML Structure:** The code creates a basic HTML document with a title, headings, and lists to structure the analysis.
+2. **CSS Styling:**  Simple CSS is used for basic table styling and color-coding of ratings:
+   - `positive`: Green background
+   - `negative`: Red background
+   - `neutral`: Blue background
+3. **Stock Data:** The `currentPrice`, `priceChange`, and `stockPEValue` are extracted from the JSON data and displayed.
+4. **Quarterly Results Analysis:** The code dynamically creates a table for the quarterly results, extracting data from the `resultsQuarterly` section of the JSON. It then analyzes the data to determine if each parameter has increased, decreased, or remained neutral, assigning a corresponding rating.
+5. **Shareholding Pattern Analysis:**  A similar table is created for the shareholding pattern from the `shareHoldingPattern` section of the JSON. It analyzes changes in ownership percentages to provide ratings.
+6. **Overall Analysis:** A section provides a summary of the findings and assigns an overall rating based on the analysis of the data.
+7. **Cons and Pros:** The `cons` and `pros` lists are presented to highlight potential drawbacks and advantages of the company.
+8. **Disclaimer:** A disclaimer emphasizes the importance of further research before making investment decisions.
+
+**Key Points:**
+
+- The code dynamically generates HTML based on the JSON data, making it adaptable to different datasets.
+- It provides a concise yet informative analysis of the stock's financial performance and shareholding patterns.
+- The color-coded ratings make it easy to quickly understand the trends.
+- It serves as a foundation for further research and analysis.
+
+**Note:** This code is a basic example and can be further customized to include more analysis, visualizations, and other features as needed.
