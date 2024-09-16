@@ -11,6 +11,7 @@ const StockTable = ({ sortedPayload, handleSort, renderSortSymbol }) => (
                 <th onClick={() => handleSort('change')} align="right">Change{renderSortSymbol('change')}</th>
                 <th onClick={() => handleSort('currentValue')} align="right">Current Value{renderSortSymbol('currentValue')}</th>
                 <th onClick={() => handleSort('pdSymbolPe')} align="right">PE{renderSortSymbol('pdSymbolPe')}</th>
+                <th align='right'>Delivery</th>
                 <th align="right">Rating</th>
             </tr>
         </thead>
@@ -23,6 +24,7 @@ const StockTable = ({ sortedPayload, handleSort, renderSortSymbol }) => (
                     <td style={{ color: row.pChange >= 0 ? "green" : "red" }} align="right">{row.change.toFixed(2)} , {row.pChange.toFixed(2)} % </td>
                     <td align="right">{row.currentValue.toFixed(2)}</td>
                     <td align="right">{row.pdSymbolPe ? row.pdSymbolPe.toFixed(2) : '-'}</td>
+                    <td align='right'>{row.deliveryData}</td>
                     <td align="right">{row.rating ? row.rating : '-'}</td>
                 </tr>
             ))}

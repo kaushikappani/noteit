@@ -29,14 +29,30 @@ const scheduleTask = async () => {
       const nseIndia = new NseIndia();
       const symbol = symbols[i];
       const data = await tradeData(symbol, nseIndia);
+
+      if (symbol in symbolQuantityObject) {
+        const redisKey = `delivery:${symbol}`;
+        const existingData = await client.get(redisKey);
+        let symbolData = existingData ? JSON.parse(existingData) : {};
+
+        symbolData[data.securityWiseDP.secWiseDelPosDate] = {
+          delivery: data.securityWiseDP.deliveryToTradedQuantity,
+          date: data.securityWiseDP.secWiseDelPosDate
+        };
+
+        const filteredData = filterLast3DaysData(symbolData);
+        await client.set(redisKey, JSON.stringify(filteredData));
+        console.log(`Saved/Updated data for ${symbol} on ${data.securityWiseDP.secWiseDelPosDate}`);
+
+      }
+
       if (data.securityWiseDP && data.securityWiseDP.deliveryToTradedQuantity > process.env.DELIVERY_QUANTITY_THRESHOLD) {
-        //threshold to be configurable
         batchData.push({
           symbol,
           delivery: data.securityWiseDP.deliveryToTradedQuantity,
           date: data.securityWiseDP.secWiseDelPosDate
         });
-        console.log("pushed to batch " + JSON.stringify(data.securityWiseDP));
+        // console.log("pushed to batch " + JSON.stringify(data.securityWiseDP));
         batchCount++;
       }
       if (batchCount === 2 || (i === symbols.length - 1 && batchCount > 0)) {
@@ -65,7 +81,7 @@ const scheduleTask = async () => {
               if (err) {
                 console.log(err);
               } else {
-                console.log("delivery report pushed to cache");
+                // console.log("delivery report pushed to cache");
               }
             }
           );
@@ -103,7 +119,7 @@ const scheduleTask = async () => {
         }
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 1));
     } catch (e) {
       console.error(
         `Error while fetching data for symbol =  ${symbols[i]} `,
@@ -115,6 +131,18 @@ const scheduleTask = async () => {
   }
   pickDataFromCacheToDb();
 };
+
+
+
+function filterLast3DaysData(data) {
+  const dates = Object.keys(data).sort().reverse(); // Sort dates in descending order
+  const recentDates = dates.slice(0, 3); // Keep the last 3 dates
+  const filteredData = recentDates.reduce((acc, date) => {
+    acc[date] = data[date];
+    return acc;
+  }, {});
+  return filteredData;
+}
 
 
 const scheduleFiiDiiReport = async () => {
