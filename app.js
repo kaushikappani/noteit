@@ -28,9 +28,6 @@ app.use(compression())
 
 // createPages();
 
-runPendingReminders();
-
-
 app.use(bodyParser.urlencoded({
     limit: "50mb",
     extended: false
@@ -43,6 +40,7 @@ connectDB();
 
 app.use(cookieParser());
 
+runPendingReminders();
 
 
 app.use("/api/users", userRoutes)
