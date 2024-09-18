@@ -52,6 +52,8 @@ router.route('/add').post(protect, async (req, res) => {
             console.error('Error updating remainder:', err);
         }
     });
+    console.log(job);
+    job.start();
 
     res.status(201).json({ message: 'Remainder Added' });
 });
