@@ -2,41 +2,39 @@ const express = require("express");
 const { Remainder, User } = require("../config/models");
 const { protect } = require("../middleware/protect");
 const { triggerNotifications } = require("../middleware/StockScheduler");
-const cron = require('node-cron');
-const moment = require('moment'); 
+const schedule = require('node-schedule');
+const moment = require('moment-timezone');
 const router = express.Router();
+
 
 
 router.route('/add').post(protect, async (req, res) => {
     const { description, date } = req.body;
-    const remainderDate = moment.tz(date, process.env.TIME_ZONE).toDate();
+    const timeZone = process.env.TIME_ZONE; // Fetch time zone from environment variables
 
-    let remainder = new Remainder({
+    // Convert the input date to the specified timezone
+    const reminderDate = moment.tz(date, timeZone).toDate();
+
+    let reminder = new Remainder({
         user: req.user,
         description,
-        date: remainderDate
+        date: reminderDate
     });
 
-    remainder = await remainder.save();
+    reminder = await reminder.save();
 
     const user = await User.findById(req.user._id).select("-password");
 
     console.log(date);
-    console.log(remainderDate);
+    console.log(reminderDate);
 
-    const cronTime = moment(remainderDate)
-        .tz(process.env.TIME_ZONE)
-        .format('m H D M *'); // minutes hours dayOfMonth month *
-
-    console.log(cronTime);
-
-    // Schedule the notification with cron
-    const job = cron.schedule(cronTime, async () => {
-        console.log(`Reminder: ${description} at ${remainderDate}`);
+    // Schedule the task using node-schedule with the reminder date in the correct timezone
+    const job = schedule.scheduleJob(reminderDate, async () => {
+        console.log(`Reminder: ${description} at ${reminderDate}`);
 
         // Trigger your notification
         let notificationRequest = {
-            title: `Reminder : ${remainderDate} `,
+            title: `Reminder : ${reminderDate} `,
             body: description
         };
 
@@ -46,16 +44,17 @@ router.route('/add').post(protect, async (req, res) => {
             console.error('Error sending notification:', err);
         }
 
+        // Update the reminder to mark it as expired
         try {
-            await Remainder.findByIdAndUpdate(remainder._id, { expired: true });
+            await Remainder.findByIdAndUpdate(reminder._id, { expired: true });
         } catch (err) {
-            console.error('Error updating remainder:', err);
+            console.error('Error updating reminder:', err);
         }
     });
-    console.log(job);
-    job.start();
 
-    res.status(201).json({ message: 'Remainder Added' });
+    console.log(job); // Log the job details
+
+    res.status(201).json({ message: 'Reminder Added' });
 });
 
 
