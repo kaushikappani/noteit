@@ -1,7 +1,7 @@
 const { Remainder, User } = require("../config/models");
 const { triggerNotifications } = require("../middleware/StockScheduler");
-const cron = require('node-cron');
-const moment = require('moment'); 
+const schedule = require('node-schedule');
+const moment = require('moment-timezone');
 
 
 async function runPendingReminders() {
@@ -9,13 +9,10 @@ async function runPendingReminders() {
         const remainders = await Remainder.find({ expired: false });
         console.log(remainders);
         remainders.forEach(remainder => {
-            const remainderDate = moment.tz(remainder.date, process.env.TIME_ZONE).toDate();
-            const cronTime = moment(remainderDate)
-                .tz(process.env.TIME_ZONE)
-                .format('m H D M *');
+            const reminderDate = moment.tz(remainder.date, process.env.TIME_ZONE).toDate();
             
-            const job = cron.schedule(cronTime, async () => {
-                console.log(`Reminder: ${remainder.description} at ${remainderDate}`);
+            const job = schedule.scheduleJob(reminderDate, async () => {
+                console.log(`Reminder: ${remainder.description} at ${reminderDate}`);
 
                 // Trigger your notification
                 const user = await User.findById(remainder.user).select("-password");
@@ -28,7 +25,7 @@ async function runPendingReminders() {
                 }
 
                 let notificationRequest = {
-                    title: `Reminder : ${remainderDate}`,
+                    title: `Reminder : ${reminderDate}`,
                     body: remainder.description
                 };
 
@@ -40,7 +37,6 @@ async function runPendingReminders() {
 
                 
             });
-            job.start();
         });
     } catch (err) {
         console.error('Error running pending reminders:', err);
