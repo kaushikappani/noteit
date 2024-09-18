@@ -157,13 +157,14 @@ const scheduleFiiDiiReport = async () => {
     const catchDate = moment.tz(process.env.TIME_ZONE);
 
     const note = await Note.findById("664ca1d9ac1930ca8b3f5945");
+    const user = await User.findOne({ email:"kaushikappani@gmail.com" })
 
     data.forEach((item) => {
       let notiReq = {
         title: `${item.category} ${item.date} Report`,
         body: `Net Value = ${item.netValue}`,
       }
-      triggerNotifications(notiReq);
+      triggerNotifications(notiReq, user);
       tableRows += `
             <tr>
                 <td>${item.category}</td>
@@ -227,6 +228,7 @@ const scheduleCoorporateAnnouncments = async () => {
 
     let matchedRows = "";
     let otherRows = "";
+    const user = await User.findOne({ email: "kaushikappani@gmail.com" })
 
     data.forEach((item) => {
       let rowStyle = "";
@@ -238,7 +240,7 @@ const scheduleCoorporateAnnouncments = async () => {
             url: item.attchmntFile,
           },
         }
-        triggerNotifications(notiReq);
+        triggerNotifications(notiReq, user);
         rowStyle = 'style="background-color: green;"';
 
         matchedRows += `
@@ -321,6 +323,7 @@ const scheduleCoorporateActions = async () => {
 
     let matchedRows = "";
     let otherRows = "";
+    const user = await User.findOne({ email: "kaushikappani@gmail.com" })
 
     data.forEach((item) => {
       let rowStyle = "";
@@ -330,7 +333,7 @@ const scheduleCoorporateActions = async () => {
           body: item.subject,
           
         }
-        triggerNotifications(notiReq);
+        triggerNotifications(notiReq, user);
         rowStyle = 'style="background-color: green;"';
 
         matchedRows += `
@@ -503,29 +506,35 @@ const getGlobalIndices = async () => {
 }
 
 
-const triggerNotifications = async (req) => {
+async function triggerNotifications(req, user) {
   console.log("Triggering notifications...");
 
-  let msgReq = {
-    title: req.title,
-    body: req.body,
-    data: {
-      url : req.data ? req.data.url : "/" 
-    }
-  }
+  const { title, body, data } = req; // Destructure request parameters
 
-  const getAsync = util.promisify(client.smembers).bind(client); // Use smembers to get all set members
-  const data = JSON.stringify(msgReq);
+  const msgReq = {
+    title,
+    body,
+    data: {
+      url: data ? data.url : "/"
+    }
+  };
+
+  const jsonData = JSON.stringify(msgReq); // Efficiently stringify once
 
   try {
-    // Retrieve all subscriptions from the set
-    let subscriptions = await getAsync('notification_subs');
-    // Send notifications to each subscription
-    subscriptions.forEach(subscription => {
-      sendNotification(JSON.parse(subscription), data);
-    });
-  } catch (err) {
-    console.error('Error retrieving subscriptions:', err);
+    // Access subscriptions directly (assuming user has subscriptions)
+    const { web, mobile } = user.subscriptions;
+
+    // Send notifications to web and mobile subscriptions (without validation)
+    if (web.endpoint) {
+      sendNotification(web, jsonData);
+    }
+
+    if (mobile.endpoint) {
+      sendNotification(mobile, jsonData);
+    }
+  } catch (error) {
+    console.error("Error retrieving or sending notifications:", error);
   }
 }
 

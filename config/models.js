@@ -19,6 +19,20 @@ const userSchema = mongoose.Schema({
     type: Boolean,
     required: true,
     default: false
+  },
+  subscriptions: {
+    type: {
+      web: {
+        type: mongoose.Schema.Types.Mixed,
+        default: {}
+      },
+      mobile: {
+        type: mongoose.Schema.Types.Mixed, 
+        default: {}
+      }
+    },
+    required: true, 
+    default: { web: {}, mobile: {} }
   }
 }, { timestamps: true })
 
@@ -147,4 +161,28 @@ const expensesModel = mongoose.Schema({
 
 const Expenses = mongoose.model("Expenses", expensesModel);
 
-module.exports = { User, Note, NoteHistory, NoteAccess, Expenses }
+
+const remainderModel = mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
+  date: {
+    type: Date,
+    required:true,
+  }, description: {
+    type:String,
+  }, expired: {
+    type: Boolean,
+    required: true,
+    default: false
+  }, latestNotification: {
+    type: Object
+  }
+}, { timestamps: true },)
+
+const Remainder = mongoose.model("Remainder", remainderModel)
+
+
+module.exports = { User, Note, NoteHistory, NoteAccess, Expenses, Remainder }

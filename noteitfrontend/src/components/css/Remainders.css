@@ -1,0 +1,49 @@
+/* Reminders card styles */
+.reminders-card {
+    margin: 20px;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+/* Add Button (Floating Action Button Style) */
+.btn-fab {
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    font-size: 18px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+/* Reminder List Styling */
+.reminder-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+
+/* Reminder content with description and date */
+.reminder-content {
+    display: flex;
+    flex-direction: column;
+}
+
+/* No reminders available text */
+.no-reminders {
+    text-align: center;
+    color: #6c757d;
+}
+
+/* Modal form input styles */
+.form-control-lg {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 6px;
+}

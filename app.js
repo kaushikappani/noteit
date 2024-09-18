@@ -9,6 +9,7 @@ const stockRoute = require("./routes/Stock")
 const newsRoutes = require("./routes/news")
 const expenseRoutes = require("./routes/expenses")
 const webPushRoutes = require("./routes/notifications")
+const remainderRoutes = require("./routes/remainder");
 const { errorHandler, notFound } = require("./middleware/error");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser")
@@ -20,13 +21,14 @@ require('./functions/Scheduler');
 
 const bot = require("./middleware/telegramBot");
 const aibot = require("./middleware/telegramAIBot");
+const { runPendingReminders } = require("./functions/remainderJobs");
 
 const app = express();
 app.use(compression())
 
-const timeZone = process.env.TIME_ZONE;
-
 // createPages();
+
+runPendingReminders();
 
 
 app.use(bodyParser.urlencoded({
@@ -49,6 +51,8 @@ app.use("/api/stock", stockRoute)
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/webpush", webPushRoutes)
 app.use("/api/news", newsRoutes);
+
+app.use("/api/remainders", remainderRoutes);
 
 
 __dirname = path.resolve();

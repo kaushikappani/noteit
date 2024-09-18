@@ -2,27 +2,35 @@ const express = require("express");
 const client = require("../middleware/redis");
 const router = express.Router();
 const util = require("util");
-const { stockProtect } = require("../middleware/protect")
+const { stockProtect } = require("../middleware/protect");
+const { User } = require("../config/models");
 
 
-router.route("/subscribe").post(stockProtect , (req, res) => {
-    const subscription = req.body.subscription;
-    const user = req.body.user;
+router.route("/subscribe").post(stockProtect, async (req, res) => {
+    const { user, subscriptionType, subscription } = req.body;
 
-    // Use SADD for unique users and subscriptions
-    client.sadd("notification_users", JSON.stringify(user), (err, reply) => {
-        if (err) {
-            return res.status(500).json({ error: "Failed to add user" });
+    // Validate subscription type (web or mobile)
+    if (!['web', 'mobile'].includes(subscriptionType)) {
+        return res.status(400).json({ error: "Invalid subscription type" });
+    }
+
+    try {
+        const existingUser = await User.findById(req.user._id );
+        console.log(existingUser)
+
+        if (!existingUser) {
+            return res.status(404).json({ error: "User not found" });
         }
-    });
 
-    client.sadd("notification_subs", JSON.stringify(subscription), (err, reply) => {
-        if (err) {
-            return res.status(500).json({ error: "Failed to add subscription" });
-        }
-    });
+        // Update the corresponding subscription field
+        existingUser.subscriptions[subscriptionType] = subscription;
+        const updatedUser = await existingUser.save();
 
-    res.status(201).json({ message: "Subscription added successfully" });
+        res.status(200).json({ message: "Subscription updated successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal server error" });
+    }
 });
 
 

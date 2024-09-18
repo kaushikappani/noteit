@@ -13,6 +13,8 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Create from "./Create";
 import InputAdornment from "@mui/material/InputAdornment";
+import RemindersCard from "../components/RemindersCard";
+import { isMobile } from 'react-device-detect';
 
 
 const ariaLabel = { "aria-label": "Search" };
@@ -45,7 +47,7 @@ const Notes = () => {
   function sendSubscriptionToServer(subscription, user) {
     return fetch('/api/webpush/subscribe', {
       method: 'POST',
-      body: JSON.stringify({ subscription, user }),
+      body: JSON.stringify({ subscription, user, subscriptionType: isMobile ? "mobile" : "web" }),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -316,6 +318,8 @@ const Notes = () => {
       {
         <div>
           <Container>
+            <RemindersCard refreshReminders={fetchNotes} />
+
             <Input
               startAdornment={
                 <InputAdornment position="start">
@@ -330,6 +334,7 @@ const Notes = () => {
               defaultValue=""
               inputProps={ariaLabel}
             />
+
             {notes?.length > 0 && (
               <Typography
                 sx={{ fontSize: 14 }}

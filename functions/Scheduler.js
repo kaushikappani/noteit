@@ -5,6 +5,7 @@ const { createPages, generateHtmlPage } = require('../middleware/FundamentalAnal
 const fetchStockData = require('./StockData');
 const { symbolQuantityObject } = require('../routes/data');
 const { scrapGlobalIndices } = require('../middleware/Scrapper');
+const { User } = require('../config/models');
 
 
 const timeZone = process.env.TIME_ZONE;
@@ -24,6 +25,11 @@ schedule.scheduleJob(rule, () => {
     scheduleCoorporateAnnouncments();
     scheduleCoorporateActions();
 });
+
+
+scheduleCoorporateActions();
+
+
 
 // Second scheduler
 const rule2 = new schedule.RecurrenceRule();
@@ -73,7 +79,11 @@ morningRule.hour = morningTime.hour();
 morningRule.minute = morningTime.minute();
 morningRule.tz = timeZone;
 
-schedule.scheduleJob(morningRule, async() => {
+
+
+schedule.scheduleJob(morningRule, async () => {
+    const user = await User.findOne({ email: "kaushikappani@gmail.com" })
+
     console.log('Scheduler triggered at 9:16 AM');
     // Add the task you want to run at 9:16 AM
     let pf = await fetchStockData(symbolQuantityObject);
@@ -84,7 +94,7 @@ schedule.scheduleJob(morningRule, async() => {
             url: "/stock/screener",
         },
     }
-    triggerNotifications(notiReq);
+    triggerNotifications(notiReq,user);
 });
 
 // Evening schedule for 3:31 PM
@@ -94,7 +104,9 @@ eveningRule.hour = eveningTime.hour();
 eveningRule.minute = eveningTime.minute();
 eveningRule.tz = timeZone;
 
-schedule.scheduleJob(eveningRule, async() => {
+schedule.scheduleJob(eveningRule, async () => {
+    const user = await User.findOne({ email: "kaushikappani@gmail.com" })
+
     console.log('Scheduler triggered at 3:31 PM');
     // Add the task you want to run at 3:31 PM
     let pf = await fetchStockData(symbolQuantityObject);
@@ -105,7 +117,7 @@ schedule.scheduleJob(eveningRule, async() => {
             url: "/stock/screener",
         },
     }
-    triggerNotifications(notiReq);
+    triggerNotifications(notiReq,user);
 });
 
 
@@ -116,7 +128,9 @@ sevenAmRule.minute = sevenAmTime.minute();
 sevenAmRule.tz = timeZone;
 
 // Schedule the task to run at 7:00 AM every day
-schedule.scheduleJob(sevenAmRule, async() => {
+schedule.scheduleJob(sevenAmRule, async () => {
+    const user = await User.findOne({ email: "kaushikappani@gmail.com" })
+
     console.log('Scheduler triggered at 7:00 AM');
     const data = await scrapGlobalIndices();
     let gn = await giftNifty(data);
@@ -125,7 +139,7 @@ schedule.scheduleJob(sevenAmRule, async() => {
         title: "Market Start : GIft Nifty",
         body: `Gift Nifty : ${gn.giftNifty.price}, ${gn.giftNifty.priceChange} `
     }
-    triggerNotifications(notiReq);
+    triggerNotifications(notiReq,user);
     
 
 });
@@ -134,6 +148,8 @@ schedule.scheduleJob(sevenAmRule, async() => {
 let lastPnl = 0; // to store the last P&L value
 
 async function checkPnl() {
+    const user = await User.findOne({ email: "kaushikappani@gmail.com" })
+
     try {
         let pf = await fetchStockData(symbolQuantityObject); // Fetch current P&L
         let currentPnl = pf.total;
@@ -144,7 +160,7 @@ async function checkPnl() {
                 title: "P&L Change Alert",
                 body: `P&L changed by ${(currentPnl - lastPnl).toFixed(2)}. Current P&L: ${currentPnl.toFixed(2)}`
             };
-            triggerNotifications(notiReq);
+            triggerNotifications(notiReq,user);
         }
 
         lastPnl = currentPnl; // Update lastPnl with current value

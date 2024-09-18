@@ -9,6 +9,7 @@ const {
 } = require("@google/generative-ai");
 const client = require("./redis");
 const { triggerNotifications } = require("./StockScheduler");
+const { User } = require("../config/models");
 const createPages = async () => {
     const apiKey = process.env.GEMINI_API_KEY;
     const genAI = new GoogleGenerativeAI(apiKey);
@@ -76,6 +77,9 @@ const createPages = async () => {
        
     }
 
+    const user = await User.findOne({ email: "kaushikappani@gmail.com" })
+
+
     let notiReq = {
         title: "AI pages Generated",
         body: "Check out the pages generated",
@@ -84,7 +88,7 @@ const createPages = async () => {
         },
     }
 
-    triggerNotifications(notiReq);
+    triggerNotifications(notiReq, user);
 
 }
 
