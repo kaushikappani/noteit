@@ -61,7 +61,7 @@ const allData = ["DREAMFOLKS", "ARVIND", "UNIECOM", "KCP","PARKHOTELS",
 
 
 const symbolQuantityObject = {
-    "ARVIND": 20,
+    "ARVIND": 20 + 4,
     "BEL": 10,
     "BHEL": 20,
     "DREAMFOLKS": 23,
@@ -70,17 +70,17 @@ const symbolQuantityObject = {
     "HDFCBANK": 13,
     "INDHOTEL": 17,
     "ITC": 44,
-    "JIOFIN": 288,
+    "JIOFIN": 288 + 5,
     "KCP": 26,
     "KOTAKBANK": 14,
     "MASFIN": 43,
     "MOTHERSON": 127,
     "NHPC": 60,
-    "PARKHOTELS": 22,
+    "PARKHOTELS": 22 + 5,
     "PNB": 160,
     "POWERGRID": 20,
     "PSUBANK": 5,
-    "RECLTD": 85,
+    "RECLTD": 85 + 3,
     "SBIN": 37,
     "SUZLON": 425,
     "TATAMOTORS": 10,
@@ -89,7 +89,8 @@ const symbolQuantityObject = {
     "UJJIVANSFB": 413,
     "VBL": 35,
     "MOM30IETF": 188,
-    "UNIECOM":5
+    "UNIECOM": 5 + 15,
+    "NTPC":1
 };
 
 
