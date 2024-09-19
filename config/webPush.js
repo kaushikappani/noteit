@@ -31,7 +31,7 @@ const sendNotification = async (subscription, dataToSend = '') => {
         webPush.sendNotification(subscription, dataToSend)
             .then(response => {
                 console.log('Push notification sent', response);
-                // Store the notification with a 6-hour expiration in 
+                // Store the notification with expiration in 
               
                 client.set(redisKey, 'sent', 'EX', coolDown * 60 * 60); // 6 hours in seconds
             })

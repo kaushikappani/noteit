@@ -2,11 +2,11 @@ const express = require("express");
 const client = require("../middleware/redis");
 const router = express.Router();
 const util = require("util");
-const { stockProtect } = require("../middleware/protect");
+const { protect } = require("../middleware/protect");
 const { User } = require("../config/models");
 
 
-router.route("/subscribe").post(stockProtect, async (req, res) => {
+router.route("/subscribe").post(protect, async (req, res) => {
     const { user, subscriptionType, subscription } = req.body;
 
     // Validate subscription type (web or mobile)

@@ -17,13 +17,6 @@ async function runPendingReminders() {
                 // Trigger your notification
                 const user = await User.findById(remainder.user).select("-password");
 
-                try {
-                     await Remainder.findByIdAndUpdate(remainder._id, { expired: true });
-
-                } catch (err) {
-                    console.error('Error updating remainder:', err);
-                }
-
                 let notificationRequest = {
                     title: `Reminder : ${reminderDate}`,
                     body: remainder.description
@@ -33,6 +26,13 @@ async function runPendingReminders() {
                     await triggerNotifications(notificationRequest,user);
                 } catch (err) {
                     console.error('Error sending notification:', err);
+                }
+
+                try {
+                    await Remainder.findByIdAndUpdate(remainder._id, { expired: true });
+
+                } catch (err) {
+                    console.error('Error updating remainder:', err);
                 }
 
                 

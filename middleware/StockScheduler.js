@@ -509,7 +509,7 @@ const getGlobalIndices = async () => {
 async function triggerNotifications(req, user) {
   console.log("Triggering notifications...");
 
-  const { title, body, data } = req; // Destructure request parameters
+  const { title, body, data } = req;
 
   const msgReq = {
     title,
@@ -519,13 +519,11 @@ async function triggerNotifications(req, user) {
     }
   };
 
-  const jsonData = JSON.stringify(msgReq); // Efficiently stringify once
+  const jsonData = JSON.stringify(msgReq); 
 
   try {
-    // Access subscriptions directly (assuming user has subscriptions)
     const { web, mobile } = user.subscriptions;
 
-    // Send notifications to web and mobile subscriptions (without validation)
     if (web.endpoint) {
       sendNotification(web, jsonData);
     }
