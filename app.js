@@ -19,8 +19,11 @@ const path = require("path");
 
 require('./functions/Scheduler'); 
 
-const bot = require("./middleware/telegramBot");
-const aibot = require("./middleware/telegramAIBot");
+if (process.env.NODE_ENV === "production") {
+    const bot = require("./middleware/telegramBot");
+    const aibot = require("./middleware/telegramAIBot");
+}
+
 const { runPendingReminders } = require("./functions/remainderJobs");
 
 const app = express();

@@ -24,6 +24,16 @@ const sendNotification = async (subscription, dataToSend = '') => {
 
     let coolDown = process.env.NOTIFICATION_COOL_DOWN_HOURS || 6;
 
+    const filteredStrings = process.env.NOTIFICATION_FILTER_STRINGS ? process.env.NOTIFICATION_FILTER_STRINGS.split(',') : [];
+
+    // Check if the dataToSend contains any filtered strings
+    const shouldFilter = filteredStrings.some(filter => dataToSend.toLowerCase().includes(filter.trim().toLowerCase()));
+
+    if (shouldFilter) {
+        console.log('Notification contains filtered string and will not be sent.');
+        return;
+    }
+
     console.log(notificationExists)
 
     if (!notificationExists) {
