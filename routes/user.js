@@ -51,7 +51,7 @@ router.route("/").post(asyncHandler(async (req, res) => {
         if (platform === "mobile") {
             platformKey = "mobile"
         }
-        const key = id + "_login_" + platformKey;
+        const key = `login:${platformKey}:${id}`;
         value = token + "";
 
         await client.set(key, value, 'PX', ttlMilliseconds365Days,(err, data) => {
@@ -116,7 +116,7 @@ router.route("/login").post(asyncHandler(async (req, res) => {
                     platformKey = "mobile"
                 }
 
-                const key = user._id + "_login_"+platformKey;
+                const key = `login:${platformKey}:${user._id}`;
                 value = token + "";
                 await client.set(key, value, 'PX',ttlMilliseconds365Days,(err, data) => {
                     if (err) {
@@ -148,7 +148,7 @@ router.route("/info").get(protect, asyncHandler(async (req, res) => {
 
 router.route("/info").put(protect, asyncHandler(async (req, res) => {
     const { email, password, name, conformPassword } = req.body;
-    client.del(`${req.user._id}_user`); 
+    client.del(`user:${req.user._id}`); 
     const user = await User.findById(req.user._id);
     if (user) {
         user.name = name || user.name;
@@ -344,7 +344,7 @@ router.route("/verification/link").post(protect,asyncHandler(async (req, res) =>
 
 router.route("/upload/profile/pic").post(protect, upload.single('profilePicture'), asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
-    client.del(`${req.user._id}_user`); 
+    client.del(`user:${req.user._id}`); 
     let result = null;
     try {
         result = await cloudinary.uploader.upload(req.file.path, { public_id: `profilepic/${user._id}`, secure: true });

@@ -13,15 +13,15 @@ const protect = asyncHandler(async (req, res, next) => {
             token = req.cookies.token;
             const decode = jwt.verify(token, process.env.JWT_SECRET);
             const getAsync = util.promisify(client.get).bind(client);
-            let result = await getAsync(`${decode.id}_user`);
+            let result = await getAsync(`user:${decode.id}`);
             if (result == null) {
                 req.user = await User.findById(decode.id).select("-password");
-                client.set(`${decode.id}_user`, JSON.stringify(req.user), 'EX', 3600 * 24); 
+                client.set(`user:${decode.id}`, JSON.stringify(req.user), 'EX', 3600 * 24); 
             } else {
                 req.user = JSON.parse(result);
             }
             // Check if the token in Redis matches the one in the request
-            await client.mget([decode.id + "_login_web", decode.id + "_login_mobile"], (err, result) => {
+            await client.mget([ "login:web:"+ decode.id, "login:mobile:"+decode.id ], (err, result) => {
                 if (err) {
                     console.error(err);
                     res.status(500).json({ message: "Internal server error" });
@@ -54,16 +54,16 @@ const stockProtect = asyncHandler(async (req, res, next) => {
             token = req.cookies.token;
             const decode = jwt.verify(token, process.env.JWT_SECRET);
             const getAsync = util.promisify(client.get).bind(client);
-            let result = await getAsync(`${decode.id}_user`);
+            let result = await getAsync(`user:${decode.id}`);
             if (result == null) {
                 req.user = await User.findById(decode.id).select("-password");
-                client.set(`${decode.id}_user`, JSON.stringify(req.user), 'EX', 3600 * 24);
+                client.set(`user:${decode.id}`, JSON.stringify(req.user), 'EX', 3600 * 24);
             } else {
                 req.user = JSON.parse(result);
             }
 
             // Check if the token in Redis matches the one in the request
-            await client.mget([decode.id + "_login_web", decode.id + "_login_mobile"], (err, result) => {
+            await client.mget(["login:web:" + decode.id, "login:mobile:" + decode.id], (err, result) => {
                 if (err) {
                     console.error(err);
                     res.status(500).json({ message: "Internal server error" });

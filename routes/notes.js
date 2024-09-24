@@ -28,7 +28,7 @@ router.route("/").get(
             }).sort({ createdAt: -1 });
 
             notes.forEach(n => {
-                client.set(`${n._id}_note`, JSON.stringify(n), 'EX', 3600); 
+                client.set(`note:${n._id}`, JSON.stringify(n), 'EX', 3600); 
             });
 
             // Modify notes by adding view and edit properties
@@ -99,13 +99,13 @@ router.route("/:id/:history").get(
 
         let note = null;
 
-        note = await getAsync(`${req.params.id}_note`);
+        note = await getAsync(`note:${req.params.id}`);
         if (note !== null) {
             note = JSON.parse(note);
             delete note.color;
             delete note.archived;
             delete note.pinned;
-            client.del(`${req.params.id}_note`); 
+            client.del(`note:${req.params.id}`); 
         }
   
         if (note === null) {
