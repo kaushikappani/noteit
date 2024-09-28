@@ -1,0 +1,34 @@
+.scrollable-container {
+    overflow-x: auto;
+    /* Enable horizontal scrolling */
+    white-space: nowrap;
+    /* Prevent wrapping */
+    padding: 10px;
+    /* Add padding if needed */
+}
+.scrollable-container::-webkit-scrollbar {
+     display: none;
+}
+
+.card-row {
+    display: flex;
+    /* Use flexbox for horizontal alignment */
+    flex-wrap: nowrap;
+    /* Prevent wrapping */
+}
+
+.stock-card {
+    min-width: 200px !important;
+    /* Set a minimum width for each card */
+    margin-right: 10px;
+    /* Add margin between cards */
+    flex: 0 0 auto;
+    /* Prevent cards from shrinking */
+}
+
+@media (max-width: 576px) {
+    .stock-card {
+        min-width: 120px;
+        /* Adjust width for smaller screens if needed */
+    }
+}

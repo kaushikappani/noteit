@@ -15,6 +15,7 @@ import Create from "./Create";
 import InputAdornment from "@mui/material/InputAdornment";
 import RemindersCard from "../components/RemindersCard";
 import { isMobile } from 'react-device-detect';
+import StockIndexCards from "../components/StockIndexCards";
 
 
 const ariaLabel = { "aria-label": "Search" };
@@ -318,7 +319,9 @@ const Notes = () => {
       {
         <div>
           <Container>
+            <StockIndexCards />
             <RemindersCard refreshReminders={fetchNotes} />
+
 
             <Input
               startAdornment={

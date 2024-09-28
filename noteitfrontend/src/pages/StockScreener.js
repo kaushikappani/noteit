@@ -7,6 +7,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { BoxArrowUpRight, Download } from 'react-bootstrap-icons';
 import SummaryCard from '../components/SummaryCard';
 import StockTable from '../components/StockTable';
+import StockIndexCards from '../components/StockIndexCards';
 // import StockDoughnutChart from '../components/StockDoughnutChart';
 
 
@@ -114,6 +115,7 @@ const StockScreener = () => {
       />
 
       <Container fluid>
+
         <Row>
           <Col xs={12} md={4}>
             <SummaryCard
