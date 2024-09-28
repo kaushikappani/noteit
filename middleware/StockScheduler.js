@@ -518,6 +518,7 @@ async function triggerNotifications(req, user) {
       url: data ? data.url : "/"
     }
   };
+  
 
   const jsonData = JSON.stringify(msgReq); 
 
