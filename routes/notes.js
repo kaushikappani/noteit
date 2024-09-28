@@ -101,6 +101,7 @@ router.route("/:id/:history").get(
 
         note = await getAsync(`note:${req.params.id}`);
         if (note !== null) {
+            console.log("from cache");
             note = JSON.parse(note);
             delete note.color;
             delete note.archived;

@@ -489,15 +489,15 @@ const getGlobalIndices = async () => {
         </tbody>
     </table>
     `;
-    const noteId = "66c08f5b8e14b9427c397442";
-    const date = moment.tz(process.env.TIME_ZONE);
-    const title = `Global Indices ${date.toString()}`;
-    const content = htmlContent;
+    // const noteId = "66c08f5b8e14b9427c397442";
+    // const date = moment.tz(process.env.TIME_ZONE);
+    // const title = `Global Indices ${date.toString()}`;
+    // const content = htmlContent;
 
-    await Note.findByIdAndUpdate(noteId, {
-      title: title,
-      content: content
-    });
+    // await Note.findByIdAndUpdate(noteId, {
+    //   title: title,
+    //   content: content
+    // });
 
     return htmlContent;
   } catch (e) {
