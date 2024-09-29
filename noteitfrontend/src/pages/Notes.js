@@ -37,6 +37,8 @@ const Notes = () => {
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState();
+  const [reloadStockDataCallback, setReloadStockDataCallback] = useState(false);
+
 
   const notify = (message, type) => toast(message, type);
   const [alert, setAlert] = useState({
@@ -288,6 +290,10 @@ const Notes = () => {
   };
 
   const reload = () => {
+    setReloadStockDataCallback((prev) => {
+      return !prev;
+      }); 
+    
     fetchNotes();
     fetchSharedNotes();
   }
@@ -296,10 +302,10 @@ const Notes = () => {
     fetchSharedNotes();
     fetchUser();
    
-    window.addEventListener('focus', fetchNotes);
+    window.addEventListener('focus', reload);
 
     return () => {
-      window.removeEventListener('focus', fetchNotes);
+      window.removeEventListener('focus', reload);
     }
 
   }, []);
@@ -319,7 +325,7 @@ const Notes = () => {
       {
         <div>
           <Container>
-            <StockIndexCards />
+            <StockIndexCards reloadStockData={reloadStockDataCallback}  />
             <RemindersCard refreshReminders={fetchNotes} />
 
 
