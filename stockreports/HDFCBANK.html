@@ -4,31 +4,30 @@
 <head>
   <title>HDFC Bank Ltd Stock Analysis</title>
   <style>
-    table {
-      border-collapse: collapse;
-      width: 100%;
+    body {
+      font-family: Arial, sans-serif;
     }
-
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
     th, td {
       text-align: left;
       padding: 8px;
       border: 1px solid #ddd;
     }
-
     th {
       background-color: #f2f2f2;
     }
-
     .positive {
       color: green;
     }
-
-    .neutral {
-      color: #333;
-    }
-
     .negative {
       color: red;
+    }
+    .neutral {
+      color: #000;
     }
   </style>
 </head>
@@ -36,15 +35,31 @@
 
   <h1>HDFC Bank Ltd Stock Analysis</h1>
 
-  <h2>Current Stock Data</h2>
-  <ul>
-    <li><strong>Name:</strong> HDFC Bank Ltd</li>
-    <li><strong>Current Price:</strong> ₹ 1,666</li>
-    <li><strong>Price Change:</strong> -0.04%</li>
-    <li><strong>Stock PE Value:</strong> 18.6</li>
-  </ul>
+  <h2>Key Parameters</h2>
+  <table>
+    <tr>
+      <th>Parameter</th>
+      <th>Value</th>
+      <th>Rating</th>
+    </tr>
+    <tr>
+      <td>Current Price</td>
+      <td>₹ 1,753</td>
+      <td>Neutral</td>
+    </tr>
+    <tr>
+      <td>Price Change</td>
+      <td>-1.73%</td>
+      <td>Negative</td>
+    </tr>
+    <tr>
+      <td>PE Value</td>
+      <td>19.6</td>
+      <td>Neutral</td>
+    </tr>
+  </table>
 
-  <h2>Key Strengths</h2>
+  <h2>Strengths</h2>
   <ul>
     <li>Company is expected to give good quarter</li>
     <li>Company has delivered good profit growth of 23.4% CAGR over last 5 years</li>
@@ -52,9 +67,9 @@
     <li>Company's median sales growth is 16.4% of last 10 years</li>
   </ul>
 
-  <h2>Key Weaknesses</h2>
+  <h2>Concerns</h2>
   <ul>
-    <li>Stock is trading at 2.77 times its book value</li>
+    <li>Stock is trading at 2.92 times its book value</li>
     <li>Company has low interest coverage ratio.</li>
     <li>Contingent liabilities of Rs.24,09,821 Cr.</li>
     <li>Earnings include an other income of Rs.1,49,943 Cr.</li>
@@ -64,162 +79,151 @@
   <table>
     <thead>
       <tr>
-        <th>Parameter</th>
-        <th>Jun 2023</th>
-        <th>Sep 2023</th>
-        <th>Dec 2023</th>
-        <th>Mar 2024</th>
+        <th>Quarter</th>
+        <th>Revenue</th>
+        <th>Interest</th>
+        <th>Expenses</th>
+        <th>Financing Profit</th>
+        <th>Financing Margin %</th>
+        <th>Other Income</th>
+        <th>Profit before tax</th>
+        <th>Net Profit</th>
+        <th>EPS in Rs</th>
         <th>Rating</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td>Revenue</td>
-        <td>₹ 51,168 Cr</td>
-        <td>₹ 75,039 Cr</td>
-        <td>₹ 78,008 Cr</td>
-        <td>₹ 79,434 Cr</td>
-        <td class="positive">POSITIVE</td>
-      </tr>
-      <tr>
-        <td>Interest</td>
-        <td>₹ 25,955 Cr</td>
-        <td>₹ 41,250 Cr</td>
-        <td>₹ 43,242 Cr</td>
-        <td>₹ 43,692 Cr</td>
-        <td class="positive">POSITIVE</td>
-      </tr>
-      <tr>
-        <td>Expenses</td>
-        <td>₹ 18,470 Cr</td>
-        <td>₹ 45,349 Cr</td>
-        <td>₹ 50,530 Cr</td>
-        <td>₹ 62,938 Cr</td>
-        <td class="neutral">NEUTRAL</td>
-      </tr>
-      <tr>
-        <td>Financing Profit</td>
-        <td>₹ 6,744 Cr</td>
-        <td>-₹ 11,560 Cr</td>
-        <td>-₹ 15,764 Cr</td>
-        <td>-₹ 27,196 Cr</td>
-        <td class="negative">NEGATIVE</td>
-      </tr>
-      <tr>
-        <td>Financing Margin %</td>
+        <td>Jun 2023</td>
+        <td>51,168</td>
+        <td>25,955</td>
+        <td>18,470</td>
+        <td>6,744</td>
         <td>13%</td>
+        <td>9,853</td>
+        <td>16,597</td>
+        <td>12,403</td>
+        <td>22.12</td>
+        <td class="positive">Positive</td>
+      </tr>
+      <tr>
+        <td>Sep 2023</td>
+        <td>75,039</td>
+        <td>41,250</td>
+        <td>45,349</td>
+        <td>-11,560</td>
         <td>-15%</td>
+        <td>32,528</td>
+        <td>20,967</td>
+        <td>17,312</td>
+        <td>22.17</td>
+        <td class="negative">Negative</td>
+      </tr>
+      <tr>
+        <td>Dec 2023</td>
+        <td>78,008</td>
+        <td>43,242</td>
+        <td>50,530</td>
+        <td>-15,764</td>
         <td>-20%</td>
+        <td>37,007</td>
+        <td>21,243</td>
+        <td>17,718</td>
+        <td>22.73</td>
+        <td class="negative">Negative</td>
+      </tr>
+      <tr>
+        <td>Mar 2024</td>
+        <td>79,434</td>
+        <td>43,692</td>
+        <td>62,938</td>
+        <td>-27,196</td>
         <td>-34%</td>
-        <td class="negative">NEGATIVE</td>
-      </tr>
-      <tr>
-        <td>Other Income</td>
-        <td>₹ 9,853 Cr</td>
-        <td>₹ 32,528 Cr</td>
-        <td>₹ 37,007 Cr</td>
-        <td>₹ 44,958 Cr</td>
-        <td class="positive">POSITIVE</td>
-      </tr>
-      <tr>
-        <td>Profit before tax</td>
-        <td>₹ 16,597 Cr</td>
-        <td>₹ 20,967 Cr</td>
-        <td>₹ 21,243 Cr</td>
-        <td>₹ 17,761 Cr</td>
-        <td class="neutral">NEUTRAL</td>
-      </tr>
-      <tr>
-        <td>Net Profit</td>
-        <td>₹ 12,403 Cr</td>
-        <td>₹ 17,312 Cr</td>
-        <td>₹ 17,718 Cr</td>
-        <td>₹ 17,188 Cr</td>
-        <td class="positive">POSITIVE</td>
-      </tr>
-      <tr>
-        <td>EPS</td>
-        <td>₹ 22.12</td>
-        <td>₹ 22.17</td>
-        <td>₹ 22.73</td>
-        <td>₹ 21.65</td>
-        <td class="positive">POSITIVE</td>
+        <td>44,958</td>
+        <td>17,761</td>
+        <td>18,013</td>
+        <td>23.20</td>
+        <td class="negative">Negative</td>
       </tr>
     </tbody>
   </table>
 
-  <h2>Share Holding Pattern Analysis</h2>
+  <h2>Share Holding Pattern</h2>
   <table>
     <thead>
       <tr>
-        <th>Category</th>
-        <th>Sep 2023</th>
-        <th>Dec 2023</th>
-        <th>Mar 2024</th>
-        <th>Jun 2024</th>
+        <th>Quarter</th>
+        <th>Promoters</th>
+        <th>FIIs</th>
+        <th>DIIs</th>
+        <th>Government</th>
+        <th>Public</th>
+        <th>No. of Shareholders</th>
         <th>Rating</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td>Promoters</td>
-        <td>0.00%</td>
-        <td>0.00%</td>
-        <td>0.00%</td>
-        <td>0.00%</td>
-        <td class="neutral">NEUTRAL</td>
+        <td>Sep 2022</td>
+        <td>25.64%</td>
+        <td>32.14%</td>
+        <td>27.53%</td>
+        <td>0.16%</td>
+        <td>14.51%</td>
+        <td>25,20,911</td>
+        <td class="positive">Positive</td>
       </tr>
       <tr>
-        <td>FIIs</td>
-        <td>52.13%</td>
-        <td>52.31%</td>
-        <td>47.83%</td>
-        <td>47.17%</td>
-        <td class="positive">POSITIVE</td>
+        <td>Dec 2022</td>
+        <td>25.60%</td>
+        <td>32.10%</td>
+        <td>28.13%</td>
+        <td>0.16%</td>
+        <td>13.99%</td>
+        <td>23,03,291</td>
+        <td class="positive">Positive</td>
       </tr>
       <tr>
-        <td>DIIs</td>
-        <td>30.39%</td>
-        <td>30.54%</td>
-        <td>33.33%</td>
-        <td>35.20%</td>
-        <td class="positive">POSITIVE</td>
+        <td>Mar 2023</td>
+        <td>25.59%</td>
+        <td>32.24%</td>
+        <td>28.09%</td>
+        <td>0.16%</td>
+        <td>13.91%</td>
+        <td>22,90,092</td>
+        <td class="positive">Positive</td>
       </tr>
       <tr>
-        <td>Government</td>
-        <td>0.17%</td>
-        <td>0.17%</td>
-        <td>0.18%</td>
-        <td>0.18%</td>
-        <td class="neutral">NEUTRAL</td>
-      </tr>
-      <tr>
-        <td>Public</td>
-        <td>17.30%</td>
-        <td>16.98%</td>
-        <td>18.64%</td>
-        <td>17.44%</td>
-        <td class="neutral">NEUTRAL</td>
+        <td>Jun 2023</td>
+        <td>25.52%</td>
+        <td>33.38%</td>
+        <td>26.75%</td>
+        <td>0.16%</td>
+        <td>14.19%</td>
+        <td>23,45,672</td>
+        <td class="positive">Positive</td>
       </tr>
     </tbody>
   </table>
 
-  <p>**Overall Analysis:** Based on the analysis of HDFC Bank Ltd's financial data, it is observed that several key parameters have shown positive growth in the last 3-4 quarters. This indicates a strong financial performance and a positive trend in the company's operations. While some parameters have shown negative growth, the overall picture suggests a positive outlook for HDFC Bank Ltd.</p>
+  <h2>Overall Analysis</h2>
+  <p>HDFC Bank Ltd has shown a consistent growth in revenue, profits, and shareholding pattern over the last four quarters. The company has a strong track record of growth and profitability, but some concerns remain regarding the company's high valuations, low interest coverage ratio, and significant other income.</p>
+
+  <h2>Disclaimer</h2>
+  <p>This analysis is for informational purposes only and should not be considered as financial advice. Investing in the stock market involves risks and investors should conduct their own due diligence before making any investment decisions.</p>
 
 </body>
 </html>
 
 
-**Analysis Breakdown:**
+**Analysis of parameters:**
 
-* **Revenue:**  The revenue has grown steadily over the last 4 quarters, indicating strong demand for the bank's products and services. **Rating: POSITIVE**
-* **Interest:** Interest income has also increased significantly, suggesting a healthy lending portfolio. **Rating: POSITIVE** 
-* **Expenses:** Expenses have increased but this can be attributed to business expansion or inflationary pressures, which can be considered neutral.  **Rating: NEUTRAL**
-* **Financing Profit:** This is showing a declining trend, which is a concerning factor. **Rating: NEGATIVE**
-* **Financing Margin %:** The declining margin suggests a potential decrease in profitability from financial activities. **Rating: NEGATIVE**
-* **Other Income:** Other income has seen substantial growth, likely from non-core operations or investments. **Rating: POSITIVE** 
-* **Profit before tax and Net Profit:**  Profits have generally increased, demonstrating healthy profitability. **Rating: POSITIVE**
-* **EPS:** Earnings per share have grown, indicating that the company is becoming more profitable per share of stock. **Rating: POSITIVE**
-* **Share Holding Pattern:**  Increased holdings by FIIs and DIIs reflect confidence in the company's future.  **Rating: POSITIVE**
+* **Current Price:** Neutral - The price is not significantly high or low compared to historical data.
+* **Price Change:** Negative - The stock price has decreased in the recent period, indicating a potential bearish trend.
+* **PE Value:** Neutral -  The PE value is relatively low, suggesting the stock is fairly valued.
+* **Revenue, Interest, Expenses, Financing Profit, Other Income, Profit before tax, Net Profit, EPS:** Positive -  There has been a consistent growth in these parameters over the last four quarters.
+* **Share Holding Pattern:** Positive -  The shareholding pattern for Promoters, FIIs, and DIIs has increased in the last four quarters, indicating strong investor confidence.
 
-**Overall Rating:** While some metrics show negative trends, the overall picture is **POSITIVE** as HDFC Bank Ltd is demonstrating a healthy financial performance and strong growth potential. 
+**Overall Rating:**
+
+Based on the above analysis, HDFC Bank Ltd appears to be a **positive** stock with a strong growth trajectory. However, investors should be aware of the concerns mentioned above before making any investment decisions.

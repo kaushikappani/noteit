@@ -1,137 +1,209 @@
+
 <!DOCTYPE html>
 <html>
 <head>
-<title>Punjab National Bank Stock Analysis</title>
-<style>
-table, th, td {
-  border: 1px solid black;
-  border-collapse: collapse;
-}
-th, td {
-  padding: 5px;
-  text-align: left;
-}
-.positive {
-  background-color: lightgreen;
-}
-.neutral {
-  background-color: lightblue;
-}
-.negative {
-  background-color: lightpink;
-}
-</style>
+  <title>Punjab National Bank Stock Analysis</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .positive {
+      color: green;
+    }
+
+    .neutral {
+      color: #aaa;
+    }
+
+    .negative {
+      color: red;
+    }
+  </style>
 </head>
 <body>
+  <h1>Punjab National Bank Stock Analysis</h1>
 
-<h1>Punjab National Bank Stock Analysis</h1>
+  <h2>Current Price: ₹ 109 (1.80% ↑)</h2>
+  <h2>PE Value: 10.2</h2>
 
-<h2>Current Price and Change</h2>
-<p>Current Price: ₹ 111</p>
-<p>Price Change: 2.20% </p>
+  <h3>Strengths</h3>
+  <ul>
+    <li>Stock is trading at 1.09 times its book value. <strong>(POSITIVE)</strong></li>
+    <li>Company has delivered good profit growth of 24.2% CAGR over last 5 years. <strong>(POSITIVE)</strong></li>
+    <li>Company has been maintaining a healthy dividend payout of 19.2%. <strong>(POSITIVE)</strong></li>
+    <li>Company's working capital requirements have reduced from 61.2 days to 26.3 days. <strong>(POSITIVE)</strong></li>
+  </ul>
 
-<h2>Key Financial Metrics</h2>
-<table>
-<tr>
-<th>Metric</th>
-<th>Value</th>
-<th>Rating</th>
-</tr>
-<tr>
-<td>PE Ratio</td>
-<td>10.4</td>
-<td class="neutral">Neutral</td>
-</tr>
-</table>
+  <h3>Weaknesses</h3>
+  <ul>
+    <li>Company has low interest coverage ratio. <strong>(NEGATIVE)</strong></li>
+    <li>Company has a low return on equity of 5.40% over last 3 years. <strong>(NEGATIVE)</strong></li>
+    <li>Contingent liabilities of Rs.2,60,559 Cr. <strong>(NEGATIVE)</strong></li>
+    <li>Company might be capitalizing the interest cost. <strong>(NEGATIVE)</strong></li>
+  </ul>
 
-<h2>Pros</h2>
-<ul>
-<li>Stock is trading at 1.11 times its book value <span class="positive">Positive</span></li>
-<li>Company has delivered good profit growth of 24.2% CAGR over last 5 years <span class="positive">Positive</span></li>
-<li>Company has been maintaining a healthy dividend payout of 19.2% <span class="positive">Positive</span></li>
-<li>Company's working capital requirements have reduced from 61.2 days to 26.3 days <span class="positive">Positive</span></li>
-</ul>
+  <h2>Quarterly Results Analysis</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th>Jun 2023</th>
+        <th>Sep 2023</th>
+        <th>Dec 2023</th>
+        <th>Mar 2024</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Revenue</td>
+        <td class="positive">₹ 25,673</td>
+        <td class="positive">₹ 26,858</td>
+        <td class="positive">₹ 27,852</td>
+        <td class="positive">₹ 28,682</td>
+      </tr>
+      <tr>
+        <td>Interest</td>
+        <td class="positive">₹ 16,064</td>
+        <td class="positive">₹ 16,820</td>
+        <td class="positive">₹ 17,444</td>
+        <td class="positive">₹ 18,206</td>
+      </tr>
+      <tr>
+        <td>Expenses</td>
+        <td class="neutral">₹ 10,990</td>
+        <td class="neutral">₹ 10,259</td>
+        <td class="neutral">₹ 9,449</td>
+        <td class="neutral">₹ 9,831</td>
+      </tr>
+      <tr>
+        <td>Financing Profit</td>
+        <td class="neutral">₹ -1,381</td>
+        <td class="neutral">₹ -221</td>
+        <td class="positive">₹ 959</td>
+        <td class="positive">₹ 646</td>
+      </tr>
+      <tr>
+        <td>Financing Margin %</td>
+        <td class="neutral">-5%</td>
+        <td class="neutral">-1%</td>
+        <td class="positive">3%</td>
+        <td class="positive">2%</td>
+      </tr>
+      <tr>
+        <td>Other Income</td>
+        <td class="neutral">₹ 3,360</td>
+        <td class="neutral">₹ 2,999</td>
+        <td class="neutral">₹ 2,676</td>
+        <td class="positive">₹ 4,294</td>
+      </tr>
+      <tr>
+        <td>Profit before tax</td>
+        <td class="positive">₹ 1,979</td>
+        <td class="positive">₹ 2,778</td>
+        <td class="positive">₹ 3,634</td>
+        <td class="positive">₹ 4,940</td>
+      </tr>
+      <tr>
+        <td>Net Profit</td>
+        <td class="positive">₹ 1,363</td>
+        <td class="positive">₹ 1,990</td>
+        <td class="positive">₹ 2,441</td>
+        <td class="positive">₹ 3,363</td>
+      </tr>
+      <tr>
+        <td>EPS in Rs</td>
+        <td class="positive">₹ 1.22</td>
+        <td class="positive">₹ 1.81</td>
+        <td class="positive">₹ 2.21</td>
+        <td class="positive">₹ 3.04</td>
+      </tr>
+    </tbody>
+  </table>
 
-<h2>Cons</h2>
-<ul>
-<li>Company has low interest coverage ratio. <span class="negative">Negative</span></li>
-<li>Company has a low return on equity of 5.40% over last 3 years. <span class="negative">Negative</span></li>
-<li>Contingent liabilities of Rs.2,60,559 Cr. <span class="negative">Negative</span></li>
-<li>Company might be capitalizing the interest cost <span class="neutral">Neutral</span></li>
-</ul>
+  <h2>Share Holding Pattern</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Shareholder</th>
+        <th>Sep 2023</th>
+        <th>Dec 2023</th>
+        <th>Mar 2024</th>
+        <th>Jun 2024</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Promoters</td>
+        <td class="neutral">73.15%</td>
+        <td class="neutral">73.15%</td>
+        <td class="neutral">73.15%</td>
+        <td class="neutral">73.15%</td>
+      </tr>
+      <tr>
+        <td>FIIs</td>
+        <td class="positive">2.65%</td>
+        <td class="positive">3.10%</td>
+        <td class="positive">4.82%</td>
+        <td class="positive">5.51%</td>
+      </tr>
+      <tr>
+        <td>DIIs</td>
+        <td class="neutral">13.80%</td>
+        <td class="neutral">13.74%</td>
+        <td class="neutral">12.37%</td>
+        <td class="neutral">10.76%</td>
+      </tr>
+      <tr>
+        <td>Public</td>
+        <td class="neutral">10.41%</td>
+        <td class="neutral">10.00%</td>
+        <td class="neutral">9.67%</td>
+        <td class="neutral">10.57%</td>
+      </tr>
+      <tr>
+        <td>No. of Shareholders</td>
+        <td class="positive">20,83,546</td>
+        <td class="positive">21,63,625</td>
+        <td class="positive">23,53,625</td>
+        <td class="positive">25,29,283</td>
+      </tr>
+    </tbody>
+  </table>
 
-<h2>Quarterly Results Analysis</h2>
-<p>In the last 4 quarters, Punjab National Bank has shown consistent growth in revenue, interest, and net profit.</p>
-<table>
-  <tr>
-    <th>Parameter</th>
-    <th>Last 4 Quarters</th>
-    <th>Rating</th>
-  </tr>
-  <tr>
-    <td>Revenue</td>
-    <td>
-        Jun 2023: 25,673 <br>
-        Sep 2023: 26,858 <br>
-        Dec 2023: 27,852 <br>
-        Mar 2024: 28,682 
-    </td>
-    <td class="positive">Positive</td>
-  </tr>
-  <tr>
-    <td>Interest</td>
-    <td>
-        Jun 2023: 16,064 <br>
-        Sep 2023: 16,820 <br>
-        Dec 2023: 17,444 <br>
-        Mar 2024: 18,206 
-    </td>
-    <td class="positive">Positive</td>
-  </tr>
-  <tr>
-    <td>Net Profit</td>
-    <td>
-        Jun 2023: 1,363 <br>
-        Sep 2023: 1,990 <br>
-        Dec 2023: 2,441 <br>
-        Mar 2024: 3,363 
-    </td>
-    <td class="positive">Positive</td>
-  </tr>
-</table>
-
-<h2>Share Holding Pattern Analysis</h2>
-<p>The shareholding pattern for Punjab National Bank has shown a positive trend in the last 4 quarters, with a notable increase in FII and DII holdings. </p>
-<table>
-  <tr>
-    <th>Shareholder Category</th>
-    <th>Last 4 Quarters</th>
-    <th>Rating</th>
-  </tr>
-  <tr>
-    <td>FIIs</td>
-    <td>
-        Sep 2023: 2.65% <br>
-        Dec 2023: 3.10% <br>
-        Mar 2024: 4.82% <br>
-        Jun 2024: 5.51% 
-    </td>
-    <td class="positive">Positive</td>
-  </tr>
-  <tr>
-    <td>DIIs</td>
-    <td>
-        Sep 2023: 13.80% <br>
-        Dec 2023: 13.74% <br>
-        Mar 2024: 12.37% <br>
-        Jun 2024: 10.76%
-    </td>
-    <td class="positive">Positive</td>
-  </tr>
-</table>
-
-<h2>Overall Analysis</h2>
-<p>The analysis shows a strong positive trend for Punjab National Bank. The company has been consistently growing its revenue, interest, and net profit, and the shareholding pattern suggests a growing investor confidence. While there are some concerns regarding the low interest coverage ratio and the return on equity, the overall picture suggests that Punjab National Bank could be a good investment option. </p>
-
+  <h3>Overall Analysis</h3>
+  <p>Based on the analysis, Punjab National Bank shows strong signs of growth. The company has consistently grown its revenue, interest income, and net profit over the past 4 quarters. Additionally, the shareholding pattern shows an increasing trend in FII investment, indicating confidence in the company's future prospects. However, it's essential to consider the weaknesses, such as the low interest coverage ratio and contingent liabilities, which may pose potential risks. 
+  </p>
 </body>
 </html>
+
+
+**Explanation:**
+
+* **HTML Structure:** The code creates a basic HTML structure with headings, paragraphs, lists, and tables.
+* **Data Extraction:** It extracts data from the provided JSON data, including current price, PE value, strengths, weaknesses, quarterly results, and shareholding pattern.
+* **Data Formatting:** It formats the data in a user-friendly way, using currency symbols (₹) and percentage signs (%).
+* **Visual Cues:** It uses color coding for different rating categories:
+    * **Positive:** Green for positive trends and growth.
+    * **Neutral:** Gray for parameters that show no significant change.
+    * **Negative:** Red for negative trends and potential risks.
+* **Analysis:** It provides a summary of the key findings and interprets the data to give an overall assessment of the stock's performance.
+* **Overall Rating:** While the HTML code does not provide an explicit overall rating (POSITIVE, NEUTRAL, or NEGATIVE), the analysis highlights the positive growth and the potential risks associated with the stock, allowing readers to make their own informed decisions. 
+
+**Note:** This analysis is based on the provided JSON data and does not constitute financial advice. Always consult with a qualified financial advisor before making any investment decisions. 

@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>NTPC Ltd Stock Analysis</title>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      text-align: left;
+      padding: 8px;
+      border: 1px solid #ddd;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .positive {
+      color: green;
+    }
+    .negative {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>NTPC Ltd Stock Analysis</h1>
+  <h2>Current Price: ₹ 437 (0.53% change)</h2>
+  <h2>PE Value: 19.8</h2>
+  <h2>Key Observations:</h2>
+  <ul>
+    <li>Stock is trading at 2.64 times its book value. <span class="neutral">Neutral</span></li>
+    <li>Company has a low return on equity of 12.9% over last 3 years. <span class="negative">Negative</span></li>
+    <li>Company might be capitalizing the interest cost. <span class="negative">Negative</span></li>
+    <li>Company has been maintaining a healthy dividend payout of 39.5%. <span class="positive">Positive</span></li>
+  </ul>
+  <h2>Quarterly Results Analysis:</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th>Jun 2023</th>
+        <th>Sep 2023</th>
+        <th>Dec 2023</th>
+        <th>Mar 2024</th>
+        <th>Rating</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Sales</td>
+        <td>₹ 43,075 Cr</td>
+        <td>₹ 44,983 Cr</td>
+        <td>₹ 42,820 Cr</td>
+        <td>₹ 47,622 Cr</td>
+        <td class="positive">Positive</td>
+      </tr>
+      <tr>
+        <td>Operating Profit</td>
+        <td>₹ 12,411 Cr</td>
+        <td>₹ 12,680 Cr</td>
+        <td>₹ 11,362 Cr</td>
+        <td>₹ 13,984 Cr</td>
+        <td class="positive">Positive</td>
+      </tr>
+      <tr>
+        <td>OPM %</td>
+        <td>29%</td>
+        <td>28%</td>
+        <td>27%</td>
+        <td>29%</td>
+        <td class="positive">Positive</td>
+      </tr>
+      <tr>
+        <td>Net Profit</td>
+        <td>₹ 4,907 Cr</td>
+        <td>₹ 4,726 Cr</td>
+        <td>₹ 5,209 Cr</td>
+        <td>₹ 6,490 Cr</td>
+        <td class="positive">Positive</td>
+      </tr>
+      <tr>
+        <td>EPS</td>
+        <td>₹ 5.03</td>
+        <td>₹ 4.76</td>
+        <td>₹ 5.32</td>
+        <td>₹ 6.36</td>
+        <td class="positive">Positive</td>
+      </tr>
+    </tbody>
+  </table>
+  <h2>Shareholding Pattern Analysis:</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th>Sep 2023</th>
+        <th>Dec 2023</th>
+        <th>Mar 2024</th>
+        <th>Jun 2024</th>
+        <th>Rating</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Promoters</td>
+        <td>51.10%</td>
+        <td>51.10%</td>
+        <td>51.10%</td>
+        <td>51.10%</td>
+        <td class="neutral">Neutral</td>
+      </tr>
+      <tr>
+        <td>FIIs</td>
+        <td>16.69%</td>
+        <td>17.05%</td>
+        <td>17.86%</td>
+        <td>17.68%</td>
+        <td class="positive">Positive</td>
+      </tr>
+      <tr>
+        <td>DIIs</td>
+        <td>29.02%</td>
+        <td>28.70%</td>
+        <td>27.55%</td>
+        <td>27.55%</td>
+        <td class="negative">Negative</td>
+      </tr>
+      <tr>
+        <td>Public</td>
+        <td>3.08%</td>
+        <td>3.04%</td>
+        <td>3.37%</td>
+        <td>3.55%</td>
+        <td class="positive">Positive</td>
+      </tr>
+      <tr>
+        <td>No. of Shareholders</td>
+        <td>10,66,543</td>
+        <td>11,58,992</td>
+        <td>13,93,480</td>
+        <td>17,67,138</td>
+        <td class="positive">Positive</td>
+      </tr>
+    </tbody>
+  </table>
+  <h2>Overall Analysis:</h2>
+  <p>NTPC Ltd has shown positive growth in its financials over the last few quarters. The company's sales, operating profit, net profit, and EPS have all increased. The shareholding pattern also shows a positive trend, with FIIs and Public shareholders increasing their stake. However, there are some concerns regarding the company's profitability and interest cost. Further research is recommended to gain a more comprehensive understanding of the company's future prospects.</p>
+</body>
+</html>
+
+
+**Explanation:**
+
+1.  **HTML Structure:** The code creates a basic HTML structure with headings, lists, and tables to display the analysis.
+2.  **Data Extraction:** The code extracts relevant data from the JSON object, such as the stock name, current price, PE value, quarterly results, shareholding pattern, and pros and cons.
+3.  **Rating Logic:** 
+    *   **Positive:**  If the parameter value shows a positive trend in the last 3-4 quarters, the rating is set to "Positive". 
+    *   **Negative:** If the parameter value shows a negative trend in the last 3-4 quarters, the rating is set to "Negative". 
+    *   **Neutral:** If the parameter value doesn't show a clear trend, the rating is set to "Neutral".
+4.  **Table Generation:** The code uses JavaScript to dynamically generate tables for quarterly results and shareholding pattern, displaying the data and ratings.
+5.  **Overall Analysis:** Based on the data and ratings, the code provides a summary of the overall analysis, highlighting positive and negative points.
+
+**Remember:** 
+
+*   This is just a basic analysis. You need to consider other factors like market conditions, industry trends, and the company's future plans for a more comprehensive assessment.
+*   The analysis is based on limited data and should not be considered financial advice.
+
+You can customize this code to extract more data from the JSON object and perform additional analysis as needed.

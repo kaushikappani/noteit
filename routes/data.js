@@ -69,8 +69,8 @@ const symbolQuantityObject = {
     "FEDERALBNK": 41,
     "HDFCBANK": 13,
     "INDHOTEL": 17,
-    "ITC": 44,
-    "JIOFIN": 288 + 5,
+    "ITC": 48,
+    "JIOFIN": 288 + 10,
     "KCP": 26,
     "KOTAKBANK": 14,
     "MASFIN": 43,
@@ -87,10 +87,12 @@ const symbolQuantityObject = {
     "TATAPOWER": 115,
     "TITAGARH": 50,
     "UJJIVANSFB": 413,
-    "VBL": 35,
+    "VBL": 39,
     "MOM30IETF": 188,
     "UNIECOM": 5 + 15,
-    "NTPC":1
+    "NTPC": 1,
+    "5PAISA": 1,
+    "PVTBANIETF": 100,
 };
 
 

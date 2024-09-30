@@ -70,7 +70,7 @@ const StockIndexCards = ({ reloadStockData }) => {
                                 <Card.Body className="p-1 d-flex align-items-center">
                                     <div className="card-icon me-2">
                                         {stock.marketState == 'CLOSED' ? (
-                                            <Clock />
+                                            <Clock className='text-danger' />
 
                                         ) : (
                                         <ClockFill />

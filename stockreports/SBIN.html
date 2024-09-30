@@ -1,224 +1,181 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>State Bank of India Stock Analysis</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .positive {
-            color: green;
-        }
-        .neutral {
-            color: orange;
-        }
-        .negative {
-            color: red;
-        }
-    </style>
+  <title>State Bank of India Stock Analysis</title>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      text-align: left;
+      padding: 8px;
+      border: 1px solid #ddd;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .positive {
+      color: green;
+    }
+    .neutral {
+      color: #808080;
+    }
+    .negative {
+      color: red;
+    }
+  </style>
 </head>
 <body>
-    <h1>State Bank of India Stock Analysis</h1>
-    <h2>Current Price: ₹ 791 (0.39% Price Change)</h2>
-    <h2>P/E Value: 9.68</h2>
-    <h2>Key Observations:</h2>
-    <ul>
-        <li><strong>Profit Growth:</strong> The company has delivered good profit growth of 98.7% CAGR over the last 5 years. (POSITIVE)</li>
-        <li><strong>Dividend Payout:</strong> Company has been maintaining a healthy dividend payout of 18.1%. (POSITIVE)</li>
-        <li><strong>Interest Coverage Ratio:</strong> Company has low interest coverage ratio. (NEGATIVE)</li>
-        <li><strong>Contingent Liabilities:</strong> Contingent liabilities of Rs.24,65,418 Cr. (NEGATIVE)</li>
-        <li><strong>Other Income:</strong> Earnings include an other income of Rs.1,51,296 Cr. (NEUTRAL)</li>
-    </ul>
+  <h1>State Bank of India Stock Analysis</h1>
 
-    <h2>Quarterly Results Analysis:</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Parameter</th>
-                <th>Jun 2023</th>
-                <th>Sep 2023</th>
-                <th>Dec 2023</th>
-                <th>Mar 2024</th>
-                <th>Rating</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Revenue</td>
-                <td>₹ 101,460 Cr</td>
-                <td>₹ 107,391 Cr</td>
-                <td>₹ 112,868 Cr</td>
-                <td>₹ 117,469 Cr</td>
-                <td class="positive">POSITIVE</td>
-            </tr>
-            <tr>
-                <td>Interest Income</td>
-                <td>₹ 58,045 Cr</td>
-                <td>₹ 62,955 Cr</td>
-                <td>₹ 68,092 Cr</td>
-                <td>₹ 70,644 Cr</td>
-                <td class="positive">POSITIVE</td>
-            </tr>
-            <tr>
-                <td>Expenses</td>
-                <td>₹ 49,080 Cr</td>
-                <td>₹ 59,365 Cr</td>
-                <td>₹ 62,635 Cr</td>
-                <td>₹ 65,418 Cr</td>
-                <td class="neutral">NEUTRAL</td>
-            </tr>
-            <tr>
-                <td>Financing Profit</td>
-                <td>₹ -5,665 Cr</td>
-                <td>₹ -14,930 Cr</td>
-                <td>₹ -17,858 Cr</td>
-                <td>₹ -18,593 Cr</td>
-                <td class="negative">NEGATIVE</td>
-            </tr>
-            <tr>
-                <td>Financing Margin %</td>
-                <td>-6%</td>
-                <td>-14%</td>
-                <td>-16%</td>
-                <td>-16%</td>
-                <td class="negative">NEGATIVE</td>
-            </tr>
-            <tr>
-                <td>Other Income</td>
-                <td>₹ 30,873 Cr</td>
-                <td>₹ 36,865 Cr</td>
-                <td>₹ 33,103 Cr</td>
-                <td>₹ 47,445 Cr</td>
-                <td class="positive">POSITIVE</td>
-            </tr>
-            <tr>
-                <td>Profit Before Tax</td>
-                <td>₹ 25,208 Cr</td>
-                <td>₹ 21,936 Cr</td>
-                <td>₹ 15,245 Cr</td>
-                <td>₹ 28,852 Cr</td>
-                <td class="neutral">NEUTRAL</td>
-            </tr>
-            <tr>
-                <td>Net Profit</td>
-                <td>₹ 19,094 Cr</td>
-                <td>₹ 16,648 Cr</td>
-                <td>₹ 11,598 Cr</td>
-                <td>₹ 22,203 Cr</td>
-                <td class="positive">POSITIVE</td>
-            </tr>
-            <tr>
-                <td>EPS (Rs)</td>
-                <td>₹ 20.77</td>
-                <td>₹ 18.04</td>
-                <td>₹ 12.40</td>
-                <td>₹ 23.96</td>
-                <td class="positive">POSITIVE</td>
-            </tr>
-        </tbody>
-    </table>
-    
-    <h2>Share Holding Pattern Analysis:</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Category</th>
-                <th>Sep 2022</th>
-                <th>Dec 2022</th>
-                <th>Mar 2023</th>
-                <th>Jun 2023</th>
-                <th>Rating</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Promoters</td>
-                <td>57.52%</td>
-                <td>57.50%</td>
-                <td>57.49%</td>
-                <td>57.47%</td>
-                <td class="neutral">NEUTRAL</td>
-            </tr>
-            <tr>
-                <td>FIIs</td>
-                <td>9.95%</td>
-                <td>10.09%</td>
-                <td>9.89%</td>
-                <td>10.36%</td>
-                <td class="positive">POSITIVE</td>
-            </tr>
-            <tr>
-                <td>DIIs</td>
-                <td>25.39%</td>
-                <td>25.36%</td>
-                <td>25.20%</td>
-                <td>24.83%</td>
-                <td class="negative">NEGATIVE</td>
-            </tr>
-            <tr>
-                <td>Government</td>
-                <td>0.03%</td>
-                <td>0.03%</td>
-                <td>0.03%</td>
-                <td>0.03%</td>
-                <td class="neutral">NEUTRAL</td>
-            </tr>
-            <tr>
-                <td>Public</td>
-                <td>7.10%</td>
-                <td>7.03%</td>
-                <td>7.40%</td>
-                <td>7.30%</td>
-                <td class="neutral">NEUTRAL</td>
-            </tr>
-            <tr>
-                <td>No. of Shareholders</td>
-                <td>28,37,266</td>
-                <td>27,97,196</td>
-                <td>29,93,298</td>
-                <td>29,48,536</td>
-                <td class="neutral">NEUTRAL</td>
-            </tr>
-        </tbody>
-    </table>
+  <h2>Current Price: ₹ 803</h2>
+  <h2>Price Change: 0.10%</h2>
+  <h2>PE Value: 9.83</h2>
 
-    <h2>Overall Analysis:</h2>
-    <p>State Bank of India shows a mixed performance in the recent quarters. While the company has seen consistent revenue growth, profit growth has been more volatile. The shareholding pattern reflects a slight increase in FII holdings, while DII holdings have declined. The company's low interest coverage ratio and high contingent liabilities are concerns. Further analysis of the company's financial health and future prospects is recommended.</p>
+  <h3>Strengths:</h3>
+  <ul>
+    <li>Company has delivered good profit growth of 98.7% CAGR over last 5 years. <strong>(POSITIVE)</strong></li>
+    <li>Company has been maintaining a healthy dividend payout of 18.1%. <strong>(POSITIVE)</strong></li>
+  </ul>
+
+  <h3>Weaknesses:</h3>
+  <ul>
+    <li>Company has low interest coverage ratio. <strong>(NEGATIVE)</strong></li>
+    <li>Contingent liabilities of Rs.24,65,418 Cr. <strong>(NEGATIVE)</strong></li>
+    <li>Earnings include an other income of Rs.1,51,296 Cr. <strong>(NEUTRAL)</strong></li>
+  </ul>
+
+  <h2>Quarterly Results Analysis</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Quarter</th>
+        <th>Revenue</th>
+        <th>Interest</th>
+        <th>Expenses</th>
+        <th>Financing Profit</th>
+        <th>Financing Margin %</th>
+        <th>Other Income</th>
+        <th>Net Profit</th>
+        <th>EPS (₹)</th>
+        <th>Rating</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Jun 2023</td>
+        <td>101,460</td>
+        <td>58,045</td>
+        <td>49,080</td>
+        <td>-5,665</td>
+        <td>-6%</td>
+        <td>30,873</td>
+        <td>19,094</td>
+        <td>20.77</td>
+        <td class="positive">POSITIVE</td>
+      </tr>
+      <tr>
+        <td>Sep 2023</td>
+        <td>107,391</td>
+        <td>62,955</td>
+        <td>59,365</td>
+        <td>-14,930</td>
+        <td>-14%</td>
+        <td>36,865</td>
+        <td>16,648</td>
+        <td>18.04</td>
+        <td class="neutral">NEUTRAL</td>
+      </tr>
+      <tr>
+        <td>Dec 2023</td>
+        <td>112,868</td>
+        <td>68,092</td>
+        <td>62,635</td>
+        <td>-17,858</td>
+        <td>-16%</td>
+        <td>33,103</td>
+        <td>11,598</td>
+        <td>12.40</td>
+        <td class="negative">NEGATIVE</td>
+      </tr>
+      <tr>
+        <td>Mar 2024</td>
+        <td>117,469</td>
+        <td>70,644</td>
+        <td>65,418</td>
+        <td>-18,593</td>
+        <td>-16%</td>
+        <td>47,445</td>
+        <td>20,094</td>
+        <td>21.65</td>
+        <td class="positive">POSITIVE</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Share Holding Pattern</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Quarter</th>
+        <th>Promoters</th>
+        <th>FIIs</th>
+        <th>DIIs</th>
+        <th>Government</th>
+        <th>Public</th>
+        <th>No. of Shareholders</th>
+        <th>Rating</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Sep 2022</td>
+        <td>57.52%</td>
+        <td>9.95%</td>
+        <td>25.39%</td>
+        <td>0.03%</td>
+        <td>7.10%</td>
+        <td>28,37,266</td>
+        <td class="neutral">NEUTRAL</td>
+      </tr>
+      <tr>
+        <td>Dec 2022</td>
+        <td>57.50%</td>
+        <td>10.09%</td>
+        <td>25.36%</td>
+        <td>0.03%</td>
+        <td>7.03%</td>
+        <td>27,97,196</td>
+        <td class="neutral">NEUTRAL</td>
+      </tr>
+      <tr>
+        <td>Mar 2023</td>
+        <td>57.49%</td>
+        <td>9.89%</td>
+        <td>25.20%</td>
+        <td>0.03%</td>
+        <td>7.40%</td>
+        <td>29,93,298</td>
+        <td class="positive">POSITIVE</td>
+      </tr>
+      <tr>
+        <td>Jun 2023</td>
+        <td>57.47%</td>
+        <td>10.36%</td>
+        <td>24.83%</td>
+        <td>0.03%</td>
+        <td>7.30%</td>
+        <td>29,48,536</td>
+        <td class="positive">POSITIVE</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>Note:</strong> This is a preliminary analysis based on the provided JSON data and should not be considered financial advice. It's always recommended to consult with a qualified financial advisor for investment decisions.</p>
+
 </body>
 </html>
-
-**Explanation:**
-
-1.  **HTML Structure:** The code creates a basic HTML page with headings, paragraphs, and tables to organize the analysis.
-2.  **Data Extraction:** The JSON data is processed to extract relevant parameters like current price, P/E value, quarterly results, and shareholding pattern.
-3.  **Analysis and Ratings:**
-    *   **Profit Growth:** Based on the provided data, the company's 5-year profit growth (CAGR) of 98.7% is considered **POSITIVE**.
-    *   **Dividend Payout:**  The consistent dividend payout of 18.1% is also **POSITIVE**.
-    *   **Interest Coverage Ratio:** The mention of a low interest coverage ratio is **NEGATIVE** as it indicates a potential risk.
-    *   **Contingent Liabilities:**  High contingent liabilities are **NEGATIVE**, as they represent potential future financial obligations.
-    *   **Other Income:**  The mention of significant other income is considered **NEUTRAL** as it may not be directly indicative of the company's core business performance.
-    *   **Quarterly Results:**  The analysis of quarterly results shows a **POSITIVE** trend in revenue and interest income, a **NEUTRAL** trend in expenses, and a **NEGATIVE** trend in financing profit and margin. 
-    *   **Shareholding Pattern:** The shareholding pattern shows a **POSITIVE** increase in FII holdings, a **NEGATIVE** decrease in DII holdings, and **NEUTRAL** trends in other categories.
-4.  **Visual Presentation:** The data is presented in tables with clear headings and formatting. Ratings are applied to each parameter using color coding (green for positive, orange for neutral, and red for negative).
-5.  **Overall Analysis:**  A concluding paragraph summarizes the key findings and suggests further analysis.
-
-**Important Notes:**
-
-*   **Data Availability:** The provided JSON data lacks some crucial metrics like Gross and Net NPA percentages, which could provide further insights.
-*   **Context:**  This analysis is based solely on the provided data. A comprehensive analysis would require a deeper dive into the company's financial statements, industry trends, and other relevant factors.
-*   **Investment Advice:** This analysis is for informational purposes only and should not be considered financial advice. 
-
-This HTML page presents a basic analysis of the provided stock data. It is crucial to conduct thorough research and consider various factors before making any investment decisions.

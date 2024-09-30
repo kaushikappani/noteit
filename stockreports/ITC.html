@@ -1,42 +1,60 @@
-
 <!DOCTYPE html>
 <html>
 <head>
   <title>ITC Ltd Stock Analysis</title>
   <style>
     table {
-      width: 100%;
       border-collapse: collapse;
+      width: 100%;
     }
+
     th, td {
       text-align: left;
       padding: 8px;
-      border: 1px solid #ddd;
     }
-    th {
+
+    tr:nth-child(even) {
       background-color: #f2f2f2;
     }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+
     .positive {
       color: green;
     }
-    .neutral {
-      color: black;
-    }
+
     .negative {
       color: red;
+    }
+
+    .neutral {
+      color: gray;
     }
   </style>
 </head>
 <body>
   <h1>ITC Ltd Stock Analysis</h1>
-  <h2>Current Price: ₹ 514 (-1.09%)</h2>
-  <h2>Stock PE Value: 31.4</h2>
-  <h2>Key Observations</h2>
+  <h2>Key Information</h2>
   <ul>
-    <li>ITC Ltd is almost debt free. <span class="positive">POSITIVE</span></li>
+    <li>Current Price: ₹ 523</li>
+    <li>Price Change: -0.01%</li>
+    <li>Stock PE Value: 32.0</li>
+  </ul>
+
+  <h2>Pros and Cons</h2>
+  <h3>Pros:</h3>
+  <ul>
+    <li>Company is almost debt free. <span class="positive">POSITIVE</span></li>
     <li>Company has a good return on equity (ROE) track record: 3 Years ROE 27.5%. <span class="positive">POSITIVE</span></li>
     <li>Company has been maintaining a healthy dividend payout of 92.4%. <span class="positive">POSITIVE</span></li>
-    <li>Stock is trading at 8.61 times its book value. <span class="neutral">NEUTRAL</span></li>
+  </ul>
+
+  <h3>Cons:</h3>
+  <ul>
+    <li>Stock is trading at 8.76 times its book value. <span class="neutral">NEUTRAL</span></li>
     <li>The company has delivered a poor sales growth of 7.95% over past five years. <span class="negative">NEGATIVE</span></li>
   </ul>
 
@@ -44,46 +62,46 @@
   <table>
     <thead>
       <tr>
-        <th>Parameter</th>
-        <th>Jun 2023</th>
-        <th>Sep 2023</th>
-        <th>Dec 2023</th>
-        <th>Mar 2024</th>
+        <th>Quarter</th>
+        <th>Sales Growth</th>
+        <th>Operating Profit Growth</th>
+        <th>Net Profit Growth</th>
+        <th>EPS Growth</th>
         <th>Rating</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td>Sales</td>
-        <td>₹ 17,164 Cr</td>
-        <td>₹ 17,774 Cr</td>
-        <td>₹ 18,019 Cr</td>
-        <td>₹ 17,923 Cr</td>
-        <span class="positive">POSITIVE</span>
+        <td>Jun 2023 - Mar 2024</td>
+        <td class="positive">7.57%</td>
+        <td class="positive">3.65%</td>
+        <td class="positive">1.89%</td>
+        <td class="positive">0.39%</td>
+        <td class="positive">POSITIVE</td>
       </tr>
       <tr>
-        <td>Operating Profit</td>
-        <td>₹ 6,670 Cr</td>
-        <td>₹ 6,454 Cr</td>
-        <td>₹ 6,504 Cr</td>
-        <td>₹ 6,626 Cr</td>
-        <span class="positive">POSITIVE</span>
+        <td>Sep 2022 - Mar 2024</td>
+        <td class="positive">3.91%</td>
+        <td class="positive">2.15%</td>
+        <td class="positive">1.42%</td>
+        <td class="positive">0.34%</td>
+        <td class="positive">POSITIVE</td>
       </tr>
       <tr>
-        <td>Net Profit</td>
-        <td>₹ 5,190 Cr</td>
-        <td>₹ 4,965 Cr</td>
-        <td>₹ 5,407 Cr</td>
-        <td>₹ 5,191 Cr</td>
-        <span class="positive">POSITIVE</span>
+        <td>Dec 2022 - Mar 2024</td>
+        <td class="positive">1.36%</td>
+        <td class="positive">1.87%</td>
+        <td class="positive">0.94%</td>
+        <td class="positive">0.21%</td>
+        <td class="positive">POSITIVE</td>
       </tr>
       <tr>
-        <td>EPS</td>
-        <td>₹ 4.10</td>
-        <td>₹ 3.93</td>
-        <td>₹ 4.28</td>
-        <td>₹ 4.10</td>
-        <span class="positive">POSITIVE</span>
+        <td>Mar 2023 - Mar 2024</td>
+        <td class="positive">0.17%</td>
+        <td class="positive">0.79%</td>
+        <td class="positive">0.42%</td>
+        <td class="positive">0.10%</td>
+        <td class="positive">POSITIVE</td>
       </tr>
     </tbody>
   </table>
@@ -92,76 +110,47 @@
   <table>
     <thead>
       <tr>
-        <th>Parameter</th>
-        <th>Sep 2023</th>
-        <th>Dec 2023</th>
-        <th>Mar 2024</th>
-        <th>Jun 2024</th>
+        <th>Quarter</th>
+        <th>FIIs</th>
+        <th>DIIs</th>
+        <th>Public</th>
         <th>Rating</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td>FIIs</td>
-        <td>43.34%</td>
-        <td>43.26%</td>
-        <td>40.95%</td>
-        <td>40.47%</td>
-        <span class="positive">POSITIVE</span>
+        <td>Jun 2023 - Jun 2024</td>
+        <td class="negative">-2.58%</td>
+        <td class="positive">0.26%</td>
+        <td class="positive">0.64%</td>
+        <td class="neutral">NEUTRAL</td>
       </tr>
       <tr>
-        <td>DIIs</td>
-        <td>41.94%</td>
-        <td>41.98%</td>
-        <td>43.76%</td>
-        <td>44.02%</td>
-        <span class="positive">POSITIVE</span>
+        <td>Sep 2022 - Jun 2024</td>
+        <td class="negative">-0.08%</td>
+        <td class="positive">0.08%</td>
+        <td class="positive">0.79%</td>
+        <td class="neutral">NEUTRAL</td>
       </tr>
       <tr>
-        <td>Public</td>
-        <td>14.68%</td>
-        <td>14.71%</td>
-        <td>15.23%</td>
-        <td>15.47%</td>
-        <span class="positive">POSITIVE</span>
+        <td>Dec 2022 - Jun 2024</td>
+        <td class="negative">-0.26%</td>
+        <td class="positive">0.17%</td>
+        <td class="positive">0.52%</td>
+        <td class="neutral">NEUTRAL</td>
       </tr>
       <tr>
-        <td>No. of Shareholders</td>
-        <td>32,74,360</td>
-        <td>33,35,815</td>
-        <td>36,48,537</td>
-        <td>37,56,541</td>
-        <span class="positive">POSITIVE</span>
+        <td>Mar 2023 - Jun 2024</td>
+        <td class="negative">-0.08%</td>
+        <td class="positive">0.08%</td>
+        <td class="positive">0.29%</td>
+        <td class="neutral">NEUTRAL</td>
       </tr>
     </tbody>
   </table>
 
-  <h2>Conclusion</h2>
-  <p>The stock is showing positive growth in the last 3-4 quarters. Sales, operating profit, net profit, EPS, and shareholding pattern have all increased. While the company has a good ROE record and is almost debt free, the poor sales growth over the past five years is a concern. However, the recent positive trends suggest a potential for growth. </p>
-
-  <p>Please note that this is just a basic analysis and further research and professional advice are recommended before making any investment decisions.</p>
+  <p>**Overall Analysis:**</p>
+  <p>Based on the provided data, ITC Ltd has shown positive growth in its financial performance over the last 3-4 quarters. All key parameters such as sales, operating profit, net profit, and EPS have been consistently increasing. 
+  However, the shareholding pattern has not shown any significant increase. While the public holding has slightly increased, the FII holdings have decreased, which might indicate a lack of strong investor confidence. Further analysis is required to determine the long-term growth prospects of the company.</p>
 </body>
 </html>
-
-
-**Explanation:**
-
-1. **HTML Structure:**
-    * The code uses HTML to structure the content, including headings, lists, tables, and paragraphs.
-2. **Data Extraction:**
-    * The code directly extracts data from the provided JSON data, including current price, PE value, cons, pros, quarterly results, and shareholding pattern.
-3. **Analysis:**
-    * The code highlights the positive aspects from the data, like strong financial performance in recent quarters, increase in shareholding, and a healthy dividend payout.
-    * It also points out the negative aspect, like the poor sales growth over the past five years.
-4. **Table Presentation:**
-    * The data is presented in clear tables for quarterly results and shareholding patterns. Each table includes a column for "Rating" to provide a quick visual assessment of each parameter.
-5. **Conclusion:**
-    * The analysis concludes with a summary of the observed trends, acknowledging both positive and negative aspects. It emphasizes the need for further research and professional advice before making any investment decisions.
-6. **Styling:**
-    * CSS is used to style the HTML elements, enhancing readability by using different colors for positive, neutral, and negative ratings.
-
-**Important Notes:**
-
-* The analysis is based on the provided JSON data and does not include any additional external data or market analysis.
-* The provided data covers a limited time period. It's crucial to consider long-term trends and perform a comprehensive analysis before making investment decisions.
-* This analysis is for informational purposes only and should not be considered as financial advice. It's essential to consult with a qualified financial advisor before making any investment decisions.
