@@ -69,7 +69,7 @@ const StockIndexCards = ({ reloadStockData }) => {
                             <Card key={index} className={`stock-card ${stock.regularMarketChangePercent < 0 ? 'negative-card' : 'positive-card'}`}>
                                 <Card.Body className="p-1 d-flex align-items-center">
                                     <div className="card-icon me-2">
-                                        {stock.marketState == 'CLOSED' ? (
+                                        {stock.marketState != 'REGULAR' ? (
                                             <Clock className='text-danger' />
 
                                         ) : (
