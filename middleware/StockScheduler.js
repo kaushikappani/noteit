@@ -300,7 +300,7 @@ const scheduleCoorporateAnnouncments = async () => {
   }
 };
 
-
+scheduleCoorporateAnnouncments();
 
 const scheduleCoorporateActions = async () => {
   try {

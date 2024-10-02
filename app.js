@@ -20,8 +20,8 @@ const path = require("path");
 require('./functions/Scheduler'); 
 
 if (process.env.NODE_ENV === "production") {
-    const bot = require("./middleware/telegramBot");
-    const aibot = require("./middleware/telegramAIBot");
+    require("./middleware/telegramBot");
+    require("./middleware/telegramAIBot");
 }
 
 const { runPendingReminders } = require("./functions/remainderJobs");
