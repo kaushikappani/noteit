@@ -32,19 +32,26 @@ const scheduleTask = async () => {
 
       if (symbol in symbolQuantityObject) {
         const redisKey = `delivery:${symbol}`;
+
+        // Fetch the existing data from Redis
         const existingData = await client.get(redisKey);
         let symbolData = existingData ? JSON.parse(existingData) : {};
 
+        // Append the new day's data without overwriting previous entries
         symbolData[data.securityWiseDP.secWiseDelPosDate] = {
           delivery: data.securityWiseDP.deliveryToTradedQuantity,
           date: data.securityWiseDP.secWiseDelPosDate
         };
 
+        // Filter to keep only the last 3 days
         const filteredData = filterLast3DaysData(symbolData);
-        await client.set(redisKey, JSON.stringify(filteredData));
-        console.log(`Saved/Updated data for ${symbol} on ${data.securityWiseDP.secWiseDelPosDate}`);
 
+        // Save the filtered data back to Redis
+        await client.set(redisKey, JSON.stringify(filteredData));
+
+        console.log(`Saved/Updated data for ${symbol} on ${data.securityWiseDP.secWiseDelPosDate}`);
       }
+
 
       if (data.securityWiseDP && data.securityWiseDP.deliveryToTradedQuantity > process.env.DELIVERY_QUANTITY_THRESHOLD) {
         batchData.push({
@@ -132,15 +139,21 @@ const scheduleTask = async () => {
   pickDataFromCacheToDb();
 };
 
-
+scheduleTask();
 
 function filterLast3DaysData(data) {
-  const dates = Object.keys(data).sort().reverse(); // Sort dates in descending order
-  const recentDates = dates.slice(0, 3); // Keep the last 3 dates
+  // Get all dates sorted in descending order (most recent first)
+  const dates = Object.keys(data).sort().reverse();
+
+  // Keep only the most recent 3 dates
+  const recentDates = dates.slice(0, 3);
+
+  // Create a new object with only the last 3 days' data
   const filteredData = recentDates.reduce((acc, date) => {
     acc[date] = data[date];
     return acc;
   }, {});
+
   return filteredData;
 }
 
@@ -300,7 +313,6 @@ const scheduleCoorporateAnnouncments = async () => {
   }
 };
 
-scheduleCoorporateAnnouncments();
 
 const scheduleCoorporateActions = async () => {
   try {
