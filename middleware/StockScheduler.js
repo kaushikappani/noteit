@@ -139,7 +139,6 @@ const scheduleTask = async () => {
   pickDataFromCacheToDb();
 };
 
-scheduleTask();
 
 function filterLast3DaysData(data) {
   // Get all dates sorted in descending order (most recent first)
