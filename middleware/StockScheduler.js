@@ -141,13 +141,10 @@ const scheduleTask = async () => {
 
 
 function filterLast3DaysData(data) {
-  // Get all dates sorted in descending order (most recent first)
   const dates = Object.keys(data).sort().reverse();
 
-  // Keep only the most recent 3 dates
   const recentDates = dates.slice(0, 3);
 
-  // Create a new object with only the last 3 days' data
   const filteredData = recentDates.reduce((acc, date) => {
     acc[date] = data[date];
     return acc;
