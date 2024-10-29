@@ -24,9 +24,6 @@ if (process.env.NODE_ENV === "production") {
     require("./middleware/telegramAIBot");
 }
 
-require("./middleware/telegramBot");
-require("./middleware/telegramAIBot");
-
 const { runPendingReminders } = require("./functions/remainderJobs");
 
 const app = express();
