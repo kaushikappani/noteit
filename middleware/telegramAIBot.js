@@ -42,10 +42,12 @@ aibot.on('message', async (msg) => {
     const chatId = msg.chat.id;
     const text = msg.text || "";
 
+    console.log(chatId)
+
     await aibot.sendChatAction(chatId, 'typing');
 
     try {
-        if (chatId === 1375808164) {
+        if (chatId === 1375808164 || chatId === 1900307061) {
             if (msg.photo) {
                 // Download the photo
                 const fileId = msg.photo[msg.photo.length - 1].file_id;
