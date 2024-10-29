@@ -68,9 +68,9 @@ const symbolQuantityObject = {
     "EXIDEIND": 40,
     "FEDERALBNK": 41,
     "HDFCBANK": 14,
-    "INDHOTEL": 17,
+    "INDHOTEL": 17 + 4,
     "ITC": 50,
-    "JIOFIN": 305,
+    "JIOFIN": 317,
     "KCP": 26,
     "KOTAKBANK": 14,
     "MASFIN": 43,
@@ -80,7 +80,7 @@ const symbolQuantityObject = {
     "PNB": 160,
     "POWERGRID": 20,
     "PSUBANK": 5,
-    "RECLTD": 85 + 5,
+    "RECLTD": 85 + 7,
     "SBIN": 37,
     "SUZLON": 425,
     "TATAMOTORS": 10,
@@ -91,8 +91,9 @@ const symbolQuantityObject = {
     "MOM30IETF": 188 + 41,
     "UNIECOM": 5 + 15,
     "NTPC": 1,
-    "5PAISA": 5,
+    "5PAISA": 5 + 4,
     "PVTBANIETF": 152,
+    "BAJAJHFL":46
 
 };
 
