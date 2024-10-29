@@ -171,6 +171,9 @@ aibot.on('message', async (msg) => {
                 await client.rpush(`chatHistory:${chatId}`, JSON.stringify(aiMessage));
                 await aibot.sendMessage(chatId, telegramifyMarkdown(result.response.text(), 'remove'), { parse_mode: 'MarkdownV2' });
             }
+        } else {
+            await aibot.sendMessage(chatId, "No Access - Please Contact - Appani Kaushik ( kaushikappani@gmail.com)");
+
         }
     } catch (e) {
         console.error(`Error in telegram AI bot ${e}`);
