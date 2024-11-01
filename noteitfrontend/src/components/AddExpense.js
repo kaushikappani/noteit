@@ -123,7 +123,6 @@ const AddExpense = ({ fetchExpenses,children}) => {
 
               <Box style={style}>
                   <Form onSubmit={submitHandler}>
-                      {/* Cost Field */}
                       <Form.Group controlId="cost" className="mb-3">
                           <Form.Label>Cost</Form.Label>
                           <Form.Control
@@ -139,7 +138,6 @@ const AddExpense = ({ fetchExpenses,children}) => {
                           />
                       </Form.Group>
                       <p> {costInWords}</p>
-                      {/* Category Field */}
                       <Form.Group controlId="formCategory" className="mb-3">
                           <Form.Label>Category</Form.Label>
                           <Form.Control
@@ -162,7 +160,6 @@ const AddExpense = ({ fetchExpenses,children}) => {
                           </Form.Control>
                       </Form.Group>
 
-                      {/* Description Field */}
                       <Form.Group controlId="description" className="mb-3">
                           <Form.Label>Description</Form.Label>
                           <Form.Control

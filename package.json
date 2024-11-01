@@ -41,7 +41,7 @@
     "redis": "^4.6.8",
     "showdown": "^2.1.0",
     "socket.io": "^4.7.5",
-    "stock-nse-india": "^1.1.5",
+    "stock-nse-india": "^1.1.7",
     "swagger-ui-express": "^5.0.1",
     "telegramify-markdown": "^1.2.2",
     "util": "^0.12.5",
