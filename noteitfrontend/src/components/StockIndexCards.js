@@ -17,8 +17,12 @@ const StockIndexCards = ({ reloadStockData }) => {
     const fetchStockData = async () => {
         try {
             const response = await axios.get('/api/stock/index');
+            console.log(response);
             setIndianStocks(response.data.indian); 
-            setUsStocks(response.data.us); 
+            setUsStocks(response.data.us);
+            if (response.data &&  response.data.us[0].marketState === "REGULAR") {
+                setSelectedStockType('us');
+            }
         } catch (error) {
             console.error('Error fetching stock data:', error);
             setError(true);
