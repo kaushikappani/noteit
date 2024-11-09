@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import axios from 'axios';
-import { Container, Table, Form } from 'react-bootstrap';
+import { Container, Table, Form, Button } from 'react-bootstrap';
 import { Bar, Pie } from 'react-chartjs-2';
 import 'chart.js/auto';
 import './Expense.css'; // Import the CSS file
 import { PlusCircle, Trash } from 'react-bootstrap-icons';
 import AddExpense from '../components/AddExpense';
 import Notification from '../components/Notification';
-
 
 const ExpenseTracker = () => {
     const [loading, setLoading] = useState(false);
@@ -20,6 +19,7 @@ const ExpenseTracker = () => {
     });
     const [expenses, setExpenses] = useState([]);
     const [filters, setFilters] = useState({});
+    const [collapsedMonths, setCollapsedMonths] = useState({});
 
     const buttonStyle = {
         borderRadius: "100%",
@@ -93,6 +93,17 @@ const ExpenseTracker = () => {
         fetchExpenses();
     }, []);
 
+    useEffect(() => {
+        if (expenses.length > 0) {
+            const groupedExpensesKeys = Object.keys(groupExpensesByMonth(expenses));
+            const initialCollapsedMonths = groupedExpensesKeys.reduce((acc, key) => {
+                acc[key] = true;
+                return acc;
+            }, {});
+            setCollapsedMonths(initialCollapsedMonths);
+        }
+    }, [expenses]);
+
     const groupExpensesByMonth = (expenses) => {
         return expenses.reduce((acc, expense) => {
             const month = new Date(expense.date).toLocaleString('default', { month: 'long', year: 'numeric' });
@@ -112,6 +123,9 @@ const ExpenseTracker = () => {
     };
 
     const groupedExpenses = groupExpensesByMonth(expenses);
+    let keys = Object.keys(groupedExpenses);
+    
+    console.log(keys.length)
 
     const categoryColors = {
         "Investments": "#4CAF50", // Green
@@ -168,6 +182,13 @@ const ExpenseTracker = () => {
         });
     };
 
+    const toggleCollapse = (month) => {
+        setCollapsedMonths((prev) => ({
+            ...prev,
+            [month]: !prev[month],
+        }));
+    };
+
     const filterExpenses = (month, expenses) => {
         const category = filters[month];
         if (!category) {
@@ -179,7 +200,6 @@ const ExpenseTracker = () => {
         return { filteredExpenses, total };
     };
 
-
     return (
         <div className="expense-tracker">
             <Notification alert={alert} setAlert={setAlert} />
@@ -187,20 +207,33 @@ const ExpenseTracker = () => {
             <Container style={{ padding: "0px" }}>
                 <Header page="expense" user={user} loading={loading} fetchNotes={fetchExpenses} />
 
-                    {Object.keys(groupedExpenses).map(month => (
-                        <div key={month} className="expense-month">
-                            <h3>{month}</h3>
-                            <p><strong>Total Expenses: ₹</strong> {groupedExpenses[month].total} , <strong>Spends: ₹</strong> {groupedExpenses[month].total - groupedExpenses[month].byCategory.Investments}</p>
+                {Object.keys(groupedExpenses).map(month => (
+                    <div key={month} className="expense-month">
+                        <h3>
+                            {month}
+                            
+                        </h3>
+                        <p>
+                            <strong>Total Expenses: ₹</strong> {groupedExpenses[month].total} , <strong>Spends: ₹</strong> {groupedExpenses[month].total - groupedExpenses[month].byCategory.Investments}
+                        </p>
 
-                            {/* Category Filter Dropdown */}
-
-
+                        
                             <div className="expense-content">
                                 <div className="pie-chart-container">
                                     <Pie data={generatePieChartData(groupedExpenses[month].byCategory)} options={{ responsive: true }} />
                                 </div>
                                 <div className="table-container">
-                                    <h3>All Expenses</h3>
+                                <h3>All Expenses</h3>
+                                <Button
+                                    variant="link"
+                                    onClick={() => toggleCollapse(month)}
+                                    aria-controls={`expenses-table-${month}`}
+                                    aria-expanded={!collapsedMonths[month]}
+                                    className="ml-2"
+                                >
+                                    {collapsedMonths[month] ? "Expand" : "Collapse"}
+                                </Button> 
+                                
                                     <Table striped bordered hover responsive>
                                         <thead>
                                             <tr>
@@ -218,14 +251,15 @@ const ExpenseTracker = () => {
                                                             ))}
                                                         </Form.Control>
                                                     </Form.Group>
-
                                                 </th>
                                                 <th>Cost</th>
                                                 <th>Date</th>
                                                 <th>Actions</th>
                                             </tr>
-                                        </thead>
-                                        <tbody>
+                                    </thead>
+                                    {!collapsedMonths[month] && (
+                                    <tbody>
+                                        
                                             {filterExpenses(month, groupedExpenses[month].expenses).filteredExpenses.reverse().map(expense => (
                                                 <tr key={expense._id} style={getRowClass(expense.category)}>
                                                     <td>{expense.description}</td>
@@ -240,6 +274,7 @@ const ExpenseTracker = () => {
                                                 </tr>
                                             ))}
                                         </tbody>
+                                    )}
                                         <tfoot>
                                             <tr>
                                                 <td colSpan="2"><strong>Total</strong></td>
@@ -248,23 +283,24 @@ const ExpenseTracker = () => {
                                                 <td></td>
                                             </tr>
                                         </tfoot>
-
                                     </Table>
+                                
                                 </div>
                             </div>
-                        </div>
-                    ))}
-
-                    <div className="bar-chart-container">
-                        <h3>Monthly Expenses by Category</h3>
-                        <Bar data={generateBarChartData(groupedExpenses)} options={{ responsive: true }} />
+                        
                     </div>
+                ))}
 
-                    <button style={buttonStyle} className="btn btn-success">
-                        <AddExpense fetchExpenses={fetchExpenses}>
-                            <PlusCircle />
-                        </AddExpense>
-                    </button>
+                <div className="bar-chart-container">
+                    <h3>Monthly Expenses by Category</h3>
+                    <Bar data={generateBarChartData(groupedExpenses)} options={{ responsive: true }} />
+                </div>
+
+                <button style={buttonStyle} className="btn btn-success">
+                    <AddExpense fetchExpenses={fetchExpenses}>
+                        <PlusCircle />
+                    </AddExpense>
+                </button>
             </Container>
         </div>
     );

@@ -21,7 +21,7 @@ async function fetchDeliveryData(symbol) {
             })
             .join(', ');
     }
-    return 'No data'; // Return default if no data is found
+    return 0; // Return 0 if no data is found
 }
 
 async function fetchStockData(symbolQuantityObject) {
@@ -32,6 +32,8 @@ async function fetchStockData(symbolQuantityObject) {
     try {
         const symbols = [...Object.keys(symbolQuantityObject).map(symbol => `${symbol}.NS`), "^NSEI", "^NSEBANK"];
         const stockData = await yahooFinance.quote(symbols);
+
+        console.log(stockData);
 
         // Step 1: Collect the main stock data
         stockData.forEach((r) => {
