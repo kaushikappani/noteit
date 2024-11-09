@@ -96,7 +96,7 @@ const ExpenseTracker = () => {
     useEffect(() => {
         if (expenses.length > 0) {
             const groupedExpensesKeys = Object.keys(groupExpensesByMonth(expenses));
-            const initialCollapsedMonths = groupedExpensesKeys.reduce((acc, key) => {
+            const initialCollapsedMonths = groupedExpensesKeys.slice(1).reduce((acc, key) => {
                 acc[key] = true;
                 return acc;
             }, {});
@@ -123,10 +123,7 @@ const ExpenseTracker = () => {
     };
 
     const groupedExpenses = groupExpensesByMonth(expenses);
-    let keys = Object.keys(groupedExpenses);
     
-    console.log(keys.length)
-
     const categoryColors = {
         "Investments": "#4CAF50", // Green
         "Food": "#2196F3", // Blue
