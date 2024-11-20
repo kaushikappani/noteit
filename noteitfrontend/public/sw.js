@@ -19,9 +19,21 @@ self.addEventListener('push', function (event) {
 });
 
 self.addEventListener('notificationclick', function (event) {
-    console.log(event);
-    event.notification.close();
-    event.waitUntil(
-        clients.openWindow(event.notification.data.url || "/")
-    );
+    const action = event.action;
+
+    if (action === 'accept') {
+        console.log('User accepted the notification');
+        // You can navigate the user to a URL or perform another action
+        event.notification.close();
+        // Optionally navigate to the URL or take other actions
+        clients.openWindow(event.notification.data.url); // This opens the URL in a new tab
+    } else if (action === 'decline') {
+        console.log('User declined the notification');
+        event.notification.close();
+        // Handle decline logic
+    } else {
+        // In case of a click without an action
+        event.notification.close();
+    }
 });
+

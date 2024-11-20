@@ -310,6 +310,7 @@ const scheduleCoorporateAnnouncments = async () => {
 };
 
 
+
 const scheduleCoorporateActions = async () => {
   try {
     const nseIndia = new NseIndia();
@@ -524,7 +525,11 @@ async function triggerNotifications(req, user) {
     body,
     data: {
       url: data ? data.url : "/"
-    }
+    },
+    actions: [
+      { action: 'accept', title: 'Accept' },
+      { action: 'decline', title: 'Decline' }
+    ]
   };
   
 
@@ -546,8 +551,20 @@ async function triggerNotifications(req, user) {
 }
 
 
+const testFunc = async() => { 
+  const user =  await User.findOne({ email: "kaushikappani@gmail.com" })
 
+  let notiReq = {
+    title: "Test notificaion",
+    body: "Test Content " + new Date(),
+    data: {
+      url: "/test",
+    }
+  }
+  triggerNotifications(notiReq, user);
+}
 
+testFunc();
 
 module.exports = {
   scheduleTask,

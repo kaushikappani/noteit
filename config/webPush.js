@@ -20,10 +20,12 @@ const processQueue = async () => {
     if (isProcessing || notificationQueue.length === 0) return;
 
     isProcessing = true;
-
     const { subscription, dataToSend, redisKey } = notificationQueue.shift();
 
     try {
+        // Add actions to the notification payload if not already present
+//  
+
         const response = await webPush.sendNotification(subscription, dataToSend);
         console.log('Push notification sent', response);
 
@@ -40,6 +42,7 @@ const processQueue = async () => {
         }
     }
 };
+
 
 const sendNotification = async (subscription, dataToSend = '') => {
     const redisKey = `notification:${subscription.endpoint}:${dataToSend}`.toLowerCase();
