@@ -93,7 +93,8 @@ const symbolQuantityObject = {
     "UJJIVANSFB": 500,
     "UNIECOM": 34,
     "VBL": 45,
-    "ZOMATO": 30
+    "ZOMATO": 30,
+    "NTPCGREEN":276
 };
 
 
