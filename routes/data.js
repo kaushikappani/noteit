@@ -82,18 +82,18 @@ const symbolQuantityObject = {
     "PARKHOTELS": 27,
     "PNB": 160,
     "POWERGRID": 20,
-    "PVTBANIETF": 287,
+    "PVTBANIETF": 288,
     "RECLTD": 100,
     "SBIN": 37,
     "SUZLON": 425,
-    "SWIGGY": 12,
+    "SWIGGY": 16,
     "TATAMOTORS": 11,
     "TATAPOWER": 120,
     "TITAGARH": 51,
     "UJJIVANSFB": 500,
     "UNIECOM": 34,
     "VBL": 45,
-    "ZOMATO": 30,
+    "ZOMATO": 41,
     "NTPCGREEN":276
 };
 
