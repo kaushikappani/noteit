@@ -35,7 +35,7 @@ const Header = (props) => {
                                     <Nav.Link as={Link} to="/archived" className="icon-spacing"><Archive size={23} /></Nav.Link> :
                                     <Nav.Link as={Link} to="/notes" className="icon-spacing"><Grid size={23} /></Nav.Link>
                                 }
-                                <Nav.Link as={Link} to="/stock/screener" className="icon-spacing"><PiggyBank size={23} /></Nav.Link>
+                                <Nav.Link as={Link} to="/stock/portfolio" className="icon-spacing"><PiggyBank size={23} /></Nav.Link>
                                 <Nav.Link as={Link} to="/expensetracker" className="icon-spacing"><CurrencyRupee size={23} /></Nav.Link>
 
                                 <NavDropdown

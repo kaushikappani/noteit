@@ -551,20 +551,20 @@ async function triggerNotifications(req, user) {
 }
 
 
-const testFunc = async() => { 
-  const user =  await User.findOne({ email: "kaushikappani@gmail.com" })
+// const testFunc = async() => { 
+//   const user =  await User.findOne({ email: "kaushikappani@gmail.com" })
 
-  let notiReq = {
-    title: "Test notificaion",
-    body: "Test Content " + new Date(),
-    data: {
-      url: "/test",
-    }
-  }
-  triggerNotifications(notiReq, user);
-}
+//   let notiReq = {
+//     title: "Test notificaion",
+//     body: "Test Content " + new Date(),
+//     data: {
+//       url: "/test",
+//     }
+//   }
+//   triggerNotifications(notiReq, user);
+// }
 
-testFunc();
+// testFunc();
 
 module.exports = {
   scheduleTask,

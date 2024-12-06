@@ -180,9 +180,36 @@ const remainderModel = mongoose.Schema({
   }, latestNotification: {
     type: Object
   }
-}, { timestamps: true },)
+}, { timestamps: true })
 
 const Remainder = mongoose.model("Remainder", remainderModel)
 
+const portfolioModel = mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
+  symbol: {
+    type: String,
+    required: true,
+  }, quantity: { 
+    type: Number,
+    required : true
+  }, price: { 
+    type: Number,
+    required: true
+  },
+  purchaseDate: { 
+    type: Date,
+    required: true,
+  }, comments: { 
+    type: String,
+    required : false
+  }
+}, { timestamps: true })
 
-module.exports = { User, Note, NoteHistory, NoteAccess, Expenses, Remainder }
+const Portfolio = mongoose.model("Portfolio", portfolioModel);
+  
+
+module.exports = { User, Note, NoteHistory, NoteAccess, Expenses, Remainder, Portfolio }

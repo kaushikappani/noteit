@@ -11,6 +11,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import PasswordReset from "./pages/PasswordReset";
 import StockScreener from './pages/StockScreener';
 import ExpenseTracker from './pages/ExpenseTracker';
+import Portfolio  from './pages/Portfolio';
 function App() {
   return (
     <BrowserRouter>
@@ -27,7 +28,8 @@ function App() {
         <Route path = "/forgotpassword" component={ForgotPassword} exact />
         <Route path="/passwordreset/:id" component={PasswordReset} exact />
         <Route path="/stock/screener" component={StockScreener} exact />
-        <Route path= "/expensetracker" component = {ExpenseTracker} exact />
+        <Route path="/expensetracker" component={ExpenseTracker} exact />
+        <Route path="/stock/portfolio" component={Portfolio} exact />
       </main>
     </BrowserRouter>
   );
