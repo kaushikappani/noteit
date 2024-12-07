@@ -10,6 +10,7 @@ import StockIndexCards from '../components/StockIndexCards';
 import axios from 'axios';
 import SummaryCardV2 from '../components/SummaryCardv2';
 import DayWiseTable from '../components/DayWiseTable';
+import MonthWiseTable from '../components/MonthWiseTable';
 
 const Portfolio = () => {
     const [alert, setAlert] = useState({
@@ -28,6 +29,8 @@ const Portfolio = () => {
         topGainer: "",
         topLoser : ""
     })
+    const [data, setData] = useState();
+
 
     const buttonStyle = {
         borderRadius: "100%",
@@ -39,6 +42,12 @@ const Portfolio = () => {
         right: "20px",
         zIndex: "1000",
     };
+
+    const fetchData = async () => {
+        const { data } = await axios.get("/api/stock/v2/portfolio/summary");
+
+        setData(data);
+    }
 
     useEffect(() => {
         const fetchPortfolioData = async () => {
@@ -58,6 +67,7 @@ const Portfolio = () => {
         };
 
         fetchPortfolioData();
+        fetchData();
     }, []);
 
     return (
@@ -69,8 +79,9 @@ const Portfolio = () => {
                 <Row>
 
                     <Col xs={12} md={4}>
-                        <SummaryCardV2 summary={summary} />
-                        <DayWiseTable />
+                        {summary && (<SummaryCardV2 summary={summary} />)}
+                        <DayWiseTable data={data} />
+                        <MonthWiseTable data = {data} />
                     </Col>
 
                     

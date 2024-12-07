@@ -25,11 +25,11 @@ const SummaryCardV2 = ({ summary }) => {
                 <Row>
                     <Col xs={6}>
                         <h6>Top Gainer</h6>
-                        <p>{topGainer.name} ({topGainer.percentage}%)</p>
+                        <p style={{ color: "green" }}>{topGainer.name} ({topGainer.percentage}%)</p>
                     </Col>
-                    <Col style={{ textAlign: "right" }} xs={6}>
+                    <Col style={{ textAlign: "right"}} xs={6}>
                         <h6>Top Loser</h6>
-                        <p>{topLoser.name} ({topLoser.percentage}%)</p>
+                        <p style={{  color :"red" }}>{topLoser.name} ({topLoser.percentage}%)</p>
                     </Col>
                 </Row>
             </Card.Body>

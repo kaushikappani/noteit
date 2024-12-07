@@ -47,7 +47,7 @@ const PortfolioTable = ({ portfolioData, setPortfolioData ,loading,error}) => {
     }
 
     return (
-        <div className="container mt-4">
+        // <div className="container mt-4">
             <Table bordered hover responsive>
                 <thead>
                     <tr>
@@ -184,7 +184,7 @@ const PortfolioTable = ({ portfolioData, setPortfolioData ,loading,error}) => {
                     ))}
                 </tbody>
             </Table>
-        </div>
+        // </div>
     );
 };
 

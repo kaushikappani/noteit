@@ -5,26 +5,18 @@ import { Table, Collapse } from 'react-bootstrap';
 import { Box, Typography } from '@mui/material';
 
 
-const DayWiseTable = () => {
+const DayWiseTable = ({data}) => {
 
     const [expandedRow, setExpandedRow] = useState(null);
-    const [data, setData] = useState();
 
-    const fetchData = async() => { 
-        const { data } = await axios.get("/api/stock/v2/portfolio/summary");
-        
-        setData(data);
-    }
+  
     const handleRowClick = (symbol) => {
         setExpandedRow(expandedRow === symbol ? null : symbol);
     };
 
-    useEffect(() => {
-        fetchData();
-    },[])
 
   return (
-      <div className="container mt-4">
+    //   <div className="container">
           <Table bordered hover responsive>
               <thead>
                   <tr>
@@ -42,7 +34,11 @@ const DayWiseTable = () => {
                           >
                               <td>{details.dayKey}</td>
                               <td>{details.totalInvested.toFixed(2)}</td>
-                              <td>{details.totalProfit.toFixed(2)}</td>
+                              <td
+                                  style={{
+                                      color: details.totalProfit >= 0 ? "green" : "red",
+                                  }}
+                              >{details.totalProfit.toFixed(2)}</td>
                           </tr>
 
                           {/* Expandable Row */}
@@ -63,7 +59,11 @@ const DayWiseTable = () => {
                                               </thead>
                                               <tbody>
                                                   {details.transactions && details.transactions.map((transaction, index) => (
-                                                      <tr key={index}>
+                                                      <tr
+                                                          style={{
+                                                              color: transaction.profit >= 0 ? "green" : "red",
+                                                          }}
+                                                          key={index}>
                                                           <td>{transaction.symbol}</td>
                                                           <td>{transaction.quantity}</td>
                                                           <td>{transaction.price.toFixed(2)}</td>
@@ -81,7 +81,7 @@ const DayWiseTable = () => {
                   ))}
               </tbody>
           </Table>
-      </div>
+    //   </div>
   )
 }
 

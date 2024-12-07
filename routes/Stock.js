@@ -150,10 +150,10 @@ router.route("/v2/portfolio").get(protect, async (req, res) => {
             overall: {
                 ...overall,
                 topGainer: overall.topGainer
-                    ? { name: overall.topGainer.symbol, percentage: overall.topGainer.pChange }
+                    ? { name: overall.topGainer.symbol, percentage: overall.topGainer.pChange.toFixed(2) }
                     : null,
                 topLoser: overall.topLoser
-                    ? { name: overall.topLoser.symbol, percentage: overall.topLoser.pChange }
+                    ? { name: overall.topLoser.symbol, percentage: overall.topLoser.pChange.toFixed(2) }
                     : null,
             },
         });
