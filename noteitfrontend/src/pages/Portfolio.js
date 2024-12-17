@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import Notification from '../components/Notification'
 import { Col, Container, Row } from 'react-bootstrap';
-import AddExpense from '../components/AddExpense';
-import { PlusCircle } from 'react-bootstrap-icons';
+import {  PlusCircle } from 'react-bootstrap-icons';
 import AddStock from '../components/AddStock';
 import PortfolioTable from '../components/PortfolioTable';
 import StockIndexCards from '../components/StockIndexCards';
@@ -49,22 +48,26 @@ const Portfolio = () => {
         setData(data);
     }
 
+    const fetchPortfolioData = async () => {
+        setLoading(true);
+
+        try {
+            const response = await axios.get("/api/stock/v2/portfolio");
+            setSummary(response.data.overall)
+            const formattedData = Object.entries(response.data.groupedPortfolio).map(([symbol, details]) => ({
+                symbol,
+                ...details,
+            }));
+            setPortfolioData(formattedData);
+            setLoading(false);
+        } catch (err) {
+            setError(err.message);
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchPortfolioData = async () => {
-            try {
-                const response = await axios.get("/api/stock/v2/portfolio");
-                setSummary(response.data.overall)
-                const formattedData = Object.entries(response.data.groupedPortfolio).map(([symbol, details]) => ({
-                    symbol,
-                    ...details,
-                }));
-                setPortfolioData(formattedData);
-                setLoading(false);
-            } catch (err) {
-                setError(err.message);
-                setLoading(false);
-            }
-        };
+        
 
         fetchPortfolioData();
         fetchData();
@@ -74,11 +77,13 @@ const Portfolio = () => {
         <div>
             <Notification alert={alert} setAlert={setAlert} />
             <Container>
+            
                 <Header />
-
+               
                 <Row>
 
                     <Col xs={12} md={4}>
+                        
                         {summary && (<SummaryCardV2 summary={summary} />)}
                         <DayWiseTable data={data} />
                         <MonthWiseTable data = {data} />
@@ -93,7 +98,7 @@ const Portfolio = () => {
                 </Row>
 
                 <button style={buttonStyle} className="btn btn-success">
-                    <AddStock fetchExpenses={""}>
+                    <AddStock fetchPortfolio={fetchPortfolioData}>
                         <PlusCircle />
                     </AddStock>
                 </button>

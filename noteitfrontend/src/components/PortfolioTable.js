@@ -97,7 +97,7 @@ const PortfolioTable = ({ portfolioData, setPortfolioData ,loading,error}) => {
                             >
                                 <td>{details.symbol}</td>
                                 <td>{details.totalQuantity}</td>
-                                <td>{details.averagePrice.toFixed(2)}</td>
+                                <td>{details.averagePrice && details.averagePrice.toFixed(2)}</td>
                                 <td>{details.currentPrice.toFixed(2)}</td>
                                 <td>{details.totalCost.toFixed(2)}</td>
 
@@ -131,14 +131,14 @@ const PortfolioTable = ({ portfolioData, setPortfolioData ,loading,error}) => {
                                         color: details.profitAndLoss >= 0 ? "green" : "red",
                                     }}
                                 >
-                                    {details.profitAndLoss.toFixed(2)}
+                                    {details.profitAndLoss && details.profitAndLoss.toFixed(2)}
                                 </td>
                                 <td
                                     style={{
                                         color: details.netChangePercent >= 0 ? "green" : "red",
                                     }}
                                 >
-                                    {details.netChangePercent.toFixed(2)}%
+                                    {details.netChangePercent && details.netChangePercent.toFixed(2)}%
                                 </td>
                             </tr>
 
@@ -167,7 +167,7 @@ const PortfolioTable = ({ portfolioData, setPortfolioData ,loading,error}) => {
                                                                 <td>
                                                                     {new Date(txn.purchaseDate).toLocaleDateString()}
                                                                 </td>
-                                                                <td>{txn.pandl}</td>
+                                                                <td>{txn.pandl.toFixed(2)}</td>
                                                                 <td>{txn.comments || "N/A"}</td>
                                                             </tr>
                                                         ))}
