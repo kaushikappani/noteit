@@ -160,7 +160,17 @@ const AddStock = ({ fetchPortfolio, children }) => {
                                 required
                             />
                             {filteredSymbols.length > 0 && (
-                                <ul className="list-group">
+                                <ul style={{
+                                    // maxHeight: "150px",
+                                    overflowY: "auto",
+                                    position: "absolute",
+                                    background: "#fff",
+                                    zIndex: 1050,
+                                    width: "90%",
+                                    boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                                    borderRadius: "4px",
+                                    marginTop: "2px",
+                                }} className="list-group">
                                     {filteredSymbols.map((symbol, index) => (
                                         <li
                                             key={index}
