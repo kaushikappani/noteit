@@ -185,39 +185,39 @@ router.route("/v2/portfolio/summary").get(protect, async (req, res) => {
         const dailySummary = [];
         const monthlySummary = [];
 
-        portfolios.forEach(curr => {
-            const date = new Date(curr.purchaseDate);
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, "0"); // Convert to "MM"
-            const day = String(date.getDate()).padStart(2, "0"); // Convert to "DD"
-            const dayKey = `${year}-${month}-${day}`;
-            const monthKey = `${year}-${month}`;
-            const currentPrice = currentPrices[curr.symbol] || 0;
-
-            // Calculate transaction profit and invested amount
-            const transactionProfit = (currentPrice - curr.price) * curr.quantity;
-            const investedAmount = curr.price * curr.quantity;
-
-            // Daily summary
-            const existingDaySummary = dailySummary.find(d => d.dayKey === dayKey);
-            if (existingDaySummary) {
-                existingDaySummary.transactions.push({
+        const filteredPortfolios = portfolios.reduce((acc, curr) => {
+            const existing = acc.find(item => item.symbol === curr.symbol);
+            if (existing) {
+                existing.quantity += curr.quantity;
+                existing.transactions.push(curr);
+            } else {
+                acc.push({
                     symbol: curr.symbol,
                     quantity: curr.quantity,
-                    price: curr.price,
-                    purchaseDate: curr.purchaseDate,
-                    comments: curr.comments,
-                    createdAt: curr.createdAt,
-                    updatedAt: curr.updatedAt,
-                    investedAmount: investedAmount,
-                    profit: transactionProfit,
+                    transactions: [curr]
                 });
-                existingDaySummary.totalInvested += investedAmount;
-                existingDaySummary.totalProfit += transactionProfit;
-            } else {
-                dailySummary.push({
-                    dayKey,
-                    transactions: [{
+            }
+            return acc;
+        }, []).filter(item => item.quantity !== 0); // Exclude stocks with net quantity 0
+
+        filteredPortfolios.forEach(({ transactions }) => {
+            transactions.forEach(curr => {
+                const date = new Date(curr.purchaseDate);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, "0"); // Convert to "MM"
+                const day = String(date.getDate()).padStart(2, "0"); // Convert to "DD"
+                const dayKey = `${year}-${month}-${day}`;
+                const monthKey = `${year}-${month}`;
+                const currentPrice = currentPrices[curr.symbol] || 0;
+
+                // Calculate transaction profit and invested amount
+                const transactionProfit = (currentPrice - curr.price) * curr.quantity;
+                const investedAmount = curr.price * curr.quantity;
+
+                // Daily summary
+                const existingDaySummary = dailySummary.find(d => d.dayKey === dayKey);
+                if (existingDaySummary) {
+                    existingDaySummary.transactions.push({
                         symbol: curr.symbol,
                         quantity: curr.quantity,
                         price: curr.price,
@@ -227,32 +227,32 @@ router.route("/v2/portfolio/summary").get(protect, async (req, res) => {
                         updatedAt: curr.updatedAt,
                         investedAmount: investedAmount,
                         profit: transactionProfit,
-                    }],
-                    totalInvested: investedAmount,
-                    totalProfit: transactionProfit,
-                });
-            }
+                    });
+                    existingDaySummary.totalInvested += investedAmount;
+                    existingDaySummary.totalProfit += transactionProfit;
+                } else {
+                    dailySummary.push({
+                        dayKey,
+                        transactions: [{
+                            symbol: curr.symbol,
+                            quantity: curr.quantity,
+                            price: curr.price,
+                            purchaseDate: curr.purchaseDate,
+                            comments: curr.comments,
+                            createdAt: curr.createdAt,
+                            updatedAt: curr.updatedAt,
+                            investedAmount: investedAmount,
+                            profit: transactionProfit,
+                        }],
+                        totalInvested: investedAmount,
+                        totalProfit: transactionProfit,
+                    });
+                }
 
-            // Monthly summary
-            const existingMonthSummary = monthlySummary.find(m => m.monthKey === monthKey);
-            if (existingMonthSummary) {
-                existingMonthSummary.transactions.push({
-                    symbol: curr.symbol,
-                    quantity: curr.quantity,
-                    price: curr.price,
-                    purchaseDate: curr.purchaseDate,
-                    comments: curr.comments,
-                    createdAt: curr.createdAt,
-                    updatedAt: curr.updatedAt,
-                    investedAmount: investedAmount,
-                    profit: transactionProfit,
-                });
-                existingMonthSummary.totalInvested += investedAmount;
-                existingMonthSummary.totalProfit += transactionProfit;
-            } else {
-                monthlySummary.push({
-                    monthKey,
-                    transactions: [{
+                // Monthly summary
+                const existingMonthSummary = monthlySummary.find(m => m.monthKey === monthKey);
+                if (existingMonthSummary) {
+                    existingMonthSummary.transactions.push({
                         symbol: curr.symbol,
                         quantity: curr.quantity,
                         price: curr.price,
@@ -262,11 +262,28 @@ router.route("/v2/portfolio/summary").get(protect, async (req, res) => {
                         updatedAt: curr.updatedAt,
                         investedAmount: investedAmount,
                         profit: transactionProfit,
-                    }],
-                    totalInvested: investedAmount,
-                    totalProfit: transactionProfit,
-                });
-            }
+                    });
+                    existingMonthSummary.totalInvested += investedAmount;
+                    existingMonthSummary.totalProfit += transactionProfit;
+                } else {
+                    monthlySummary.push({
+                        monthKey,
+                        transactions: [{
+                            symbol: curr.symbol,
+                            quantity: curr.quantity,
+                            price: curr.price,
+                            purchaseDate: curr.purchaseDate,
+                            comments: curr.comments,
+                            createdAt: curr.createdAt,
+                            updatedAt: curr.updatedAt,
+                            investedAmount: investedAmount,
+                            profit: transactionProfit,
+                        }],
+                        totalInvested: investedAmount,
+                        totalProfit: transactionProfit,
+                    });
+                }
+            });
         });
 
         res.json({
@@ -278,6 +295,8 @@ router.route("/v2/portfolio/summary").get(protect, async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 });
+
+
 
 
 
