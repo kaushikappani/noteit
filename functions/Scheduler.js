@@ -86,7 +86,7 @@ schedule.scheduleJob(morningRule, async () => {
 
     console.log('Scheduler triggered at 9:16 AM');
     // Add the task you want to run at 9:16 AM
-    let pf = await fetchStockData(symbolQuantityObject);
+    let pf = await fetchStockData(await symbolQuantityObject());
     let notiReq = {
         title: "Portfolio Start",
         body: `P&l = ${pf.total.toFixed(2)}`,
@@ -109,7 +109,7 @@ schedule.scheduleJob(eveningRule, async () => {
 
     console.log('Scheduler triggered at 3:31 PM');
     // Add the task you want to run at 3:31 PM
-    let pf = await fetchStockData(symbolQuantityObject);
+    let pf = await fetchStockData(await symbolQuantityObject());
     let notiReq = {
         title: "Todays Close",
         body: `P&l = ${pf.total.toFixed(2)}`,
@@ -151,7 +151,7 @@ async function checkPnl() {
     const user = await User.findOne({ email: "kaushikappani@gmail.com" })
 
     try {
-        let pf = await fetchStockData(symbolQuantityObject); // Fetch current P&L
+        let pf = await fetchStockData(await symbolQuantityObject()); // Fetch current P&L
         let currentPnl = pf.total;
 
         if (lastPnl !== null && Math.abs(currentPnl - lastPnl) > process.env.PANDL_CHANGE_THRESHOLD) {

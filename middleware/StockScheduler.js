@@ -30,7 +30,7 @@ const scheduleTask = async () => {
       const symbol = symbols[i];
       const data = await tradeData(symbol, nseIndia);
 
-      if (symbol in await symbolQuantityObject) {
+      if (symbol in await symbolQuantityObject()) {
         const redisKey = `delivery:${symbol}`;
 
         // Fetch the existing data from Redis
@@ -241,7 +241,7 @@ const scheduleCoorporateAnnouncments = async () => {
 
     data.forEach(async(item) => {
       let rowStyle = "";
-      if (item.symbol in await symbolQuantityObject) {
+      if (item.symbol in await symbolQuantityObject()) {
         let notiReq = {
           title: item.symbol + " " + item.desc,
           body: item.attchmntText,
@@ -336,7 +336,7 @@ const scheduleCoorporateActions = async () => {
 
     data.forEach(async(item) => {
       let rowStyle = "";
-      if (item.symbol in await symbolQuantityObject) {
+      if (item.symbol in await symbolQuantityObject()) {
         let notiReq = {
           title: item.symbol,
           body: item.subject,

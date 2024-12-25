@@ -1,3 +1,5 @@
+const { Portfolio } = require("../config/models");
+
 const allData = ["DREAMFOLKS", "5PAISA", "SWIGGY","BAJAJHFL", "ARVIND", "UNIECOM","NTPCGREEN", "KCP","PARKHOTELS",
     "360ONE", "3MINDIA", "ABB", "ACC", "AIAENG", "APLAPOLLO", "AUBANK", "AARTIIND", "AAVAS",
     "ABBOTINDIA", "ACE", "ADANIENSOL", "ADANIENT", "ADANIGREEN", "ADANIPORTS", "ADANIPOWER", "ATGL",
@@ -61,21 +63,21 @@ const allData = ["DREAMFOLKS", "5PAISA", "SWIGGY","BAJAJHFL", "ARVIND", "UNIECOM
 
 
 const symbolQuantityObject = async () => {
-    const portfolios = await Portfolio.find({ user: req.user._id });
+    const portfolios = await Portfolio.find({ email: "kaushikappani@gmail.com" });
 
-    const symbolQuantityObject = {};
+    const response = {};
 
     portfolios.forEach(portfolio => {
         const { symbol, quantity } = portfolio;
 
-        if (symbolQuantityObject[symbol]) {
-            symbolQuantityObject[symbol] += quantity;
+        if (response[symbol]) {
+            response[symbol] += quantity;
         } else {
-            symbolQuantityObject[symbol] = quantity;
+            response[symbol] = quantity;
         }
     });
 
-    return  symbolQuantityObject;
+    return response;
 
 }
 

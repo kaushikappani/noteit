@@ -14,9 +14,9 @@ const createPages = async () => {
     const apiKey = process.env.GEMINI_API_KEY;
     const genAI = new GoogleGenerativeAI(apiKey);
     
-    for (let i = 0; i < Object.keys(await symbolQuantityObject).length; i++) {
+    for (let i = 0; i < Object.keys(await symbolQuantityObject()).length; i++) {
 
-        let symbol = Object.keys(await symbolQuantityObject)[i];
+        let symbol = Object.keys(await symbolQuantityObject())[i];
         let data = await fetchData(symbol);
         
         const model = genAI.getGenerativeModel({
