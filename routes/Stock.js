@@ -13,7 +13,7 @@ const yahooFinance = require('yahoo-finance2').default;
 
 router.route("/summary").get(stockProtect, async (req, res) => {
     try {
-        const stockSummary = await fetchStockData(symbolQuantityObject);
+        const stockSummary = await fetchStockData(await symbolQuantityObject);
 
         res.json(stockSummary);
     } catch (error) {

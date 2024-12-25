@@ -118,7 +118,7 @@ bot.onText(/^\/portfolio/, async (msg) => {
     await bot.sendChatAction(chatId, 'typing');
     try {
         if (chatId === 1375808164) {
-            const symbols = Object.keys(symbolQuantityObject);
+            const symbols = Object.keys(await  symbolQuantityObject);
             const dataPromises = symbols.map(async (symbol) => {
                 try {
                     const equityDetails = await getData(symbol)
@@ -136,10 +136,10 @@ bot.onText(/^\/portfolio/, async (msg) => {
             let gainers = [];
             let losers = [];
 
-            results.forEach((result, index) => {
+            results.forEach(async(result, index) => {
                 if (result) {
                     const { symbol, equityDetails } = result;
-                    const quantity = symbolQuantityObject[symbol];
+                    const quantity = await symbolQuantityObject[symbol];
                     const currentPrice = parseFloat(equityDetails.priceInfo.lastPrice);
                     const change = parseFloat(equityDetails.priceInfo.change);
 

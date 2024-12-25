@@ -60,7 +60,7 @@ const allData = ["DREAMFOLKS", "5PAISA", "SWIGGY","BAJAJHFL", "ARVIND", "UNIECOM
 ];
 
 
-const symbolQuantityObject = async() => {
+const symbolQuantityObject = async () => {
     const portfolios = await Portfolio.find({ user: req.user._id });
 
     const symbolQuantityObject = {};
@@ -75,7 +75,7 @@ const symbolQuantityObject = async() => {
         }
     });
 
-    return symbolQuantityObject;
+    return  symbolQuantityObject;
 
 }
 
