@@ -60,42 +60,25 @@ const allData = ["DREAMFOLKS", "5PAISA", "SWIGGY","BAJAJHFL", "ARVIND", "UNIECOM
 ];
 
 
-const symbolQuantityObject = {
-    "5PAISA": 13,
-    "ARVIND": 24,
-    "BAJAJHFL": 52,
-    "BANKIETF":7,
-    "CHOLAFIN": 2,
-    "DREAMFOLKS": 25,
-    "EXIDEIND": 40,
-    "FEDERALBNK": 43,
-    "HDFCBANK": 14,
-    "INDHOTEL": 24,
-    "ITC": 52,
-    "JIOFIN": 327,
-    "KOTAKBANK": 14,
-    "MASFIN": 43,
-    "MOM30IETF": 345 + 18 ,
-    "MOTHERSON": 127,
-    "NAM-INDIA": 7,
-    "NTPC": 1,
-    "PARKHOTELS": 27,
-    "PNB": 160,
-    "POWERGRID": 20,
-    "PVTBANIETF": 288,
-    "RECLTD": 100,
-    "SBIN": 37,
-    "SUZLON": 425,
-    "SWIGGY": 16,
-    "TATAMOTORS": 11,
-    "TATAPOWER": 120,
-    "TITAGARH": 51,
-    "UJJIVANSFB": 500,
-    "UNIECOM": 34,
-    "VBL": 45,
-    "ZOMATO": 41,
-    "NTPCGREEN":276
-};
+const symbolQuantityObject = async() => {
+    const portfolios = await Portfolio.find({ user: req.user._id });
+
+    const symbolQuantityObject = {};
+
+    portfolios.forEach(portfolio => {
+        const { symbol, quantity } = portfolio;
+
+        if (symbolQuantityObject[symbol]) {
+            symbolQuantityObject[symbol] += quantity;
+        } else {
+            symbolQuantityObject[symbol] = quantity;
+        }
+    });
+
+    return symbolQuantityObject;
+
+}
+
 
 
 module.exports = { allData, symbolQuantityObject };
