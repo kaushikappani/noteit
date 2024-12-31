@@ -42,10 +42,10 @@ const scheduleTask = async () => {
 
         if (data.securityWiseDP.deliveryToTradedQuantity > process.env.DELIVERY_QUANTITY_THRESHOLD) {
           let notiReq = {
-            title: `Delivery for Symbol :${symbol} is ${data.securityWiseDP.deliveryToTradedQuantity}`,
-            body: "Test Content " + new Date(),
+            title: `Delivery Report`,
+            body: `Delivery for Symbol :${symbol} is ${data.securityWiseDP.deliveryToTradedQuantity}`,
             data: {
-              url: "/test",
+              url: "/stock/screener",
             }
           }
           triggerNotifications(notiReq, user);
