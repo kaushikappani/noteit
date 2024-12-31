@@ -38,6 +38,20 @@ const scheduleTask = async () => {
         let symbolData = existingData ? JSON.parse(existingData) : {};
 
         // Append the new day's data without overwriting previous entries
+          const user =  await User.findOne({ email: "kaushikappani@gmail.com" })
+
+        if (data.securityWiseDP.deliveryToTradedQuantity > process.env.DELIVERY_QUANTITY_THRESHOLD) {
+          let notiReq = {
+            title: `Delivery for Symbol :${symbol} is ${data.securityWiseDP.deliveryToTradedQuantity}`,
+            body: "Test Content " + new Date(),
+            data: {
+              url: "/test",
+            }
+          }
+          triggerNotifications(notiReq, user);
+        }
+          
+
         symbolData[data.securityWiseDP.secWiseDelPosDate] = {
           delivery: data.securityWiseDP.deliveryToTradedQuantity,
           date: data.securityWiseDP.secWiseDelPosDate

@@ -119,6 +119,7 @@ bot.onText(/^\/portfolio/, async (msg) => {
     try {
         if (chatId === 1375808164) {
             const portfolio = await symbolQuantityObject();
+            console.log(portfolio);
             const symbols = Object.keys(portfolio);
             const dataPromises = symbols.map(async (symbol) => {
                 try {
