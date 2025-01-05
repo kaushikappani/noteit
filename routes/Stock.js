@@ -110,7 +110,7 @@ router.route("/v2/portfolio").get(protect, async (req, res) => {
                 pandl: (acc[symbol].currentPrice - curr.price) * curr.quantity
             });
 
-            acc[symbol].totalQuantity += curr.quantity;
+            acc[symbol].totalQuantity += acc[symbol].currentPrice;
             acc[symbol].totalCost += curr.quantity * curr.price;
             acc[symbol].daypandl += curr.quantity * (acc[symbol].change);
             acc[symbol].averagePrice = acc[symbol].totalCost / acc[symbol].totalQuantity;
