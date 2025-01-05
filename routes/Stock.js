@@ -88,6 +88,7 @@ router.route("/v2/portfolio").get(protect, async (req, res) => {
                     totalQuantity: 0,
                     totalCost: 0,
                     averagePrice: 0,
+                    currentValue : 0,
                     currentPrice: stockInfo ? parseFloat(stockInfo.regularMarketPrice) : null,
                     change: stockInfo ? parseFloat(stockInfo.regularMarketChange) : null,
                     pChange: stockInfo ? parseFloat(stockInfo.regularMarketChangePercent) : null,
@@ -111,7 +112,8 @@ router.route("/v2/portfolio").get(protect, async (req, res) => {
             });
 
             acc[symbol].totalQuantity += curr.quantity;
-            acc[symbol].totalCost += curr.quantity * acc[symbol].currentPrice;
+            acc[symbol].totalCost += curr.quantity * curr.price;
+            acc[symbol].currentValue += curr.quantity * acc[symbol].currentPrice;
             acc[symbol].daypandl += curr.quantity * (acc[symbol].change);
             acc[symbol].averagePrice = acc[symbol].totalCost / acc[symbol].totalQuantity;
 

@@ -99,7 +99,7 @@ const PortfolioTable = ({ portfolioData, setPortfolioData ,loading,error}) => {
                                 <td>{details.totalQuantity}</td>
                                 <td>{details.averagePrice && details.averagePrice.toFixed(2)}</td>
                                 <td>{details.currentPrice.toFixed(2)}</td>
-                                <td>{details.totalCost.toFixed(2)}</td>
+                                <td>{details.currentValue.toFixed(2)}</td>
 
                                 <td
                                     style={{
