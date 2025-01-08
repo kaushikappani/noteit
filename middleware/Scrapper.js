@@ -117,6 +117,7 @@ const scrapGlobalIndices = async() => {
         let url = `https://www.5paisa.com/share-market-today/global-indices`;
         let html = await fetchHtml(url);
 
+
         const $ = cheerio.load(html);
 
         let indicesData = [];
@@ -125,11 +126,12 @@ const scrapGlobalIndices = async() => {
             const indicesName = $(element).find('td a').eq(0).text().trim();
             const lastUpdated = $(element).find('td span').eq(0).text().trim();
             const price = $(element).find('td').eq(1).text().trim();
-            const priceChange = $(element).find('td').eq(2).text().trim();
+            const priceChangePerc = $(element).find('td').eq(2).text().trim();
+            const priceChange = $(element).find('td').eq(3).text().trim();
             indicesData.push({
                 indicesName,
                 price,
-                priceChange,
+                priceChange: priceChange + " " + priceChangePerc,
                 lastUpdated
             });
         });
@@ -138,5 +140,7 @@ const scrapGlobalIndices = async() => {
         console.log(e);
    }
 }
+
+scrapGlobalIndices();
 
 module.exports = { fetchData, scrapGlobalIndices };
