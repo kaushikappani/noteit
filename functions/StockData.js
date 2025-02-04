@@ -119,31 +119,6 @@ async function getHistoricalStockData(symbolQuantityObject) {
 }
 
 
-const symbolQuantityObject = async () => {
-    const portfolios = await Portfolio.find({ email: "kaushikappani@gmail.com" });
-
-    const response = {};
-
-    portfolios.forEach(portfolio => {
-        const { symbol, quantity } = portfolio;
-
-        if (response[symbol]) {
-            response[symbol] += quantity;
-        } else {
-            response[symbol] = quantity;
-        }
-    });
-
-    return response;
-
-}
-
-
-const test = async() => {
-    getHistoricalStockData(await symbolQuantityObject());
-}
-
-test();
 
 
 
