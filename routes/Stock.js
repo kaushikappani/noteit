@@ -289,6 +289,8 @@ router.route("/v2/portfolio/summary").get(protect, async (req, res) => {
             });
         });
 
+        dailySummary.sort((a, b) => new Date(a.dayKey) - new Date(b.dayKey));
+        monthlySummary.sort((a, b) => new Date(a.monthKey) - new Date(b.monthKey));
         res.json({
             dailySummary,
             monthlySummary,

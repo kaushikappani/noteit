@@ -17,7 +17,7 @@ const schedule = require('node-schedule');
 const moment = require('moment-timezone');
 const path = require("path");
 
-require('./functions/Scheduler'); 
+require('./functions/Scheduler');
 
 require("./middleware/telegramBot");
 if (process.env.NODE_ENV === "production") {

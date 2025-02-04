@@ -1,3 +1,4 @@
+const { Portfolio } = require('../config/models');
 const client = require('../middleware/redis');
 
 // stockDataHelper.js
@@ -84,6 +85,65 @@ async function fetchStockData(symbolQuantityObject) {
         throw error; // Propagating the error for error handling
     }
 }
+
+async function getHistoricalStockData(symbolQuantityObject) {
+    try {
+        const symbols = [
+            ...Object.keys(symbolQuantityObject).map(symbol => `${symbol}.NS`)
+        ];
+
+        // Define the historical data options
+        const historicalOptions = {
+            period1: '2022-01-01', // Start date in YYYY-MM-DD format
+            period2: new Date().toISOString().split('T')[0], // End date (today)
+            interval: '1d' // Options: '1d', '1wk', '1mo'
+        };
+
+        // Fetch historical data for each symbol
+        const historicalData = await Promise.all(
+            symbols.map(symbol => yahooFinance.historical(symbol, historicalOptions))
+        );
+
+        // Map symbols to their respective historical data
+        const result = symbols.reduce((acc, symbol, index) => {
+            acc[symbol] = historicalData[index];
+            return acc;
+        }, {});
+
+        console.log(result);
+        return result;
+    } catch (error) {
+        console.error("Error fetching historical stock data:", error);
+        throw error;
+    }
+}
+
+
+const symbolQuantityObject = async () => {
+    const portfolios = await Portfolio.find({ email: "kaushikappani@gmail.com" });
+
+    const response = {};
+
+    portfolios.forEach(portfolio => {
+        const { symbol, quantity } = portfolio;
+
+        if (response[symbol]) {
+            response[symbol] += quantity;
+        } else {
+            response[symbol] = quantity;
+        }
+    });
+
+    return response;
+
+}
+
+
+const test = async() => {
+    getHistoricalStockData(await symbolQuantityObject());
+}
+
+test();
 
 
 
