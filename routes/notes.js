@@ -8,6 +8,7 @@ const util = require('util');
 const {
     GoogleGenerativeAI,
 } = require("@google/generative-ai");
+const { generateAiSummary } = require("../functions/importanceSegerator");
 
 
 // const { map } = require("draft-js/lib/DefaultDraftBlockRenderMap");
@@ -22,6 +23,7 @@ router.route("/").get(
             // if (req.user.email === "kaushikappani@gmail.com") {
             //     await Promise.all([giftNifty(), getGlobalIndices()]);
             // }
+        //    await generateAiSummary(req)
             const notes = await Note.find({
                 user: req.user._id,
                 archived: false,
