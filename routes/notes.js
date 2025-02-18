@@ -266,6 +266,7 @@ router.route("/:id").put(
             }
 
             const updatedNote = await note.save();
+            await redisCacheUtil.remove(`cache:${req.user._id}:/api/notes`);
             updatedNote.user = null;
             res.json(updatedNote);
         } else {
