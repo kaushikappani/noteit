@@ -10,20 +10,23 @@ const {
 } = require("@google/generative-ai");
 const { generateAiSummary } = require("../functions/importanceSegerator");
 
+const RedisCacheUtil  =  require('node-cache-util');
 
-// const { map } = require("draft-js/lib/DefaultDraftBlockRenderMap");
-
+const redisUrl = process.env.REDIS_URL;
+const ttl = 600;
+const keyFunction = (req) => `cache:${req.user._id}:${req.originalUrl}`;
+const redisCacheUtil = new RedisCacheUtil(redisUrl, ttl, keyFunction);
 const router = express.Router();
 
 router.route("/").get(
-    protect,
+    protect, redisCacheUtil.cache(),
     asyncHandler(async (req, res) => {
         try {
             // Fetch notes from the database
             // if (req.user.email === "kaushikappani@gmail.com") {
             //     await Promise.all([giftNifty(), getGlobalIndices()]);
             // }
-        //    await generateAiSummary(req)
+            //    await generateAiSummary(req)
             const notes = await Note.find({
                 user: req.user._id,
                 archived: false,
@@ -57,7 +60,7 @@ router.route("/").get(
     })
 );
 router.route("/archived").get(
-    protect,
+    protect, redisCacheUtil.cache(),
     asyncHandler(async (req, res) => {
         const notes = await Note.find({ user: req.user._id, archived: true }).sort({
             updatedAt: -1,
@@ -86,6 +89,7 @@ router.route("/create").post(
                 const createdNote = await note.save();
                 createdNote.user = null;
                 res.status(201).json(createdNote);
+                await redisCacheUtil.remove(`cache:${req.user._id}:/api/notes`);
             } else {
                 res.status(400);
                 throw new Error("Please verify your account");
