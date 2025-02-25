@@ -32,10 +32,6 @@ router.route("/").get(
                 archived: false,
             }).sort({ createdAt: -1 });
 
-            notes.forEach(n => {
-                client.set(`note:${n._id}`, JSON.stringify(n), 'EX', 3600); 
-            });
-
             // Modify notes by adding view and edit properties
             const modifiedNotes = notes.map(note => ({
                 ...note.toObject(),
@@ -99,29 +95,29 @@ router.route("/create").post(
 );
 
 router.route("/:id/:history").get(
-    protect,
+    protect, redisCacheUtil.cache(),
     asyncHandler(async (req, res) => {
-        const getAsync = util.promisify(client.get).bind(client);
+        // const getAsync = util.promisify(client.get).bind(client);
 
-        let note = null;
+        // let note = null;
 
-        note = await getAsync(`note:${req.params.id}`);
-        if (note !== null) {
-            console.log("from cache");
-            note = JSON.parse(note);
-            delete note.color;
-            delete note.archived;
-            delete note.pinned;
-            client.del(`note:${req.params.id}`); 
-        }
+        // note = await getAsync(`note:${req.params.id}`);
+        // if (note !== null) {
+        //     console.log("from cache");
+        //     note = JSON.parse(note);
+        //     delete note.color;
+        //     delete note.archived;
+        //     delete note.pinned;
+        //     client.del(`note:${req.params.id}`); 
+        // }
   
-        if (note === null) {
+        // if (note === null) {
             note = await Note.findById(req.params.id)
                 .select("-color")
                 .select("-archived")
                 .select("-pinned");
             note = note.toObject();
-        }
+        // }
 
      
         // const owner = await User.findById(note.user).select("name email -_id");
