@@ -201,7 +201,7 @@ router.route("/v2/portfolio/summary").get(protect, async (req, res) => {
                 });
             }
             return acc;
-        }, []).filter(item => item.quantity !== 0); // Exclude stocks with net quantity 0
+        }, [])
 
         filteredPortfolios.forEach(({ transactions }) => {
             transactions.forEach(curr => {
