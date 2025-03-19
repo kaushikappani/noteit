@@ -12,6 +12,7 @@ import PasswordReset from "./pages/PasswordReset";
 import StockScreener from './pages/StockScreener';
 import ExpenseTracker from './pages/ExpenseTracker';
 import Portfolio  from './pages/Portfolio';
+import GenAI from './pages/GenAI';
 function App() {
   return (
     <BrowserRouter>
@@ -30,6 +31,7 @@ function App() {
         <Route path="/stock/screener" component={StockScreener} exact />
         <Route path="/expensetracker" component={ExpenseTracker} exact />
         <Route path="/stock/portfolio" component={Portfolio} exact />
+        <Route path="/genai" component={GenAI} exact />
       </main>
     </BrowserRouter>
   );

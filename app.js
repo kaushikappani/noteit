@@ -16,6 +16,7 @@ const bodyParser = require("body-parser")
 const schedule = require('node-schedule');
 const moment = require('moment-timezone');
 const path = require("path");
+const aiGptRoutes = require("./routes/aigpt");
 
 require('./functions/Scheduler');
 
@@ -59,6 +60,8 @@ app.use("/api/webpush", webPushRoutes)
 app.use("/api/news", newsRoutes);
 
 app.use("/api/remainders", remainderRoutes);
+
+app.use("/gpt", aiGptRoutes);
 
 
 __dirname = path.resolve();
