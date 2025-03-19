@@ -95,7 +95,7 @@ router.route("/create").post(
 );
 
 router.route("/:id/:history").get(
-    protect, redisCacheUtil.cache(),
+    protect,
     asyncHandler(async (req, res) => {
         // const getAsync = util.promisify(client.get).bind(client);
 
@@ -263,6 +263,7 @@ router.route("/:id").put(
 
             const updatedNote = await note.save();
             await redisCacheUtil.remove(`cache:${req.user._id}:/api/notes`);
+
             updatedNote.user = null;
             res.json(updatedNote);
         } else {
