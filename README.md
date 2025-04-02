@@ -1,7 +1,7 @@
 # NoteIt ![Jwt Compatable](https://jwt.io/img/badge-compatible.svg)
 Note It helps to save and sync all your notes at one place
 
-### Live Site - [https://noteit-prod.onrender.com/notes](https://noteit-kof1.onrender.com/notes)
+### Live Site - [https://noteit-prod.onrender.com/notes](https://noteit-prod.onrender.com/notes)
 
 ![Home page](/UI/UI1.png)
 

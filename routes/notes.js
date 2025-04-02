@@ -8,9 +8,9 @@ const util = require('util');
 const {
     GoogleGenerativeAI,
 } = require("@google/generative-ai");
-const { generateAiSummary } = require("../functions/importanceSegerator");
 
 const RedisCacheUtil  =  require('node-cache-util');
+const { generateAiSummary } = require("../functions/generateAiSummary");
 
 const redisUrl = process.env.REDIS_URL;
 const ttl = 600;
@@ -26,7 +26,6 @@ router.route("/").get(
             // if (req.user.email === "kaushikappani@gmail.com") {
             //     await Promise.all([giftNifty(), getGlobalIndices()]);
             // }
-            //    await generateAiSummary(req)
             const notes = await Note.find({
                 user: req.user._id,
                 archived: false,

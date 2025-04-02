@@ -54,50 +54,6 @@ const checkImportance = async (input) => {
     run();
 }
 
-const generateAiSummary = async(req)=>{
-    const notes = await Note.find({
-        user: req.user._id,
-        archived: false,
-    }).sort({ createdAt: -1 });
 
-    const apiKey = process.env.GEMINI_API_KEY;
-    const genAI = new GoogleGenerativeAI(apiKey);
-
-    const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash",
-        systemInstruction: "You have to generate a small summary covering all important information into a small summary in a notes app you should generate detailed summary output ONLY on HTML",
-    });
-
-
-    const generationConfig = {
-        temperature: 0.9,
-        topP: 0.9,
-        topK: 64,
-        maxOutputTokens: 5000,
-        responseMimeType: "text/plain",
-    };
-
-
-    async function run() {
-        const chatSession = model.startChat({
-            generationConfig,
-            // safetySettings: Adjust safety settings
-            // See https://ai.google.dev/gemini-api/docs/safety-settings
-            history: [
-            ],
-        });
-        // console.log(notes);
-        const result = await chatSession.sendMessage(JSON.stringify(notes));
-
-        let content = " <br>======= AI Generated =======​  <br>" + result.response.text().replace('```html', "").replace('```', "") + "  <br> ======= AI Generated =======  <br>​";
-        const note = new Note({ user: req.user._id, title: "AI - Summary", category : "AI - Summary", content });
-        await note.save();
-    }
-    await run();
-
-
-
-}
-
-module.exports = { checkImportance, generateAiSummary };
+module.exports = { checkImportance };
 

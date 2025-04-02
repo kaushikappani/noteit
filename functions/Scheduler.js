@@ -6,6 +6,7 @@ const fetchStockData = require('./StockData');
 const { symbolQuantityObject } = require('../routes/data');
 const { scrapGlobalIndices } = require('../middleware/Scrapper');
 const { User } = require('../config/models');
+const { generateAiSummary } = require('./generateAiSummary');
 
 
 const timeZone = process.env.TIME_ZONE;
@@ -24,10 +25,8 @@ schedule.scheduleJob(rule, () => {
     scheduleFiiDiiReport();
     scheduleCoorporateAnnouncments();
     scheduleCoorporateActions();
+    generateAiSummary("61549fb6c44799acda2538f3","67ed1adcc38187540dc31d6a");
 });
-
-
-scheduleCoorporateActions();
 
 
 
