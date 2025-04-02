@@ -44,9 +44,9 @@ const generateAiSummary = async (id, noteId) => {
             history: history,
         });
         // console.log(notes);
-        const result = await chatSession.sendMessage("Generate Summary in one note");
+        const result = await chatSession.sendMessage("Generate Summary form the above data");
 
-        let content = " <br>======= AI Generated =======​  <br>" + result.response.text().replace('```html', "").replace('```', "") + "  <br> ======= AI Generated =======  <br>​";
+        let content = result.response.text().replace('```html', "").replace('```', "");
         let note = await Note.find({ _id: noteId });
         if (!note) {
             note = new Note({ pinned: true, user: req.user._id, title: "AI - Summary", category: "AI - Summary", content });
