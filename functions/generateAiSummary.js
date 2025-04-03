@@ -47,13 +47,20 @@ const generateAiSummary = async (id, noteId) => {
         const result = await chatSession.sendMessage("Generate Summary form the above data");
 
         let content = result.response.text().replace('```html', "").replace('```', "");
-        let note = await Note.find({ _id: noteId });
+        let note = await Note.findOne({ _id: noteId });
+
         if (!note) {
-            note = new Note({ pinned: true, user: req.user._id, title: "AI - Summary", category: "AI - Summary", content });
+            note = new Note({
+                pinned: true,
+                user: req.user._id,
+                title: "AI - Summary",
+                category: "AI - Summary",
+                content,
+            });
         } else {
             note.content = content;
         }
-        
+
         await note.save();
         console.log("generative AI Run Function Start ");
 
