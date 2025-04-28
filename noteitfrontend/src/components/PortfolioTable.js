@@ -98,7 +98,7 @@ const PortfolioTable = ({ portfolioData, setPortfolioData ,loading,error}) => {
                                 <td>{details.symbol}</td>
                                 <td>{details.totalQuantity}</td>
                                 <td>{details.averagePrice && details.averagePrice.toFixed(2)}</td>
-                                <td>{details.currentPrice.toFixed(2)}</td>
+                                <td>{details.currentPrice?.toFixed(2)}</td>
                                 <td>{details.currentValue.toFixed(2)}</td>
 
                                 <td
@@ -106,7 +106,7 @@ const PortfolioTable = ({ portfolioData, setPortfolioData ,loading,error}) => {
                                         color: details.change >= 0 ? "green" : "red",
                                     }}
                                 >
-                                    {details.change.toFixed(2)}
+                                    {details.change?.toFixed(2)}
                                 </td>
 
                                 <td
@@ -114,7 +114,7 @@ const PortfolioTable = ({ portfolioData, setPortfolioData ,loading,error}) => {
                                         color: details.pChange >= 0 ? "green" : "red",
                                     }}
                                 >
-                                    {details.pChange.toFixed(2)}
+                                    {details.pChange?.toFixed(2)}
                                 </td>
 
                                 <td
@@ -122,7 +122,7 @@ const PortfolioTable = ({ portfolioData, setPortfolioData ,loading,error}) => {
                                         color: details.daypandl >= 0 ? "green" : "red",
                                     }}
                                 >
-                                    {details.daypandl.toFixed(2)}
+                                    {details.daypandl?.toFixed(2)}
                                 </td>
 
                                
@@ -131,14 +131,14 @@ const PortfolioTable = ({ portfolioData, setPortfolioData ,loading,error}) => {
                                         color: details.profitAndLoss >= 0 ? "green" : "red",
                                     }}
                                 >
-                                    {details.profitAndLoss && details.profitAndLoss.toFixed(2)}
+                                    {details.profitAndLoss && details.profitAndLoss?.toFixed(2)}
                                 </td>
                                 <td
                                     style={{
                                         color: details.netChangePercent >= 0 ? "green" : "red",
                                     }}
                                 >
-                                    {details.netChangePercent && details.netChangePercent.toFixed(2)}%
+                                    {details.netChangePercent && details.netChangePercent?.toFixed(2)}%
                                 </td>
                             </tr>
 
