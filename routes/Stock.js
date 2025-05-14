@@ -7,8 +7,14 @@ const { fetchData } = require("../middleware/Scrapper");
 const fetchStockData = require("../functions/StockData");
 const { getTopIndices } = require("../functions/TopIndices");
 const { Portfolio } = require("../config/models");
+const RedisCacheUtil = require("node-cache-util");
 
 const yahooFinance = require('yahoo-finance2').default; 
+
+const redisUrl = process.env.REDIS_URL;
+const ttl = 60;
+const keyFunction = (req) => `cache:${req.originalUrl}`;
+const redisCacheUtil = new RedisCacheUtil(redisUrl, ttl, keyFunction);
 
 
 router.route("/summary").get(stockProtect, async (req, res) => {
@@ -22,7 +28,7 @@ router.route("/summary").get(stockProtect, async (req, res) => {
     }
 });
 
-router.route("/index").get(stockProtect,async(req, res) => {
+router.route("/index").get(stockProtect, redisCacheUtil.cache() ,async(req, res) => {
     let data = await getTopIndices();
     res.status(200).json(data);
 })
