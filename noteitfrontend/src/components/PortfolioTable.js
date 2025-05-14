@@ -97,9 +97,9 @@ const PortfolioTable = ({ portfolioData, setPortfolioData ,loading,error}) => {
                             >
                                 <td>{details.symbol}</td>
                                 <td>{details.totalQuantity}</td>
-                                <td>{details.averagePrice && details.averagePrice.toFixed(2)}</td>
+                                <td>{details.averagePrice && details.averagePrice?.toFixed(2)}</td>
                                 <td>{details.currentPrice?.toFixed(2)}</td>
-                                <td>{details.currentValue.toFixed(2)}</td>
+                                <td>{details.currentValue?.toFixed(2)}</td>
 
                                 <td
                                     style={{
@@ -163,11 +163,11 @@ const PortfolioTable = ({ portfolioData, setPortfolioData ,loading,error}) => {
                                                         {details.transactions.map((txn, index) => (
                                                             <tr key={index} style={{ color: txn.pandl > 0 ? "green" : "red" }}>
                                                                 <td>{txn.quantity}</td>
-                                                                <td>{txn.price.toFixed(2)}</td>
+                                                                <td>{txn.price?.toFixed(2)}</td>
                                                                 <td>
                                                                     {new Date(txn.purchaseDate).toLocaleDateString()}
                                                                 </td>
-                                                                <td>{txn.pandl.toFixed(2)}</td>
+                                                                <td>{txn.pandl?.toFixed(2)}</td>
                                                                 <td>{txn.comments || "N/A"}</td>
                                                             </tr>
                                                         ))}

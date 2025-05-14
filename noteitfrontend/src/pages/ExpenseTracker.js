@@ -122,7 +122,29 @@ const ExpenseTracker = () => {
         }, {});
     };
 
+    const groupExpensesByYear = (expenses) => {
+        return expenses.reduce((acc, expense) => {
+            const year = new Date(expense.date).getFullYear();
+
+            if (!acc[year]) {
+                acc[year] = { total: 0, byCategory: {}, expenses: [] };
+            }
+
+            acc[year].total += expense.cost;
+            acc[year].expenses.push(expense);
+
+            if (!acc[year].byCategory[expense.category]) {
+                acc[year].byCategory[expense.category] = 0;
+            }
+            acc[year].byCategory[expense.category] += expense.cost;
+            return acc;
+        }, {});
+    };
+
+
     const groupedExpenses = groupExpensesByMonth(expenses);
+
+    const groupedYearExpences = groupExpensesByYear(expenses);
     
     const categoryColors = {
         "Investments": "#4CAF50", // Green
@@ -166,6 +188,26 @@ const ExpenseTracker = () => {
             datasets: dataset,
         };
     };
+
+    const generateBarChartDataYearly = (groupedExpenses) => {
+        const years = Object.keys(groupedExpenses);
+        const categories = [...new Set(expenses.map(expense => expense.category))];
+
+        const dataset = categories.map(category => {
+            return {
+                label: category,
+                data: years.map(year => groupedExpenses[year].byCategory[category] || 0),
+                backgroundColor: categoryColors[category] || '#CCCCCC',
+            };
+        });
+
+        return {
+            labels: years,
+            datasets: dataset,
+        };
+    };
+
+    
 
     const getRowClass = (category) => {
         const color = categoryColors[category] || '#CCCCCC';
@@ -292,6 +334,13 @@ const ExpenseTracker = () => {
                     <h3>Monthly Expenses by Category</h3>
                     <Bar data={generateBarChartData(groupedExpenses)} options={{ responsive: true }} />
                 </div>
+
+                <div className="bar-chart-container">
+                    <h3>Yearly Expenses by Category</h3>
+                    <Bar data={generateBarChartDataYearly(groupedYearExpences)} options={{ responsive: true }} />
+                </div>
+
+                
 
                 <button style={buttonStyle} className="btn btn-success">
                     <AddExpense fetchExpenses={fetchExpenses}>

@@ -26,9 +26,6 @@ if (process.env.NODE_ENV === "production") {
     require("./middleware/telegramAIBot");
 }
 
-// const checkImportance = require("./functions/importanceSegerator");
-
-// console.log(checkImportance("In compliance to Regulation 30 of SEBI (LODR) Regulations, 2015, information regarding participation of NHPC in Investors Conference on 13.11.2024 and 14.11.2024 in Mumbai is submitted."))
 
 const { runPendingReminders } = require("./functions/remainderJobs");
 
@@ -36,6 +33,8 @@ const app = express();
 app.use(compression())
 
 // createPages();
+
+// test from TV Display 
 
 app.use(bodyParser.urlencoded({
     limit: "50mb",
