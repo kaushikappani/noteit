@@ -30,6 +30,8 @@ if (process.env.NODE_ENV === "production") {
 const { runPendingReminders } = require("./functions/remainderJobs");
 
 const app = express();
+app.use(cors());
+
 app.use(compression())
 
 // createPages();
