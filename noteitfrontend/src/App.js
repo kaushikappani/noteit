@@ -13,6 +13,7 @@ import StockScreener from './pages/StockScreener';
 import ExpenseTracker from './pages/ExpenseTracker';
 import Portfolio  from './pages/Portfolio';
 import GenAI from './pages/GenAI';
+import NotesV2 from './pages/NotesV2';
 function App() {
   return (
     <BrowserRouter>
@@ -21,6 +22,7 @@ function App() {
 
         <Route path="/" component={Landing} exact />
         <Route path="/notes" component={() => <Notes />} exact />
+        <Route path="/notesv2" component={() => <NotesV2 />} exact />
         <Route path="/register" component={() => <Register />} exact />
         <Route path="/createnote" component={Create} exact />
         <Route path="/profile" component={Profile} exact />

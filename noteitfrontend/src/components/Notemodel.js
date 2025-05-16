@@ -21,6 +21,7 @@ import "./css/Aibutton.css"
 import GeminiLogo from "./GeminiLogo";
 
 
+
 export const Notemodel = ({ props }) => {
   const [open, setOpen] = useState(false);
   const history = useHistory();
@@ -361,7 +362,6 @@ export const Notemodel = ({ props }) => {
             </Typography>
 
             <Typography variant="body2" style={{ color: "#c7dee5" }}>
-              {/* <ReactQuill readOnly={true} theme="bubble" value={props.content} /> */}
               <SunEditor
                 disable={true}
                 autoFocus={false}
@@ -370,7 +370,7 @@ export const Notemodel = ({ props }) => {
                 setContents={modifyText(props.content)}
                 lang="en"
               />
-             
+                                 
             </Typography>
             <Typography sx={{ fontSize: 14 }} gutterBottom>
               <ReactTimeAgo
