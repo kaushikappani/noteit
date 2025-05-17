@@ -3,47 +3,13 @@ import { useHistory } from "react-router-dom";
 import Header from "../components/Header";
 import Notification from "../components/Notification";
 import axios from "axios";
-import { Grid, Paper, Toolbar, Typography } from "@mui/material";
+import { Grid, Paper, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { Button, Form } from "react-bootstrap";
-import SunEditorComponent from "../components/SunEditorComponent";
 import SunEditor from "suneditor-react";
-import { useMediaQuery, useTheme } from "@mui/material";
+import NotesV2LeftCard from "../components/NotesV2LeftCard";
+import NotesV2Detailed from "../components/NotesV2Detailed";
 
 const NotesV2 = () => {
-
-    const editorOptions = {
-        height: 200,
-        buttonList: [
-            ["undo", "redo"],
-            ["removeFormat"],
-            ["bold", "underline", "italic", "fontSize"],
-            ["fontColor", "hiliteColor"],
-            ["align", "horizontalRule", "list"],
-            ["table", "link"],
-            ["showBlocks", "codeView"]
-
-        ],
-        imageRotation: false,
-        fontSize: [12, 13, 14, 16, 18, 20],
-        colorList: [
-            [
-                "#828282",
-                "#FF5400",
-                "#676464",
-                "#F1F2F4",
-                "#FF9B00",
-                "#F00",
-                "#fa6e30",
-                "#000",
-                "rgba(255, 153, 0, 0.1)",
-                "#FF6600",
-                "#0099FF",
-                "#74CC6D",
-                "#FF9900",
-                "#CCCCCC"
-            ]
-        ]
-    };
 
     const history = useHistory();
     const [notes, setNotes] = useState({});
@@ -51,11 +17,13 @@ const NotesV2 = () => {
     const [loading, setLoading] = useState(false);
     const [alert, setAlert] = useState({ open: false, type: "", message: "" });
     const [selectedNote, setSelectedNote] = useState(null);
-    const editorRef = useRef();
+    const [originalNote, setOriginalNote] = useState(null);
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const showEditorOnly = isMobile && selectedNote !== null;
+
+    const editorRef = useRef();
 
     const fetchUser = async () => {
         try {
@@ -86,42 +54,27 @@ const NotesV2 = () => {
         }
     };
 
-    const changeEditor = (text) => {
-        setSelectedNote((prev) => ({ ...prev, content: text }));
-    };
-
     const handleNewNote = () => {
         setSelectedNote({ title: "", content: "" });
+        setOriginalNote({ title: "", content: "" });
     };
 
     const handleNoteClick = (note) => {
         setSelectedNote(note);
+        setOriginalNote(note);
     };
 
     const colorSync = async (id, color) => {
         setLoading(true);
         try {
-            const config = {
-                withCredentials: true,
-            };
+            const config = { withCredentials: true };
             await axios.put(`/api/notes/${id}`, { color }, config);
-            // notify("Updated", {
-            //     position: "top-right",
-            //     autoClose: 2000,
-            //     hideProgressBar: false,
-            //     closeOnClick: true,
-            //     pauseOnHover: true,
-            //     draggable: true,
-            //     progress: undefined,
-            //     theme: "dark",
-            // });
             setAlert({
                 open: true,
                 type: "success",
                 message: "Note - Color Updated",
             });
         } catch (e) {
-            console.log(e.response ? e.response.data.message : e.message)
             setAlert({
                 open: true,
                 type: "warning",
@@ -131,34 +84,82 @@ const NotesV2 = () => {
         setLoading(false);
     };
 
-    const handleSave = async () => {
-        if (!selectedNote) return;
+    const handleSave = async (noteToSave) => {
+        if (!noteToSave || !noteToSave.title || !noteToSave.content) return;
+        if (!noteToSave._id && (noteToSave.title === "" || noteToSave.content === "")) return;
+
+        setLoading(true);
         try {
             const config = { withCredentials: true };
             const payload = {
-                title: selectedNote.title,
-                content: selectedNote.content,
+                title: noteToSave.title,
+                content: noteToSave.content,
             };
 
-            if (selectedNote._id) {
-                await axios.put(`/api/notes/${selectedNote._id}`, payload, config);
+            let updatedNote;
+            if (noteToSave._id) {
+                const { data } = await axios.put(`/api/notes/${noteToSave._id}`, payload, config);
+                updatedNote = { ...noteToSave, ...payload };
             } else {
-                await axios.post(`/api/notes`, payload, config);
+                const { data } = await axios.post(`/api/notes/create`, payload, config);
+                updatedNote = data;
             }
 
-            setAlert({ open: true, type: "success", message: "Note saved!" });
-            fetchNotes();
+            setNotes((prevNotes) => ({
+                ...prevNotes,
+                [updatedNote._id]: updatedNote,
+            }));
+
+            console.log(notes);
+
+            setSelectedNote(updatedNote);
+            setOriginalNote(updatedNote);
         } catch (err) {
-            setAlert({
-                open: true,
-                type: "danger",
-                message: err.response?.data?.message || "Error saving note",
-            });
+            console.error(err);
+        } finally {
+            setLoading(false);
         }
     };
 
+    function debounce(fn, delay) {
+        let timer;
+        return function (...args) {
+            clearTimeout(timer);
+            timer = setTimeout(() => fn(...args), delay);
+        };
+    }
 
-    
+    const debouncedSave = useRef(debounce(handleSave, 1000)).current;
+
+    const changeEditor = (text) => {
+        setSelectedNote((prev) => {
+            if (!prev || prev.content === text) return prev;
+            const updated = { ...prev, content: text };
+            if (updated._id && text !== originalNote?.content) {
+                debouncedSave(updated);
+            }
+            setNotes((prevNotes) => ({
+                ...prevNotes,
+                [updated._id]: updated,
+            }));
+            return updated;
+        });
+    };
+
+    const changeTitle = (title) => {
+        setSelectedNote((prev) => {
+            if (!prev || prev.title === title) return prev;
+            const updated = { ...prev, title: title };
+            if (updated._id && title !== originalNote?.title) {
+                debouncedSave(updated);
+            }
+            setNotes((prevNotes) => ({
+                ...prevNotes,
+                [updated._id]: updated,
+            }));
+            return updated;
+        });
+    };
 
     useEffect(() => {
         fetchUser();
@@ -171,7 +172,6 @@ const NotesV2 = () => {
             <Notification alert={alert} setAlert={setAlert} />
 
             <Grid container spacing={2} style={{ padding: 20 }}>
-                {/* Left panel: Notes List */}
                 {!showEditorOnly && (
                     <Grid item xs={12} md={4}>
                         <Paper
@@ -189,52 +189,42 @@ const NotesV2 = () => {
                                     + New
                                 </Button>
                             </div>
-                            {Object.values(notes).length > 0 ? (
-                                Object.values(notes).map((note, index) => (
-                                    <Paper
-                                        key={index}
-                                        onClick={() => handleNoteClick(note)}
-                                        style={{
-                                            padding: "10px",
-                                            marginBottom: "10px",
-                                            cursor: "pointer",
-                                            backgroundColor:
-                                                selectedNote && selectedNote._id === note._id
-                                                    ? "#333"
-                                                    : "#2a2a2a",
-                                            color: "#e8eaed",
-                                        }}
-                                    >
-                                        <Typography variant="subtitle1">
-                                            {note.title || "Untitled"}
-                                        </Typography>
 
-                                        <Toolbar
-                                            id={note.id}
-                                            fetchNotes={note.fetchNotes}
-                                            //updateColor={colorSync ? updateColor : null}
-                                            //={note.pinNote ? pinNote : null}
-                                            //archive={archive}
-                                        />
-                                    </Paper>
-                                ))
-                            ) : (
-                                <p>No notes found.</p>
-                            )}
+                            <p>PINNED</p>
+                            {Object.values(notes).filter((v) => v.pinned && v.view).map((note, index) => (
+                                <NotesV2LeftCard
+                                    key={note._id}
+                                    note={note}
+                                    index={index}
+                                    selectedNote={selectedNote}
+                                    handleNoteClick={handleNoteClick}
+                                />
+                            ))}
+
+                            <p>OTHERS</p>
+                            {Object.values(notes).filter((v) => !v.pinned && v.view).map((note, index) => (
+                                <NotesV2LeftCard
+                                    key={note._id}
+                                    note={note}
+                                    index={index}
+                                    selectedNote={selectedNote}
+                                    handleNoteClick={handleNoteClick}
+                                />
+                            ))}
                         </Paper>
                     </Grid>
                 )}
 
-                {/* Right panel: Note Editor */}
                 {(!isMobile || showEditorOnly) && (
                     <Grid item xs={12} md={8}>
                         <Paper
                             style={{
                                 padding: 16,
                                 height: isMobile ? "auto" : "80vh",
-                                overflowY: "auto",
                                 backgroundColor: "#1e1e1e",
-                                color: "#e8eaed"
+                                color: "#e8eaed",
+                                display: "flex",
+                                flexDirection: "column",
                             }}
                         >
                             {isMobile && (
@@ -247,50 +237,12 @@ const NotesV2 = () => {
                                     ← Back to Notes
                                 </Button>
                             )}
-                            <Typography variant="h6" className="mb-3">
-                                {selectedNote?._id ? "Edit Note" : "New Note"}
-                            </Typography>
-                            <Form>
-                                <Form.Group controlId="noteTitle" className="mb-3">
-                                    <Form.Label style={{ color: "#e8eaed" }}>Title</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Note title"
-                                        value={selectedNote?.title || ""}
-                                        onChange={(e) => {
-                                            if (selectedNote) {
-                                                setSelectedNote({
-                                                    ...selectedNote,
-                                                    title: e.target.value,
-                                                });
-                                            }
-                                        }}
-                                        style={{
-                                            backgroundColor: "#202124",
-                                            color: "#e8eaed",
-                                            borderColor: "#c7dee5"
-                                        }}
-                                    />
-                                </Form.Group>
+                            {selectedNote && (<NotesV2Detailed id={selectedNote._id} changeEditor={changeEditor} changeTitle={changeTitle} editorRef={editorRef} />
 
-                                <Form.Group controlId="noteContent" className="mb-3">
-                                    <Form.Label style={{ color: "#e8eaed" }}>Content</Form.Label>
-                                    <SunEditor
-                                        disable={false}
-                                        hideToolbar={false}
-                                        height="75vh"
-                                        ref={editorRef}
-                                        onChange={changeEditor}
-                                        setOptions={editorOptions}
-                                        setContents={selectedNote?.content}
-                                        lang="en"
-                                    />
-                                </Form.Group>
+                            )}
+                            {!selectedNote && (<NotesV2Detailed id={null} changeEditor={changeEditor} changeTitle={changeTitle} editorRef={editorRef} />
 
-                                <Button variant="success" onClick={handleSave}>
-                                    Save
-                                </Button>
-                            </Form>
+                            )}
                         </Paper>
                     </Grid>
                 )}
