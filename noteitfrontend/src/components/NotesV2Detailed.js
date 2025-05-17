@@ -4,7 +4,6 @@ import { Form } from 'react-bootstrap';
 import SunEditor from 'suneditor-react';
 
 const NotesV2Detailed = (props) => {
-    console.log(props);
     const editorOptions = {
         height: 200,
         buttonList: [
@@ -29,9 +28,9 @@ const NotesV2Detailed = (props) => {
 
     const [selectedNote, setSelectedNote] = useState(null);
     const [loading, setLoading] = useState(false);
-    const editorRef = useRef();
 
     const fetchData = async (noteHistory) => {
+        if (!props.id) return;
         try {
             const config = {
                 withCredentials: true,
@@ -52,18 +51,20 @@ const NotesV2Detailed = (props) => {
     };
     useEffect(() => {
         fetchData("h0");
-    }, []);
+    }, [props.id]);
   return (
       <Form style={{ flex: 1, display: "flex", flexDirection: "column" }}>
           <Form.Group controlId="noteTitle" className="mb-3">
               <Form.Control
                   type="text"
                   placeholder="Title"
-                  value={selectedNote?.title || ""}
+                  value={selectedNote?.title}
                   onChange={(e) => {
-                      if (selectedNote) {
-                          props.changeTitle(e.target.value);
-                      }
+                      setSelectedNote(prev => ({
+                          ...prev,
+                          title: e.target.value
+                      }));
+                      props.changeTitle(e.target.value);
                   }}
                   style={{
                       backgroundColor: "#202124",
@@ -71,6 +72,7 @@ const NotesV2Detailed = (props) => {
                       borderColor: "#c7dee5",
                   }}
               />
+
           </Form.Group>
 
           <div style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>

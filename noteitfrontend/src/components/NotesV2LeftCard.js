@@ -4,7 +4,7 @@ import React from 'react'
 const NotesV2LeftCard = ( props ) => {
     return (
       <Paper
-          key={props.index}
+        key={props?.note?._id}
           onClick={() => props.handleNoteClick(props.note)}
           style={{
               padding: "10px",

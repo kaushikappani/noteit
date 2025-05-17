@@ -3,9 +3,8 @@ import { useHistory } from "react-router-dom";
 import Header from "../components/Header";
 import Notification from "../components/Notification";
 import axios from "axios";
-import { Grid, Paper, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Grid, Paper, useMediaQuery, useTheme } from "@mui/material";
 import { Button, Form } from "react-bootstrap";
-import SunEditor from "suneditor-react";
 import NotesV2LeftCard from "../components/NotesV2LeftCard";
 import NotesV2Detailed from "../components/NotesV2Detailed";
 
@@ -16,7 +15,7 @@ const NotesV2 = () => {
     const [user, setUser] = useState({});
     const [loading, setLoading] = useState(false);
     const [alert, setAlert] = useState({ open: false, type: "", message: "" });
-    const [selectedNote, setSelectedNote] = useState(null);
+    const [selectedNote, setSelectedNote] = useState({ _id: null, title: "", content: "" });
     const [originalNote, setOriginalNote] = useState(null);
 
     const theme = useTheme();
@@ -55,8 +54,8 @@ const NotesV2 = () => {
     };
 
     const handleNewNote = () => {
-        setSelectedNote({ title: "", content: "" });
-        setOriginalNote({ title: "", content: "" });
+        setSelectedNote({ _id:null ,title:"",content:""});
+        setOriginalNote({ _id: null, title: "", content: "" });
     };
 
     const handleNoteClick = (note) => {
@@ -103,7 +102,8 @@ const NotesV2 = () => {
             } else {
                 const { data } = await axios.post(`/api/notes/create`, payload, config);
                 updatedNote = data;
-            }
+                await fetchNotes();
+;            }
 
             setNotes((prevNotes) => ({
                 ...prevNotes,
@@ -135,7 +135,7 @@ const NotesV2 = () => {
         setSelectedNote((prev) => {
             if (!prev || prev.content === text) return prev;
             const updated = { ...prev, content: text };
-            if (updated._id && text !== originalNote?.content) {
+            if (text !== originalNote?.content) {
                 debouncedSave(updated);
             }
             setNotes((prevNotes) => ({
@@ -146,11 +146,13 @@ const NotesV2 = () => {
         });
     };
 
-    const changeTitle = (title) => {
+    const changeTitle = (text) => {
+        console.log(text);
         setSelectedNote((prev) => {
-            if (!prev || prev.title === title) return prev;
-            const updated = { ...prev, title: title };
-            if (updated._id && title !== originalNote?.title) {
+            console.log(prev);
+            if (!prev || prev.title === text) return prev;
+            const updated = { ...prev, title: text };
+            if (updated._id && text !== originalNote?.title) {
                 debouncedSave(updated);
             }
             setNotes((prevNotes) => ({
@@ -160,18 +162,17 @@ const NotesV2 = () => {
             return updated;
         });
     };
-
     useEffect(() => {
         fetchUser();
         fetchNotes();
     }, []);
 
     return (
-        <div style={{ height: "100vh", overflow: "hidden" }}>
+        <div style={{ overflow: "hidden" }}>
             <Header page="notes" fetchNotes={fetchNotes} user={user} loading={loading} />
             <Notification alert={alert} setAlert={setAlert} />
 
-            <Grid container spacing={2} style={{ padding: 20 }}>
+            <Grid container spacing={2} style={{ padding: 10 }}>
                 {!showEditorOnly && (
                     <Grid item xs={12} md={4}>
                         <Paper
@@ -195,7 +196,6 @@ const NotesV2 = () => {
                                 <NotesV2LeftCard
                                     key={note._id}
                                     note={note}
-                                    index={index}
                                     selectedNote={selectedNote}
                                     handleNoteClick={handleNoteClick}
                                 />
@@ -237,10 +237,10 @@ const NotesV2 = () => {
                                     ← Back to Notes
                                 </Button>
                             )}
-                            {selectedNote && (<NotesV2Detailed id={selectedNote._id} changeEditor={changeEditor} changeTitle={changeTitle} editorRef={editorRef} />
+                            {selectedNote && selectedNote._id && (<NotesV2Detailed id={selectedNote._id} changeEditor={changeEditor} changeTitle={changeTitle} editorRef={editorRef} />
 
                             )}
-                            {!selectedNote && (<NotesV2Detailed id={null} changeEditor={changeEditor} changeTitle={changeTitle} editorRef={editorRef} />
+                            {selectedNote && !selectedNote._id && (<NotesV2Detailed id={null} changeEditor={changeEditor} changeTitle={changeTitle} editorRef={editorRef} />
 
                             )}
                         </Paper>
