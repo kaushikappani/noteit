@@ -7,8 +7,6 @@ const NotesV2Detailed = (props) => {
     const editorOptions = {
         height: 200,
         buttonList: [
-            ["undo", "redo"],
-            ["removeFormat"],
             ["bold", "underline", "italic", "fontSize"],
             ["fontColor", "hiliteColor"],
             ["align", "horizontalRule", "list"],
@@ -83,6 +81,7 @@ const NotesV2Detailed = (props) => {
                   ref={props.editorRef}
                   onChange={props.changeEditor}
                   setOptions={editorOptions}
+                  defaultStyle="font-size: 18px;"
                   setContents={selectedNote?.content || ""}
                   lang="en"
               />
