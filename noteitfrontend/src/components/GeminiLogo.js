@@ -1,9 +1,9 @@
 const containerStyle = {
-    position: 'fixed',
+    position: 'absolute',
     top: '0',
     left: '0',
     width: '100%',
-    height: '100vh',
+    height: '100%', 
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -15,7 +15,7 @@ const containerStyle = {
 };
 
 const svgStyle = {
-    position: 'fixed',
+    position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',

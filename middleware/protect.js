@@ -77,7 +77,7 @@ const stockProtect = asyncHandler(async (req, res, next) => {
                     return;
                 }
 
-                if (req.user.email === 'kaushikappani@gmail.com' || req.user.email === 'appani.kaushik2019@vitstudent.ac.in') {
+                if (req.user.email === 'kaushikappani@gmail.com' || req.user.email === 'appani.kaushik@bajajtechnologyservices.com') {
                     next();
                 } else {
                     res.status(401).json({ message: "Access Denied" });

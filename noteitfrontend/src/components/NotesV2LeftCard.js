@@ -66,6 +66,7 @@ const NotesV2LeftCard = ({ note, handleNoteClick, setLoading, fetchNotes, setNot
                 transition: 'background-color 0.3s ease',
             }}
         >
+            
             {hover && (
                 <IconButton
                     onClick={(e) => {
