@@ -1,28 +1,140 @@
-import { Paper, Typography } from '@mui/material'
-import React from 'react'
+import { Paper, Typography, IconButton, Tooltip } from '@mui/material';
+import React, { useState } from 'react';
+import { Pin, PinAngle, Archive } from 'react-bootstrap-icons';
+import axios from 'axios';
 
-const NotesV2LeftCard = ( props ) => {
+const NotesV2LeftCard = ({ note, handleNoteClick, setLoading, fetchNotes }) => {
+    const [hover, setHover] = useState(false);
+    const colors = [
+        { code: '#5c2b29', name: 'Red' },
+        { code: '#345920', name: 'Green' },
+        { code: '#614a19', name: 'Brown' },
+    ];
+
+    const pinNote = async (id) => {
+        setLoading(true);
+        try {
+            const config = { withCredentials: true };
+            await axios.put(`/api/notes/${id}`, { pinned: true }, config);
+            await fetchNotes();
+        } catch (e) {
+            console.error("Failed to pin/unpin note", e);
+        }
+        setLoading(false);
+    };
+
+    const noteArchive = async (id) => {
+        setLoading(true);
+        try {
+            const config = { withCredentials: true };
+            await axios.put(`/api/notes/${id}`, { archived: true }, config);
+            await fetchNotes();
+        } catch (e) {
+            console.error("Failed to pin/unpin note", e);
+        }
+        setLoading(false);
+    };
+
+    const changeColor = async (color) => {
+        setLoading(true);
+        try {
+            const config = { withCredentials: true };
+            await axios.put(`/api/notes/${note._id}`, { color }, config);
+            await fetchNotes();
+        } catch (e) {
+            console.error("Failed to update color", e);
+        }
+        setLoading(false);
+    };
+
     return (
-      <Paper
-        key={props?.note?._id}
-          onClick={() => props.handleNoteClick(props.note)}
-          style={{
-              padding: "10px",
-              marginBottom: "10px",
-              cursor: "pointer",
-              backgroundColor: props.note.color,
-              color: "#e8eaed",
-          }}
-      >
-          <Typography variant="subtitle1" style={{ fontWeight: 600 }}>
-              {props.note.title || "Untitled"}
-          </Typography>
-          <Typography variant="body2" style={{ color: "#ccc", overflow: "hidden" }}>
-              {(props.note.content || "").replace(/<[^>]+>/g, "").slice(0, 100)}...
-          </Typography>
+        <Paper
+            key={note?._id}
+            onClick={() => handleNoteClick(note)}
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+            style={{
+                padding: '10px',
+                marginBottom: '10px',
+                borderRadius: '10px',
+                cursor: 'pointer',
+                backgroundColor: note.color,
+                color: '#e8eaed',
+                position: 'relative',
+            }}
+        >
+            {hover && (
+                
+                <IconButton
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        pinNote(note._id);
+                    }}
+                    size="small"
+                    sx={{
+                        position: 'absolute',
+                        top: 4,
+                        right: 4,
+                        color: 'white',
+                        backgroundColor: 'rgba(0,0,0,0.3)',
+                        '&:hover': {
+                            backgroundColor: 'rgba(0,0,0,0.5)',
+                        },
+                    }}
+                >   
+                   
+                    {note.pinned ? <Pin /> : <PinAngle />}
+                    </IconButton>
+            )}
 
-      </Paper>
-  )
-}
+            {hover && (
+                <div
+                    style={{
+                        position: 'absolute',
+                        bottom: 4,
+                        right: 4,
+                        display: 'flex',
+                        gap: '8px',
+                        zIndex: 1,
+                        padding: '4px',
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    {colors.map(({ code, name }) => (
+                        <Tooltip key={code} title={`Set ${name}`} arrow>
+                            <div
+                                onClick={() => changeColor(code)}
+                                style={{
+                                    width: 20,
+                                    height: 20,
+                                    borderRadius: '50%',
+                                    backgroundColor: code,
+                                    border: '1px solid white',
+                                    cursor: 'pointer',
+                                }}
+                            />
+                        </Tooltip>
+                    ))}
+                    
+                    <Archive
+                        onClick={() => noteArchive(note._id)}
+                        style={{
+                        width: 20,
+                        height: 20,
+                        marginLeft : 5,
+                        cursor: 'pointer',
+                    }} />
+                </div>
+            )}
 
-export default NotesV2LeftCard
+            <Typography variant="subtitle1" style={{ fontWeight: 600 }}>
+                {note.title || 'Untitled'}
+            </Typography>
+            <Typography variant="body2" style={{ color: '#ccc', overflow: 'hidden' }}>
+                {(note.content || '').replace(/<[^>]+>/g, '').slice(0, 100)}...
+            </Typography>
+        </Paper>
+    );
+};
+
+export default NotesV2LeftCard;

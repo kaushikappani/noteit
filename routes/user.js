@@ -177,7 +177,8 @@ router.route("/confirm/:id").get(asyncHandler(async (req, res) => {
 
         const decode = jwt.verify(token, process.env.JWT_SECRET_VERIFICATION);
         console.log("decode", decode);
-        user = await User.findById(decode.id).select("-password");
+        let user = await User.findById(decode.id).select("-password");
+        console.log(user);
         await client.get(user.email +"_verification", (err, result) => {
             if (err) {
                 console.error(err);
@@ -190,7 +191,9 @@ router.route("/confirm/:id").get(asyncHandler(async (req, res) => {
                 return;
             }
             user.verified = true;
+            client.del(`user:${decode.id}`); 
             user.save();
+            console.log(user);
             res.json({ message: "Profile Verified" })
         })
   

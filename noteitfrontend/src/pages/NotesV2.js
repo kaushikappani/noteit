@@ -198,6 +198,8 @@ const NotesV2 = () => {
                                     note={note}
                                     selectedNote={selectedNote}
                                     handleNoteClick={handleNoteClick}
+                                    fetchNotes={fetchNotes}
+                                    setLoading={setLoading}
                                 />
                             ))}
 
@@ -209,6 +211,8 @@ const NotesV2 = () => {
                                     index={index}
                                     selectedNote={selectedNote}
                                     handleNoteClick={handleNoteClick}
+                                    fetchNotes={fetchNotes}
+                                    setLoading={setLoading}
                                 />
                             ))}
                         </Paper>
