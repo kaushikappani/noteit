@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Pin, PinAngle, Archive } from 'react-bootstrap-icons';
 import axios from 'axios';
 
-const NotesV2LeftCard = ({ note, handleNoteClick, setLoading, fetchNotes }) => {
+const NotesV2LeftCard = ({ note, handleNoteClick, setLoading, fetchNotes, setNotes }) => {
     const [hover, setHover] = useState(false);
     const colors = [
         { code: '#5c2b29', name: 'Red' },
@@ -11,8 +11,14 @@ const NotesV2LeftCard = ({ note, handleNoteClick, setLoading, fetchNotes }) => {
         { code: '#614a19', name: 'Brown' },
     ];
 
+    const updateNoteField = (id, updatedFields) => {
+        setNotes(prev =>
+            prev.map(n => (n._id === id ? { ...n, ...updatedFields } : n))
+        );
+    };
+
     const pinNote = async (id) => {
-        setLoading(true);
+        updateNoteField(id, { pinned: !note.pinned }); // Optimistic toggle
         try {
             const config = { withCredentials: true };
             await axios.put(`/api/notes/${id}`, { pinned: true }, config);
@@ -20,23 +26,20 @@ const NotesV2LeftCard = ({ note, handleNoteClick, setLoading, fetchNotes }) => {
         } catch (e) {
             console.error("Failed to pin/unpin note", e);
         }
-        setLoading(false);
     };
 
     const noteArchive = async (id) => {
-        setLoading(true);
         try {
             const config = { withCredentials: true };
             await axios.put(`/api/notes/${id}`, { archived: true }, config);
             await fetchNotes();
         } catch (e) {
-            console.error("Failed to pin/unpin note", e);
+            console.error("Failed to archive note", e);
         }
-        setLoading(false);
     };
 
     const changeColor = async (color) => {
-        setLoading(true);
+        updateNoteField(note._id, { color }); // Optimistic color update
         try {
             const config = { withCredentials: true };
             await axios.put(`/api/notes/${note._id}`, { color }, config);
@@ -44,7 +47,6 @@ const NotesV2LeftCard = ({ note, handleNoteClick, setLoading, fetchNotes }) => {
         } catch (e) {
             console.error("Failed to update color", e);
         }
-        setLoading(false);
     };
 
     return (
@@ -61,10 +63,10 @@ const NotesV2LeftCard = ({ note, handleNoteClick, setLoading, fetchNotes }) => {
                 backgroundColor: note.color,
                 color: '#e8eaed',
                 position: 'relative',
+                transition: 'background-color 0.3s ease',
             }}
         >
             {hover && (
-                
                 <IconButton
                     onClick={(e) => {
                         e.stopPropagation();
@@ -81,10 +83,9 @@ const NotesV2LeftCard = ({ note, handleNoteClick, setLoading, fetchNotes }) => {
                             backgroundColor: 'rgba(0,0,0,0.5)',
                         },
                     }}
-                >   
-                   
+                >
                     {note.pinned ? <Pin /> : <PinAngle />}
-                    </IconButton>
+                </IconButton>
             )}
 
             {hover && (
@@ -115,15 +116,16 @@ const NotesV2LeftCard = ({ note, handleNoteClick, setLoading, fetchNotes }) => {
                             />
                         </Tooltip>
                     ))}
-                    
+
                     <Archive
                         onClick={() => noteArchive(note._id)}
                         style={{
-                        width: 20,
-                        height: 20,
-                        marginLeft : 5,
-                        cursor: 'pointer',
-                    }} />
+                            width: 20,
+                            height: 20,
+                            marginLeft: 5,
+                            cursor: 'pointer',
+                        }}
+                    />
                 </div>
             )}
 
@@ -136,5 +138,6 @@ const NotesV2LeftCard = ({ note, handleNoteClick, setLoading, fetchNotes }) => {
         </Paper>
     );
 };
+
 
 export default NotesV2LeftCard;

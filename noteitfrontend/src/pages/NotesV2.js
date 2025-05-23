@@ -196,6 +196,7 @@ const NotesV2 = () => {
                                 <NotesV2LeftCard
                                     key={note._id}
                                     note={note}
+                                    setNotes = {setNotes}
                                     selectedNote={selectedNote}
                                     handleNoteClick={handleNoteClick}
                                     fetchNotes={fetchNotes}
@@ -208,11 +209,11 @@ const NotesV2 = () => {
                                 <NotesV2LeftCard
                                     key={note._id}
                                     note={note}
-                                    index={index}
                                     selectedNote={selectedNote}
                                     handleNoteClick={handleNoteClick}
                                     fetchNotes={fetchNotes}
                                     setLoading={setLoading}
+                                    setNotes={setNotes}
                                 />
                             ))}
                         </Paper>
