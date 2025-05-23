@@ -14,6 +14,7 @@ import ExpenseTracker from './pages/ExpenseTracker';
 import Portfolio  from './pages/Portfolio';
 import GenAI from './pages/GenAI';
 import NotesV2 from './pages/NotesV2';
+import NoteItChat from './pages/NoteItChat';
 function App() {
   return (
     <BrowserRouter>
@@ -33,7 +34,7 @@ function App() {
         <Route path="/stock/screener" component={StockScreener} exact />
         <Route path="/expensetracker" component={ExpenseTracker} exact />
         <Route path="/stock/portfolio" component={Portfolio} exact />
-        <Route path="/genai" component={GenAI} exact />
+        <Route path="/genai" component={NoteItChat} exact />
       </main>
     </BrowserRouter>
   );

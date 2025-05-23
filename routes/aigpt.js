@@ -31,12 +31,16 @@ const genAI = new GoogleGenerativeAI(apiKey);
 
 
 router.route("/ai/chat").post(protect, async (req, res) => {
+    if (!req.body.message || typeof req.body.message !== 'string' || req.body.message.trim() === '') {
+        return res.status(400).json({ error: "Message cannot be empty" });
+    }
+    console.log(req.body.message);
     res.setHeader("Content-Type", "text/plain");
     res.setHeader("Transfer-Encoding", "chunked");
     const model = genAI.getGenerativeModel({
         model: "gemini-1.5-flash",
         safetySettings,
-        systemInstruction: "",
+        systemInstruction: "Give the response only in HTML components only",
     });
 
     const generationConfig = {
@@ -57,9 +61,14 @@ router.route("/ai/chat").post(protect, async (req, res) => {
         history: [...chatHistory],
     });
 
+    console.log(chatSession);
+
     res.flushHeaders();
     try {
-        const result = await chatSession.sendMessageStream(req.body.message);
+        console.log(req.body.message);
+        const result = await chatSession.sendMessageStream(req.body.message + "give the response on");
+        console.log(result);
+
 
         const aiMessage = {
             role: "model",
@@ -68,7 +77,7 @@ router.route("/ai/chat").post(protect, async (req, res) => {
 
         for await (const chunk of result.stream) {
             const chunkText = chunk.text();
-            res.write(chunkText);
+            res.write(chunkText.replace('```html', "").replace('```', ""));
             aiMessage.parts.push({ text: chunkText });
         }
 

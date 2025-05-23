@@ -3,9 +3,9 @@ import { useHistory } from "react-router-dom";
 import Card from "../components/Card";
 import axios from "axios";
 import Header from "../components/Header";
-import { PencilSquare, Search } from "react-bootstrap-icons";
+import { PencilSquare, Search, ChatDots } from "react-bootstrap-icons";
 import { Input, Typography } from "@mui/material";
-import { Container } from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import Notification from "../components/Notification";
 
@@ -16,6 +16,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import RemindersCard from "../components/RemindersCard";
 import { isMobile } from 'react-device-detect';
 import StockIndexCards from "../components/StockIndexCards";
+import ChatPage from "./NoteItChat";
 
 
 const ariaLabel = { "aria-label": "Search" };
@@ -38,6 +39,7 @@ const Notes = () => {
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState();
   const [reloadStockDataCallback, setReloadStockDataCallback] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
 
   const notify = (message, type) => toast(message, type);
@@ -328,8 +330,57 @@ const Notes = () => {
             <StockIndexCards reloadStockData={reloadStockDataCallback}  />
             <RemindersCard refreshReminders={fetchNotes} />
 
+            {/* <div
+              style={{
+                position: 'fixed',
+                bottom: '20px',
+                left: '20px',
+                zIndex: 1300,
+              }}
+            >
+              <Button
+                variant="primary"
+                onClick={() => setIsChatOpen(prev => !prev)}
+                style={{
+                  borderRadius: '50%',
+                  width: '56px',
+                  height: '56px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: 0,
+                  fontSize: '1.4rem',
+                }}
+              >
+                <ChatDots />
+              </Button>
+            </div> */}
 
-            <Input
+            {/* Chat Popup */}
+            {/* {isChatOpen && (
+              <div
+                style={{
+                  position: 'fixed',
+                  bottom: '90px',
+                  left: '20px',
+                  width: '350px',
+                  height: '500px',
+                  zIndex: 1300,
+                  backgroundColor: '#121212',
+                  borderRadius: '10px',
+                  boxShadow: '0 4px 10px rgba(0,0,0,0.5)',
+                  overflow: 'hidden',
+                  border: '1px solid #333',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <ChatPage />
+              </div>
+            )} */}
+
+            <ChatPage />
+            {/* <Input
               startAdornment={
                 <InputAdornment position="start">
                   <Search color="white" />
@@ -342,7 +393,8 @@ const Notes = () => {
               variant="standard"
               defaultValue=""
               inputProps={ariaLabel}
-            />
+            /> */
+            }
 
             {notes?.length > 0 && (
               <Typography

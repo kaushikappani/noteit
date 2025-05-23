@@ -15,7 +15,6 @@ const NotesV2Detailed = (props) => {
             ["fontColor", "hiliteColor"],
             ["align", "horizontalRule", "list"],
             ["table", "link"],
-            ["showBlocks", "codeView"]
         ],
         fontSize: [12, 13, 14, 16, 18, 20],
         colorList: [
@@ -25,7 +24,8 @@ const NotesV2Detailed = (props) => {
                 "rgba(255, 153, 0, 0.1)", "#FF6600", "#0099FF",
                 "#74CC6D", "#FF9900", "#CCCCCC"
             ]
-        ]
+        ],
+        defaultStyle: "font-size: 18px;"
     };
 
     const [selectedNote, setSelectedNote] = useState(null);
@@ -132,7 +132,6 @@ const NotesV2Detailed = (props) => {
                         </Button>
                     </div>
                 </Form.Group>
-
 
                 <div style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column' }}>
                     <GeminiLogo aiLoading={aiLoading} />

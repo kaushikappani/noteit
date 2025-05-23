@@ -7,6 +7,7 @@ import { Grid, Paper, useMediaQuery, useTheme } from "@mui/material";
 import { Button } from "react-bootstrap";
 import NotesV2LeftCard from "../components/NotesV2LeftCard";
 import NotesV2Detailed from "../components/NotesV2Detailed";
+import ChatPage from "./NoteItChat";
 
 const NotesV2 = () => {
     const history = useHistory();
@@ -186,6 +187,8 @@ const NotesV2 = () => {
 
     return (
         <div style={{ overflow: "hidden" }}>
+            <ChatPage reload={fetchNotes} />
+
             <Header page="notes" fetchNotes={fetchNotes} user={user} loading={loading} />
             <Notification alert={alert} setAlert={setAlert} />
 
