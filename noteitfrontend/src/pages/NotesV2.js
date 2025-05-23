@@ -55,7 +55,8 @@ const NotesV2 = () => {
 
     const handleNewNote = () => {
         setSelectedNote({ _id: null, title: "", content: "" });
-        setOriginalNote({ _id: null, title: "", content: "" });
+        setOriginalNote(null);
+        console.log("as")
     };
 
     const handleNoteClick = (note) => {
@@ -115,36 +116,46 @@ const NotesV2 = () => {
             if (!prev || prev.content === text) return prev;
             const updated = { ...prev, content: text };
 
-            if (updated._id && text !== originalNote?.content) {
+            if (updated._id) {
+                if (text !== originalNote?.content) {
+                    debouncedSave(updated);
+                    setNotes((prevNotes) =>
+                        prevNotes.map((note) =>
+                            note._id === updated._id ? { ...note, content: text } : note
+                        )
+                    );
+                }
+            } else {
                 debouncedSave(updated);
-                setNotes((prevNotes) =>
-                    prevNotes.map((note) =>
-                        note._id === updated._id ? { ...note, content: text } : note
-                    )
-                );
             }
 
             return updated;
         });
     };
+
 
     const changeTitle = (text) => {
         setSelectedNote((prev) => {
             if (!prev || prev.title === text) return prev;
             const updated = { ...prev, title: text };
 
-            if (updated._id && text !== originalNote?.title) {
+            if (updated._id) {
+                if (text !== originalNote?.title) {
+                    debouncedSave(updated);
+                    setNotes((prevNotes) =>
+                        prevNotes.map((note) =>
+                            note._id === updated._id ? { ...note, title: text } : note
+                        )
+                    );
+                }
+            } else {
                 debouncedSave(updated);
-                setNotes((prevNotes) =>
-                    prevNotes.map((note) =>
-                        note._id === updated._id ? { ...note, title: text } : note
-                    )
-                );
             }
 
             return updated;
         });
     };
+
 
     useEffect(() => {
         fetchUser();
@@ -228,6 +239,7 @@ const NotesV2 = () => {
                             )}
                             {selectedNote && (
                                 <NotesV2Detailed
+                                    key={selectedNote._id || "new"}
                                     id={selectedNote._id || null}
                                     changeEditor={changeEditor}
                                     changeTitle={changeTitle}
@@ -235,6 +247,7 @@ const NotesV2 = () => {
                                     setLoading={setLoading}
                                 />
                             )}
+
                         </Paper>
                     </Grid>
                 )}
