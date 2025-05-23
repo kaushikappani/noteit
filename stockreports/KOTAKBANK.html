@@ -3,6 +3,7 @@
 <html>
 <head>
 <title>Kotak Mahindra Bank Ltd Stock Analysis</title>
+<link  rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <style>
 body {
   font-family: sans-serif;
@@ -10,6 +11,7 @@ body {
 table {
   width: 100%;
   border-collapse: collapse;
+  margin-bottom: 20px;
 }
 th, td {
   border: 1px solid #ddd;
@@ -19,127 +21,207 @@ th, td {
 th {
   background-color: #f2f2f2;
 }
+.rating {
+  font-weight: bold;
+}
 .positive {
   color: green;
-}
-.negative {
-  color: red;
 }
 .neutral {
   color: blue;
 }
+.negative {
+  color: red;
+}
 </style>
 </head>
 <body>
+<div class="container">
+  <h1>Kotak Mahindra Bank Ltd Stock Analysis</h1>
+  <p>Current Price: ₹ 2,081  Price Change: -0.38%</p>
 
-<h1>Kotak Mahindra Bank Ltd Stock Analysis</h1>
+  <h2>Quarterly Results Analysis</h2>
+  <p>The following analysis is based on the last four quarters (Mar 2023, Jun 2023, Sep 2023, Dec 2023) of available data.  Note that some data points are missing from the provided dataset for the most recent quarters.  A comprehensive analysis requires complete data.</p>
 
-<h2>Current Price: ₹ 1,982 (2.45% change)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Parameter</th>
+        <th>Mar 2023</th>
+        <th>Jun 2023</th>
+        <th>Sep 2023</th>
+        <th>Dec 2023</th>
+        <th>Growth Trend</th>
+        <th>Rating</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Revenue</td>
+        <td>11,982</td>
+        <td>12,869</td>
+        <td>13,717</td>
+        <td>14,495</td>
+        <td>Increasing</td>
+        <td class="rating positive">Positive</td>
+      </tr>
+      <tr>
+        <td>Interest Income</td>
+        <td>4,230</td>
+        <td>4,834</td>
+        <td>5,536</td>
+        <td>5,985</td>
+        <td>Increasing</td>
+        <td class="rating positive">Positive</td>
+      </tr>
+      <tr>
+        <td>Expenses</td>
+        <td>10,548</td>
+        <td>10,303</td>
+        <td>10,136</td>
+        <td>12,484</td>
+        <td>Mixed - overall slight increase</td>
+        <td class="rating neutral">Neutral</td>
+      </tr>
+      <tr>
+        <td>Financing Profit</td>
+        <td>-2,796</td>
+        <td>-2,269</td>
+        <td>-1,955</td>
+        <td>-3,975</td>
+        <td>Mixed - significant decrease in Dec 2023</td>
+        <td class="rating negative">Negative</td>
+      </tr>
+      <tr>
+        <td>Financing Margin %</td>
+        <td>-23%</td>
+        <td>-18%</td>
+        <td>-14%</td>
+        <td>-27%</td>
+        <td>Mixed - significant decrease in Dec 2023</td>
+        <td class="rating negative">Negative</td>
+      </tr>
+      <tr>
+        <td>Other Income</td>
+        <td>8,785</td>
+        <td>7,855</td>
+        <td>7,843</td>
+        <td>9,588</td>
+        <td>Mixed</td>
+        <td class="rating neutral">Neutral</td>
+      </tr>
+      <tr>
+        <td>Profit before tax</td>
+        <td>5,989</td>
+        <td>5,586</td>
+        <td>5,888</td>
+        <td>5,614</td>
+        <td>Mixed - slight decrease overall</td>
+        <td class="rating neutral">Neutral</td>
+      </tr>
+      <tr>
+        <td>Net Profit</td>
+        <td>4,566</td>
+        <td>4,150</td>
+        <td>4,461</td>
+        <td>4,265</td>
+        <td>Mixed</td>
+        <td class="rating neutral">Neutral</td>
+      </tr>
+      <tr>
+        <td>EPS (Rs)</td>
+        <td>22.99</td>
+        <td>20.88</td>
+        <td>22.45</td>
+        <td>21.46</td>
+        <td>Mixed</td>
+        <td class="rating neutral">Neutral</td>
+      </tr>
+      <tr>
+        <td>Gross NPA %</td>
+        <td>1.76%</td>
+        <td>1.75%</td>
+        <td>1.69%</td>
+        <td>1.68%</td>
+        <td>Decreasing</td>
+        <td class="rating positive">Positive</td>
+      </tr>
+      <tr>
+        <td>Net NPA %</td>
+        <td>0.41%</td>
+        <td>0.43%</td>
+        <td>0.39%</td>
+        <td>0.36%</td>
+        <td>Decreasing</td>
+        <td class="rating positive">Positive</td>
+      </tr>
+    </tbody>
+  </table>
 
-<h2>Financial Performance Analysis</h2>
 
-<p>Based on the provided data, here's an analysis of Kotak Mahindra Bank's financial performance and shareholding pattern over the last few quarters. Note that a comprehensive analysis requires deeper dive into financial statements and industry benchmarks.</p>
+  <h2>Shareholding Pattern Analysis</h2>
+  <p>The following analysis considers the last four quarters.</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Shareholder Type</th>
+        <th>Mar 2023</th>
+        <th>Jun 2023</th>
+        <th>Sep 2023</th>
+        <th>Dec 2023</th>
+        <th>Trend</th>
+        <th>Rating</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Promoters</td>
+        <td>25.95%</td>
+        <td>25.94%</td>
+        <td>25.92%</td>
+        <td>25.91%</td>
+        <td>Slightly Decreasing</td>
+        <td class="rating neutral">Neutral</td>
+      </tr>
+      <tr>
+        <td>FIIs</td>
+        <td>39.42%</td>
+        <td>41.54%</td>
+        <td>40.97%</td>
+        <td>39.74%</td>
+        <td>Mixed</td>
+        <td class="rating neutral">Neutral</td>
+      </tr>
+      <tr>
+        <td>DIIs</td>
+        <td>21.31%</td>
+        <td>19.57%</td>
+        <td>20.00%</td>
+        <td>21.38%</td>
+        <td>Mixed</td>
+        <td class="rating neutral">Neutral</td>
+      </tr>
+      <tr>
+        <td>Public</td>
+        <td>13.30%</td>
+        <td>12.92%</td>
+        <td>13.11%</td>
+        <td>12.98%</td>
+        <td>Slightly Decreasing</td>
+        <td class="rating neutral">Neutral</td>
+      </tr>
+    </tbody>
+  </table>
 
+  <p><strong>Overall Assessment:</strong> Based on the available data, the company shows mixed performance. While some key parameters like Gross and Net NPA percentages show a positive trend, Profitability indicators show mixed results. Shareholding patterns also reveal mixed trends, with slight decreases in Promoter and Public holdings, and some fluctuation among FIIs and DIIs.  A more conclusive analysis requires complete data for all quarters, particularly regarding expense fluctuations, and a deeper dive into the company's financial statements to understand factors beyond the provided summary data.</p>
 
-<h3>Quarterly Results</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Parameter</th>
-      <th>Trend (Last 4 Quarters)</th>
-      <th>Rating</th>
-      <th>Supporting Data</th>
+  <h2>Cautions:</h2>
+  <ul>
+    <li>The analysis is based on limited data and may not be fully comprehensive.</li>
+    <li>Investment decisions should not be solely based on this analysis.  Consult with a financial advisor before making investment decisions.</li>
+  </ul>
 
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Revenue</td>
-      <td>Increasing</td>
-      <td class="positive">Positive</td>
-      <td>Revenue shows a clear upward trend: Sep 2023 (₹13,717 Cr) > Dec 2023 (₹14,495 Cr) > Mar 2024 (₹15,156 Cr) > Jun 2024 (₹15,837 Cr).</td>
-    </tr>
-    <tr>
-      <td>Net Profit</td>
-      <td>Generally Increasing, with some fluctuation</td>
-      <td class="positive">Positive</td>
-      <td> While there is fluctuation, the overall trend is upward: Sep 2023 (₹4,461 Cr) < Dec 2023 (₹4,265 Cr) < Mar 2024 (₹5,337 Cr) > Jun 2024 (₹7,448 Cr) </td>
-    </tr>
-    <tr>
-      <td>EPS</td>
-      <td>Increasing, with some fluctuation</td>
-      <td class="positive">Positive</td>
-      <td> Similar to Net Profit, there is a general increase: Sep 2023 (₹22.45) < Dec 2023 (₹21.46) < Mar 2024 (₹26.85) > Jun 2024 (₹37.47)</td>
-    </tr>
-    <tr>
-      <td>Gross NPA %</td>
-      <td>Decreasing</td>
-      <td class="positive">Positive</td>
-      <td>Consistent decline: Sep 2023 (1.69%) > Dec 2023 (1.68%) > Mar 2024 (1.38%) > Jun 2024 (1.39%)</td>
-    </tr>
-    <tr>
-      <td>Net NPA %</td>
-      <td>Decreasing</td>
-      <td class="positive">Positive</td>
-      <td>Consistent decline: Sep 2023 (0.39%) > Dec 2023 (0.36%) > Mar 2024 (0.36%) > Jun 2024 (0.38%)</td>
-    </tr>
-
-  </tbody>
-</table>
-
-<h3>Yearly Results</h3>
-<p>Yearly data does not cover the last four quarters but shows strong growth over a longer term.</p>
-
-
-<h3>Shareholding Pattern</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Shareholder Category</th>
-      <th>Trend (Last 4 Quarters)</th>
-      <th>Rating</th>
-      <th>Supporting Data</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Promoters</td>
-      <td>Slightly Decreasing</td>
-      <td class="neutral">Neutral</td>
-      <td>Minor decrease, but still a significant shareholding.</td>
-    </tr>
-    <tr>
-      <td>FIIs</td>
-      <td>Fluctuating</td>
-      <td class="neutral">Neutral</td>
-      <td>Significant fluctuation in FII holdings in the last four quarters.</td>
-    </tr>
-    <tr>
-      <td>DIIs</td>
-      <td>Increasing</td>
-      <td class="positive">Positive</td>
-      <td>Consistent increase in DII holdings: Sep 2023 (20%) > Dec 2023 (21.38%) > Mar 2024 (23.40%) > Jun 2024 (27.69%).</td>
-    </tr>
-    <tr>
-      <td>Public</td>
-      <td>Fluctuating</td>
-      <td class="neutral">Neutral</td>
-      <td>Public holding shows fluctuation with no significant trend</td>
-    </tr>
-    <tr>
-      <td>Number of Shareholders</td>
-      <td>Increasing</td>
-      <td class="positive">Positive</td>
-      <td>A clear upward trend in the number of shareholders, indicating increased investor interest.</td>
-    </tr>
-  </tbody>
-</table>
-
-<h2>Overall Assessment</h2>
-<p>Based on the provided data, Kotak Mahindra Bank demonstrates a generally positive performance.  While some parameters show fluctuation, several key metrics like revenue, net profit, EPS, and DII shareholding have shown positive trends.  However, a thorough financial statement analysis is needed to form a complete and accurate opinion.  This analysis should be only used as a starting point for investment decisions and should not be considered financial advice. </p>
-
-<h2>Disclaimer:</h2>
-<p>This analysis is based solely on the provided data and should not be considered financial advice.  Always conduct thorough research and consult with a financial advisor before making any investment decisions.</p>
-
+</div>
 </body>
 </html>
+

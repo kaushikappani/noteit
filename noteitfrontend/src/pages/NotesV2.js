@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import Header from "../components/Header";
 import Notification from "../components/Notification";
@@ -10,12 +10,14 @@ import NotesV2Detailed from "../components/NotesV2Detailed";
 
 const NotesV2 = () => {
     const history = useHistory();
-    const [notes, setNotes] = useState({});
+    const [notes, setNotes] = useState([]);
     const [user, setUser] = useState({});
     const [loading, setLoading] = useState(false);
     const [alert, setAlert] = useState({ open: false, type: "", message: "" });
     const [selectedNote, setSelectedNote] = useState({ _id: null, title: "", content: "" });
     const [originalNote, setOriginalNote] = useState(null);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredNoteIds, setFilteredNoteIds] = useState(null); // null = show all
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -156,11 +158,31 @@ const NotesV2 = () => {
         });
     };
 
+    const handleSearch = (term) => {
+        if (!term || notes.length === 0) {
+            setFilteredNoteIds(null);
+            return;
+        }
+
+        const lowerTerm = term.toLowerCase();
+        const matchedIds = notes
+            .filter(n =>
+                n.title.toLowerCase().includes(lowerTerm) ||
+                n.content.toLowerCase().includes(lowerTerm)
+            )
+            .map(n => n._id);
+
+        setFilteredNoteIds(matchedIds);
+    };
+
+
+
 
     useEffect(() => {
         fetchUser();
         fetchNotes();
     }, []);
+
 
     return (
         <div style={{ overflow: "hidden" }}>
@@ -179,15 +201,25 @@ const NotesV2 = () => {
                                 color: "#e8eaed"
                             }}
                         >
-                            <div className="d-flex justify-content-between align-items-center mb-3">
+                            <div className="d-flex justify-content-between align-items-center mb-2">
                                 <h5>Your Notes</h5>
                                 <Button variant="primary" size="sm" onClick={handleNewNote}>
                                     + New
                                 </Button>
                             </div>
+                            <input
+                                type="text"
+                                className="form-control mb-3"
+                                placeholder="Search notes..."
+                                onChange={(e) => handleSearch(e.target.value)}
+                                style={{ backgroundColor: "#2b2b2b", color: "#e8eaed", border: "none" }}
+                            />
+
 
                             <p>PINNED</p>
-                            {Object.values(notes).filter((v) => v.pinned && v.view).map((note) => (
+                            {notes
+                                .filter((v) => v.pinned && v.view && (!filteredNoteIds || filteredNoteIds.includes(v._id)))
+                                .map((note) => (
                                 <NotesV2LeftCard
                                     key={note._id}
                                     note={note}
@@ -200,7 +232,9 @@ const NotesV2 = () => {
                             ))}
 
                             <p>OTHERS</p>
-                            {Object.values(notes).filter((v) => !v.pinned && v.view).map((note) => (
+                            {notes
+                                .filter((v) => !v.pinned && v.view && (!filteredNoteIds || filteredNoteIds.includes(v._id)))
+                                .map((note) => (
                                 <NotesV2LeftCard
                                     key={note._id}
                                     note={note}

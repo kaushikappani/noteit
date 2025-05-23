@@ -10,7 +10,6 @@ body {
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
 }
 th, td {
   border: 1px solid #ddd;
@@ -22,26 +21,26 @@ th {
 }
 .positive { color: green; }
 .negative { color: red; }
-.neutral { color: orange; }
+.neutral { color: gray; }
 </style>
 </head>
 <body>
 
 <h1>Bajaj Housing Finance Ltd. Stock Analysis</h1>
 
-<p><strong>Note:</strong>  This analysis is based on limited data provided. A comprehensive analysis requires more historical quarterly and yearly financial data.</p>
+<p><strong>Disclaimer:</strong> This analysis is based on limited data and should not be considered financial advice.  Conduct thorough research before making any investment decisions.</p>
 
 <h2>Shareholding Pattern Analysis</h2>
 
-<p>The following table shows the shareholding pattern for Sep 2024 and Dec 2024.  We will assess changes over this period (assuming this represents the last two quarters available).</p>
+<p>The following table shows the shareholding pattern over the last three quarters.  Note that the provided data only covers three quarters, not four.</p>
 
 <table>
   <thead>
     <tr>
-      <th>Shareholder Type</th>
+      <th>Shareholder Category</th>
       <th>Sep 2024</th>
       <th>Dec 2024</th>
-      <th>Change</th>
+      <th>Mar 2025</th>
       <th>Rating</th>
     </tr>
   </thead>
@@ -50,58 +49,60 @@ th {
       <td>Promoters</td>
       <td>88.75%</td>
       <td>88.75%</td>
-      <td>0.00%</td>
-      <td class="neutral">Neutral</td>
+      <td>88.75%</td>
+      <td class="neutral">Neutral (No Change)</td>
     </tr>
     <tr>
       <td>FIIs</td>
       <td>1.68%</td>
       <td>1.11%</td>
-      <td>-0.57%</td>
-      <td class="negative">Negative</td>
+      <td>1.12%</td>
+      <td class="negative">Negative (Decreased)</td>
     </tr>
     <tr>
       <td>DIIs</td>
       <td>1.83%</td>
       <td>0.82%</td>
-      <td>-1.01%</td>
-      <td class="negative">Negative</td>
+      <td>0.72%</td>
+      <td class="negative">Negative (Decreased)</td>
     </tr>
     <tr>
       <td>Government</td>
       <td>0.11%</td>
       <td>0.00%</td>
-      <td>-0.11%</td>
-      <td class="negative">Negative</td>
+      <td>0.00%</td>
+      <td class="negative">Negative (Decreased)</td>
     </tr>
     <tr>
       <td>Public</td>
       <td>7.63%</td>
       <td>9.32%</td>
-      <td>+1.69%</td>
-      <td class="positive">Positive</td>
+      <td>9.40%</td>
+      <td class="positive">Positive (Increased)</td>
     </tr>
     <tr>
       <td>No. of Shareholders</td>
       <td>2,309,518</td>
       <td>2,645,574</td>
-      <td>+336,056</td>
-      <td class="positive">Positive</td>
+      <td>2,605,368</td>
+      <td class="positive">Positive (Increased then slightly decreased)</td>
     </tr>
   </tbody>
 </table>
 
-<p><strong>Overall Shareholding Pattern Assessment:</strong> While the number of shareholders increased significantly, indicating broader interest, the decrease in FII and DII holdings is a negative sign.  More data is needed for a conclusive assessment.</p>
-
-
 <h2>Quarterly Results Analysis</h2>
 
-<p>Unfortunately, the provided quarterly results data lacks numerical values.  A meaningful analysis of growth trends in revenue, profit, etc., is impossible without these figures.  Please provide the numerical data for a complete analysis.</p>
+<p>Unfortunately, the provided quarterly results data lacks numerical values, making a detailed analysis impossible.  The "+" symbols suggest growth in several parameters, but without concrete numbers, we cannot assess the magnitude or significance of these changes.  To provide a meaningful analysis, please provide the numerical data for each parameter in the quarterly results.</p>
+
+<p><strong>Required Data:</strong>  To perform a comprehensive analysis, please provide the numerical values for each parameter listed in the "resultsQuarterly" section of your JSON data.</p>
 
 
 <h2>Overall Rating</h2>
 
-<p>Due to the lack of complete quarterly financial data, a comprehensive rating cannot be provided.  The shareholding pattern shows mixed signals. A complete picture requires the missing financial figures to assess growth trends over 3-4 quarters. </p>
+<p>Due to incomplete data, a comprehensive overall rating cannot be provided.  A complete analysis requires the numerical values from the quarterly results.</p>
 
 </body>
 </html>
+
+
+To make this HTML page truly useful,  **replace the placeholders** in the "Quarterly Results Analysis" section with the actual numerical data from your JSON's `resultsQuarterly` section.  Then,  calculate growth percentages for each parameter across the quarters and update the ratings accordingly.  For example, if "Net Profit" shows consistent growth over the quarters, give it a "Positive" rating with the percentage growth. If it declines, give it a "Negative" rating with the percentage decline.  A lack of change would be "Neutral".
