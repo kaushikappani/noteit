@@ -34,9 +34,7 @@ router.route("/ai/chat").post(protect, async (req, res) => {
     if (!req.body.message || typeof req.body.message !== 'string' || req.body.message.trim() === '') {
         return res.status(400).json({ error: "Message cannot be empty" });
     }
-    console.log(req.body.message);
-    res.setHeader("Content-Type", "text/plain");
-    res.setHeader("Transfer-Encoding", "chunked");
+
     const model = genAI.getGenerativeModel({
         model: "gemini-1.5-flash",
         safetySettings,
@@ -61,48 +59,36 @@ router.route("/ai/chat").post(protect, async (req, res) => {
         history: [...chatHistory],
     });
 
-    console.log(chatSession);
-
-    res.flushHeaders();
     try {
-        console.log(req.body.message);
-        const result = await chatSession.sendMessageStream(req.body.message + "give the response on");
-        console.log(result);
+        const result = await chatSession.sendMessage(req.body.message);
 
+        const responseText = result.response.text()
+            .replace(/^```[a-z]*\n?/i, "")
+            .replace(/```$/, "")
+            .replace(/^html\s*/i, "");
 
         const aiMessage = {
             role: "model",
-            parts: [],
+            parts: [{ text: responseText }],
         };
-
-        for await (const chunk of result.stream) {
-            const chunkText = chunk.text().replace(/^```[a-z]*\n?/i, "")
-                .replace(/```$/, "").replace(/^html\s*/i, "");
-            console.log(chunkText);
-            res.write(
-                chunkText
-                    .replace(/^```[a-z]*\n?/i, "") 
-                    .replace(/```$/, "").replace(/^html\s*/i, "")
-            );
-
-            aiMessage.parts.push({ text: chunkText });
-        }
 
         const userMessage = {
             role: "user",
             parts: [{ text: req.body.message }],
         };
-        await client.rpush(`chatHistory:ai:${req.user._id}`, JSON.stringify(userMessage));
 
-      
+        // Save to Redis history
+        await client.rpush(`chatHistory:ai:${req.user._id}`, JSON.stringify(userMessage));
         await client.rpush(`chatHistory:ai:${req.user._id}`, JSON.stringify(aiMessage));
 
-        res.end();
+        res.setHeader("Content-Type", "text/plain");
+        res.send(responseText);
     } catch (error) {
         console.error("Error generating AI response:", error);
         res.status(500).json({ error: "Failed to generate response" });
     }
 });
+
 
 
 module.exports = router;
