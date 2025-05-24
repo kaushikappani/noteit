@@ -63,9 +63,7 @@ router.route("/ai/chat").post(protect, async (req, res) => {
         const result = await chatSession.sendMessage(req.body.message);
 
         const responseText = result.response.text()
-            .replace(/^```[a-z]*\n?/i, "")
-            .replace(/```$/, "")
-            .replace(/^html\s*/i, "");
+            .replace('```html', "").replace('```', "");
 
         const aiMessage = {
             role: "model",
