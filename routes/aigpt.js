@@ -76,7 +76,8 @@ router.route("/ai/chat").post(protect, async (req, res) => {
         };
 
         for await (const chunk of result.stream) {
-            const chunkText = chunk.text();
+            const chunkText = chunk.text().replace(/^```[a-z]*\n?/i, "")
+                .replace(/```$/, "");
             console.log(chunkText);
             res.write(
                 chunkText
