@@ -36,7 +36,7 @@ router.route("/ai/chat").post(protect, async (req, res) => {
     }
 
     const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash",
+        model: "gemini-2.0-flash",
         safetySettings,
         systemInstruction: "Give the response only in HTML components only",
     });
