@@ -145,11 +145,11 @@ router.route("/v2/portfolio").get(protect, async (req, res) => {
                 overall.totalDayPAndL += stock.daypandl;
             }
 
-            if (overall.topGainer === null || (stock.pChange && stock.pChange > (overall.topGainer?.pChange || -Infinity))) {
+            if (overall.topGainer === null || (stock.pChange && stock.totalQuantity > 0 && stock.pChange > (overall.topGainer?.pChange || -Infinity))) {
                 overall.topGainer = { symbol: stock.symbol, pChange: stock.pChange };
             }
 
-            if (overall.topLoser === null || (stock.pChange && stock.pChange < (overall.topLoser?.pChange || Infinity))) {
+            if (overall.topLoser === null || (stock.pChange && stock.totalQuantity > 0 && stock.pChange < (overall.topLoser?.pChange || Infinity))) {
                 overall.topLoser = { symbol: stock.symbol, pChange: stock.pChange };
             }
         });
