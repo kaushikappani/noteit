@@ -20,11 +20,11 @@ const aiGptRoutes = require("./routes/aigpt");
 
 require('./functions/Scheduler');
 
-require("./middleware/telegramBot");
-if (process.env.NODE_ENV === "production") {
-    require("./middleware/telegramBot");
-    require("./middleware/telegramAIBot");
-}
+// require("./middleware/telegramBot");
+// if (process.env.NODE_ENV === "production") {
+//     require("./middleware/telegramBot");
+//     require("./middleware/telegramAIBot");
+// }
 
 
 const { runPendingReminders } = require("./functions/remainderJobs");
