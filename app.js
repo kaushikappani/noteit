@@ -26,6 +26,7 @@ require('./functions/Scheduler');
 //     require("./middleware/telegramAIBot");
 // }
 
+// TODO : Kite integration
 
 const { runPendingReminders } = require("./functions/remainderJobs");
 
