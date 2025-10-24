@@ -5,6 +5,7 @@ const mailer = async (recipent,body) => {
     var transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 465,
+        secure: true,
         auth: {
             user: process.env.MAIL_ID ,
             pass: process.env.GOOGLE_APP_PASSWORD
