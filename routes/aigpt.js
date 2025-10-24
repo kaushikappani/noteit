@@ -2,7 +2,7 @@ const express = require("express");
 const { protect } = require("../middleware/protect");
 const router = express.Router();
 const util = require("util");
-const { HarmCategory, HarmBlockThreshold, GoogleGenerativeAI } = require("@google/generative-ai");
+const { HarmCategory, HarmBlockThreshold, GoogleGenerativeAI,Tool } = require("@google/generative-ai");
 const client = require("../middleware/redis");
 
 
