@@ -39,6 +39,9 @@ router.route("/ai/chat").post(protect, async (req, res) => {
         model: "gemini-2.5-flash",
         safetySettings,
         systemInstruction: "Give the response only in HTML components only",
+        tools: [{
+            googleSearch: {} // Enables real-time search
+        }],
     });
 
     const generationConfig = {
