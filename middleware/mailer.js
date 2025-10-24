@@ -1,30 +1,33 @@
 const fs = require("fs");
 const path = require("path");
-const fetch = require("node-fetch"); // ensure you install this: npm install node-fetch
+const axios = require("axios"); // ensure: npm install axios
 
 const mailer = async (recipent, body) => {
   try {
-    const response = await fetch("https://serverless-mailer-kappa.vercel.app/api/sendMail", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": process.env.MAILER_API_KEY // secure API key (same as on Vercel)
-      },
-      body: JSON.stringify({
+    const response = await axios.post(
+      "https://serverless-mailer-kappa.vercel.app/api/sendMail",
+      {
         recipent,
-        body
-      })
-    });
+        body,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": process.env.MAILER_API_KEY, // must match your Vercel .env API_KEY
+        },
+        timeout: 15000, // optional 15s timeout
+      }
+    );
 
-    const result = await response.json();
-
-    if (response.ok) {
-      console.log("✅ Email sent:", result.response);
-    } else {
-      console.error("❌ Failed to send email:", result.error || result);
-    }
+    console.log("✅ Email sent:", response.data.response || response.data);
   } catch (error) {
-    console.error("❌ Error while calling mailer API:", error);
+    if (error.response) {
+      console.error("❌ Mail API error:", error.response.status, error.response.data);
+    } else if (error.request) {
+      console.error("⚠️ No response from mailer API:", error.message);
+    } else {
+      console.error("❌ Error creating mail request:", error.message);
+    }
   }
 };
 
@@ -33,7 +36,7 @@ const readFile = (relativePath) => {
   try {
     return fs.readFileSync(filePath, "utf8");
   } catch (err) {
-    console.error(err);
+    console.error("❌ Error while reading file:", err);
     throw new Error("Error while reading file");
   }
 };
