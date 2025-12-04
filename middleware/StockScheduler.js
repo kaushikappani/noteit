@@ -9,6 +9,7 @@ const axios = require("axios");
 const { scrapGlobalIndices } = require("./Scrapper");
 const {sendNotification} = require("../config/webPush");
 const { analyzeCorporateDocument } = require("../functions/analyzeDocument");
+const { sendTelegramMessage } = require("./sendTelegramMessage");
 const tradeData = async (symbol, nseIndia) => {
   const data = await nseIndia.getEquityTradeInfo(symbol);
   return data;
@@ -268,6 +269,7 @@ const scheduleCoorporateAnnouncments = async () => {
           data: { url: item.attchmntFile, }, 
         }
         triggerNotifications(notiReq, user);
+        sendTelegramMessage("1375808164", `*${item.symbol}* - ${item.desc}\n\n${summary}\n\n[View Attachment](${item.attchmntFile})`);
         matchedRows += `
           <tr>
             <td><div><span ${rowStyle}>${item.symbol}</span></div></td>

@@ -1,0 +1,67 @@
+const TelegramBot = require('node-telegram-bot-api');
+const fs = require("fs");
+const path = require("path");
+
+const token = process.env.TELEGRAM_BOT_TOKEN;
+
+// Create a global bot instance (no polling)
+const bot = new TelegramBot(token, { polling: false });
+
+/**
+ * 🔹 Send plain text message
+ */
+async function sendTelegramMessage(chatId, text) {
+  try {
+    await bot.sendMessage(chatId, text, { parse_mode: "HTML" });
+    console.log("Telegram text sent:", text.substring(0, 50));
+  } catch (err) {
+    console.error("Telegram text send error:", err);
+  }
+}
+
+/**
+ * 🔹 Send image/photo
+ */
+async function sendTelegramPhoto(chatId, imagePath, caption = "") {
+  try {
+    await bot.sendPhoto(chatId, imagePath, { caption });
+    console.log("Telegram photo sent:", imagePath);
+  } catch (err) {
+    console.error("Telegram photo error:", err);
+  }
+}
+
+/**
+ * 🔹 Send document/file
+ */
+async function sendTelegramDocument(chatId, filePath, caption = "") {
+  try {
+    await bot.sendDocument(chatId, filePath, { caption });
+    console.log("Telegram document sent:", filePath);
+  } catch (err) {
+    console.error("Telegram doc error:", err);
+  }
+}
+
+/**
+ * 🔹 Send a runtime-generated buffer (useful for images without saving temp file)
+ */
+async function sendTelegramBuffer(chatId, buffer, filename, caption = "") {
+  try {
+    await bot.sendDocument(chatId, buffer, {
+      filename,
+      caption
+    });
+    console.log("Telegram buffer document sent:", filename);
+  } catch (err) {
+    console.error("Telegram buffer send error:", err);
+  }
+}
+
+module.exports = {
+  sendTelegramMessage,
+  sendTelegramPhoto,
+  sendTelegramDocument,
+  sendTelegramBuffer,
+  bot, // export bot in case you still need polling or commands
+};

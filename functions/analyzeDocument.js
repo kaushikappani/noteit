@@ -38,7 +38,7 @@ async function analyzeCorporateDocument(url) {
 You are a professional financial analyst.
 Read the following corporate filing and provide:
 
-1. A 4–5 bullet point summary in clear investor-friendly language.
+1. A 4-5 bullet point summary in clear investor-friendly language.
 2. ONE overall sentiment indicator (Positive 🟢 / Negative 🔴 / Neutral 🟡)
 based strictly on the contents.
 
@@ -68,7 +68,7 @@ ${url}
     }); const summary = result.response.text().trim();
 
     // 3️ Cache it
-    await redisSet(cacheKey, summary, "EX", REDIS_TTL_HOURS * 3600);
+    redisSet(cacheKey, summary, "EX", REDIS_TTL_HOURS * 3600);
 
     return summary;
 
