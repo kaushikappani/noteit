@@ -19,7 +19,7 @@ const redisCacheUtil = new RedisCacheUtil(redisUrl, ttl, keyFunction);
 const router = express.Router();
 
 router.route("/").get(
-    protect, redisCacheUtil.cache(),
+    protect,redisCacheUtil.cache(),
     asyncHandler(async (req, res) => {
         try {
             // Fetch notes from the database
@@ -34,6 +34,7 @@ router.route("/").get(
             // Modify notes by adding view and edit properties
             const modifiedNotes = notes.map(note => ({
                 ...note.toObject(),
+                content: note.content.substring(0, 150),
                 view: true,
                 edit: true,
                 user : ""
