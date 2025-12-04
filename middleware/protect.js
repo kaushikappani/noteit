@@ -4,7 +4,7 @@ const asyncHandler = require("express-async-handler");
 const redis = require("redis");
 const client = require("./redis");
 const util = require('util');
-const notificationUsers = require("../config/notificationUsers");
+const notificationUsers = require("../config/notificationUsers.json");
 
 
 const protect = asyncHandler(async (req, res, next) => {
@@ -78,7 +78,7 @@ const stockProtect = asyncHandler(async (req, res, next) => {
                     return;
                 }
 
-                if(notificationUsers.some(userEmail => userEmail === req.user.email)) {
+                if(notificationUsers.some(user => user.email === req.user.email)) {
                     next();
                     
                 }else {
