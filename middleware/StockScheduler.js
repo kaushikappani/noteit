@@ -319,8 +319,6 @@ const scheduleCoorporateAnnouncments = async () => {
   }
 };
 
-scheduleCoorporateAnnouncments();
-
 const scheduleCoorporateActions = async () => {
   try {
     const nseIndia = new NseIndia();

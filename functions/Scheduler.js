@@ -58,7 +58,7 @@ pagesTimeRule.minute = pagesTime.minute();
 pagesTimeRule.tz = timeZone;
 
 schedule.scheduleJob(pagesTimeRule, () => {
-    createPages();
+    //createPages();
     generateHtmlPage();
 });
 
