@@ -62,8 +62,8 @@ const allData = ["DREAMFOLKS", "5PAISA", "SWIGGY","BAJAJHFL", "ARVIND", "UNIECOM
 ];
 
 
-const symbolQuantityObject = async () => {
-    const portfolios = await Portfolio.find({ email: "kaushikappani@gmail.com" });
+const symbolQuantityObject = async (email) => {
+    const portfolios = await Portfolio.find({ email: email });
 
     const response = {};
 

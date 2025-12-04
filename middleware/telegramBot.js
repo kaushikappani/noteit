@@ -112,6 +112,10 @@ bot.onText(/^\/global/, async (msg) => {
 });
 
 
+bot.onText(/^\/start/, async (msg) => {
+    const chatId = msg.chat.id;
+    bot.sendMessage(chatId, `Chat ID is: ${chatId}, Please contact Admin for access.`);
+})
 
 bot.onText(/^\/portfolio/, async (msg) => {
     const chatId = msg.chat.id;

@@ -238,71 +238,85 @@ const scheduleCoorporateAnnouncments = async () => {
     const toDate = moment().tz(process.env.TIME_ZONE);
     const fromDate = toDate.clone().subtract(1, "days");
 
-    const dateString =
+    const dateRange =
       `from_date=${fromDate.format("DD-MM-YYYY")}` +
       `&to_date=${toDate.format("DD-MM-YYYY")}`;
 
     const data = await nseIndia.getDataByEndpoint(
-      `/api/corporate-announcements?index=equities&${dateString}`
+      `/api/corporate-announcements?index=equities&${dateRange}`
     );
 
     const mailTemplate = await readFile(
       "../templates/stock_coorporate_annoucements.txt"
     );
 
-    const symbolObj = await symbolQuantityObject();
+    notificationUsers = require("../config/notificationUsers.json");
+    //  Iterate over each user from JSON config
+    for (const usr of notificationUsers) {
+      const userEmail = usr.email;
+      const telegramId = usr.telegramId;
+      const noteId = usr.noteId;
 
-    let matchedRows = "";
-    let otherRows = "";
+      console.log(` Processing: ${userEmail}`);
 
-    const user = await User.findOne({ email: "kaushikappani@gmail.com" })
+      // Fetch only this user's portfolio symbols
+      const symbolObj = await symbolQuantityObject(userEmail);
+      const symbols = Object.keys(symbolObj);
 
-    for (const item of data) {
-      let rowStyle = "";
+      const user = await User.findOne({ email: userEmail })
 
-      if (item.symbol in symbolObj) {
-        rowStyle = 'style="background-color: green;"';
-        let summary = await analyzeCorporateDocument(item.attchmntFile);
-        let notiReq = { 
-          title: item.symbol + "-" + item.desc, 
-          body: summary, 
-          data: { url: item.attchmntFile, }, 
+      let matchedRows = "";
+      let otherRows = "";
+
+      for (const item of data) {
+        if (symbols.includes(item.symbol)) {
+          const summary = await analyzeCorporateDocument(item.attchmntFile);
+
+          let notiReq = { title: item.symbol + "-" + item.desc, body: summary, data: { url: item.attchmntFile, }, } 
+          triggerNotifications(notiReq, user);
+
+          // Send user-specific Telegram notification
+          if (telegramId) {
+            sendTelegramMessage(
+              telegramId,
+              `*${item.symbol}* - ${item.desc}\n\n${summary}\n\n[View Attachment](${item.attchmntFile})`
+            );
+          }
+
+          matchedRows += `
+            <tr>
+              <td><span style="background: green">${item.symbol}</span></td>
+              <td>${item.an_dt}</td>
+              <td><a href="${item.attchmntFile}" target="_blank">View</a></td>
+              <td>${item.desc} - ${item.attchmntText} ${summary}</td>
+            </tr>`;
+        } else {
+          otherRows += `
+            <tr>
+              <td>${item.symbol}</td>
+              <td>${item.an_dt}</td>
+              <td><a href="${item.attchmntFile}" target="_blank">View</a></td>
+              <td>${item.desc} - ${item.attchmntText}</td>
+            </tr>`;
         }
-        triggerNotifications(notiReq, user);
-        sendTelegramMessage("1375808164", `*${item.symbol}* - ${item.desc}\n\n${summary}\n\n[View Attachment](${item.attchmntFile})`);
-        matchedRows += `
-          <tr>
-            <td><div><span ${rowStyle}>${item.symbol}</span></div></td>
-            <td>${item.an_dt}</td>
-            <td><a href="${item.attchmntFile}" target="_blank">View Attachment</a></td>
-            <td>${item.desc} - ${item.attchmntText} ${summary}</td>
-          </tr>`;
-      } else {
-        otherRows += `
-          <tr>
-            <td><div><span ${rowStyle}>${item.symbol}</span></div></td>
-            <td>${item.an_dt}</td>
-            <td><a href="${item.attchmntFile}" target="_blank">View Attachment</a></td>
-            <td>${item.desc} - ${item.attchmntText}</td>
-          </tr>`;
+      }
+
+      const tableRows = matchedRows + otherRows;
+      const html = mailTemplate.replace("<!-- Repeat rows as needed -->", tableRows);
+
+      if (noteId) {
+        const note = await Note.findById(noteId);
+        note.title = `Corporate Announcements - ${moment().toString()}`;
+        note.content = html;
+        await note.save();
       }
     }
-
-    const tableRows = matchedRows + otherRows;
-
-    // ✔️ Replace content now that it's fully populated
-    const note = await Note.findById("664d66b9ac1930ca8b3f59ce");
-
-    const mailHtml = mailTemplate.replace( "<!-- Repeat rows as needed -->", tableRows );
-
-    note.content = mailHtml;
-    note.title = "Corporate Announcements - " + moment().toString();
-    await note.save();
 
   } catch (e) {
     console.error("Error in scheduleCoorporateAnnouncments ", e);
   }
 };
+
 
 
 const scheduleCoorporateActions = async () => {
