@@ -32,7 +32,7 @@ schedule.scheduleJob(rule, () => {
 
 // Second scheduler
 const rule2 = new schedule.RecurrenceRule();
-rule2.minute = 0;
+rule2.minute = new schedule.Range(0, 59, 10);
 rule2.tz = timeZone;
 
 schedule.scheduleJob(rule2, () => {
@@ -43,11 +43,12 @@ schedule.scheduleJob(rule2, () => {
     if (currentHour >= 0 && currentHour < 6) {
         console.log('Skipping task between 12 AM and 6 AM');
     } else {
-        console.log('Scheduler triggered with rule2');
+        console.log('Scheduler triggered every 10 mins');
         scheduleCoorporateAnnouncments();
         scheduleCoorporateActions();
     }
 });
+
 
 // Third scheduler for pages
 const pagesTime = moment.tz(process.env.PAGES_TIME, 'HH:mm', timeZone);
