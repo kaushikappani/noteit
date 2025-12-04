@@ -4,6 +4,7 @@ const asyncHandler = require("express-async-handler");
 const redis = require("redis");
 const client = require("./redis");
 const util = require('util');
+const notificationUsers = require("../config/notificationUsers");
 
 
 const protect = asyncHandler(async (req, res, next) => {
@@ -77,9 +78,10 @@ const stockProtect = asyncHandler(async (req, res, next) => {
                     return;
                 }
 
-                if (req.user.email === 'kaushikappani@gmail.com' || req.user.email === 'appani.kaushik@bajajtechnologyservices.com') {
+                if(notificationUsers.some(userEmail => userEmail === req.user.email)) {
                     next();
-                } else {
+                    
+                }else {
                     res.status(401).json({ message: "Access Denied" });
                 }
                

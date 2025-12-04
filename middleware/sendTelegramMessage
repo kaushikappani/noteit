@@ -8,7 +8,7 @@ const util = require("util");
 const redisGet = util.promisify(client.get).bind(client);
 const redisSet = util.promisify(client.set).bind(client);
 
-const COOLDOWN_HOURS = process.env.TELEGRAM_COOLDOWN_HOURS || 6;
+const COOLDOWN_HOURS = process.env.TELEGRAM_COOLDOWN_HOURS || 12;
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
 
@@ -16,7 +16,7 @@ const token = process.env.TELEGRAM_BOT_TOKEN;
 const bot = new TelegramBot(token, { polling: false });
 
 /**
- * 🔹 Check if message should be blocked (cooldown)
+ *  Check if message should be blocked (cooldown)
  */
 async function shouldSend(chatId, dataToSend) {
   const redisKey = `tg:${chatId}:${dataToSend}`.toLowerCase();
@@ -32,7 +32,7 @@ async function shouldSend(chatId, dataToSend) {
 }
 
 /**
- * 🔹 Send plain text message with cooldown
+ *  Send plain text message with cooldown
  */
 async function sendTelegramMessage(chatId, text) {
   try {
@@ -46,7 +46,7 @@ async function sendTelegramMessage(chatId, text) {
 }
 
 /**
- * 🔹 Send image/photo with cooldown
+ *  Send image/photo with cooldown
  */
 async function sendTelegramPhoto(chatId, imagePath, caption = "") {
   try {
@@ -62,7 +62,7 @@ async function sendTelegramPhoto(chatId, imagePath, caption = "") {
 }
 
 /**
- * 🔹 Send document/file with cooldown
+ *  Send document/file with cooldown
  */
 async function sendTelegramDocument(chatId, filePath, caption = "") {
   try {
@@ -78,7 +78,7 @@ async function sendTelegramDocument(chatId, filePath, caption = "") {
 }
 
 /**
- * 🔹 Send a runtime-generated buffer (cooldown)
+ *  Send a runtime-generated buffer (cooldown)
  */
 async function sendTelegramBuffer(chatId, buffer, filename, caption = "") {
   try {
