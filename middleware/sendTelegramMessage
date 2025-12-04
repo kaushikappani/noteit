@@ -2,16 +2,42 @@ const TelegramBot = require('node-telegram-bot-api');
 const fs = require("fs");
 const path = require("path");
 
+const client = require('../middleware/redis');
+const util = require("util");
+
+const redisGet = util.promisify(client.get).bind(client);
+const redisSet = util.promisify(client.set).bind(client);
+
+const COOLDOWN_HOURS = process.env.TELEGRAM_COOLDOWN_HOURS || 6;
+
 const token = process.env.TELEGRAM_BOT_TOKEN;
 
 // Create a global bot instance (no polling)
 const bot = new TelegramBot(token, { polling: false });
 
 /**
- * 🔹 Send plain text message
+ * 🔹 Check if message should be blocked (cooldown)
+ */
+async function shouldSend(chatId, dataToSend) {
+  const redisKey = `tg:${chatId}:${dataToSend}`.toLowerCase();
+
+  const exists = await redisGet(redisKey);
+  if (exists) {
+    console.log(`⛔ Telegram blocked (cooldown active) for chat ${chatId}`);
+    return false;
+  }
+
+  await redisSet(redisKey, "sent", "EX", COOLDOWN_HOURS * 3600);
+  return true;
+}
+
+/**
+ * 🔹 Send plain text message with cooldown
  */
 async function sendTelegramMessage(chatId, text) {
   try {
+    if (!(await shouldSend(chatId, text))) return;
+
     await bot.sendMessage(chatId, text, { parse_mode: "HTML" });
     console.log("Telegram text sent:", text.substring(0, 50));
   } catch (err) {
@@ -20,10 +46,14 @@ async function sendTelegramMessage(chatId, text) {
 }
 
 /**
- * 🔹 Send image/photo
+ * 🔹 Send image/photo with cooldown
  */
 async function sendTelegramPhoto(chatId, imagePath, caption = "") {
   try {
+    const cooldownKey = `photo:${caption || imagePath}`;
+
+    if (!(await shouldSend(chatId, cooldownKey))) return;
+
     await bot.sendPhoto(chatId, imagePath, { caption });
     console.log("Telegram photo sent:", imagePath);
   } catch (err) {
@@ -32,10 +62,14 @@ async function sendTelegramPhoto(chatId, imagePath, caption = "") {
 }
 
 /**
- * 🔹 Send document/file
+ * 🔹 Send document/file with cooldown
  */
 async function sendTelegramDocument(chatId, filePath, caption = "") {
   try {
+    const cooldownKey = `doc:${caption || filePath}`;
+
+    if (!(await shouldSend(chatId, cooldownKey))) return;
+
     await bot.sendDocument(chatId, filePath, { caption });
     console.log("Telegram document sent:", filePath);
   } catch (err) {
@@ -44,10 +78,14 @@ async function sendTelegramDocument(chatId, filePath, caption = "") {
 }
 
 /**
- * 🔹 Send a runtime-generated buffer (useful for images without saving temp file)
+ * 🔹 Send a runtime-generated buffer (cooldown)
  */
 async function sendTelegramBuffer(chatId, buffer, filename, caption = "") {
   try {
+    const cooldownKey = `buffer:${caption || filename}`;
+
+    if (!(await shouldSend(chatId, cooldownKey))) return;
+
     await bot.sendDocument(chatId, buffer, {
       filename,
       caption
@@ -63,5 +101,5 @@ module.exports = {
   sendTelegramPhoto,
   sendTelegramDocument,
   sendTelegramBuffer,
-  bot, // export bot in case you still need polling or commands
+  bot,
 };
