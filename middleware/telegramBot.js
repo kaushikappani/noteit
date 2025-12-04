@@ -5,6 +5,7 @@ const { symbolQuantityObject } = require('../routes/data');
 const { NseIndia } = require('stock-nse-india');
 const fs = require('fs');
 const Jimp = require('jimp');
+const { User } = require('../config/models');
 const token = process.env.TELEGRAM_BOT_TOKEN;
 
 const bot = new TelegramBot(token, { polling: true });
@@ -122,7 +123,9 @@ bot.onText(/^\/portfolio/, async (msg) => {
     await bot.sendChatAction(chatId, 'typing');
     try {
         if (chatId === 1375808164) {
-            const portfolio = await symbolQuantityObject();
+            const user = await User.findOne({ email: "kaushikappani@gmail.com" })
+
+            const portfolio = await symbolQuantityObject(user._id);
             console.log(portfolio);
             const symbols = Object.keys(portfolio);
             const dataPromises = symbols.map(async (symbol) => {

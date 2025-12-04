@@ -28,10 +28,10 @@ async function analyzeCorporateDocument(url) {
 
     // 1️ Check cache
     const cachedSummary = await redisGet(cacheKey);
-    if (cachedSummary) {
-      console.log("📦 Using cached summary for:", url);
-      return cachedSummary;
-    }
+    // if (cachedSummary) {
+    //   console.log("📦 Using cached summary for:", url);
+    //   return cachedSummary;
+    // }
 
     // 2️ Ask Gemini
     const prompt = `
@@ -61,7 +61,7 @@ ${url}
 
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
       const result = await model.generateContent({
         generationConfig,
         contents: [

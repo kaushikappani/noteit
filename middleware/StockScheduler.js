@@ -31,8 +31,10 @@ const scheduleTask = async () => {
       const nseIndia = new NseIndia();
       const symbol = symbols[i];
       const data = await tradeData(symbol, nseIndia);
+      const user = await User.findOne({ email: "kaushikappani@gmail.com" })
 
-      if (symbol in await symbolQuantityObject()) {
+      let pf = await symbolQuantityObject(user._id);
+      if (symbol in pf) {
         const redisKey = `delivery:${symbol}`;
 
         // Fetch the existing data from Redis
@@ -40,7 +42,6 @@ const scheduleTask = async () => {
         let symbolData = existingData ? JSON.parse(existingData) : {};
 
         // Append the new day's data without overwriting previous entries
-          const user =  await User.findOne({ email: "kaushikappani@gmail.com" })
 
         if (data.securityWiseDP.deliveryToTradedQuantity > process.env.DELIVERY_QUANTITY_THRESHOLD) {
           let notiReq = {
@@ -258,12 +259,12 @@ const scheduleCoorporateAnnouncments = async () => {
       const noteId = usr.noteId;
 
       console.log(` Processing: ${userEmail}`);
+      const user = await User.findOne({ email: userEmail })
 
       // Fetch only this user's portfolio symbols
-      const symbolObj = await symbolQuantityObject(userEmail);
+      const symbolObj = await symbolQuantityObject(user._id);
       const symbols = Object.keys(symbolObj);
 
-      const user = await User.findOne({ email: userEmail })
 
       let matchedRows = "";
       let otherRows = "";
@@ -317,7 +318,7 @@ const scheduleCoorporateAnnouncments = async () => {
   }
 };
 
-
+scheduleCoorporateAnnouncments();
 
 const scheduleCoorporateActions = async () => {
   try {
@@ -345,7 +346,7 @@ const scheduleCoorporateActions = async () => {
     const user = await User.findOne({ email: "kaushikappani@gmail.com" });
 
     //  Pre-fetch symbols once
-    const symbolObj = await symbolQuantityObject();
+    const symbolObj = await symbolQuantityObject(user._id);
 
     for (const item of data) {
       let rowStyle = "";
