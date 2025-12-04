@@ -304,10 +304,11 @@ const scheduleCoorporateAnnouncments = async () => {
 
       const tableRows = matchedRows + otherRows;
       const html = mailTemplate.replace("<!-- Repeat rows as needed -->", tableRows);
+          const catchDate = moment().tz(process.env.TIME_ZONE);
 
       if (noteId) {
         const note = await Note.findById(noteId);
-        note.title = `Corporate Announcements - ${moment().toString()}`;
+        note.title = `Corporate Announcements - ${catchDate}`;
         note.content = html;
         await note.save();
       }
