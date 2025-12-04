@@ -72,7 +72,7 @@ aibot.on('message', async (msg) => {
 
                     // Start chat session with Gemini
                     const model = genAI.getGenerativeModel({
-                        model: "gemini-2.5-flash",
+                        model: "gemini-2.0-flash",
                         safetySettings,
                         systemInstruction: "You are personal AI telegram chat bot, learn from the chat history about the person and respond.",
                     });
@@ -133,7 +133,7 @@ aibot.on('message', async (msg) => {
             } else {
                 // Handle text messages
                 const model = genAI.getGenerativeModel({
-                    model: "gemini-2.5-flash",
+                    model: "gemini-2.0-flash",
                     safetySettings,
                     systemInstruction: "You are personal AI telegram chat bot, learn from the chat history about the person and respond.",
                 });

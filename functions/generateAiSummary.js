@@ -20,7 +20,7 @@ const generateAiSummary = async (id, noteId) => {
     const genAI = new GoogleGenerativeAI(apiKey);
 
     const model = genAI.getGenerativeModel({
-        model: "gemini-2.5-flash",
+        model: "gemini-2.0-flash",
         systemInstruction: "You have to generate a small summary covering all important information into a small summary in a notes app named NOTEIT you should generate detailed summary output ONLY on HTML format like a html page",
     });
 
