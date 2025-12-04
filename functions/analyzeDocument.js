@@ -55,7 +55,7 @@ ${url}
       temperature: 0.6,
       topP: 0.95,
       topK: 32,
-      maxOutputTokens: 800,
+      maxOutputTokens: 2048,
       responseMimeType: "text/plain",
     };
 
