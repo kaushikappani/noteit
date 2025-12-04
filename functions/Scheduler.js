@@ -151,7 +151,7 @@ async function checkPnl() {
     const user = await User.findOne({ email: "kaushikappani@gmail.com" })
 
     try {
-        let pf = await fetchStockData(await symbolQuantityObject()); // Fetch current P&L
+        let pf = await fetchStockData(await symbolQuantityObject("kaushikappani@gmail.com")); // Fetch current P&L
         let currentPnl = pf.total;
 
         if (lastPnl !== null && Math.abs(currentPnl - lastPnl) > process.env.PANDL_CHANGE_THRESHOLD) {
