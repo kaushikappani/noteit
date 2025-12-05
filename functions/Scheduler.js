@@ -23,8 +23,8 @@ schedule.scheduleJob(rule, () => {
     console.log('Scheduler triggered with rule');
     scheduleTask();
     scheduleFiiDiiReport();
-    scheduleCoorporateAnnouncments();
-    scheduleCoorporateActions();
+    // scheduleCoorporateAnnouncments();
+    // scheduleCoorporateActions();
     generateAiSummary("61549fb6c44799acda2538f3","67ed1adcc38187540dc31d6a");
 });
 
