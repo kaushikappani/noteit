@@ -36,7 +36,7 @@ async function shouldSend(chatId, dataToSend) {
  */
 async function sendTelegramMessage(chatId, text ,sendAsImage = false,textForImage="") {
   try {
-    // if (!(await shouldSend(chatId, text))) return;
+    if (!(await shouldSend(chatId, text))) return;
     console.log("Sending Telegram message to chat:", chatId);
     if(sendAsImage){
       const { textToImageBuffer } = require("../functions/textToImage");
