@@ -1,7 +1,7 @@
 const { createCanvas, loadImage } = require("canvas");
 const path = require("path");
 
-const LOGO_PATH = path.join(__dirname, "noteicon.jpg");
+const LOGO_PATH = path.resolve(process.cwd(), "assets", "noteIcon.jpg");
 
 function wrapText(ctx, text, maxWidth) {
   const words = text.split(" ");
