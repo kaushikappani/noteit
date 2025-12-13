@@ -23,7 +23,7 @@ async function shouldSend(chatId, dataToSend) {
 
   const exists = await redisGet(redisKey);
   if (exists) {
-    console.log(`⛔ Telegram blocked (cooldown active) for chat ${chatId}`);
+    console.log(` Telegram blocked (cooldown active) for chat ${chatId}`);
     return false;
   }
 
@@ -34,10 +34,18 @@ async function shouldSend(chatId, dataToSend) {
 /**
  *  Send plain text message with cooldown
  */
-async function sendTelegramMessage(chatId, text) {
+async function sendTelegramMessage(chatId, text ,sendAsImage = false,textForImage="") {
   try {
     if (!(await shouldSend(chatId, text))) return;
-
+    console.log("Sending Telegram message to chat:", chatId);
+    if(sendAsImage){
+      const { textToImageBuffer } = require("../functions/textToImage");
+      const imageBuffer = await textToImageBuffer(text);
+      console.log("Generated image buffer for Telegram message.",imageBuffer);
+        await bot.sendPhoto(chatId, imageBuffer, { caption: textForImage });
+      console.log("Telegram text sent as image:", text.substring(0, 50));
+      return;
+    }
     await bot.sendMessage(chatId, text, { parse_mode: "HTML" });
     console.log("Telegram text sent:", text.substring(0, 50));
   } catch (err) {

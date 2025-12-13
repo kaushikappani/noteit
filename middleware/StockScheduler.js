@@ -233,6 +233,7 @@ const scheduleFiiDiiReport = async () => {
 };
 
 const scheduleCoorporateAnnouncments = async () => {
+  console.log("Starting Corporate Announcements Scheduler...");
   const nseIndia = new NseIndia();
 
   try {
@@ -243,15 +244,20 @@ const scheduleCoorporateAnnouncments = async () => {
       `from_date=${fromDate.format("DD-MM-YYYY")}` +
       `&to_date=${toDate.format("DD-MM-YYYY")}`;
 
+      console.log(`Fetching corporate announcements from ${fromDate.format("DD-MM-YYYY")} to ${toDate.format("DD-MM-YYYY")}`);
     const data = await nseIndia.getDataByEndpoint(
       `/api/corporate-announcements?index=equities&${dateRange}`
     );
+
+    console.log(`Fetched ${data.length} corporate announcements.`);
 
     const mailTemplate = await readFile(
       "../templates/stock_coorporate_annoucements.txt"
     );
 
     notificationUsers = require("../config/notificationUsers.json");
+
+    console.log(notificationUsers)
     //  Iterate over each user from JSON config
     for (const usr of notificationUsers) {
       const userEmail = usr.email;
@@ -275,12 +281,12 @@ const scheduleCoorporateAnnouncments = async () => {
 
           let notiReq = { title: item.symbol + "-" + item.desc, body: summary, data: { url: item.attchmntFile, }, } 
           triggerNotifications(notiReq, user);
-
+          console.log(` Notification triggered for ${item.symbol} - ${userEmail}`);
           // Send user-specific Telegram notification
           if (telegramId) {
             sendTelegramMessage(
               telegramId,
-              `*${item.symbol}* - ${item.desc}\n\n${summary}\n\n[View Attachment](${item.attchmntFile})`
+              `*${item.symbol}* - ${item.desc}\n\n${summary}`,true,`*${item.symbol}* - ${item.desc}\n\n[View Attachment](${item.attchmntFile})`
             );
           }
 
@@ -318,6 +324,9 @@ const scheduleCoorporateAnnouncments = async () => {
     console.error("Error in scheduleCoorporateAnnouncments ", e);
   }
 };
+scheduleCoorporateAnnouncments();
+
+// sendTelegramMessage("1375808164",` analysts/institutional investor meet/con. call updates**notification:** mrs. bectors food specialities (bectorfood) presented a compelling growth trajectory and strategic expansion plans at its recent investor meet.1.  **dual segment dominance:** the company maintains a strong market position in both premium biscuits (cremica) and bakery products (english oven), serving as a critical supplier to major quick service restaurants (qsrs) across india.2.  **robust financial performance:** bectorfood has consistently delivered strong revenue growth and improving profitability, driven by premiumization in biscuits and expanding client relationships in the high-growth qsr bakery segment.3.  **strategic growth & capacity expansion:** future growth is underpinned by aggressive distribution expansion into new geographies and rural markets, continuous new product development, and significant capacity enhancements across both biscuit and bakery divisions.4.  **entrenched competitive advantages:** key strengths include powerful brand equity, an extensive distribution network, long-standing relationships with leading qsrs, and integrated manufacturing facilities, providing a sustainable competitive edge.5.  **positive outlook & market capture:** management projects continued market share gains, leveraging operational efficiencies and new capacities to capitalize on increasing demand in both urban and rural india, signaling a confident future outlook.**overall sentiment:** positive 🟢**recommendation:** based on the robust performance, clear growth strategies, and positive outlook presented, we recommend a **buy** on mrs. bectors food specialities.`,true)
 
 const scheduleCoorporateActions = async () => {
   try {

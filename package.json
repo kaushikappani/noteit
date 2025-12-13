@@ -13,6 +13,7 @@
     "@google/generative-ai": "^0.15.0",
     "@jimp/plugin-color": "^0.22.12",
     "bcryptjs": "^2.4.3",
+    "canvas": "^3.2.0",
     "chart.js": "^4.4.4",
     "cheerio": "^1.0.0-rc.12",
     "cloudinary": "^2.2.0",
