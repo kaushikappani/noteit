@@ -49,6 +49,7 @@
     "stock-nse-india": "^1.1.7",
     "swagger-ui-express": "^5.0.1",
     "telegramify-markdown": "^1.2.2",
+    "twitter-api-v2": "^1.28.0",
     "util": "^0.12.5",
     "web-push": "^3.6.7",
     "yahoo-finance2": "^2.11.3"

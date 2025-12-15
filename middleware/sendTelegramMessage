@@ -1,4 +1,6 @@
+
 const TelegramBot = require('node-telegram-bot-api');
+const {sendTweet} = require('../functions/xService');
 const fs = require("fs");
 const path = require("path");
 
@@ -38,16 +40,21 @@ async function sendTelegramMessage(chatId, text ,sendAsImage = false,textForImag
   try {
     if (!(await shouldSend(chatId, text))) return;
     console.log("Sending Telegram message to chat:", chatId);
+    let imageBuffer = null;
+
     if(sendAsImage){
       const { textToImageBuffer } = require("../functions/textToImage");
-      const imageBuffer = await textToImageBuffer(text);
+      imageBuffer = await textToImageBuffer(text);
       console.log("Generated image buffer for Telegram message.",imageBuffer);
       await bot.sendPhoto(chatId, imageBuffer, { caption: textForImage });
       console.log("Telegram text sent as image:", text.substring(0, 50));
-      return;
+    }else{
+      await bot.sendMessage(chatId, text, { parse_mode: "HTML" });
+      console.log("Telegram text sent:", text.substring(0, 50));
+
     }
-    await bot.sendMessage(chatId, text, { parse_mode: "HTML" });
-    console.log("Telegram text sent:", text.substring(0, 50));
+    await sendTweet(text, imageBuffer);
+
   } catch (err) {
     console.error("Telegram text send error:", err);
   }
