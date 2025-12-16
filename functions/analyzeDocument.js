@@ -39,13 +39,13 @@ You are a professional financial analyst.
 Read the following corporate filing and provide:
 
 1. A 3-4 point summary in clear investor-friendly language.
-2. ONE overall sentiment indicator (Positive 🟢 / Negative 🔴 / Neutral 🟡)
+2. ONE overall sentiment indicator (Positive  / Negative  / Neutral )
 based strictly on the contents.
 
 Rules:
 - No disclaimers
 - First line should be gist like a notification
-- Can give buy sell recommendations based on the content
+-Do NOT use **bold**
 
 Reference:
 ${url}
@@ -55,7 +55,7 @@ ${url}
       temperature: 0.6,
       topP: 0.95,
       topK: 32,
-      maxOutputTokens: 2048,
+      maxOutputTokens: 1548,
       responseMimeType: "text/plain",
     };
 
