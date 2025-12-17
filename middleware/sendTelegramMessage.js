@@ -4,7 +4,7 @@ const {sendTweet} = require('../functions/xService');
 const fs = require("fs");
 const path = require("path");
 
-const client = require('../middleware/redis');
+const client = require('./redis');
 const util = require("util");
 
 const redisGet = util.promisify(client.get).bind(client);

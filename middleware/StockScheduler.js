@@ -9,7 +9,7 @@ const axios = require("axios");
 const { scrapGlobalIndices } = require("./Scrapper");
 const {sendNotification} = require("../config/webPush");
 const { analyzeCorporateDocument } = require("../functions/analyzeDocument");
-const { sendTelegramMessage } = require("./sendTelegramMessage");
+const { sendTelegramMessage } = require("./sendTelegramMessage.js");
 const tradeData = async (symbol, nseIndia) => {
   const data = await nseIndia.getEquityTradeInfo(symbol);
   return data;
