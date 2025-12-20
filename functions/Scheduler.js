@@ -21,7 +21,7 @@ rule.dayOfWeek = new schedule.Range(1, 5);
 
 schedule.scheduleJob(rule, () => {
     console.log('Scheduler triggered with rule');
-    scheduleTask();
+    //scheduleTask();
     scheduleFiiDiiReport();
     // scheduleCoorporateAnnouncments();
     // scheduleCoorporateActions();

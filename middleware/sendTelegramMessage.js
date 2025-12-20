@@ -53,7 +53,7 @@ async function sendTelegramMessage(chatId, text ,sendAsImage = false,textForImag
       console.log("Telegram text sent:", text.substring(0, 50));
 
     }
-    await sendTweet(textForImage, imageBuffer);
+    await sendTweet(text, imageBuffer);
 
   } catch (err) {
     console.error("Telegram text send error:", err);

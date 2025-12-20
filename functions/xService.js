@@ -20,21 +20,19 @@ const rwClient = xClient.readWrite;
 export async function sendTweet(text, imageBuffer = null) {
   try {
     console.log("Sending tweet:", text.substring(0, 50));
-    const tweetText = text.slice(0, 280);
 
-    // Text-only tweet
+    const tweetText = formatTweetText(text, !!imageBuffer);
+
     if (!imageBuffer) {
       await rwClient.v2.tweet(tweetText);
       console.log("Tweet sent");
       return;
     }
 
-    // Upload image
     const mediaId = await rwClient.v1.uploadMedia(imageBuffer, {
       mimeType: "image/png",
     });
 
-    // Tweet with image
     await rwClient.v2.tweet({
       text: tweetText,
       media: {
@@ -46,4 +44,46 @@ export async function sendTweet(text, imageBuffer = null) {
   } catch (err) {
     console.error("X tweet error:", err);
   }
+}
+
+
+
+function formatTweetText(text, hasImage, limit = 280) {
+  const suffix = hasImage ? " (full text in image)" : "";
+  const hashtags = extractHashtags(text, 3).join(" ");
+
+  const reserved =
+    suffix.length +
+    (hashtags ? hashtags.length + 1 : 0) + // space before hashtags
+    3; // "..."
+
+  // If everything fits
+  if (text.length + suffix.length + (hashtags ? hashtags.length + 1 : 0) <= limit) {
+    return [text + suffix, hashtags].filter(Boolean).join(" ");
+  }
+
+  const allowedLength = limit - reserved;
+
+  let trimmed = text.slice(0, allowedLength);
+  trimmed = trimmed.replace(/\s+\S*$/, ""); // avoid breaking words
+
+  return `${trimmed}...${suffix}${hashtags ? " " + hashtags : ""}`;
+}
+
+
+function extractHashtags(text, maxWords = 3) {
+  const stopWords = new Set([
+    "the", "a", "an", "is", "are", "of", "to", "for", "in", "on", "with", "and"
+  ]);
+
+  const words = text
+    .replace(/[^\w\s]/g, "")
+    .split(/\s+/)
+    .filter(w => w.length > 2 && !stopWords.has(w.toLowerCase()));
+
+  const selected = words.slice(0, maxWords);
+
+  return selected.map(
+    w => "#" + w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()
+  );
 }
