@@ -6,7 +6,7 @@ const util = require("util");
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey);
 
-const REDIS_TTL_HOURS = process.env.DOCUMENT_SUMMARY_CACHE_HOURS || 24;
+const REDIS_TTL_HOURS =25;
 
 // Convert get/set to async
 const redisGet = util.promisify(client.get).bind(client);

@@ -10,7 +10,7 @@ const util = require("util");
 const redisGet = util.promisify(client.get).bind(client);
 const redisSet = util.promisify(client.set).bind(client);
 
-const COOLDOWN_HOURS = process.env.TELEGRAM_COOLDOWN_HOURS || 24;
+const COOLDOWN_HOURS = 25;
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
 
