@@ -240,8 +240,14 @@ const scheduleCoorporateAnnouncments = async () => {
     const toDate = moment().tz(process.env.TIME_ZONE);
     const fromDate = toDate.clone().subtract(1, "days");
 
+    const dateRange =
+      `from_date=${fromDate.format("DD-MM-YYYY")}` +
+      `&to_date=${toDate.format("DD-MM-YYYY")}`;
+
+      console.log(`Fetching corporate announcements from ${fromDate.format("DD-MM-YYYY")} to ${toDate.format("DD-MM-YYYY")}`);
+
     const data = await nseIndia.getDataByEndpoint(
-      `/api/corporate-announcements?index=equities`
+      `/api/corporate-announcements?index=equities&${dateRange}&reqXbrl=false`
     );
 
     console.log(`Fetched ${data.length} corporate announcements.`);
