@@ -1,10 +1,6 @@
 // services/xService.js
 import { TwitterApi } from "twitter-api-v2";
 
-/**
- * X (Twitter) client configuration
- * Keep credentials in env variables
- */
 const xClient = new TwitterApi({
   appKey: process.env.X_API_KEY,
   appSecret: process.env.X_API_SECRET,
@@ -13,6 +9,15 @@ const xClient = new TwitterApi({
 });
 
 const rwClient = xClient.readWrite;
+
+/* =======================
+   HASHTAGS CONFIG
+   ======================= */
+
+const FIXED_HASHTAGS = [
+  "#StockMarket",
+  "#Investing"
+];
 
 /**
  * Send tweet (text or image)
@@ -46,18 +51,21 @@ export async function sendTweet(text, imageBuffer = null) {
   }
 }
 
-
-
+/**
+ * Format tweet safely
+ */
 function formatTweetText(text, hasImage, limit = 280) {
   const suffix = hasImage ? " (full text in image)" : "";
-  const hashtags = extractHashtags(text, 3).join(" ");
+
+  const autoTags = extractHashtags(text, 1); // keep minimal
+  const hashtags = [...FIXED_HASHTAGS, ...autoTags].join(" ");
 
   const reserved =
     suffix.length +
-    (hashtags ? hashtags.length + 1 : 0) + // space before hashtags
+    (hashtags ? hashtags.length + 1 : 0) +
     3; // "..."
 
-  // If everything fits
+  // Fits completely
   if (text.length + suffix.length + (hashtags ? hashtags.length + 1 : 0) <= limit) {
     return [text + suffix, hashtags].filter(Boolean).join(" ");
   }
@@ -65,13 +73,15 @@ function formatTweetText(text, hasImage, limit = 280) {
   const allowedLength = limit - reserved;
 
   let trimmed = text.slice(0, allowedLength);
-  trimmed = trimmed.replace(/\s+\S*$/, ""); // avoid breaking words
+  trimmed = trimmed.replace(/\s+\S*$/, "");
 
   return `${trimmed}...${suffix}${hashtags ? " " + hashtags : ""}`;
 }
 
-
-function extractHashtags(text, maxWords = 3) {
+/**
+ * Auto-generate hashtags from text (SAFE)
+ */
+function extractHashtags(text, maxWords = 1) {
   const stopWords = new Set([
     "the", "a", "an", "is", "are", "of", "to", "for", "in", "on", "with", "and"
   ]);
@@ -79,11 +89,9 @@ function extractHashtags(text, maxWords = 3) {
   const words = text
     .replace(/[^\w\s]/g, "")
     .split(/\s+/)
-    .filter(w => w.length > 2 && !stopWords.has(w.toLowerCase()));
+    .filter(w => w.length > 3 && !stopWords.has(w.toLowerCase()));
 
-  const selected = words.slice(0, maxWords);
-
-  return selected.map(
-    w => "#" + w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()
-  );
+  return words
+    .slice(0, maxWords)
+    .map(w => "#" + w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
 }

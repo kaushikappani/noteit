@@ -325,7 +325,7 @@ const scheduleCoorporateAnnouncments = async () => {
     console.error("Error in scheduleCoorporateAnnouncments ", e);
   }
 };
-scheduleCoorporateAnnouncments();
+// scheduleCoorporateAnnouncments();
 
 // sendTelegramMessage("1375808164",` analysts/institutional investor meet/con. call updates**notification:** mrs. bectors food specialities (bectorfood) presented a compelling growth trajectory and strategic expansion plans at its recent investor meet.1.  **dual segment dominance:** the company maintains a strong market position in both premium biscuits (cremica) and bakery products (english oven), serving as a critical supplier to major quick service restaurants (qsrs) across india.2.  **robust financial performance:** bectorfood has consistently delivered strong revenue growth and improving profitability, driven by premiumization in biscuits and expanding client relationships in the high-growth qsr bakery segment.3.  **strategic growth & capacity expansion:** future growth is underpinned by aggressive distribution expansion into new geographies and rural markets, continuous new product development, and significant capacity enhancements across both biscuit and bakery divisions.4.  **entrenched competitive advantages:** key strengths include powerful brand equity, an extensive distribution network, long-standing relationships with leading qsrs, and integrated manufacturing facilities, providing a sustainable competitive edge.5.  **positive outlook & market capture:** management projects continued market share gains, leveraging operational efficiencies and new capacities to capitalize on increasing demand in both urban and rural india, signaling a confident future outlook.**overall sentiment:** positive 🟢**recommendation:** based on the robust performance, clear growth strategies, and positive outlook presented, we recommend a **buy** on mrs. bectors food specialities.`,true)
 
@@ -335,7 +335,7 @@ const scheduleCoorporateActions = async () => {
 
     const toDate = moment().tz(process.env.TIME_ZONE);
     const fromDate = toDate.clone().add(1, "weeks");
-
+//
     const dateString = `from_date=${toDate.format("DD-MM-YYYY")}&to_date=${fromDate.format("DD-MM-YYYY")}`;
 
     // Fetch data from NSE
