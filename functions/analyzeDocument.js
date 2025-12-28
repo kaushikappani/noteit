@@ -2,6 +2,7 @@ const axios = require("axios");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const client = require("../middleware/redis");
 const util = require("util");
+const { fetchDocumentText } = require("./documentToText");
 
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey);
@@ -25,6 +26,10 @@ const makeCacheKey = (url) => `docSummary:${url}`.toLowerCase();
 async function analyzeCorporateDocument(url) {
   try {
     const cacheKey = makeCacheKey(url);
+    console.log("Analyzing corporate document:", url);
+    let text = await fetchDocumentText(url);
+    text = text.slice(0,10000);
+    console.log("Fetched document text length:", text.length);
 
     // 1️ Check cache
     const cachedSummary = await redisGet(cacheKey);
@@ -48,7 +53,7 @@ Rules:
 -Do NOT use **bold**
 
 Reference:
-${url}
+${text}
 `;
 
     const generationConfig = {
@@ -67,7 +72,9 @@ ${url}
         contents: [
           { role: "user", parts: [{ text: prompt }] }
         ]
-      }); const summary = result.response.text().trim();
+      }); 
+      
+      const summary = result.response.text().trim();
 
       // 3️ Cache it
       redisSet(cacheKey, summary, "EX", REDIS_TTL_HOURS * 3600);

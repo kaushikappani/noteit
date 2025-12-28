@@ -1,5 +1,6 @@
+
 const TelegramBot = require('node-telegram-bot-api');
-const { sendTweet } = require('../functions/xService');
+const {sendTweet} = require('../functions/xService');
 const fs = require("fs");
 const path = require("path");
 
@@ -16,31 +17,6 @@ const token = process.env.TELEGRAM_BOT_TOKEN;
 // Create a global bot instance (no polling)
 const bot = new TelegramBot(token, { polling: false });
 
-/* =======================
-   TWITTER HASHTAG LOGIC
-   ======================= */
-
-const TWITTER_HASHTAGS = [
-  "#StockMarket",
-  "#Investing",
-  "#Trading"
-];
-
-function buildTweetText(text) {
-  const hashtags = TWITTER_HASHTAGS.join(" ");
-  const maxLength = 280 - hashtags.length - 2;
-
-  let tweet = text.trim();
-
-  if (tweet.length > maxLength) {
-    tweet = tweet.slice(0, maxLength);
-    tweet = tweet.slice(0, tweet.lastIndexOf(" "));
-    tweet += "...";
-  }
-
-  return `${tweet}\n\n${hashtags}`;
-}
-
 /**
  *  Check if message should be blocked (cooldown)
  */
@@ -49,7 +25,7 @@ async function shouldSend(chatId, dataToSend) {
 
   const exists = await redisGet(redisKey);
   if (exists) {
-    console.log(`Telegram blocked (cooldown active) for chat ${chatId}`);
+    console.log(` Telegram blocked (cooldown active) for chat ${chatId}`);
     return false;
   }
 
@@ -60,30 +36,24 @@ async function shouldSend(chatId, dataToSend) {
 /**
  *  Send plain text message with cooldown
  */
-async function sendTelegramMessage(chatId, text, sendAsImage = false, textForImage = "") {
+async function sendTelegramMessage(chatId, text ,sendAsImage = false,textForImage="") {
   try {
     if (!(await shouldSend(chatId, text))) return;
-
     console.log("Sending Telegram message to chat:", chatId);
     let imageBuffer = null;
 
-    if (sendAsImage) {
+    if(sendAsImage){
       const { textToImageBuffer } = require("../functions/textToImage");
       imageBuffer = await textToImageBuffer(text);
-
-      await bot.sendPhoto(chatId, imageBuffer, {
-        caption: textForImage
-      });
-
+      console.log("Generated image buffer for Telegram message.",imageBuffer);
+      await bot.sendPhoto(chatId, imageBuffer, { caption: textForImage });
       console.log("Telegram text sent as image:", text.substring(0, 50));
-    } else {
+    }else{
       await bot.sendMessage(chatId, text, { parse_mode: "HTML" });
       console.log("Telegram text sent:", text.substring(0, 50));
-    }
 
-    // Twitter (X) message with hashtags
-    const tweetText = buildTweetText(text);
-    await sendTweet(tweetText, imageBuffer);
+    }
+    await sendTweet(text, imageBuffer);
 
   } catch (err) {
     console.error("Telegram text send error:", err);
@@ -135,7 +105,6 @@ async function sendTelegramBuffer(chatId, buffer, filename, caption = "") {
       filename,
       caption
     });
-
     console.log("Telegram buffer document sent:", filename);
   } catch (err) {
     console.error("Telegram buffer send error:", err);
