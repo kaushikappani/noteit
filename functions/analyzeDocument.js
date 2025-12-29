@@ -43,7 +43,7 @@ async function analyzeCorporateDocument(url) {
 You are a professional financial analyst.
 Read the following corporate filing and provide:
 
-1. A 3-4 point summary in clear investor-friendly language.
+1. A 2-3 point summary in clear investor-friendly language.
 2. ONE overall sentiment indicator (Positive  / Negative  / Neutral )
 based strictly on the contents.
 
