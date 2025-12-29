@@ -39,8 +39,9 @@ async function sendTelegramMessage(chatId, text ,sendAsImage = false,textForImag
     if (!(await shouldSend(chatId, text))) return;
     console.log("Sending Telegram message to chat:", chatId);
     let imageBuffer = null;
+    const redisKey = `tg:${chatId}:${text}`.toLowerCase();
+
     try{
-      const redisKey = `tg:${chatId}:${text}`.toLowerCase();
     if(sendAsImage){
       const { textToImageBuffer } = require("../functions/textToImage");
       imageBuffer = await textToImageBuffer(text);
