@@ -7,7 +7,7 @@ const { fetchDocumentText } = require("./documentToText");
 const apiKey = process.env.GEMINI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey);
 
-const REDIS_TTL_HOURS =25;
+const REDIS_TTL_HOURS = 49;
 
 // Convert get/set to async
 const redisGet = util.promisify(client.get).bind(client);
