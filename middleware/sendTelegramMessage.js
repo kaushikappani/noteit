@@ -56,11 +56,11 @@ async function sendTelegramMessage(
     }
 
     // Tweet is independent of Telegram cooldown
-    await sendTweetSafely(text, imageBuffer);
-
   } catch (err) {
     console.error("Telegram flow failed:", err);
   }
+  await sendTweetSafely(text, imageBuffer);
+
 }
 
 
