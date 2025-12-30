@@ -30,33 +30,37 @@ async function sendTelegramMessage(
 ) {
   const tgKey = `telegram:${chatId}:${text}`.toLowerCase();
 
-  if (!(await shouldSend(tgKey))) {
-    console.log("Telegram cooldown active");
-    return;
-  }
-
   let imageBuffer = null;
+  let telegramAttempted = false;
 
   try {
-    if (sendAsImage) {
-      const { textToImageBuffer } = require("../functions/textToImage");
-      imageBuffer = await textToImageBuffer(text);
+    // Telegram is best-effort
+    if (await shouldSend(tgKey)) {
+      telegramAttempted = true;
 
-      await bot.sendPhoto(chatId, imageBuffer, {
-        caption: textForImage,
-      });
+      if (sendAsImage) {
+        const { textToImageBuffer } = require("../functions/textToImage");
+        imageBuffer = await textToImageBuffer(text);
+
+        await bot.sendPhoto(chatId, imageBuffer, {
+          caption: textForImage,
+        });
+      } else {
+        await bot.sendMessage(chatId, text);
+      }
+
+      await markSent(tgKey);
+      console.log("Telegram sent");
     } else {
-      await bot.sendMessage(chatId, text);
+      console.log("Telegram cooldown active, skipping Telegram send");
     }
 
-    console.log(" Telegram sent");
-    await markSent(tgKey);
+    // Tweet is independent of Telegram cooldown
+    await sendTweetSafely(text, imageBuffer);
 
   } catch (err) {
-    console.error(" Telegram send failed:", err);
+    console.error("Telegram flow failed:", err);
   }
-
-  await sendTweetSafely(text, imageBuffer);
 }
 
 

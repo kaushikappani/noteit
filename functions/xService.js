@@ -33,7 +33,7 @@ async function markSent(redisKey) {
 
 
 async function sendTweetSafely(text, imageBuffer = null) {
-  const xKey = `x:${text}`.toLowerCase();
+  const xKey = `tweet:${text}`.toLowerCase();
 
   if (!(await shouldSend(xKey))) {
     console.log("X cooldown active");
@@ -41,8 +41,8 @@ async function sendTweetSafely(text, imageBuffer = null) {
   }
 
   try {
-    await sendTweet(text, imageBuffer);
-    await markSent(xKey);
+  await sendTweet(text, imageBuffer);
+   await markSent(xKey);
     console.log("X tweet sent & cached");
   } catch (err) {
     console.error("X tweet failed:", err);
