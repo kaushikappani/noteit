@@ -1,5 +1,12 @@
-// services/xService.js
-import { TwitterApi } from "twitter-api-v2";
+const { TwitterApi } = require("twitter-api-v2");
+const util = require("util");
+const client = require("../middleware/redis");
+
+const redisGet = util.promisify(client.get).bind(client);
+const redisSet = util.promisify(client.set).bind(client);
+
+const COOLDOWN_HOURS = 49;
+
 
 const xClient = new TwitterApi({
   appKey: process.env.X_API_KEY,
@@ -10,88 +17,91 @@ const xClient = new TwitterApi({
 
 const rwClient = xClient.readWrite;
 
-/* =======================
-   HASHTAGS CONFIG
-   ======================= */
 
-const FIXED_HASHTAGS = [
-  "#StockMarket",
-  "#Investing"
-];
+const FIXED_HASHTAGS = ["#StockMarket", "#Investing"];
 
-/**
- * Send tweet (text or image)
- */
-export async function sendTweet(text, imageBuffer = null) {
+
+async function shouldSend(redisKey) {
+  const exists = await redisGet(redisKey);
+  return !exists;
+}
+
+async function markSent(redisKey) {
+  await redisSet(redisKey, "sent", "EX", COOLDOWN_HOURS * 3600);
+}
+
+
+
+async function sendTweetSafely(text, imageBuffer = null) {
+  const xKey = `x:${text}`.toLowerCase();
+
+  if (!(await shouldSend(xKey))) {
+    console.log("X cooldown active");
+    return;
+  }
+
   try {
-    console.log("Sending tweet:", text.substring(0, 50));
-
-    const tweetText = formatTweetText(text, !!imageBuffer);
-
-    if (!imageBuffer) {
-      await rwClient.v2.tweet(tweetText);
-      console.log("Tweet sent");
-      return;
-    }
-
-    const mediaId = await rwClient.v1.uploadMedia(imageBuffer, {
-      mimeType: "image/png",
-    });
-
-    await rwClient.v2.tweet({
-      text: tweetText,
-      media: {
-        media_ids: [mediaId],
-      },
-    });
-
-    console.log("Tweet with image sent");
+    await sendTweet(text, imageBuffer);
+    await markSent(xKey);
+    console.log("X tweet sent & cached");
   } catch (err) {
-    console.error("X tweet error:", err);
+    console.error("X tweet failed:", err);
   }
 }
 
-/**
- * Format tweet safely
- */
+
+async function sendTweet(text, imageBuffer = null) {
+  console.log("Sending tweet:", text.substring(0, 50));
+
+  const tweetText = formatTweetText(text, !!imageBuffer);
+
+  if (!imageBuffer) {
+    await rwClient.v2.tweet(tweetText);
+    return;
+  }
+
+  const mediaId = await rwClient.v1.uploadMedia(imageBuffer, {
+    mimeType: "image/png",
+  });
+
+  await rwClient.v2.tweet({
+    text: tweetText,
+    media: { media_ids: [mediaId] },
+  });
+}
+
 function formatTweetText(text, hasImage, limit = 280) {
   const suffix = hasImage ? " (full text in image)" : "";
-
-  const autoTags = extractHashtags(text, 1); // keep minimal
+  const autoTags = extractHashtags(text, 1);
   const hashtags = [...FIXED_HASHTAGS, ...autoTags].join(" ");
 
   const reserved =
-    suffix.length +
-    (hashtags ? hashtags.length + 1 : 0) +
-    3; // "..."
+    suffix.length + (hashtags ? hashtags.length + 1 : 0) + 3;
 
-  // Fits completely
   if (text.length + suffix.length + (hashtags ? hashtags.length + 1 : 0) <= limit) {
     return [text + suffix, hashtags].filter(Boolean).join(" ");
   }
 
   const allowedLength = limit - reserved;
-
-  let trimmed = text.slice(0, allowedLength);
-  trimmed = trimmed.replace(/\s+\S*$/, "");
+  let trimmed = text.slice(0, allowedLength).replace(/\s+\S*$/, "");
 
   return `${trimmed}...${suffix}${hashtags ? " " + hashtags : ""}`;
 }
 
-/**
- * Auto-generate hashtags from text (SAFE)
- */
+
 function extractHashtags(text, maxWords = 1) {
   const stopWords = new Set([
-    "the", "a", "an", "is", "are", "of", "to", "for", "in", "on", "with", "and"
+    "the", "a", "an", "is", "are", "of", "to", "for", "in", "on", "with", "and",
   ]);
 
-  const words = text
+  return text
     .replace(/[^\w\s]/g, "")
     .split(/\s+/)
-    .filter(w => w.length > 3 && !stopWords.has(w.toLowerCase()));
-
-  return words
+    .filter(w => w.length > 3 && !stopWords.has(w.toLowerCase()))
     .slice(0, maxWords)
-    .map(w => "#" + w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+    .map(w => "#" + w[0].toUpperCase() + w.slice(1).toLowerCase());
 }
+
+module.exports = {
+  sendTweetSafely,
+};
