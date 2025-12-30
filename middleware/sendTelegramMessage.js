@@ -54,7 +54,6 @@ async function sendTelegramMessage(
 
   } catch (err) {
     console.error(" Telegram send failed:", err);
-    return; // DO NOT continue
   }
 
   await sendTweetSafely(text, imageBuffer);
