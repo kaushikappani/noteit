@@ -30,8 +30,9 @@ async function sendTelegramMessage(
 ) {
   const tgKey = `telegram:${chatId}:${text}`.toLowerCase();
 
-  let imageBuffer = null;
-  let telegramAttempted = false;
+    const { textToImageBuffer } = require("../functions/textToImage");
+    let  imageBuffer = await textToImageBuffer(text);
+    let telegramAttempted = false;
 
   try {
     // Telegram is best-effort
@@ -39,9 +40,6 @@ async function sendTelegramMessage(
       telegramAttempted = true;
 
       if (sendAsImage) {
-        const { textToImageBuffer } = require("../functions/textToImage");
-        imageBuffer = await textToImageBuffer(text);
-
         await bot.sendPhoto(chatId, imageBuffer, {
           caption: textForImage,
         });
