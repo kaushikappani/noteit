@@ -1,6 +1,5 @@
 const TelegramBot = require("node-telegram-bot-api");
 const util = require("util");
-const { sendTweetSafely } = require("../functions/xService");
 const client = require('./redis');
 
 
@@ -30,16 +29,12 @@ async function sendTelegramMessage(
 ) {
   const tgKey = `telegram:${chatId}:${text}`.toLowerCase();
 
-    const { textToImageBuffer } = require("../functions/textToImage");
-    let  imageBuffer = await textToImageBuffer(text);
-    let telegramAttempted = false;
-
   try {
     // Telegram is best-effort
     if (await shouldSend(tgKey)) {
-      telegramAttempted = true;
-
       if (sendAsImage) {
+        const { textToImageBuffer } = require("../functions/textToImage");
+        const imageBuffer = await textToImageBuffer(text);
         await bot.sendPhoto(chatId, imageBuffer, {
           caption: textForImage,
         });
@@ -52,13 +47,9 @@ async function sendTelegramMessage(
     } else {
       console.log("Telegram cooldown active, skipping Telegram send");
     }
-
-    // Tweet is independent of Telegram cooldown
   } catch (err) {
     console.error("Telegram flow failed:", err);
   }
-  await sendTweetSafely(text, imageBuffer);
-
 }
 
 

@@ -11,6 +11,7 @@ const {sendNotification} = require("../config/webPush");
 const { analyzeCorporateDocument } = require("../functions/analyzeDocument");
 const { sendTelegramMessage } = require("./sendTelegramMessage.js");
 const { fetchDocumentText } = require("../functions/documentToText.js");
+const { sendTweetSafely } = require("../functions/xService.js");
 const tradeData = async (symbol, nseIndia) => {
   const data = await nseIndia.getEquityTradeInfo(symbol);
   return data;
@@ -279,17 +280,57 @@ const scheduleCoorporateAnnouncments = async () => {
 
       for (const item of data) {
         if (symbols.includes(item.symbol)) {
-          const summary = await analyzeCorporateDocument(item.attchmntFile);
+          // Try AI analysis, but continue if it fails
+          let summary = "";
+          let aiAnalysisSuccess = false;
 
-          let notiReq = { title: item.symbol + "-" + item.desc, body: summary, data: { url: item.attchmntFile, }, } 
-          triggerNotifications(notiReq, user);
-          console.log(` Notification triggered for ${item.symbol} - ${userEmail}`);
-          // Send user-specific Telegram notification
-          if (telegramId) {
-            sendTelegramMessage(
-              telegramId,
-              `*${item.symbol}* - ${item.desc}\n\n${summary}`,true,`*${item.symbol}* - ${item.desc}\n\n[View Attachment](${item.attchmntFile})`
-            );
+          try {
+            summary = await analyzeCorporateDocument(item.attchmntFile);
+            // Check if analysis returned error message
+            if (!summary.includes("Could not analyze document")) {
+              aiAnalysisSuccess = true;
+            } else {
+              console.log(`AI analysis failed for ${item.symbol}, skipping notifications`);
+            }
+          } catch (error) {
+            console.error(`Error analyzing document for ${item.symbol}:`, error);
+            summary = "";
+          }
+
+          // Only send notifications if AI analysis succeeded
+          if (aiAnalysisSuccess && summary) {
+            // Send push notification
+            try {
+              let notiReq = { title: item.symbol + "-" + item.desc, body: summary, data: { url: item.attchmntFile, }, }
+              triggerNotifications(notiReq, user);
+              console.log(` Notification triggered for ${item.symbol} - ${userEmail}`);
+            } catch (error) {
+              console.error(`Error sending push notification for ${item.symbol}:`, error);
+            }
+
+            // Send Telegram notification
+            if (telegramId) {
+              try {
+                await sendTelegramMessage(
+                  telegramId,
+                  `*${item.symbol}* - ${item.desc}\n\n${summary}`,
+                  true,
+                  `*${item.symbol}* - ${item.desc}\n\n[View Attachment](${item.attchmntFile})`
+                );
+              } catch (error) {
+                console.error(`Error sending Telegram message for ${item.symbol}:`, error);
+              }
+            }
+
+            // Send Tweet directly
+            try {
+              const { textToImageBuffer } = require("../functions/textToImage");
+              const tweetText = `*${item.symbol}* - ${item.desc}\n\n${summary}`;
+              const imageBuffer = await textToImageBuffer(tweetText);
+              await sendTweetSafely(tweetText, imageBuffer);
+            } catch (error) {
+              console.error(`Error sending tweet for ${item.symbol}:`, error);
+            }
           }
 
           matchedRows += `
@@ -315,10 +356,14 @@ const scheduleCoorporateAnnouncments = async () => {
           const catchDate = moment().tz(process.env.TIME_ZONE);
 
       if (noteId) {
-        const note = await Note.findById(noteId);
-        note.title = `Corporate Announcements - ${catchDate}`;
-        note.content = html;
-        await note.save();
+        try {
+          const note = await Note.findById(noteId);
+          note.title = `Corporate Announcements - ${catchDate}`;
+          note.content = html;
+          await note.save();
+        } catch (error) {
+          console.error(`Error saving note for ${userEmail}:`, error);
+        }
       }
     }
 

@@ -27,9 +27,6 @@ async function analyzeCorporateDocument(url) {
   try {
     const cacheKey = makeCacheKey(url);
     console.log("Analyzing corporate document:", url);
-    let text = await fetchDocumentText(url);
-    text = text.slice(0,10000);
-    console.log("Fetched document text length:", text.length);
 
     // 1️ Check cache
     const cachedSummary = await redisGet(cacheKey);
@@ -37,6 +34,10 @@ async function analyzeCorporateDocument(url) {
       console.log("📦 Using cached summary for:", url);
       return cachedSummary;
     }
+
+    let text = await fetchDocumentText(url);
+    text = text.slice(0,10000);
+    console.log("Fetched document text length:", text.length);
 
     // 2️ Ask Gemini
     const prompt = `
@@ -72,12 +73,12 @@ ${text}
         contents: [
           { role: "user", parts: [{ text: prompt }] }
         ]
-      }); 
-      
+      });
+
       const summary = result.response.text().trim();
 
-      // 3️ Cache it
-      redisSet(cacheKey, summary, "EX", REDIS_TTL_HOURS * 3600);
+      // 3️ Cache only on success
+      await redisSet(cacheKey, summary, "EX", REDIS_TTL_HOURS * 3600);
 
       return summary;
     } catch (err) {
@@ -87,16 +88,18 @@ ${text}
         contents: [
           { role: "user", parts: [{ text: prompt }] }
         ]
-      }); const summary = result.response.text().trim();
+      });
+      const summary = result.response.text().trim();
 
-      // 3️ Cache it
-      redisSet(cacheKey, summary, "EX", REDIS_TTL_HOURS * 3600);
+      // 3️ Cache only on success
+      await redisSet(cacheKey, summary, "EX", REDIS_TTL_HOURS * 3600);
 
       return summary;
     }
 
   } catch (error) {
     console.error(" analysis error ", error?.message || error);
+    // Don't cache errors
     return "⚪ Could not analyze document.";
   }
 }
