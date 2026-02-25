@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs")
 const router = express.Router();
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
-const { User, NoteAccess,Note } = require("../config/models");
+const { User, NoteAccess, Note } = require("../config/models");
 const { protect } = require("../middleware/protect");
 const { mailer, readFile } = require("../middleware/mailer")
 const cloudinary = require('cloudinary').v2;
@@ -25,7 +25,7 @@ const generateToken = (id) => {
 }
 //   /api/users
 router.route("/").post(asyncHandler(async (req, res) => {
-    const { name, email, password, pic,platform } = req.body;
+    const { name, email, password, pic, platform } = req.body;
     const userExists = await User.findOne({ email });
     const salt = await bcrypt.genSalt(11);
     hashPassword = await bcrypt.hash(password, salt);
@@ -54,20 +54,20 @@ router.route("/").post(asyncHandler(async (req, res) => {
         const key = `login:${platformKey}:${id}`;
         value = token + "";
 
-        await client.set(key, value, 'PX', ttlMilliseconds365Days,(err, data) => {
+        await client.set(key, value, 'PX', ttlMilliseconds365Days, (err, data) => {
             if (err) {
                 console.log(err)
             }
         })
-       
+
         const verificationToken = jwt.sign({ id }, process.env.JWT_SECRET_VERIFICATION, {
             expiresIn: "1h"
         });
 
         const ttlMilliseconds1Hr = 1 * 60 * 60 * 1000; // 3600000 milliseconds for 1 hour
         const verificaitonKey = email + "_verification";
-        const  verificationTokenValue = verificationToken + "";
-        await client.set(verificaitonKey, verificationTokenValue, 'PX', ttlMilliseconds1Hr,(err, data) => {
+        const verificationTokenValue = verificationToken + "";
+        await client.set(verificaitonKey, verificationTokenValue, 'PX', ttlMilliseconds1Hr, (err, data) => {
             if (err) {
                 console.log(err)
             }
@@ -97,7 +97,7 @@ router.route("/").post(asyncHandler(async (req, res) => {
     })
 }))
 router.route("/login").post(asyncHandler(async (req, res) => {
-    const { email, password ,platform} = req.body;
+    const { email, password, platform } = req.body;
     const user = await User.findOne({ email })
     if (user) {
         bcrypt.compare(password, user.password, async (err, data) => {
@@ -106,37 +106,45 @@ router.route("/login").post(asyncHandler(async (req, res) => {
 
                 const options = {
                     httpOnly: true,
-                    secure: true ,
+                    secure: true,
                     expires: new Date(Date.now() + ttlMilliseconds365Days),
                 };
                 const token = generateToken(user._id);
-                
+
+                // For mcp platform, store under "web" key so protect middleware finds it
                 let platformKey = "web";
                 if (platform === "mobile") {
-                    platformKey = "mobile"
+                    platformKey = "mobile";
                 }
 
                 const key = `login:${platformKey}:${user._id}`;
-                value = token + "";
-                await client.set(key, value, 'PX',ttlMilliseconds365Days,(err, data) => {
-                    if (err) {
-                        console.log("error while saving", err);
-                    }
-                })
-                res.cookie("token", token, options).json({
+                const value = token + "";
+                await client.set(key, value, 'PX', ttlMilliseconds365Days, (err) => {
+                    if (err) console.log("error while saving", err);
+                });
+
+                const responseBody = {
                     name: user.name,
                     email: user.email,
                     isAdmin: user.isAdmin,
                     pic: user.pic,
-                });
-            } if (!data) {
-                res.status(400)
-                res.json({ message: "invalid crendientials" })
+                };
+
+                // When logging in for MCP, also return the raw token in JSON body
+                // (cookie is httpOnly so JS can't read it; the MCP login page needs it)
+                if (platform === "mcp") {
+                    responseBody.token = token;
+                }
+
+                res.cookie("token", token, options).json(responseBody);
             }
-        })
+            if (!data) {
+                res.status(400).json({ message: "invalid credentials" });
+            }
+        });
     } else {
-        res.status(400)
-        throw new Error("User not found")
+        res.status(400);
+        throw new Error("User not found");
     }
 }))
 
@@ -148,7 +156,7 @@ router.route("/info").get(protect, asyncHandler(async (req, res) => {
 
 router.route("/info").put(protect, asyncHandler(async (req, res) => {
     const { email, password, name, conformPassword } = req.body;
-    client.del(`user:${req.user._id}`); 
+    client.del(`user:${req.user._id}`);
     const user = await User.findById(req.user._id);
     if (user) {
         user.name = name || user.name;
@@ -179,7 +187,7 @@ router.route("/confirm/:id").get(asyncHandler(async (req, res) => {
         console.log("decode", decode);
         let user = await User.findById(decode.id).select("-password");
         console.log(user);
-        await client.get(user.email +"_verification", (err, result) => {
+        await client.get(user.email + "_verification", (err, result) => {
             if (err) {
                 console.error(err);
                 res.status(500).json({ message: "Link Expired please try again" });
@@ -191,12 +199,12 @@ router.route("/confirm/:id").get(asyncHandler(async (req, res) => {
                 return;
             }
             user.verified = true;
-            client.del(`user:${decode.id}`); 
+            client.del(`user:${decode.id}`);
             user.save();
             console.log(user);
             res.json({ message: "Profile Verified" })
         })
-  
+
     } catch (err) {
         console.log(err)
         res.status(401);
@@ -223,13 +231,13 @@ router.route("/forgotpassword").post(
                 email: user.email
             }
             const mailTemplate = await readFile("../templates/reset_password_email.txt");
-            const mailHtml =  mailTemplate.replace("#{link}", `${process.env.DOMAIN}/passwordreset/${token}`);
+            const mailHtml = mailTemplate.replace("#{link}", `${process.env.DOMAIN}/passwordreset/${token}`);
             const mailBody = {
                 subject: "NoteIt - Password Reset Link",
                 text: "Click the following link to change your password",
                 html: mailHtml
             }
-            
+
             try {
                 mailer(recipent, mailBody);
             } catch (err) {
@@ -262,18 +270,18 @@ router.route("/resetpassword/:id").post(asyncHandler(async (req, res) => {
 }))
 
 router.route("/:id/access/users").get(protect, asyncHandler(async (req, res) => {
-    
+
     const note = await Note.findById(req.params.id)
         .select("-color")
         .select("-archived")
         .select("-pinned");
-    
+
     if (note.user.toString() !== req.user._id.toString()) {
         res.status(401);
         throw new Error("Oops! No Access to View");
     }
-    
-    const noteAccess = await NoteAccess.find({ note: note.id,isActive:true });
+
+    const noteAccess = await NoteAccess.find({ note: note.id, isActive: true });
     let users = [];
     for (const access of noteAccess) {
         const user = await User.findById(access.user).select("-password").select("-_id");
@@ -302,8 +310,8 @@ router.route("/:id/revoke/:user").put(protect, asyncHandler(async (req, res) => 
         res.status(401);
         throw new Error("User Not Found");
     }
-    await NoteAccess.findOneAndUpdate({ note: note.id, user: user._id ,isActive:true},{ isActive:false});
-    res.status(200).json({ message: "Access revoked to "+user.email });
+    await NoteAccess.findOneAndUpdate({ note: note.id, user: user._id, isActive: true }, { isActive: false });
+    res.status(200).json({ message: "Access revoked to " + user.email });
 
 
 }))
@@ -313,11 +321,11 @@ router.route("/logout").get(asyncHandler(async (req, res) => {
     res.clearCookie("token").status(202).send("logout");
 }))
 
-router.route("/verification/link").post(protect,asyncHandler(async (req, res) => {
-    
+router.route("/verification/link").post(protect, asyncHandler(async (req, res) => {
+
     const id = req.user._id;
     const verificationToken = jwt.sign({ id }, process.env.JWT_SECRET_VERIFICATION);
-    
+
 
     const mailTemplate = await readFile("../templates/verify_account_email.txt");
     const mailHtml = mailTemplate.replace("#{link}", `${process.env.DOMAIN}/confirm/${verificationToken}`);
@@ -347,11 +355,11 @@ router.route("/verification/link").post(protect,asyncHandler(async (req, res) =>
 
 router.route("/upload/profile/pic").post(protect, upload.single('profilePicture'), asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
-    client.del(`user:${req.user._id}`); 
+    client.del(`user:${req.user._id}`);
     let result = null;
     try {
         result = await cloudinary.uploader.upload(req.file.path, { public_id: `profilepic/${user._id}`, secure: true });
-        
+
     } catch (e) {
         console.log("Error While Uploading pic " + e)
         throw new Error("Error While Uploading pic")
@@ -367,8 +375,140 @@ router.route("/upload/profile/pic").post(protect, upload.single('profilePicture'
         await user.save();
     }
     console.log(result);
-    res.json({message: "Profile Uploaded"});
+    res.json({ message: "Profile Uploaded" });
 
 }))
+
+// ─── MCP OAuth-style Device Code Flow ────────────────────────────────────────
+const crypto = require("crypto");
+
+// Step 1 — MCP server calls this to get an auth_code + login URL
+// GET /api/users/mcp/auth
+router.route("/mcp/auth").get(asyncHandler(async (req, res) => {
+    const code = crypto.randomUUID();
+    const ttl5Min = 5 * 60; // seconds
+    const redisKey = `mcp_auth:${code}`;
+
+    // Store code in Redis with 5-min TTL (value = "pending")
+    await new Promise((resolve, reject) => {
+        client.set(redisKey, "pending", "EX", ttl5Min, (err) => {
+            if (err) reject(err);
+            else resolve();
+        });
+    });
+
+    const loginUrl = `${process.env.DOMAIN}/mcp-login?code=${code}`;
+    res.status(200).json({ code, loginUrl });
+}));
+
+// Step 2 — Frontend (MCP login page) calls this after the user logs in
+// POST /api/users/mcp/exchange  body: { code, token }
+router.route("/mcp/exchange").post(asyncHandler(async (req, res) => {
+    const { code, token } = req.body;
+    if (!code || !token) {
+        res.status(400).json({ message: "code and token are required" });
+        return;
+    }
+
+    const redisKey = `mcp_auth:${code}`;
+
+    // Verify the code exists and is still pending
+    const existing = await new Promise((resolve, reject) => {
+        client.get(redisKey, (err, val) => {
+            if (err) reject(err);
+            else resolve(val);
+        });
+    });
+
+    if (!existing) {
+        res.status(400).json({ message: "Invalid or expired auth code" });
+        return;
+    }
+
+    // Store the actual JWT token (overwrites "pending"), keep 5-min TTL
+    await new Promise((resolve, reject) => {
+        client.set(redisKey, token, "EX", 5 * 60, (err) => {
+            if (err) reject(err);
+            else resolve();
+        });
+    });
+
+    res.status(200).json({ message: "Token deposited. AI is now authenticated." });
+}));
+
+// Step 3 — MCP server polls this every 2s to retrieve token once ready
+// GET /api/users/mcp/token?code=<uuid>
+router.route("/mcp/token").get(asyncHandler(async (req, res) => {
+    const { code } = req.query;
+    if (!code) {
+        res.status(400).json({ message: "code query param is required" });
+        return;
+    }
+
+    const redisKey = `mcp_auth:${code}`;
+    const value = await new Promise((resolve, reject) => {
+        client.get(redisKey, (err, val) => {
+            if (err) reject(err);
+            else resolve(val);
+        });
+    });
+
+    if (!value) {
+        res.status(404).json({ message: "Auth code not found or expired" });
+        return;
+    }
+
+    if (value === "pending") {
+        // User hasn't logged in yet — tell MCP server to keep checking
+        res.status(200).json({ status: "pending", message: "Waiting for user to login..." });
+        return;
+    }
+
+    // Token is ready — return it and delete from Redis (one-time use)
+    client.del(redisKey);
+    res.status(200).json({ token: value });
+}));
+// Auto-exchange: if user is already logged in (has valid cookie), deposit their
+// existing JWT directly so they skip the login form entirely.
+// POST /api/users/mcp/auto-exchange  body: { code }
+router.route("/mcp/auto-exchange").post(protect, asyncHandler(async (req, res) => {
+    const { code } = req.body;
+    if (!code) {
+        res.status(400).json({ message: "code is required" });
+        return;
+    }
+
+    const redisKey = `mcp_auth:${code}`;
+
+    // Verify the code still exists in Redis
+    const existing = await new Promise((resolve, reject) => {
+        client.get(redisKey, (err, val) => {
+            if (err) reject(err);
+            else resolve(val);
+        });
+    });
+
+    if (!existing) {
+        res.status(400).json({ message: "Invalid or expired auth code" });
+        return;
+    }
+
+    // req.cookies.token is the existing valid JWT (protect already validated it)
+    const token = req.cookies.token;
+
+    await new Promise((resolve, reject) => {
+        client.set(redisKey, token, "EX", 5 * 60, (err) => {
+            if (err) reject(err);
+            else resolve();
+        });
+    });
+
+    res.status(200).json({
+        message: "Already logged in — AI is now authenticated.",
+        name: req.user.name,
+        email: req.user.email,
+    });
+}));
+// ─────────────────────────────────────────────────────────────────────────────
 
 module.exports = router

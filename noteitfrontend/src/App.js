@@ -11,14 +11,15 @@ import ForgotPassword from "./pages/ForgotPassword";
 import PasswordReset from "./pages/PasswordReset";
 import StockScreener from './pages/StockScreener';
 import ExpenseTracker from './pages/ExpenseTracker';
-import Portfolio  from './pages/Portfolio';
+import Portfolio from './pages/Portfolio';
 import GenAI from './pages/GenAI';
 import NotesV2 from './pages/NotesV2';
 import NoteItChat from './pages/NoteItChat';
+import McpLogin from './pages/McpLogin';
 function App() {
   return (
     <BrowserRouter>
-    
+
       <main>
 
         <Route path="/" component={Landing} exact />
@@ -29,12 +30,13 @@ function App() {
         <Route path="/profile" component={Profile} exact />
         <Route path="/confirm/:id" component={confirm} exact />
         <Route path="/archived" component={Archived} exact />
-        <Route path = "/forgotpassword" component={ForgotPassword} exact />
+        <Route path="/forgotpassword" component={ForgotPassword} exact />
         <Route path="/passwordreset/:id" component={PasswordReset} exact />
         <Route path="/stock/screener" component={StockScreener} exact />
         <Route path="/expensetracker" component={ExpenseTracker} exact />
         <Route path="/stock/portfolio" component={Portfolio} exact />
         <Route path="/genai" component={NoteItChat} exact />
+        <Route path="/mcp-login" component={McpLogin} exact />
       </main>
     </BrowserRouter>
   );

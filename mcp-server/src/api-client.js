@@ -4,7 +4,7 @@ dotenv.config();
 // In-memory token store — persists for the lifetime of the MCP server process
 let authToken = null;
 
-const BASE_URL = process.env.NOTEIT_API_URL || "http://localhost:5500";
+const BASE_URL = process.env.NOTEIT_API_URL || "https://noteit-prod.onrender.com";
 
 /**
  * Make an HTTP request to the Noteit backend.
@@ -64,6 +64,12 @@ export async function makeRequest(method, endpoint, body = null) {
 export function clearToken() {
   authToken = null;
 }
+
+/** Inject a token directly (used by the start_login / OAuth flow) */
+export function setToken(token) {
+  authToken = token;
+}
+
 
 /** Check whether a user is currently authenticated */
 export function isAuthenticated() {

@@ -1,30 +1,25 @@
-import { makeRequest, clearToken, isAuthenticated, ok, err } from "../api-client.js";
+import { makeRequest, clearToken, setToken, isAuthenticated, ok, err } from "../api-client.js";
 
 export const authTools = [
   {
-    name: "login",
+    name: "start_login",
     description:
-      "Login to Noteit with email and password. Must be called before using any other tool. Stores the session token automatically.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        email: { type: "string", description: "Your Noteit account email" },
-        password: { type: "string", description: "Your Noteit account password" },
-      },
-      required: ["email", "password"],
-    },
+      "Start the browser-based login flow for Noteit. Returns a URL to open in your browser — no password needed in chat. After calling this, tell the user to open the URL, then call check_login to confirm once they are done.",
+    inputSchema: { type: "object", properties: {} },
   },
   {
-    name: "register",
-    description: "Create a new Noteit account.",
+    name: "check_login",
+    description:
+      "Check if the user has completed the browser login after calling start_login. Call this after the user says they have logged in, or every ~5 seconds after showing them the login URL. Requires a code returned by start_login.",
     inputSchema: {
       type: "object",
       properties: {
-        name: { type: "string", description: "Full name" },
-        email: { type: "string", description: "Email address" },
-        password: { type: "string", description: "Password" },
+        code: {
+          type: "string",
+          description: "The auth code returned by start_login",
+        },
       },
-      required: ["name", "email", "password"],
+      required: ["code"],
     },
   },
   {
@@ -58,26 +53,55 @@ export const authTools = [
 export async function handleAuthTool(name, args) {
   try {
     switch (name) {
-      case "login": {
-        const data = await makeRequest("POST", "/api/users/login", {
-          email: args.email,
-          password: args.password,
-          platform: "web",
-        });
-        return ok(`Logged in successfully as ${data.name} (${data.email})`);
-      }
 
-      case "register": {
-        const data = await makeRequest("POST", "/api/users", {
-          name: args.name,
-          email: args.email,
-          password: args.password,
-          platform: "web",
-        });
+      // ── Step 1: Generate auth code + return login URL ────────────────────
+      case "start_login": {
+        const { code, loginUrl } = await makeRequest("GET", "/api/users/mcp/auth");
         return ok(
-          `Account created for ${data.name} (${data.email}). Check your email to verify your account.`
+          `🔐 **Open this URL in your browser to login:**\n\n${loginUrl}\n\n` +
+          `Log in with your NoteIt email and password on that page.\n` +
+          `Once you're done, come back and I'll confirm your login automatically.\n\n` +
+          `_(Auth code: \`${code}\` — expires in 5 minutes)_`
         );
       }
+
+      // ── Step 2: Poll once to see if token is ready ────────────────────────
+      case "check_login": {
+        const { code } = args;
+        if (!code) {
+          return err(new Error("Missing code. Please call start_login first to get an auth code."));
+        }
+
+        let res;
+        try {
+          res = await makeRequest("GET", `/api/users/mcp/token?code=${encodeURIComponent(code)}`);
+        } catch (e) {
+          const msg = e.message || "";
+          if (msg.includes("expired") || msg.includes("not found")) {
+            return err(new Error("The auth code has expired or is invalid. Please call start_login again."));
+          }
+          return err(e);
+        }
+
+        // Backend returns { status: "pending" } if user hasn't logged in yet
+        if (res && res.status === "pending") {
+          return ok("⏳ Not yet — please open the login URL in your browser and complete the login, then let me know.");
+        }
+
+        if (res && res.token) {
+          setToken(res.token);
+          // Fetch profile to confirm
+          try {
+            const profile = await makeRequest("GET", "/api/users/info");
+            return ok(`✅ Logged in successfully as **${profile.name}** (${profile.email})! You can now use all NoteIt tools.`);
+          } catch {
+            return ok("✅ Logged in successfully! You can now use all NoteIt tools.");
+          }
+        }
+
+        return ok("⏳ Still waiting — please complete the login in your browser and let me know when done.");
+      }
+
 
       case "logout": {
         await makeRequest("GET", "/api/users/logout");
@@ -87,7 +111,7 @@ export async function handleAuthTool(name, args) {
 
       case "get_profile": {
         if (!isAuthenticated()) {
-          return err(new Error("Not logged in. Call login first."));
+          return err(new Error("Not logged in. Call start_login first."));
         }
         const data = await makeRequest("GET", "/api/users/info");
         return ok(data);
@@ -104,7 +128,7 @@ export async function handleAuthTool(name, args) {
         return ok(
           isAuthenticated()
             ? "You are logged in."
-            : "You are not logged in. Call the login tool first."
+            : "You are not logged in. Call start_login to login via browser — no password needed in chat."
         );
       }
 
