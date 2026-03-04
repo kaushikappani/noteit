@@ -1,5 +1,5 @@
 /**
- * Expense Analysis Utility Functions
+ * Expense Analysis Functions (Backend)
  * All computations exclude the current (incomplete) month.
  */
 
@@ -22,15 +22,14 @@ const getCurrentMonthKey = () => {
 
 /**
  * Group expenses by month, excluding current month.
- * Returns sorted array (oldest first) of { key, label, expenses, investments, total, expenseTotal, investmentTotal }
  */
-export const computeMonthlyBreakdown = (expenses) => {
+const computeMonthlyBreakdown = (expenses) => {
     const currentMonth = getCurrentMonthKey();
     const grouped = {};
 
     expenses.forEach((exp) => {
         const key = getMonthKey(exp.date);
-        if (key === currentMonth) return; // exclude current month
+        if (key === currentMonth) return;
 
         if (!grouped[key]) {
             grouped[key] = {
@@ -69,7 +68,7 @@ export const computeMonthlyBreakdown = (expenses) => {
 /**
  * Overview Stats
  */
-export const computeOverviewStats = (monthlyData) => {
+const computeOverviewStats = (monthlyData) => {
     if (!monthlyData.length) return null;
 
     const totalSpent = monthlyData.reduce((s, m) => s + m.expenseTotal, 0);
@@ -101,7 +100,7 @@ export const computeOverviewStats = (monthlyData) => {
 /**
  * Category Analysis (excluding Investments)
  */
-export const computeCategoryAnalysis = (expenses) => {
+const computeCategoryAnalysis = (expenses) => {
     const currentMonth = getCurrentMonthKey();
     const categories = {};
     let total = 0;
@@ -129,7 +128,7 @@ export const computeCategoryAnalysis = (expenses) => {
 /**
  * Investment Analysis
  */
-export const computeInvestmentAnalysis = (monthlyData) => {
+const computeInvestmentAnalysis = (monthlyData) => {
     const totalInvested = monthlyData.reduce((s, m) => s + m.investmentTotal, 0);
     const avgMonthly = monthlyData.length > 0 ? totalInvested / monthlyData.length : 0;
 
@@ -138,7 +137,6 @@ export const computeInvestmentAnalysis = (monthlyData) => {
         amount: m.investmentTotal,
     }));
 
-    // Growth: compare last 3 months avg to previous 3 months avg
     let growthRate = null;
     if (monthlyData.length >= 6) {
         const recent3 = monthlyData.slice(-3).reduce((s, m) => s + m.investmentTotal, 0) / 3;
@@ -152,88 +150,141 @@ export const computeInvestmentAnalysis = (monthlyData) => {
 };
 
 /**
- * Financial Health Score (0-100)
+ * Financial Health Score (0-100) — FIXED scoring
+ * Scoring breakdown:
+ *   Investment rate:       0-30 pts (30% of total = full marks)
+ *   Spending consistency:  0-25 pts (lower CV = better)
+ *   Expense trend:         0-25 pts (decreasing = better)
+ *   Investment growth:     0-20 pts (increasing = better)
  */
-export const computeFinancialHealthScore = (monthlyData) => {
+const computeFinancialHealthScore = (monthlyData) => {
     if (monthlyData.length < 2) return { score: null, breakdown: {} };
 
-    // 1. Investment rate (max 35 pts) – higher investment ratio is better
     const totalSpent = monthlyData.reduce((s, m) => s + m.expenseTotal, 0);
     const totalInvestment = monthlyData.reduce((s, m) => s + m.investmentTotal, 0);
     const grandTotal = totalSpent + totalInvestment;
-    const investmentRate = grandTotal > 0 ? totalInvestment / grandTotal : 0;
-    const investmentScore = Math.min(investmentRate / 0.3, 1) * 35; // 30% investment = perfect
 
-    // 2. Spending consistency (max 25 pts) – lower variance is better
+    // 1. Investment rate (max 30 pts)
+    // Target: 30% investment rate = full score
+    const investmentRate = grandTotal > 0 ? totalInvestment / grandTotal : 0;
+    const investmentScore = Math.min(investmentRate / 0.3, 1) * 30;
+
+    // 2. Spending consistency (max 25 pts)
+    // Uses coefficient of variation; CV=0 is perfect, CV>=1 is 0 pts
     const avgSpend = totalSpent / monthlyData.length;
     const variance = monthlyData.reduce((s, m) => s + Math.pow(m.expenseTotal - avgSpend, 2), 0) / monthlyData.length;
     const stdDev = Math.sqrt(variance);
-    const cv = avgSpend > 0 ? stdDev / avgSpend : 0;
-    const consistencyScore = Math.max(0, (1 - cv) * 25);
+    const cv = avgSpend > 0 ? stdDev / avgSpend : 1;
+    const consistencyScore = Math.max(0, (1 - cv)) * 25;
 
-    // 3. Expense trend (max 20 pts) – decreasing expenses is better
-    const recentHalf = monthlyData.slice(Math.floor(monthlyData.length / 2));
-    const olderHalf = monthlyData.slice(0, Math.floor(monthlyData.length / 2));
-    const recentAvg = recentHalf.reduce((s, m) => s + m.expenseTotal, 0) / (recentHalf.length || 1);
+    // 3. Expense trend (max 25 pts)
+    // Compare recent half avg vs older half avg
+    // If expenses decreased by 20%+ => 25 pts, increased by 20%+ => 0 pts
+    const halfIdx = Math.floor(monthlyData.length / 2);
+    const olderHalf = monthlyData.slice(0, halfIdx);
+    const recentHalf = monthlyData.slice(halfIdx);
     const olderAvg = olderHalf.reduce((s, m) => s + m.expenseTotal, 0) / (olderHalf.length || 1);
-    let trendScore = 10; // neutral
+    const recentAvg = recentHalf.reduce((s, m) => s + m.expenseTotal, 0) / (recentHalf.length || 1);
+    let trendScore = 12.5; // neutral default
     if (olderAvg > 0) {
         const changePct = ((recentAvg - olderAvg) / olderAvg) * 100;
-        trendScore = Math.max(0, Math.min(20, 10 - changePct / 5));
+        // -20% change => 25pts, 0% => 12.5pts, +20% => 0pts
+        trendScore = Math.max(0, Math.min(25, 12.5 - (changePct / 20) * 12.5));
     }
 
     // 4. Investment growth (max 20 pts)
-    let investGrowthScore = 10;
+    // Compare recent half investment vs older half investment
+    let investGrowthScore = 0;
     if (monthlyData.length >= 4) {
-        const recentInv = monthlyData.slice(-Math.floor(monthlyData.length / 2)).reduce((s, m) => s + m.investmentTotal, 0);
-        const olderInv = monthlyData.slice(0, Math.floor(monthlyData.length / 2)).reduce((s, m) => s + m.investmentTotal, 0);
+        const olderInv = olderHalf.reduce((s, m) => s + m.investmentTotal, 0) / (olderHalf.length || 1);
+        const recentInv = recentHalf.reduce((s, m) => s + m.investmentTotal, 0) / (recentHalf.length || 1);
         if (olderInv > 0) {
             const growthPct = ((recentInv - olderInv) / olderInv) * 100;
-            investGrowthScore = Math.max(0, Math.min(20, 10 + growthPct / 5));
+            // +20% growth => 20pts, 0% => 10pts, -20% => 0pts
+            investGrowthScore = Math.max(0, Math.min(20, 10 + (growthPct / 20) * 10));
+        } else if (recentInv > 0) {
+            investGrowthScore = 20; // started investing from nothing
         }
     }
 
-    const score = Math.round(investmentScore + consistencyScore + trendScore + investGrowthScore);
+    const rawScore = Math.round(investmentScore + consistencyScore + trendScore + investGrowthScore);
+    const score = Math.min(100, Math.max(0, rawScore));
+
+    let grade;
+    if (score >= 85) grade = 'A';
+    else if (score >= 70) grade = 'B';
+    else if (score >= 50) grade = 'C';
+    else if (score >= 30) grade = 'D';
+    else grade = 'F';
 
     return {
-        score: Math.min(100, score),
+        score,
         breakdown: {
             investmentScore: Math.round(investmentScore),
             consistencyScore: Math.round(consistencyScore),
             trendScore: Math.round(trendScore),
             investGrowthScore: Math.round(investGrowthScore),
         },
-        grade: score >= 80 ? 'A' : score >= 60 ? 'B' : score >= 40 ? 'C' : score >= 20 ? 'D' : 'F',
+        maxBreakdown: {
+            investmentScore: 30,
+            consistencyScore: 25,
+            trendScore: 25,
+            investGrowthScore: 20,
+        },
+        grade,
     };
 };
 
 /**
- * Inflation Tracking – Month-over-Month and Year-over-Year
- * Returns { monthly: [...], yearly: [...] } for both expenses and investments
+ * Inflation Tracking – MoM and YoY (pro-rata annualized)
  */
-export const computeInflation = (monthlyData) => {
+const computeInflation = (monthlyData) => {
     const monthly = [];
+    let totalExpInflation = 0;
+    let expInflationCount = 0;
+    let totalInvInflation = 0;
+    let invInflationCount = 0;
+
     for (let i = 1; i < monthlyData.length; i++) {
         const prev = monthlyData[i - 1];
         const curr = monthlyData[i];
+
+        let expChange = null;
+        if (prev.expenseTotal > 0) {
+            expChange = ((curr.expenseTotal - prev.expenseTotal) / prev.expenseTotal) * 100;
+            totalExpInflation += expChange;
+            expInflationCount++;
+        }
+
+        let invChange = null;
+        if (prev.investmentTotal > 0) {
+            invChange = ((curr.investmentTotal - prev.investmentTotal) / prev.investmentTotal) * 100;
+            totalInvInflation += invChange;
+            invInflationCount++;
+        }
+
         monthly.push({
             label: curr.label,
-            expenseChange: prev.expenseTotal > 0
-                ? (((curr.expenseTotal - prev.expenseTotal) / prev.expenseTotal) * 100).toFixed(1)
-                : null,
-            investmentChange: prev.investmentTotal > 0
-                ? (((curr.investmentTotal - prev.investmentTotal) / prev.investmentTotal) * 100).toFixed(1)
-                : null,
+            expenseChange: expChange !== null ? expChange.toFixed(1) : null,
+            investmentChange: invChange !== null ? invChange.toFixed(1) : null,
         });
     }
 
-    // Year-over-Year: group by year
+    const avgMonthlyExpenseInflation = expInflationCount > 0
+        ? (totalExpInflation / expInflationCount).toFixed(2)
+        : null;
+    const avgMonthlyInvestmentInflation = invInflationCount > 0
+        ? (totalInvInflation / invInflationCount).toFixed(2)
+        : null;
+
+    // Year-over-Year (pro-rata annualized)
     const yearMap = {};
     monthlyData.forEach((m) => {
         const year = m.key.split('-')[0];
-        if (!yearMap[year]) yearMap[year] = { expenseTotal: 0, investmentTotal: 0 };
+        if (!yearMap[year]) yearMap[year] = { expenseTotal: 0, investmentTotal: 0, monthCount: 0 };
         yearMap[year].expenseTotal += m.expenseTotal;
         yearMap[year].investmentTotal += m.investmentTotal;
+        yearMap[year].monthCount += 1;
     });
 
     const years = Object.keys(yearMap).sort();
@@ -241,32 +292,39 @@ export const computeInflation = (monthlyData) => {
     for (let i = 1; i < years.length; i++) {
         const prev = yearMap[years[i - 1]];
         const curr = yearMap[years[i]];
+
+        const prevAnnualExp = (prev.expenseTotal / prev.monthCount) * 12;
+        const currAnnualExp = (curr.expenseTotal / curr.monthCount) * 12;
+        const prevAnnualInv = (prev.investmentTotal / prev.monthCount) * 12;
+        const currAnnualInv = (curr.investmentTotal / curr.monthCount) * 12;
+
         yearly.push({
-            label: years[i],
-            expenseChange: prev.expenseTotal > 0
-                ? (((curr.expenseTotal - prev.expenseTotal) / prev.expenseTotal) * 100).toFixed(1)
+            label: `${years[i]}${curr.monthCount < 12 ? ` (${curr.monthCount}mo, annualized)` : ''}`,
+            expenseChange: prevAnnualExp > 0
+                ? (((currAnnualExp - prevAnnualExp) / prevAnnualExp) * 100).toFixed(1)
                 : null,
-            investmentChange: prev.investmentTotal > 0
-                ? (((curr.investmentTotal - prev.investmentTotal) / prev.investmentTotal) * 100).toFixed(1)
+            investmentChange: prevAnnualInv > 0
+                ? (((currAnnualInv - prevAnnualInv) / prevAnnualInv) * 100).toFixed(1)
                 : null,
+            monthCount: curr.monthCount,
+            annualizedExpense: Math.round(currAnnualExp),
+            annualizedInvestment: Math.round(currAnnualInv),
         });
     }
 
-    return { monthly, yearly };
+    return { monthly, yearly, avgMonthlyExpenseInflation, avgMonthlyInvestmentInflation };
 };
 
 /**
- * Forecasting using simple moving average
- * Returns forecast for requested number of months (3 and 6)
+ * Forecasting using simple moving average (3 and 6 months)
  */
-export const computeForecast = (monthlyData, lookback = 3) => {
+const computeForecast = (monthlyData, lookback = 3) => {
     if (monthlyData.length < lookback) return null;
 
     const recent = monthlyData.slice(-lookback);
     const avgExpense = recent.reduce((s, m) => s + m.expenseTotal, 0) / lookback;
     const avgInvestment = recent.reduce((s, m) => s + m.investmentTotal, 0) / lookback;
 
-    // Generate forecast months
     const lastKey = monthlyData[monthlyData.length - 1].key;
     const [lastYear, lastMonth] = lastKey.split('-').map(Number);
 
@@ -297,9 +355,8 @@ export const computeForecast = (monthlyData, lookback = 3) => {
 
 /**
  * Savings Analysis
- * Since no income data, savings is estimated from investment ratio
  */
-export const computeSavings = (monthlyData) => {
+const computeSavings = (monthlyData) => {
     if (!monthlyData.length) return null;
 
     const monthlySavings = monthlyData.map((m) => ({
@@ -319,15 +376,13 @@ export const computeSavings = (monthlyData) => {
 };
 
 /**
- * Emergency Fund Calculation
- * 6 months of average monthly expenses, adjusted for inflation
+ * Emergency Fund Calculation (6 months, inflation-adjusted)
  */
-export const computeEmergencyFund = (monthlyData) => {
+const computeEmergencyFund = (monthlyData) => {
     if (monthlyData.length < 2) return null;
 
     const avgMonthlyExpense = monthlyData.reduce((s, m) => s + m.expenseTotal, 0) / monthlyData.length;
 
-    // Calculate avg monthly inflation rate from expenses
     let totalInflation = 0;
     let inflationCount = 0;
     for (let i = 1; i < monthlyData.length; i++) {
@@ -339,7 +394,6 @@ export const computeEmergencyFund = (monthlyData) => {
     }
     const avgMonthlyInflation = inflationCount > 0 ? totalInflation / inflationCount : 0;
 
-    // Project 6 months with compounding inflation
     let emergencyFund = 0;
     for (let i = 1; i <= 6; i++) {
         emergencyFund += avgMonthlyExpense * Math.pow(1 + avgMonthlyInflation, i);
@@ -357,12 +411,23 @@ export const computeEmergencyFund = (monthlyData) => {
 };
 
 /**
- * All-in-one analysis
+ * Compute full analysis from raw expenses array
  */
-export const computeFullAnalysis = (expenses) => {
+const computeFullAnalysis = (expenses) => {
     const monthlyData = computeMonthlyBreakdown(expenses);
+
+    // Strip raw expense objects from monthlyData to keep response lean
+    const monthlyDataClean = monthlyData.map(m => ({
+        key: m.key,
+        label: m.label,
+        total: m.total,
+        expenseTotal: m.expenseTotal,
+        investmentTotal: m.investmentTotal,
+        byCategory: m.byCategory,
+    }));
+
     return {
-        monthlyData,
+        monthlyData: monthlyDataClean,
         overview: computeOverviewStats(monthlyData),
         categories: computeCategoryAnalysis(expenses),
         investments: computeInvestmentAnalysis(monthlyData),
@@ -373,3 +438,5 @@ export const computeFullAnalysis = (expenses) => {
         emergencyFund: computeEmergencyFund(monthlyData),
     };
 };
+
+module.exports = { computeFullAnalysis };

@@ -5,11 +5,11 @@ const router = express.Router();
 
 
 router.route("/add").post(protect, async (req, res) => {
-    
+
     const { cost, category, description, date } = req.body;
-    
+
     const expense = new Expenses({ user: req.user._id, cost, category, description, date });
-    
+
     const saved = await expense.save();
 
     saved.user = null;
@@ -19,8 +19,8 @@ router.route("/add").post(protect, async (req, res) => {
 })
 
 router.route("/").get(protect, async (req, res) => {
-    const exp = await Expenses.find({ user: req.user._id ,isActive : true}).sort({ date: -1,createdAt:-1 }).select("-createdAt").select("-updatedAt").select("-user");
-    
+    const exp = await Expenses.find({ user: req.user._id, isActive: true }).sort({ date: -1, createdAt: -1 }).select("-createdAt").select("-updatedAt").select("-user");
+
     return res.status(200).json(exp);
 })
 
@@ -34,10 +34,25 @@ router.route("/remove/:id").delete(protect, async (req, res) => {
         exp.isActive = false;
         await exp.save();
     } else {
-        throw new Error({message:"No expense Found"})
+        throw new Error({ message: "No expense Found" })
     }
-   
-    res.status(200).json({message:"Deleted!"})
+
+    res.status(200).json({ message: "Deleted!" })
+})
+
+router.route("/analysis").get(protect, async (req, res) => {
+    try {
+        const { computeFullAnalysis } = require("../functions/expenseAnalysis");
+        const expenses = await Expenses.find({ user: req.user._id, isActive: true })
+            .sort({ date: -1, createdAt: -1 })
+            .select("-createdAt -updatedAt -user")
+            .lean();
+
+        const analysis = computeFullAnalysis(expenses);
+        return res.status(200).json(analysis);
+    } catch (e) {
+        res.status(500).json({ message: e.message || "Analysis failed" });
+    }
 })
 
 

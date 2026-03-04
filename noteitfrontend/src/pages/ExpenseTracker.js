@@ -360,7 +360,6 @@ const ExpenseTracker = () => {
             </Container>
 
             <ExpenseAnalysis
-                expenses={expenses}
                 open={showAnalysis}
                 onClose={() => setShowAnalysis(false)}
             />

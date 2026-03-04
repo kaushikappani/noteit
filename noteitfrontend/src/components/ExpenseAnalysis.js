@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Line, Doughnut, Bar } from 'react-chartjs-2';
-import { computeFullAnalysis } from '../utils/expenseAnalysisUtils';
+import axios from 'axios';
 import './css/ExpenseAnalysis.css';
 
 const TABS = [
@@ -28,15 +28,60 @@ const formatCurrency = (n) => {
     return '₹' + Number(n).toLocaleString('en-IN');
 };
 
-const ExpenseAnalysis = ({ expenses, open, onClose }) => {
+const ExpenseAnalysis = ({ open, onClose }) => {
     const [activeTab, setActiveTab] = useState('overview');
+    const [analysis, setAnalysis] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-    const analysis = useMemo(() => {
-        if (!expenses || !expenses.length) return null;
-        return computeFullAnalysis(expenses);
-    }, [expenses]);
+    useEffect(() => {
+        if (!open) return;
+        const fetchAnalysis = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const config = { withCredentials: true };
+                const { data } = await axios.get('/api/expenses/analysis', config);
+                setAnalysis(data);
+            } catch (e) {
+                setError(e.response ? e.response.data.message : e.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchAnalysis();
+    }, [open]);
 
     if (!open) return null;
+
+    if (loading) {
+        return (
+            <div className="analysis-overlay" onClick={onClose}>
+                <div className="analysis-container" onClick={(e) => e.stopPropagation()}>
+                    <div className="analysis-header">
+                        <h2>📊 Financial Analysis</h2>
+                        <button className="analysis-close-btn" onClick={onClose}>✕</button>
+                    </div>
+                    <div className="no-data-msg">⏳ Crunching your numbers...</div>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="analysis-overlay" onClick={onClose}>
+                <div className="analysis-container" onClick={(e) => e.stopPropagation()}>
+                    <div className="analysis-header">
+                        <h2>📊 Financial Analysis</h2>
+                        <button className="analysis-close-btn" onClick={onClose}>✕</button>
+                    </div>
+                    <div className="no-data-msg">❌ {error}</div>
+                </div>
+            </div>
+        );
+    }
+
     if (!analysis || !analysis.overview) {
         return (
             <div className="analysis-overlay" onClick={onClose}>
@@ -282,12 +327,12 @@ const ExpenseAnalysis = ({ expenses, open, onClose }) => {
 
     const renderHealth = () => {
         if (healthScore.score === null) return <div className="no-data-msg">Need at least 2 completed months for health score.</div>;
-        const { score, breakdown, grade } = healthScore;
+        const { score, breakdown, maxBreakdown, grade } = healthScore;
         const bars = [
-            { label: 'Investment Rate', value: breakdown.investmentScore, max: 35, color: '#43e97b' },
-            { label: 'Spending Consistency', value: breakdown.consistencyScore, max: 25, color: '#4facfe' },
-            { label: 'Expense Trend', value: breakdown.trendScore, max: 20, color: '#fee140' },
-            { label: 'Investment Growth', value: breakdown.investGrowthScore, max: 20, color: '#fa709a' },
+            { label: 'Investment Rate', value: breakdown.investmentScore, max: (maxBreakdown && maxBreakdown.investmentScore) || 30, color: '#43e97b' },
+            { label: 'Spending Consistency', value: breakdown.consistencyScore, max: (maxBreakdown && maxBreakdown.consistencyScore) || 25, color: '#4facfe' },
+            { label: 'Expense Trend', value: breakdown.trendScore, max: (maxBreakdown && maxBreakdown.trendScore) || 25, color: '#fee140' },
+            { label: 'Investment Growth', value: breakdown.investGrowthScore, max: (maxBreakdown && maxBreakdown.investGrowthScore) || 20, color: '#fa709a' },
         ];
 
         return (
@@ -320,6 +365,27 @@ const ExpenseAnalysis = ({ expenses, open, onClose }) => {
 
     const renderInflation = () => (
         <div>
+            <div className="stats-grid" style={{ marginBottom: 24 }}>
+                <div className="stat-card stat-card-orange">
+                    <div className="stat-label">Avg Monthly Expense Inflation</div>
+                    <div className="stat-value" style={{ color: inflation.avgMonthlyExpenseInflation > 0 ? '#f5576c' : '#43e97b' }}>
+                        {inflation.avgMonthlyExpenseInflation !== null
+                            ? `${inflation.avgMonthlyExpenseInflation > 0 ? '+' : ''}${inflation.avgMonthlyExpenseInflation}%`
+                            : '—'}
+                    </div>
+                    <div className="stat-sub">Month-over-month average</div>
+                </div>
+                <div className="stat-card stat-card-teal">
+                    <div className="stat-label">Avg Monthly Investment Inflation</div>
+                    <div className="stat-value" style={{ color: inflation.avgMonthlyInvestmentInflation > 0 ? '#43e97b' : '#f5576c' }}>
+                        {inflation.avgMonthlyInvestmentInflation !== null
+                            ? `${inflation.avgMonthlyInvestmentInflation > 0 ? '+' : ''}${inflation.avgMonthlyInvestmentInflation}%`
+                            : '—'}
+                    </div>
+                    <div className="stat-sub">Month-over-month average</div>
+                </div>
+            </div>
+
             <div className="chart-section">
                 <h3>📉 Monthly Inflation (MoM % Change)</h3>
                 {inflation.monthly.length > 0 ? (
@@ -349,7 +415,7 @@ const ExpenseAnalysis = ({ expenses, open, onClose }) => {
             </div>
 
             <div className="chart-section">
-                <h3>📉 Yearly Inflation (YoY % Change)</h3>
+                <h3>📉 Yearly Inflation (YoY % Change — Pro-Rata Annualized)</h3>
                 {inflation.yearly.length > 0 ? (
                     <table className="inflation-table">
                         <thead>
