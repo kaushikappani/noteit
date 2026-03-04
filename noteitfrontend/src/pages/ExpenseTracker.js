@@ -8,6 +8,7 @@ import './Expense.css'; // Import the CSS file
 import { PlusCircle, Trash } from 'react-bootstrap-icons';
 import AddExpense from '../components/AddExpense';
 import Notification from '../components/Notification';
+import ExpenseAnalysis from '../components/ExpenseAnalysis';
 
 const ExpenseTracker = () => {
     const [loading, setLoading] = useState(false);
@@ -20,6 +21,7 @@ const ExpenseTracker = () => {
     const [expenses, setExpenses] = useState([]);
     const [filters, setFilters] = useState({});
     const [collapsedMonths, setCollapsedMonths] = useState({});
+    const [showAnalysis, setShowAnalysis] = useState(false);
 
     const buttonStyle = {
         borderRadius: "100%",
@@ -145,7 +147,7 @@ const ExpenseTracker = () => {
     const groupedExpenses = groupExpensesByMonth(expenses);
 
     const groupedYearExpences = groupExpensesByYear(expenses);
-    
+
     const categoryColors = {
         "Investments": "#4CAF50", // Green
         "Food": "#2196F3", // Blue
@@ -207,7 +209,7 @@ const ExpenseTracker = () => {
         };
     };
 
-    
+
 
     const getRowClass = (category) => {
         const color = categoryColors[category] || '#CCCCCC';
@@ -250,18 +252,18 @@ const ExpenseTracker = () => {
                     <div key={month} className="expense-month">
                         <h3>
                             {month}
-                            
+
                         </h3>
                         <p>
                             <strong>Total Expenses: ₹</strong> {groupedExpenses[month].total} , <strong>Spends: ₹</strong> {groupedExpenses[month].total - groupedExpenses[month].byCategory.Investments}
                         </p>
 
-                        
-                            <div className="expense-content">
-                                <div className="pie-chart-container">
-                                    <Pie data={generatePieChartData(groupedExpenses[month].byCategory)} options={{ responsive: true }} />
-                                </div>
-                                <div className="table-container">
+
+                        <div className="expense-content">
+                            <div className="pie-chart-container">
+                                <Pie data={generatePieChartData(groupedExpenses[month].byCategory)} options={{ responsive: true }} />
+                            </div>
+                            <div className="table-container">
                                 <h3>All Expenses</h3>
                                 <Button
                                     variant="link"
@@ -271,34 +273,34 @@ const ExpenseTracker = () => {
                                     className="ml-2"
                                 >
                                     {collapsedMonths[month] ? "Expand" : "Collapse"}
-                                </Button> 
-                                
-                                    <Table striped bordered hover responsive>
-                                        <thead>
-                                            <tr>
-                                                <th>Description</th>
-                                                <th>
-                                                    <Form.Group controlId={`categoryFilter-${month}`} className="dark-theme">
-                                                        <Form.Control
-                                                            as="select"
-                                                            value={filters[month] || ""}
-                                                            onChange={(e) => handleFilterChange(month, e.target.value)}
-                                                        >
-                                                            <option value="">All Categories</option>
-                                                            {Object.keys(categoryColors).map(category => (
-                                                                <option key={category} value={category}>{category}</option>
-                                                            ))}
-                                                        </Form.Control>
-                                                    </Form.Group>
-                                                </th>
-                                                <th>Cost</th>
-                                                <th>Date</th>
-                                                <th>Actions</th>
-                                            </tr>
+                                </Button>
+
+                                <Table striped bordered hover responsive>
+                                    <thead>
+                                        <tr>
+                                            <th>Description</th>
+                                            <th>
+                                                <Form.Group controlId={`categoryFilter-${month}`} className="dark-theme">
+                                                    <Form.Control
+                                                        as="select"
+                                                        value={filters[month] || ""}
+                                                        onChange={(e) => handleFilterChange(month, e.target.value)}
+                                                    >
+                                                        <option value="">All Categories</option>
+                                                        {Object.keys(categoryColors).map(category => (
+                                                            <option key={category} value={category}>{category}</option>
+                                                        ))}
+                                                    </Form.Control>
+                                                </Form.Group>
+                                            </th>
+                                            <th>Cost</th>
+                                            <th>Date</th>
+                                            <th>Actions</th>
+                                        </tr>
                                     </thead>
                                     {!collapsedMonths[month] && (
-                                    <tbody>
-                                        
+                                        <tbody>
+
                                             {filterExpenses(month, groupedExpenses[month].expenses).filteredExpenses.reverse().map(expense => (
                                                 <tr key={expense._id} style={getRowClass(expense.category)}>
                                                     <td>{expense.description}</td>
@@ -314,19 +316,19 @@ const ExpenseTracker = () => {
                                             ))}
                                         </tbody>
                                     )}
-                                        <tfoot>
-                                            <tr>
-                                                <td colSpan="2"><strong>Total</strong></td>
-                                                <td><strong>₹ {filterExpenses(month, groupedExpenses[month].expenses).total}</strong></td>
-                                                <td></td>
-                                                <td></td>
-                                            </tr>
-                                        </tfoot>
-                                    </Table>
-                                
-                                </div>
+                                    <tfoot>
+                                        <tr>
+                                            <td colSpan="2"><strong>Total</strong></td>
+                                            <td><strong>₹ {filterExpenses(month, groupedExpenses[month].expenses).total}</strong></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </Table>
+
                             </div>
-                        
+                        </div>
+
                     </div>
                 ))}
 
@@ -340,7 +342,15 @@ const ExpenseTracker = () => {
                     <Bar data={generateBarChartDataYearly(groupedYearExpences)} options={{ responsive: true }} />
                 </div>
 
-                
+
+
+                <button
+                    className="analysis-trigger-btn"
+                    onClick={() => setShowAnalysis(true)}
+                    title="Financial Analysis"
+                >
+                    📊
+                </button>
 
                 <button style={buttonStyle} className="btn btn-success">
                     <AddExpense fetchExpenses={fetchExpenses}>
@@ -348,6 +358,12 @@ const ExpenseTracker = () => {
                     </AddExpense>
                 </button>
             </Container>
+
+            <ExpenseAnalysis
+                expenses={expenses}
+                open={showAnalysis}
+                onClose={() => setShowAnalysis(false)}
+            />
         </div>
     );
 };

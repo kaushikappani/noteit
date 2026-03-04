@@ -1,0 +1,549 @@
+/* Expense Analysis Modal Styles */
+
+.analysis-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  z-index: 2000;
+  overflow-y: auto;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.analysis-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  animation: slideUp 0.4s ease 0.1s both;
+}
+
+.analysis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.analysis-header h2 {
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.analysis-close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.analysis-close-btn:hover {
+  background: rgba(255, 77, 77, 0.3);
+  border-color: rgba(255, 77, 77, 0.5);
+  transform: rotate(90deg);
+}
+
+/* Tab Navigation */
+.analysis-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.2) transparent;
+}
+
+.analysis-tab {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+}
+
+.analysis-tab:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.analysis-tab.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.35);
+}
+
+/* Stat Cards Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 12px 12px 0 0;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.stat-card-purple::before { background: linear-gradient(90deg, #667eea, #764ba2); }
+.stat-card-green::before { background: linear-gradient(90deg, #43e97b, #38f9d7); }
+.stat-card-orange::before { background: linear-gradient(90deg, #fa709a, #fee140); }
+.stat-card-blue::before { background: linear-gradient(90deg, #4facfe, #00f2fe); }
+.stat-card-red::before { background: linear-gradient(90deg, #f5576c, #ff6b6b); }
+.stat-card-teal::before { background: linear-gradient(90deg, #0abde3, #48dbfb); }
+
+.stat-label {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.stat-sub {
+  color: rgba(255,255,255,0.4);
+  font-size: 0.75rem;
+  margin-top: 4px;
+}
+
+/* Chart Containers */
+.chart-section {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.chart-section h3 {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chart-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+  max-height: 350px;
+}
+
+/* Health Score */
+.health-score-container {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.health-gauge {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.health-gauge-inner {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.health-score-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #fff;
+}
+
+.health-grade {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-top: -4px;
+}
+
+.grade-A { color: #43e97b; }
+.grade-B { color: #4facfe; }
+.grade-C { color: #fee140; }
+.grade-D { color: #fa709a; }
+.grade-F { color: #f5576c; }
+
+.health-breakdown {
+  flex: 1;
+  min-width: 220px;
+}
+
+.health-bar-item {
+  margin-bottom: 12px;
+}
+
+.health-bar-label {
+  display: flex;
+  justify-content: space-between;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+  margin-bottom: 4px;
+}
+
+.health-bar-track {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.health-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.8s ease;
+}
+
+/* Inflation Table */
+.inflation-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: #fff;
+}
+
+.inflation-table thead th {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.inflation-table tbody td {
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.positive-change { color: #f5576c; }
+.negative-change { color: #43e97b; }
+
+/* Forecast Cards */
+.forecast-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.forecast-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.forecast-card h4 {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.forecast-month {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.9rem;
+}
+
+.forecast-month span:first-child {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.forecast-month span:last-child {
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Emergency Fund */
+.emergency-fund-card {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.ef-item {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+}
+
+.ef-item .ef-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.ef-item .ef-label {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ef-highlight {
+  border-color: rgba(102, 126, 234, 0.3) !important;
+  background: rgba(102, 126, 234, 0.08) !important;
+}
+
+/* Category Table */
+.category-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: #fff;
+}
+
+.category-table thead th {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.category-table tbody td {
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.category-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.category-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+/* Analysis Button */
+.analysis-trigger-btn {
+  border-radius: 100%;
+  height: 60px;
+  width: 60px;
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  z-index: 1000;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: #fff;
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.analysis-trigger-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 30px rgba(102, 126, 234, 0.6);
+}
+
+/* No data state */
+.no-data-msg {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.4);
+  padding: 40px 20px;
+  font-size: 0.95rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .analysis-container {
+    padding: 12px;
+  }
+
+  .analysis-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 14px;
+  }
+
+  .stat-value {
+    font-size: 1.2rem;
+  }
+
+  .chart-row {
+    grid-template-columns: 1fr;
+  }
+
+  .health-score-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .forecast-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .emergency-fund-card {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .analysis-tabs {
+    gap: 3px;
+  }
+
+  .analysis-tab {
+    padding: 8px 12px;
+    font-size: 0.78rem;
+  }
+
+  .chart-section {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .emergency-fund-card {
+    grid-template-columns: 1fr;
+  }
+
+  .health-gauge {
+    width: 150px;
+    height: 150px;
+  }
+
+  .health-gauge-inner {
+    width: 115px;
+    height: 115px;
+  }
+
+  .health-score-value {
+    font-size: 2rem;
+  }
+}
+
+/* Custom scrollbar for the overlay */
+.analysis-overlay::-webkit-scrollbar {
+  width: 6px;
+}
+
+.analysis-overlay::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.analysis-overlay::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+.analysis-overlay::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
