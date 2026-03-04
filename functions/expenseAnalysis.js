@@ -165,9 +165,12 @@ const computeFinancialHealthScore = (monthlyData) => {
     const grandTotal = totalSpent + totalInvestment;
 
     // 1. Investment rate (max 30 pts)
-    // Target: 30% investment rate = full score
-    const investmentRate = grandTotal > 0 ? totalInvestment / grandTotal : 0;
-    const investmentScore = Math.min(investmentRate / 0.3, 1) * 30;
+    // Target: 30% investment rate = full score. 0 investments = 0 pts.
+    let investmentScore = 0;
+    if (totalInvestment > 0 && grandTotal > 0) {
+        const investmentRate = totalInvestment / grandTotal;
+        investmentScore = Math.min(investmentRate / 0.3, 1) * 30;
+    }
 
     // 2. Spending consistency (max 25 pts)
     // Uses coefficient of variation; CV=0 is perfect, CV>=1 is 0 pts
@@ -236,14 +239,12 @@ const computeFinancialHealthScore = (monthlyData) => {
 };
 
 /**
- * Inflation Tracking – MoM and YoY (pro-rata annualized)
+ * Inflation Tracking – MoM, YoY (pro-rata), 6mo/12mo trends, avg/median/max
  */
 const computeInflation = (monthlyData) => {
     const monthly = [];
-    let totalExpInflation = 0;
-    let expInflationCount = 0;
-    let totalInvInflation = 0;
-    let invInflationCount = 0;
+    const expChanges = [];
+    const invChanges = [];
 
     for (let i = 1; i < monthlyData.length; i++) {
         const prev = monthlyData[i - 1];
@@ -252,30 +253,66 @@ const computeInflation = (monthlyData) => {
         let expChange = null;
         if (prev.expenseTotal > 0) {
             expChange = ((curr.expenseTotal - prev.expenseTotal) / prev.expenseTotal) * 100;
-            totalExpInflation += expChange;
-            expInflationCount++;
+            expChanges.push(expChange);
         }
 
         let invChange = null;
         if (prev.investmentTotal > 0) {
             invChange = ((curr.investmentTotal - prev.investmentTotal) / prev.investmentTotal) * 100;
-            totalInvInflation += invChange;
-            invInflationCount++;
+            invChanges.push(invChange);
         }
 
         monthly.push({
             label: curr.label,
-            expenseChange: expChange !== null ? expChange.toFixed(1) : null,
-            investmentChange: invChange !== null ? invChange.toFixed(1) : null,
+            expenseChange: expChange !== null ? parseFloat(expChange.toFixed(1)) : null,
+            investmentChange: invChange !== null ? parseFloat(invChange.toFixed(1)) : null,
         });
     }
 
-    const avgMonthlyExpenseInflation = expInflationCount > 0
-        ? (totalExpInflation / expInflationCount).toFixed(2)
-        : null;
-    const avgMonthlyInvestmentInflation = invInflationCount > 0
-        ? (totalInvInflation / invInflationCount).toFixed(2)
-        : null;
+    // Helper for stats
+    const calcStats = (arr) => {
+        if (!arr.length) return null;
+        const sorted = [...arr].sort((a, b) => a - b);
+        const avg = arr.reduce((s, v) => s + v, 0) / arr.length;
+        const median = sorted.length % 2 === 0
+            ? (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2
+            : sorted[Math.floor(sorted.length / 2)];
+        const max = sorted[sorted.length - 1];
+        const min = sorted[0];
+        return {
+            avg: parseFloat(avg.toFixed(2)),
+            median: parseFloat(median.toFixed(2)),
+            max: parseFloat(max.toFixed(1)),
+            min: parseFloat(min.toFixed(1)),
+            count: arr.length,
+        };
+    };
+
+    // Overall stats
+    const expenseStats = calcStats(expChanges);
+    const investmentStats = calcStats(invChanges);
+
+    // Last 6 months trend
+    const last6ExpChanges = expChanges.slice(-Math.min(6, expChanges.length));
+    const last6InvChanges = invChanges.slice(-Math.min(6, invChanges.length));
+    const last6Expense = calcStats(last6ExpChanges);
+    const last6Investment = calcStats(last6InvChanges);
+
+    // Last 12 months trend
+    const last12ExpChanges = expChanges.slice(-Math.min(12, expChanges.length));
+    const last12InvChanges = invChanges.slice(-Math.min(12, invChanges.length));
+    const last12Expense = calcStats(last12ExpChanges);
+    const last12Investment = calcStats(last12InvChanges);
+
+    // Trend direction (is inflation accelerating or decelerating?)
+    let expenseTrendDirection = null;
+    if (last6ExpChanges.length >= 3) {
+        const firstHalf = last6ExpChanges.slice(0, Math.floor(last6ExpChanges.length / 2));
+        const secondHalf = last6ExpChanges.slice(Math.floor(last6ExpChanges.length / 2));
+        const firstAvg = firstHalf.reduce((s, v) => s + v, 0) / firstHalf.length;
+        const secondAvg = secondHalf.reduce((s, v) => s + v, 0) / secondHalf.length;
+        expenseTrendDirection = secondAvg > firstAvg ? 'accelerating' : 'decelerating';
+    }
 
     // Year-over-Year (pro-rata annualized)
     const yearMap = {};
@@ -301,10 +338,10 @@ const computeInflation = (monthlyData) => {
         yearly.push({
             label: `${years[i]}${curr.monthCount < 12 ? ` (${curr.monthCount}mo, annualized)` : ''}`,
             expenseChange: prevAnnualExp > 0
-                ? (((currAnnualExp - prevAnnualExp) / prevAnnualExp) * 100).toFixed(1)
+                ? parseFloat((((currAnnualExp - prevAnnualExp) / prevAnnualExp) * 100).toFixed(1))
                 : null,
             investmentChange: prevAnnualInv > 0
-                ? (((currAnnualInv - prevAnnualInv) / prevAnnualInv) * 100).toFixed(1)
+                ? parseFloat((((currAnnualInv - prevAnnualInv) / prevAnnualInv) * 100).toFixed(1))
                 : null,
             monthCount: curr.monthCount,
             annualizedExpense: Math.round(currAnnualExp),
@@ -312,7 +349,15 @@ const computeInflation = (monthlyData) => {
         });
     }
 
-    return { monthly, yearly, avgMonthlyExpenseInflation, avgMonthlyInvestmentInflation };
+    return {
+        monthly,
+        yearly,
+        expenseStats,
+        investmentStats,
+        last6: { expense: last6Expense, investment: last6Investment },
+        last12: { expense: last12Expense, investment: last12Investment },
+        expenseTrendDirection,
+    };
 };
 
 /**

@@ -363,29 +363,67 @@ const ExpenseAnalysis = ({ open, onClose }) => {
         );
     };
 
-    const renderInflation = () => (
-        <div>
-            <div className="stats-grid" style={{ marginBottom: 24 }}>
-                <div className="stat-card stat-card-orange">
-                    <div className="stat-label">Avg Monthly Expense Inflation</div>
-                    <div className="stat-value" style={{ color: inflation.avgMonthlyExpenseInflation > 0 ? '#f5576c' : '#43e97b' }}>
-                        {inflation.avgMonthlyExpenseInflation !== null
-                            ? `${inflation.avgMonthlyExpenseInflation > 0 ? '+' : ''}${inflation.avgMonthlyExpenseInflation}%`
-                            : '—'}
+    const renderInflationStat = (label, stats) => {
+        if (!stats) return null;
+        return (
+            <div className="chart-section" style={{ marginBottom: 16 }}>
+                <h3>{label}</h3>
+                <div className="stats-grid">
+                    <div className="stat-card stat-card-orange">
+                        <div className="stat-label">Average</div>
+                        <div className="stat-value" style={{ color: stats.avg > 0 ? '#f5576c' : '#43e97b', fontSize: '1.2rem' }}>
+                            {stats.avg > 0 ? '+' : ''}{stats.avg}%
+                        </div>
                     </div>
-                    <div className="stat-sub">Month-over-month average</div>
-                </div>
-                <div className="stat-card stat-card-teal">
-                    <div className="stat-label">Avg Monthly Investment Inflation</div>
-                    <div className="stat-value" style={{ color: inflation.avgMonthlyInvestmentInflation > 0 ? '#43e97b' : '#f5576c' }}>
-                        {inflation.avgMonthlyInvestmentInflation !== null
-                            ? `${inflation.avgMonthlyInvestmentInflation > 0 ? '+' : ''}${inflation.avgMonthlyInvestmentInflation}%`
-                            : '—'}
+                    <div className="stat-card stat-card-blue">
+                        <div className="stat-label">Median</div>
+                        <div className="stat-value" style={{ color: stats.median > 0 ? '#f5576c' : '#43e97b', fontSize: '1.2rem' }}>
+                            {stats.median > 0 ? '+' : ''}{stats.median}%
+                        </div>
                     </div>
-                    <div className="stat-sub">Month-over-month average</div>
+                    <div className="stat-card stat-card-red">
+                        <div className="stat-label">Max Spike</div>
+                        <div className="stat-value" style={{ fontSize: '1.2rem' }}>
+                            {stats.max > 0 ? '+' : ''}{stats.max}%
+                        </div>
+                    </div>
+                    <div className="stat-card stat-card-green">
+                        <div className="stat-label">Max Drop</div>
+                        <div className="stat-value" style={{ fontSize: '1.2rem' }}>
+                            {stats.min > 0 ? '+' : ''}{stats.min}%
+                        </div>
+                    </div>
                 </div>
             </div>
+        );
+    };
 
+    const renderInflation = () => (
+        <div>
+            {/* Trend direction banner */}
+            {inflation.expenseTrendDirection && (
+                <div className="stat-card" style={{ marginBottom: 16, textAlign: 'center', borderColor: inflation.expenseTrendDirection === 'accelerating' ? 'rgba(245,87,108,0.3)' : 'rgba(67,233,123,0.3)' }}>
+                    <div className="stat-label">Expense Inflation Trend</div>
+                    <div className="stat-value" style={{ color: inflation.expenseTrendDirection === 'accelerating' ? '#f5576c' : '#43e97b', fontSize: '1.1rem' }}>
+                        {inflation.expenseTrendDirection === 'accelerating' ? '📈 Accelerating' : '📉 Decelerating'}
+                    </div>
+                    <div className="stat-sub">Based on last 6 months</div>
+                </div>
+            )}
+
+            {/* Overall Expense Inflation Stats */}
+            {renderInflationStat('📊 Overall Expense Inflation', inflation.expenseStats)}
+
+            {/* Last 6 Months */}
+            {renderInflationStat('📅 Last 6 Months — Expense Inflation', inflation.last6 && inflation.last6.expense)}
+
+            {/* Last 12 Months */}
+            {renderInflationStat('📅 Last 12 Months — Expense Inflation', inflation.last12 && inflation.last12.expense)}
+
+            {/* Investment inflation stats if available */}
+            {inflation.investmentStats && renderInflationStat('💰 Overall Investment Inflation', inflation.investmentStats)}
+
+            {/* Monthly MoM Table */}
             <div className="chart-section">
                 <h3>📉 Monthly Inflation (MoM % Change)</h3>
                 {inflation.monthly.length > 0 ? (
@@ -398,7 +436,7 @@ const ExpenseAnalysis = ({ open, onClose }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            {inflation.monthly.map((m, i) => (
+                            {[...inflation.monthly].reverse().map((m, i) => (
                                 <tr key={i}>
                                     <td>{m.label}</td>
                                     <td className={m.expenseChange > 0 ? 'positive-change' : 'negative-change'}>
@@ -414,6 +452,7 @@ const ExpenseAnalysis = ({ open, onClose }) => {
                 ) : <div className="no-data-msg">Need at least 2 completed months.</div>}
             </div>
 
+            {/* Yearly YoY Table */}
             <div className="chart-section">
                 <h3>📉 Yearly Inflation (YoY % Change — Pro-Rata Annualized)</h3>
                 {inflation.yearly.length > 0 ? (
