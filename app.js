@@ -2,6 +2,7 @@ require("dotenv").config()
 const express = require("express");
 const cors = require("cors");
 const compression = require('compression')
+const rateLimit = require('express-rate-limit');
 const connectDB = require("./config/db");
 const userRoutes = require("./routes/user");
 const notesRoute = require("./routes/notes");
@@ -33,6 +34,23 @@ const app = express();
 app.use(cors());
 
 app.use(compression())
+
+const postApiLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 60,
+    message: {
+        message: 'Too many requests, please try again after a minute'
+    },
+    standardHeaders: true,
+    legacyHeaders: false
+});
+
+app.use((req, res, next) => {
+    if (req.method === 'POST') {
+        return postApiLimiter(req, res, next);
+    }
+    next();
+});
 
 // createPages();
 
