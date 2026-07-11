@@ -12,10 +12,10 @@ import PasswordReset from "./pages/PasswordReset";
 import StockScreener from './pages/StockScreener';
 import ExpenseTracker from './pages/ExpenseTracker';
 import Portfolio from './pages/Portfolio';
-import GenAI from './pages/GenAI';
 import NotesV2 from './pages/NotesV2';
 import NoteItChat from './pages/NoteItChat';
 import McpLogin from './pages/McpLogin';
+import TradeBook from './pages/TradeBook';
 function App() {
   return (
     <BrowserRouter>
@@ -37,6 +37,7 @@ function App() {
         <Route path="/stock/portfolio" component={Portfolio} exact />
         <Route path="/genai" component={NoteItChat} exact />
         <Route path="/mcp-login" component={McpLogin} exact />
+        <Route path="/tradebook" component={TradeBook} exact />
       </main>
     </BrowserRouter>
   );

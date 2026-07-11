@@ -15,7 +15,7 @@ export const expensesTools = [
   },
   {
     name: "add_expense",
-    description: "Record a new expense.",
+    description: "Record a new expense. category should be a simple string supported Values are 'Investments' , 'Needs' , 'Wants', 'Others'.",
     inputSchema: {
       type: "object",
       properties: {

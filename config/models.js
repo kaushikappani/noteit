@@ -210,6 +210,29 @@ const portfolioModel = mongoose.Schema({
 }, { timestamps: true })
 
 const Portfolio = mongoose.model("Portfolio", portfolioModel);
-  
+  const tradeBookModel = mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "User",
+  },
+  symbol: { type: String, required: true },
+  isin: { type: String },
+  trade_date: { type: Date, required: true },
+  exchange: { type: String },
+  segment: { type: String },
+  series: { type: String },
+  trade_type: { type: String, required: true },
+  auction: { type: Boolean },
+  quantity: { type: Number, required: true },
+  price: { type: Number, required: true },
+  trade_id: { type: String, required: true },
+  order_id: { type: String, required: true },
+  order_execution_time: { type: Date }
+}, { timestamps: true });
 
-module.exports = { User, Note, NoteHistory, NoteAccess, Expenses, Remainder, Portfolio }
+tradeBookModel.index({ user: 1, trade_id: 1, order_id: 1 }, { unique: true });
+
+const TradeBook = mongoose.model("TradeBook", tradeBookModel);
+
+module.exports = { User, Note, NoteHistory, NoteAccess, Expenses, Remainder, Portfolio, TradeBook }

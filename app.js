@@ -18,6 +18,7 @@ const schedule = require('node-schedule');
 const moment = require('moment-timezone');
 const path = require("path");
 const aiGptRoutes = require("./routes/aigpt");
+const tradebookRoutes = require("./routes/tradebook");
 
 require('./functions/Scheduler');
 
@@ -81,6 +82,7 @@ app.use("/api/news", newsRoutes);
 app.use("/api/remainders", remainderRoutes);
 
 app.use("/gpt", aiGptRoutes);
+app.use("/api/tradebook", tradebookRoutes);
 
 
 __dirname = path.resolve();
