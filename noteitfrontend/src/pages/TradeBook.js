@@ -3,6 +3,27 @@ import axios from 'axios';
 import MainScreen from '../components/Mainscreen';
 import { Button, Card, Col, Container, Form, Row, Table, Tabs, Tab, Spinner, Accordion, Badge, Modal } from 'react-bootstrap';
 import ErrorMessage from '../components/errorMessage';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+} from 'chart.js';
+import { Bar, Pie } from 'react-chartjs-2';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
 
 const formatCurrency = (value) => new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
 
@@ -120,6 +141,7 @@ const TradeBook = ({ history }) => {
 
   const renderStockWise = () => {
     if (!analysis || !analysis.stockWise) return null;
+    
     return (
       <Table striped bordered hover responsive className="mt-3">
         <thead>
@@ -222,83 +244,152 @@ const TradeBook = ({ history }) => {
     );
   };
 
+  const renderVisuals = () => {
+    if (!analysis || !analysis.stockWise || !analysis.monthly) return null;
+
+    // Data for Pie Chart (Top 10 Stocks by Investment)
+    const sortedStocks = [...analysis.stockWise].sort((a, b) => b.buyTotal - a.buyTotal).slice(0, 10);
+    const pieData = {
+      labels: sortedStocks.map(s => s.symbol),
+      datasets: [
+        {
+          label: 'Total Invested (₹)',
+          data: sortedStocks.map(s => s.buyTotal),
+          backgroundColor: [
+            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+            '#FF9F40', '#E7E9ED', '#8AC926', '#1982C4', '#6A4C93'
+          ],
+        },
+      ],
+    };
+
+    // Data for Bar Chart (Monthly Buy vs Sell for last 6 months)
+    const recentMonths = analysis.monthly.slice(0, 6).reverse(); // Monthly is already sorted descending, take 6, reverse for chronological
+    const barData = {
+      labels: recentMonths.map(m => m.month),
+      datasets: [
+        {
+          label: 'Total Buy (₹)',
+          data: recentMonths.map(m => m.buyAmount),
+          backgroundColor: '#28a745',
+        },
+        {
+          label: 'Total Sell (₹)',
+          data: recentMonths.map(m => m.sellAmount),
+          backgroundColor: '#dc3545',
+        }
+      ],
+    };
+
+    return (
+      <Row className="mt-4 mb-4">
+        <Col md={6} className="mb-4">
+          <Card className="h-100 shadow-sm">
+            <Card.Header className="bg-dark text-white">Top 10 Holdings by Investment</Card.Header>
+            <Card.Body>
+              <div style={{ height: '300px', display: 'flex', justifyContent: 'center' }}>
+                <Pie data={pieData} options={{ maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }} />
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={6} className="mb-4">
+          <Card className="h-100 shadow-sm">
+            <Card.Header className="bg-dark text-white">Monthly Buy vs Sell (Last 6 Months)</Card.Header>
+            <Card.Body>
+              <div style={{ height: '300px' }}>
+                <Bar data={barData} options={{ maintainAspectRatio: false }} />
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    );
+  };
+
   return (
     <MainScreen title="Trade Book Analysis">
       <Container>
         {error && <ErrorMessage variant="danger">{error}</ErrorMessage>}
         {success && <ErrorMessage variant="success">{success}</ErrorMessage>}
         
-        <Card className="mb-4">
-          <Card.Header>Upload Trade Book (CSV)</Card.Header>
-          <Card.Body>
-            <Form onSubmit={handleUpload}>
-              <div 
-                onDragOver={handleDragOver}
-                onDragEnter={handleDragEnter}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                onClick={() => fileInputRef.current.click()}
-                style={{
-                  border: dragging ? '2px dashed #007bff' : '2px dashed #6c757d',
-                  borderRadius: '10px',
-                  padding: '40px',
-                  textAlign: 'center',
-                  backgroundColor: dragging ? 'rgba(0, 123, 255, 0.1)' : 'transparent',
-                  transition: 'background-color 0.3s, border-color 0.3s',
-                  marginBottom: '20px',
-                  cursor: 'pointer'
-                }}
-              >
-                <Form.Group controlId="formFile">
-                  <Form.Label style={{ cursor: 'pointer', fontSize: '1.2rem', margin: 0, fontWeight: '500' }}>
-                    {file ? <strong>Selected File: {file.name}</strong> : 'Drag & Drop your CSV file here, or click to select'}
-                  </Form.Label>
-                  <Form.Control 
-                    type="file" 
-                    accept=".csv" 
-                    onChange={handleFileChange} 
-                    className="mt-2" 
-                    ref={fileInputRef}
-                    style={{ display: 'none' }} 
-                  />
-                </Form.Group>
-              </div>
-              <Button type="submit" variant="primary" disabled={uploading || !file}>
-                {uploading ? <Spinner animation="border" size="sm" /> : "Upload and Sync"}
-              </Button>
-            </Form>
-          </Card.Body>
-        </Card>
+        <Row className="mb-4">
+          <Col md={6}>
+            <Card className="h-100">
+              <Card.Header>Upload Trade Book (CSV)</Card.Header>
+              <Card.Body className="d-flex flex-column justify-content-center">
+                <Form onSubmit={handleUpload}>
+                  <div 
+                    onDragOver={handleDragOver}
+                    onDragEnter={handleDragEnter}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={() => fileInputRef.current.click()}
+                    style={{
+                      border: dragging ? '2px dashed #007bff' : '2px dashed #6c757d',
+                      borderRadius: '8px',
+                      padding: '20px',
+                      textAlign: 'center',
+                      backgroundColor: dragging ? 'rgba(0, 123, 255, 0.1)' : 'transparent',
+                      transition: 'background-color 0.3s, border-color 0.3s',
+                      marginBottom: '15px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <Form.Group controlId="formFile">
+                      <Form.Label style={{ cursor: 'pointer', fontSize: '1rem', margin: 0, fontWeight: '500' }}>
+                        {file ? <strong>Selected: {file.name}</strong> : 'Drag & Drop CSV or click to select'}
+                      </Form.Label>
+                      <Form.Control 
+                        type="file" 
+                        accept=".csv" 
+                        onChange={handleFileChange} 
+                        className="mt-2" 
+                        ref={fileInputRef}
+                        style={{ display: 'none' }} 
+                      />
+                    </Form.Group>
+                  </div>
+                  <Button type="submit" variant="primary" disabled={uploading || !file} className="w-100">
+                    {uploading ? <Spinner animation="border" size="sm" /> : "Upload and Sync"}
+                  </Button>
+                </Form>
+              </Card.Body>
+            </Card>
+          </Col>
 
-        <Card className="mb-4">
-          <Card.Header>Filter Analysis by Date (Fixed Period)</Card.Header>
-          <Card.Body>
-            <Form onSubmit={handleFilter}>
-              <Row>
-                <Col md={4}>
-                  <Form.Group controlId="startDate">
-                    <Form.Label>Start Date</Form.Label>
-                    <Form.Control type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group controlId="endDate">
-                    <Form.Label>End Date</Form.Label>
-                    <Form.Control type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-                  </Form.Group>
-                </Col>
-                <Col md={4} className="d-flex align-items-end">
+          <Col md={6}>
+            <Card className="h-100">
+              <Card.Header>Filter Analysis by Date (Fixed Period)</Card.Header>
+              <Card.Body className="d-flex flex-column justify-content-center">
+                <Form onSubmit={handleFilter}>
+                  <Row>
+                    <Col md={6}>
+                      <Form.Group controlId="startDate">
+                        <Form.Label>Start Date</Form.Label>
+                        <Form.Control type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                      </Form.Group>
+                    </Col>
+                    <Col md={6}>
+                      <Form.Group controlId="endDate">
+                        <Form.Label>End Date</Form.Label>
+                        <Form.Control type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+                      </Form.Group>
+                    </Col>
+                  </Row>
                   <Button type="submit" variant="success" className="w-100 mt-3">Apply Filter</Button>
-                </Col>
-              </Row>
-            </Form>
-          </Card.Body>
-        </Card>
+                </Form>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
 
         {loadingAnalysis ? (
           <div className="d-flex justify-content-center mt-5"><Spinner animation="border" /></div>
         ) : (
-          <Tabs defaultActiveKey="stockwise" id="analysis-tabs" className="mb-3">
+          <>
+            {analysis && renderVisuals()}
+            <Tabs defaultActiveKey="stockwise" id="analysis-tabs" className="mb-3 mt-4 custom-tabs">
             <Tab eventKey="stockwise" title="Stock-wise Analysis">
               {renderStockWise()}
             </Tab>
@@ -312,6 +403,7 @@ const TradeBook = ({ history }) => {
               {renderPeriodic(analysis?.daily, 'day', 'Day')}
             </Tab>
           </Tabs>
+          </>
         )}
 
         <Modal show={showTradesModal} onHide={() => setShowTradesModal(false)} size="lg" centered contentClassName="bg-dark text-light border-0 shadow-lg" style={{ borderRadius: '15px', overflow: 'hidden' }}>
