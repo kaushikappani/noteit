@@ -68,16 +68,22 @@ router.post("/upload", protect, upload.single("file"), async (req, res) => {
         for (const rowData of rows) {
           if (!rowData.trade_id || !rowData.order_id) continue;
           try {
+            const existingTrade = await TradeBook.findOne({ 
+              user: rowData.user, 
+              trade_id: rowData.trade_id, 
+              order_id: rowData.order_id 
+            });
+
+            if (existingTrade) {
+              duplicates++;
+              continue;
+            }
+
             const trade = new TradeBook(rowData);
             await trade.save();
             inserted++;
           } catch (err) {
-            if (err.code === 11000) {
-              // Duplicate key error
-              duplicates++;
-            } else {
-              console.error("Error saving trade:", err);
-            }
+            console.error("Error saving trade:", err);
           }
         }
 
