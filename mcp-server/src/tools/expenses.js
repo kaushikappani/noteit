@@ -1,8 +1,8 @@
-import { makeRequest, isAuthenticated, ok, err } from "../api-client.js";
+import { ok, err } from "../api-client.js";
 
-function requireAuth() {
-  if (!isAuthenticated()) {
-    throw new Error("Not logged in. Call the login tool first.");
+function requireAuth(api) {
+  if (!api.isAuthenticated()) {
+    throw new Error("Not logged in. Call start_login first.");
   }
 }
 
@@ -54,13 +54,13 @@ export const expensesTools = [
   },
 ];
 
-export async function handleExpensesTool(name, args) {
+export async function handleExpensesTool(name, args, api) {
   try {
-    requireAuth();
+    requireAuth(api);
 
     switch (name) {
       case "get_expenses": {
-        const data = await makeRequest("GET", "/api/expenses");
+        const data = await api.request("GET", "/api/expenses");
         if (!data || data.length === 0) return ok("No expenses found.");
 
         // Compute a quick total
@@ -82,14 +82,14 @@ export async function handleExpensesTool(name, args) {
           description: args.description,
           date: args.date || new Date().toISOString(),
         };
-        const data = await makeRequest("POST", "/api/expenses/add", body);
+        const data = await api.request("POST", "/api/expenses/add", body);
         return ok(
           `Expense recorded — ${data.category}: ${data.cost} on ${new Date(data.date).toDateString()}`
         );
       }
 
       case "delete_expense": {
-        const data = await makeRequest("DELETE", `/api/expenses/remove/${args.id}`);
+        const data = await api.request("DELETE", `/api/expenses/remove/${args.id}`);
         return ok(data.message || "Expense deleted.");
       }
 

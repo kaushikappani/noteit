@@ -1,8 +1,8 @@
-import { makeRequest, isAuthenticated, ok, err } from "../api-client.js";
+import { ok, err } from "../api-client.js";
 
-function requireAuth() {
-  if (!isAuthenticated()) {
-    throw new Error("Not logged in. Call the login tool first.");
+function requireAuth(api) {
+  if (!api.isAuthenticated()) {
+    throw new Error("Not logged in. Call start_login first.");
   }
 }
 
@@ -124,13 +124,13 @@ export const notesTools = [
   },
 ];
 
-export async function handleNotesTool(name, args) {
+export async function handleNotesTool(name, args, api) {
   try {
-    requireAuth();
+    requireAuth(api);
 
     switch (name) {
       case "get_notes": {
-        const data = await makeRequest("GET", "/api/notes");
+        const data = await api.request("GET", "/api/notes");
         const notes = data.modifiedNotes || [];
         if (notes.length === 0) return ok("No notes found.");
         const summary = notes.map((n) => ({
@@ -146,14 +146,14 @@ export async function handleNotesTool(name, args) {
       }
 
       case "get_archived_notes": {
-        const data = await makeRequest("GET", "/api/notes/archived");
+        const data = await api.request("GET", "/api/notes/archived");
         const notes = data.notes || [];
         if (notes.length === 0) return ok("No archived notes.");
         return ok(notes.map((n) => ({ id: n._id, title: n.title, category: n.category, updatedAt: n.updatedAt })));
       }
 
       case "get_shared_notes": {
-        const data = await makeRequest("GET", "/api/notes/shared");
+        const data = await api.request("GET", "/api/notes/shared");
         const notes = data.notes || [];
         if (notes.length === 0) return ok("No notes shared with you.");
         return ok(notes.map((n) => ({ id: n._id, title: n.title, category: n.category })));
@@ -161,12 +161,12 @@ export async function handleNotesTool(name, args) {
 
       case "get_note": {
         const history = args.history || "h0";
-        const data = await makeRequest("GET", `/api/notes/${args.id}/${history}`);
+        const data = await api.request("GET", `/api/notes/${args.id}/${history}`);
         return ok(data);
       }
 
       case "create_note": {
-        const data = await makeRequest("POST", "/api/notes/create", {
+        const data = await api.request("POST", "/api/notes/create", {
           title: args.title,
           content: args.content,
           category: args.category || "",
@@ -185,17 +185,17 @@ export async function handleNotesTool(name, args) {
         };
         // Remove undefined fields
         Object.keys(body).forEach((k) => body[k] === undefined && delete body[k]);
-        const data = await makeRequest("PUT", `/api/notes/${args.id}`, body);
+        const data = await api.request("PUT", `/api/notes/${args.id}`, body);
         return ok(`Note updated: ${data.title}`);
       }
 
       case "delete_note": {
-        const data = await makeRequest("DELETE", `/api/notes/${args.id}`);
+        const data = await api.request("DELETE", `/api/notes/${args.id}`);
         return ok(data.message || "Note deleted.");
       }
 
       case "share_note": {
-        const data = await makeRequest(
+        const data = await api.request(
           "POST",
           `/api/notes/share/${args.id}/${encodeURIComponent(args.userEmail)}`
         );
@@ -203,7 +203,7 @@ export async function handleNotesTool(name, args) {
       }
 
       case "generate_ai_summary": {
-        const data = await makeRequest("GET", `/api/notes/${args.id}/genai/summary`);
+        const data = await api.request("GET", `/api/notes/${args.id}/genai/summary`);
         return ok(data.message || "AI summary generated and appended to the note.");
       }
 

@@ -19,6 +19,7 @@ const moment = require('moment-timezone');
 const path = require("path");
 const aiGptRoutes = require("./routes/aigpt");
 const tradebookRoutes = require("./routes/tradebook");
+const { mountMcp, isMcpRequest } = require("./middleware/mcp");
 
 require('./functions/Scheduler');
 
@@ -34,7 +35,11 @@ const { runPendingReminders } = require("./functions/remainderJobs");
 const app = express();
 app.use(cors());
 
-app.use(compression())
+// Skip /mcp: gzip buffers SSE frames, which stalls the MCP event stream.
+app.use(compression({
+    filter: (req, res) =>
+        !isMcpRequest(req) && compression.filter(req, res),
+}))
 
 const postApiLimiter = rateLimit({
     windowMs: 60 * 1000,
@@ -47,7 +52,8 @@ const postApiLimiter = rateLimit({
 });
 
 app.use((req, res, next) => {
-    if (req.method === 'POST') {
+    // MCP is JSON-RPC over POST — a tool-heavy session blows past 60/min.
+    if (req.method === 'POST' && !isMcpRequest(req)) {
         return postApiLimiter(req, res, next);
     }
     next();
@@ -83,6 +89,11 @@ app.use("/api/remainders", remainderRoutes);
 
 app.use("/gpt", aiGptRoutes);
 app.use("/api/tradebook", tradebookRoutes);
+
+// MCP server — must be mounted before the production catch-all below.
+if (process.env.MCP_HTTP_ENABLED !== "false") {
+    mountMcp(app);
+}
 
 
 __dirname = path.resolve();

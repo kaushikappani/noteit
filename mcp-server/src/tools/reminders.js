@@ -1,8 +1,8 @@
-import { makeRequest, isAuthenticated, ok, err } from "../api-client.js";
+import { ok, err } from "../api-client.js";
 
-function requireAuth() {
-  if (!isAuthenticated()) {
-    throw new Error("Not logged in. Call the login tool first.");
+function requireAuth(api) {
+  if (!api.isAuthenticated()) {
+    throw new Error("Not logged in. Call start_login first.");
   }
 }
 
@@ -35,13 +35,13 @@ export const remindersTools = [
   },
 ];
 
-export async function handleRemindersTool(name, args) {
+export async function handleRemindersTool(name, args, api) {
   try {
-    requireAuth();
+    requireAuth(api);
 
     switch (name) {
       case "get_reminders": {
-        const data = await makeRequest("GET", "/api/remainders");
+        const data = await api.request("GET", "/api/remainders");
         if (!data || data.length === 0) return ok("No active reminders.");
         const formatted = data.map((r) => ({
           id: r._id,
@@ -53,7 +53,7 @@ export async function handleRemindersTool(name, args) {
       }
 
       case "add_reminder": {
-        const data = await makeRequest("POST", "/api/remainders/add", {
+        const data = await api.request("POST", "/api/remainders/add", {
           description: args.description,
           date: args.date,
         });

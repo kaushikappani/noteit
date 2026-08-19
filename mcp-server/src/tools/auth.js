@@ -1,4 +1,4 @@
-import { makeRequest, clearToken, setToken, isAuthenticated, ok, err } from "../api-client.js";
+import { ok, err } from "../api-client.js";
 
 export const authTools = [
   {
@@ -50,13 +50,13 @@ export const authTools = [
   },
 ];
 
-export async function handleAuthTool(name, args) {
+export async function handleAuthTool(name, args, api) {
   try {
     switch (name) {
 
       // ── Step 1: Generate auth code + return login URL ────────────────────
       case "start_login": {
-        const { code, loginUrl } = await makeRequest("GET", "/api/users/mcp/auth");
+        const { code, loginUrl } = await api.request("GET", "/api/users/mcp/auth");
         return ok(
           `🔐 **Open this URL in your browser to login:**\n\n${loginUrl}\n\n` +
           `Log in with your NoteIt email and password on that page.\n` +
@@ -74,7 +74,7 @@ export async function handleAuthTool(name, args) {
 
         let res;
         try {
-          res = await makeRequest("GET", `/api/users/mcp/token?code=${encodeURIComponent(code)}`);
+          res = await api.request("GET", `/api/users/mcp/token?code=${encodeURIComponent(code)}`);
         } catch (e) {
           const msg = e.message || "";
           if (msg.includes("expired") || msg.includes("not found")) {
@@ -89,10 +89,10 @@ export async function handleAuthTool(name, args) {
         }
 
         if (res && res.token) {
-          setToken(res.token);
+          api.setToken(res.token);
           // Fetch profile to confirm
           try {
-            const profile = await makeRequest("GET", "/api/users/info");
+            const profile = await api.request("GET", "/api/users/info");
             return ok(`✅ Logged in successfully as **${profile.name}** (${profile.email})! You can now use all NoteIt tools.`);
           } catch {
             return ok("✅ Logged in successfully! You can now use all NoteIt tools.");
@@ -104,21 +104,21 @@ export async function handleAuthTool(name, args) {
 
 
       case "logout": {
-        await makeRequest("GET", "/api/users/logout");
-        clearToken();
+        await api.request("GET", "/api/users/logout");
+        api.clearToken();
         return ok("Logged out successfully.");
       }
 
       case "get_profile": {
-        if (!isAuthenticated()) {
+        if (!api.isAuthenticated()) {
           return err(new Error("Not logged in. Call start_login first."));
         }
-        const data = await makeRequest("GET", "/api/users/info");
+        const data = await api.request("GET", "/api/users/info");
         return ok(data);
       }
 
       case "forgot_password": {
-        const data = await makeRequest("POST", "/api/users/forgotpassword", {
+        const data = await api.request("POST", "/api/users/forgotpassword", {
           email: args.email,
         });
         return ok(data.message || "Password reset email sent.");
@@ -126,7 +126,7 @@ export async function handleAuthTool(name, args) {
 
       case "auth_status": {
         return ok(
-          isAuthenticated()
+          api.isAuthenticated()
             ? "You are logged in."
             : "You are not logged in. Call start_login to login via browser — no password needed in chat."
         );
