@@ -89,6 +89,9 @@ export async function handleAuthTool(name, args, api) {
         }
 
         if (res && res.token) {
+          // The token stays here. It is the user's 365-day account JWT and it
+          // cannot be revoked, so it is never handed back to the client — the
+          // session it authenticates is what has to survive instead.
           api.setToken(res.token);
           // Fetch profile to confirm
           try {

@@ -84,10 +84,11 @@ async function startStdio() {
 async function startHttp() {
   const port = Number(process.env.MCP_PORT || process.env.PORT || 5100);
   const { createMcpHttpHandlers } = await import("./http.js");
-  const handlers = createMcpHttpHandlers({ log });
 
   const ssePath = `${mcpPath}/sse`;
   const messagePath = `${mcpPath}/messages`;
+
+  const handlers = createMcpHttpHandlers({ log, ssePath });
 
   const server = http.createServer(async (req, res) => {
     applyCors(res);

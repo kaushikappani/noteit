@@ -149,7 +149,17 @@ Login is a browser device-code flow — no password in chat:
 
 **Each session gets its own API client and its own JWT.** In stdio mode there is exactly one session for the process lifetime. In HTTP mode a session is created per `initialize` and keyed by `Mcp-Session-Id`, so concurrent users never see each other's login. Idle sessions are swept after `MCP_SESSION_TTL_MS`.
 
-State is in-memory, so a Render restart (or a free-tier spin-down) drops all sessions and clients must log in again.
+### The token never leaves the server
+
+`generateToken` in `routes/user.js` signs a **365-day** JWT, and it is the *same* credential the web app uses — not an MCP-scoped one. Being stateless, it cannot be revoked: `logout` only clears a cookie, so the sole way to kill an escaped copy is rotating `JWT_SECRET`, which signs out every other user too.
+
+So it is never returned to the client. It goes browser → backend → Redis → this server's session and stops there. The chat only ever carries the `code`, which is single-use and expires in 5 minutes — no password and no token passes through the model, the chat UI, or an inference provider's logs.
+
+The consequence is that **the session is the login**. Nothing else holds it, so how long a user stays signed in is exactly how long their session survives, which is why `MCP_SESSION_TTL_MS` defaults to 30 days. In exchange, a session id is itself a month-long bearer credential for that account — it is not bound to an IP or a client, so treat it as the secret it is. Anything that ends the session (a deploy, a restart, an eviction) costs that user another browser login; there is no recovery path by design.
+
+### Why the session cap exists
+
+A 30-day TTL means the sweeper no longer bounds the map, so `MCP_MAX_SESSIONS` does. The eviction *order* is the security-relevant part: opening a session needs no credentials, and `/mcp` is exempt from the app's rate limiter, so anyone can create them for free. Under a plain least-recently-used cap, a few hundred anonymous `initialize` calls would evict every signed-in user — a cheap denial of login. Sessions that never authenticated are therefore given up first, so a flood spends the attacker's own sessions instead of someone's month-old login. Evicting an authenticated session is logged as such, and means the cap is genuinely too low.
 
 ---
 
@@ -164,6 +174,17 @@ npx @modelcontextprotocol/inspector                # then connect to a URL for h
 ```
 
 Typical flow: `auth_status` → `start_login` → open the URL → `check_login` → `get_notes`.
+
+**Pick the URL to match the transport — the two are not interchangeable:**
+
+| Inspector "Transport Type" | URL to use |
+|---|---|
+| Streamable HTTP *(preferred)* | `https://noteit-prod2.onrender.com/mcp` |
+| SSE *(legacy clients only)* | `https://noteit-prod2.onrender.com/mcp/sse` |
+
+Choosing **SSE** with the plain `/mcp` URL is the one combination guaranteed to fail: `/mcp` speaks streamable HTTP, where a session is opened by `POST initialize`, so a bare `GET` has no session to attach to and is refused. It surfaces in the Inspector as `SSE error: Non-200 status code`. Either switch the transport to Streamable HTTP or add `/sse` to the URL.
+
+Remote connectors (Claude custom connectors and the like) should be given the streamable URL and no auth — this server authenticates inside the session via `start_login`, not at the transport. The OAuth discovery paths under `/.well-known/` deliberately answer 404 so a probing client learns there is no OAuth to do; without that they hit the React catch-all and get `200 text/html`, which reads as a broken auth server rather than an absent one.
 
 ### Against the hosted endpoint
 
@@ -191,8 +212,11 @@ curl -s https://noteit-prod2.onrender.com/mcp \
 | Symptom | Cause / fix |
 |---------|-------------|
 | `Cannot reach Noteit backend at …` | Backend not running, or `NOTEIT_API_URL` wrong. It must be an origin — no `/notesv2` suffix. |
-| `400 Missing mcp-session-id header` | The first request must be `initialize`; reuse the returned `Mcp-Session-Id` afterwards. |
-| `404 Unknown or expired MCP session` | Session swept after idling, or the server restarted. Re-initialize. |
+| `400 Missing mcp-session-id header` | The first request must be `initialize`; reuse the returned `Mcp-Session-Id` afterwards. On a bare `GET`, it means an SSE-transport client was pointed at `/mcp` — use `/mcp/sse`, or switch it to streamable HTTP. |
+| `SSE error: Non-200 status code` | Same thing: SSE transport aimed at `/mcp`. See the transport/URL table above. |
+| `404 Unknown or expired MCP session` | Session swept after 30 days idle, evicted at `MCP_MAX_SESSIONS`, or the server restarted. Re-initialize and log in again. |
+| Asked to log in again after a while | The session ended. Check `MCP_SESSION_TTL_MS` is not still set to an old short value in the deploy's env, and that the *client* isn't discarding session ids sooner than the server does — in the TL;DR extension that's `SESSION_TTL_MS` in `mcp.js`. |
+| Everyone logged out at once | A deploy or restart — session state is in-memory. Or `MCP_MAX_SESSIONS` is too low: check the logs for `evicted at cap … must log in again`. |
 | `406 Not Acceptable` | Client must send `Accept: application/json, text/event-stream`. |
 | SSE connects but no events arrive | Something is buffering the stream. Leave `MCP_JSON_RESPONSE=true`, and keep `/mcp` out of `compression()`. |
 | `/mcp` returns the SPA HTML | Mount moved below `app.get("*")` in `app.js`. |

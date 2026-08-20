@@ -93,6 +93,24 @@ app.use("/api/tradebook", tradebookRoutes);
 // MCP server — must be mounted before the production catch-all below.
 if (process.env.MCP_HTTP_ENABLED !== "false") {
     mountMcp(app);
+
+    // Remote MCP clients probe these before connecting, to find out whether the
+    // server wants an OAuth handshake. The React catch-all below answers every
+    // unknown GET with index.html, so without this they get 200 text/html where
+    // they expect JSON metadata — and a client that cannot read "no OAuth here"
+    // from that may try to start an auth flow instead of just connecting. Noteit
+    // authenticates inside the session (start_login), not at the transport, so
+    // 404 is the honest and useful answer.
+    app.use([
+        "/.well-known/oauth-authorization-server",
+        "/.well-known/oauth-protected-resource",
+        "/.well-known/openid-configuration",
+    ], (req, res) => {
+        res.status(404).json({
+            error: "not_supported",
+            message: "This MCP server does not use OAuth. Connect without auth and call start_login.",
+        });
+    });
 }
 
 

@@ -29,7 +29,9 @@ let handlersPromise = null;
 function loadHandlers() {
     if (!handlersPromise) {
         handlersPromise = import("../mcp-server/src/http.js")
-            .then(({ createMcpHttpHandlers }) => createMcpHttpHandlers({ log }))
+            .then(({ createMcpHttpHandlers }) =>
+                createMcpHttpHandlers({ log, ssePath: `${MCP_PATH}/sse` })
+            )
             .catch((e) => {
                 // Reset so a transient failure (e.g. missing dependency during a
                 // partial deploy) can be retried on the next request.
