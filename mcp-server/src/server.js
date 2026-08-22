@@ -5,6 +5,7 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 
 import { createApiClient } from "./api-client.js";
+import { createMemoryGrantStore } from "./grants.js";
 import { authTools, handleAuthTool } from "./tools/auth.js";
 import { notesTools, handleNotesTool } from "./tools/notes.js";
 import { remindersTools, handleRemindersTool } from "./tools/reminders.js";
@@ -31,9 +32,19 @@ const handlerByName = new Map(
  * Called once per transport session — stdio creates exactly one, HTTP creates
  * one per `initialize`. The API client (and therefore the logged-in user's JWT)
  * is scoped to that instance, so concurrent HTTP sessions never share a login.
+ *
+ * `grants` is the durable login store (see grants.js). The default is per-server
+ * and in-memory, which is only right for stdio, where the process *is* the
+ * session; the HTTP mount passes a Redis-backed one so a restart stops costing
+ * everyone their sign-in.
  */
-export function createNoteitServer() {
+export function createNoteitServer({ grants = createMemoryGrantStore() } = {}) {
   const api = createApiClient();
+
+  // Per-session scratch space for things that must not reach the model: the
+  // pending login, and the hash of the grant this session is riding on.
+  const session = { pendingLogin: null, grantHash: null, grantCheckedAt: 0 };
+  const ctx = { api, session, grants };
 
   const server = new Server(SERVER_INFO, { capabilities: { tools: {} } });
 
@@ -52,8 +63,8 @@ export function createNoteitServer() {
       };
     }
 
-    return handle(name, args, api);
+    return handle(name, args, api, ctx);
   });
 
-  return { server, api };
+  return { server, api, session, grants };
 }

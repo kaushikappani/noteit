@@ -130,11 +130,13 @@ router.route("/login").post(asyncHandler(async (req, res) => {
                     pic: user.pic,
                 };
 
-                // When logging in for MCP, also return the raw token in JSON body
-                // (cookie is httpOnly so JS can't read it; the MCP login page needs it)
-                if (platform === "mcp") {
-                    responseBody.token = token;
-                }
+                // The MCP login page used to ask for the raw token here, so it
+                // could hand it to /mcp/exchange. That put a 365-day bearer of
+                // the whole account into a JSON body readable by any script on
+                // the page — the exact thing httpOnly on the cookie is for, undone
+                // for one caller. It doesn't need it: the cookie this response
+                // sets is enough for /mcp/auto-exchange to deposit the token
+                // server-side, where it never passes through the browser at all.
 
                 res.cookie("token", token, options).json(responseBody);
             }
@@ -317,6 +319,33 @@ router.route("/:id/revoke/:user").put(protect, asyncHandler(async (req, res) => 
 }))
 
 router.route("/logout").get(asyncHandler(async (req, res) => {
+    // Clearing the cookie only stops *this* browser from sending the token.
+    // The token itself stays valid for the rest of its 365 days, and `protect`
+    // keeps honouring it as long as the matching login:<platform>:<id> key is
+    // in Redis — so a copy taken before logout kept working for a year. Drop
+    // the Redis entry that this exact token was issued under, which is what
+    // actually ends the session.
+    const token = req.cookies && req.cookies.token;
+    if (token) {
+        try {
+            const decode = jwt.verify(token, process.env.JWT_SECRET);
+            // Only the key holding *this* token: signing out of the browser
+            // should not knock the user's phone offline as well.
+            for (const platform of ["web", "mobile"]) {
+                const key = `login:${platform}:${decode.id}`;
+                await new Promise((resolve) => {
+                    client.get(key, (err, stored) => {
+                        if (!err && stored === token) client.del(key);
+                        resolve();
+                    });
+                });
+            }
+            client.del(`user:${decode.id}`);
+        } catch (_) {
+            // Already expired or tampered with — nothing to revoke, and the
+            // cookie still gets cleared below.
+        }
+    }
 
     res.clearCookie("token").status(202).send("logout");
 }))
@@ -382,132 +411,152 @@ router.route("/upload/profile/pic").post(protect, upload.single('profilePicture'
 // ─── MCP OAuth-style Device Code Flow ────────────────────────────────────────
 const crypto = require("crypto");
 
-// Step 1 — MCP server calls this to get an auth_code + login URL
-// GET /api/users/mcp/auth
-router.route("/mcp/auth").get(asyncHandler(async (req, res) => {
-    const code = crypto.randomUUID();
-    const ttl5Min = 5 * 60; // seconds
-    const redisKey = `mcp_auth:${code}`;
+const MCP_AUTH_TTL_SEC = 5 * 60;
 
-    // Store code in Redis with 5-min TTL (value = "pending")
-    await new Promise((resolve, reject) => {
-        client.set(redisKey, "pending", "EX", ttl5Min, (err) => {
-            if (err) reject(err);
-            else resolve();
+/**
+ * A pending MCP login is two secrets, not one.
+ *
+ * The `code` travels in the login URL, and that URL is returned by an MCP tool
+ * — so it lands in the AI's prompt, in the chat transcript, and in whatever the
+ * model provider logs. It cannot be kept quiet; the user has to click it.
+ *
+ * `secret` is generated at the same time, never leaves the MCP server, and is
+ * required to redeem the token. So the identifier that unavoidably passes
+ * through the model is not the one that can be traded for a 365-day account
+ * JWT. Before this split, anything that could read the prompt — a prompt
+ * injection on a summarised page, a leaked provider log — could redeem it.
+ *
+ * Only the hash of the secret is stored, so a look at Redis mid-flow is not
+ * enough either.
+ */
+function mcpAuthKey(code) {
+    return `mcp_auth:${code}`;
+}
+
+/** Codes are UUIDs we minted; anything else never becomes a Redis key. */
+function isMcpCode(code) {
+    return typeof code === "string" && /^[0-9a-f-]{36}$/i.test(code);
+}
+
+function sha256(value) {
+    return crypto.createHash("sha256").update(String(value)).digest();
+}
+
+function readMcpAuth(code) {
+    return new Promise((resolve, reject) => {
+        client.get(mcpAuthKey(code), (err, raw) => {
+            if (err) return reject(err);
+            if (!raw) return resolve(null);
+            try {
+                resolve(JSON.parse(raw));
+            } catch (_) {
+                // A record written by the previous release. It has no secret, so
+                // it cannot be redeemed under the new rules — let it expire.
+                resolve(null);
+            }
         });
     });
+}
 
-    const loginUrl = `${process.env.DOMAIN}/mcp-login?code=${code}`;
-    res.status(200).json({ code, loginUrl });
-}));
+function writeMcpAuth(code, record) {
+    return new Promise((resolve, reject) => {
+        client.set(mcpAuthKey(code), JSON.stringify(record), "EX", MCP_AUTH_TTL_SEC, (err) =>
+            err ? reject(err) : resolve()
+        );
+    });
+}
 
-// Step 2 — Frontend (MCP login page) calls this after the user logs in
-// POST /api/users/mcp/exchange  body: { code, token }
-router.route("/mcp/exchange").post(asyncHandler(async (req, res) => {
-    const { code, token } = req.body;
-    if (!code || !token) {
-        res.status(400).json({ message: "code and token are required" });
+function secretMatches(record, provided) {
+    if (!record || !record.secretHash || typeof provided !== "string" || !provided) return false;
+    const expected = Buffer.from(record.secretHash, "hex");
+    const actual = sha256(provided);
+    return expected.length === actual.length && crypto.timingSafeEqual(expected, actual);
+}
+
+/** Park the caller's own JWT against a pending code. Shared by both deposit routes. */
+async function depositMcpToken(req, res) {
+    const { code } = req.body;
+    if (!isMcpCode(code)) {
+        res.status(400).json({ message: "A valid code is required" });
         return;
     }
 
-    const redisKey = `mcp_auth:${code}`;
-
-    // Verify the code exists and is still pending
-    const existing = await new Promise((resolve, reject) => {
-        client.get(redisKey, (err, val) => {
-            if (err) reject(err);
-            else resolve(val);
-        });
-    });
-
-    if (!existing) {
+    const record = await readMcpAuth(code);
+    if (!record) {
         res.status(400).json({ message: "Invalid or expired auth code" });
         return;
     }
 
-    // Store the actual JWT token (overwrites "pending"), keep 5-min TTL
-    await new Promise((resolve, reject) => {
-        client.set(redisKey, token, "EX", 5 * 60, (err) => {
-            if (err) reject(err);
-            else resolve();
-        });
-    });
+    // `protect` has already verified this cookie, so it is the caller's own
+    // token and nobody else's — the request body has no say in it.
+    await writeMcpAuth(code, { ...record, token: req.cookies.token });
 
-    res.status(200).json({ message: "Token deposited. AI is now authenticated." });
+    res.status(200).json({
+        message: "Authorized — the AI assistant is now connected.",
+        name: req.user.name,
+        email: req.user.email,
+    });
+}
+
+// Step 1 — MCP server calls this to get an auth code + login URL
+// GET /api/users/mcp/auth  ->  { code, secret, loginUrl }
+router.route("/mcp/auth").get(asyncHandler(async (req, res) => {
+    const code = crypto.randomUUID();
+    const secret = crypto.randomBytes(32).toString("base64url");
+
+    await writeMcpAuth(code, { secretHash: sha256(secret).toString("hex"), token: null });
+
+    // Only the code goes in the URL. The secret goes back to the MCP server,
+    // which keeps it in session memory and hands it over at redemption time.
+    const loginUrl = `${process.env.DOMAIN}/mcp-login?code=${code}`;
+    res.status(200).json({ code, secret, loginUrl });
 }));
 
-// Step 3 — MCP server polls this every 2s to retrieve token once ready
-// GET /api/users/mcp/token?code=<uuid>
+// Step 2 — the MCP login page calls this once the user has signed in.
+// POST /api/users/mcp/exchange  body: { code }
+//
+// Kept as an alias of /mcp/auto-exchange so an older deployed frontend build
+// keeps working. It used to be unauthenticated and to trust a token straight
+// out of the request body, which meant anyone holding a pending code could
+// deposit a JWT of their choosing and point someone's AI at their account. Any
+// token in the body is now ignored.
+router.route("/mcp/exchange").post(protect, asyncHandler(depositMcpToken));
+
+// Same thing, for the page's silent attempt on load when a cookie is already there.
+// POST /api/users/mcp/auto-exchange  body: { code }
+router.route("/mcp/auto-exchange").post(protect, asyncHandler(depositMcpToken));
+
+// Step 3 — MCP server polls this to collect the token once it is ready.
+// GET /api/users/mcp/token?code=<uuid>&secret=<secret>
 router.route("/mcp/token").get(asyncHandler(async (req, res) => {
-    const { code } = req.query;
-    if (!code) {
+    const { code, secret } = req.query;
+    if (!isMcpCode(code)) {
         res.status(400).json({ message: "code query param is required" });
         return;
     }
 
-    const redisKey = `mcp_auth:${code}`;
-    const value = await new Promise((resolve, reject) => {
-        client.get(redisKey, (err, val) => {
-            if (err) reject(err);
-            else resolve(val);
-        });
-    });
-
-    if (!value) {
+    const record = await readMcpAuth(code);
+    if (!record) {
         res.status(404).json({ message: "Auth code not found or expired" });
         return;
     }
 
-    if (value === "pending") {
-        // User hasn't logged in yet — tell MCP server to keep checking
+    if (!secretMatches(record, secret)) {
+        // Deliberately identical to the not-found answer: whoever is asking
+        // without the secret does not get to learn that the code is real.
+        res.status(404).json({ message: "Auth code not found or expired" });
+        return;
+    }
+
+    if (!record.token) {
+        // User hasn't logged in yet — tell the MCP server to keep checking.
         res.status(200).json({ status: "pending", message: "Waiting for user to login..." });
         return;
     }
 
-    // Token is ready — return it and delete from Redis (one-time use)
-    client.del(redisKey);
-    res.status(200).json({ token: value });
-}));
-// Auto-exchange: if user is already logged in (has valid cookie), deposit their
-// existing JWT directly so they skip the login form entirely.
-// POST /api/users/mcp/auto-exchange  body: { code }
-router.route("/mcp/auto-exchange").post(protect, asyncHandler(async (req, res) => {
-    const { code } = req.body;
-    if (!code) {
-        res.status(400).json({ message: "code is required" });
-        return;
-    }
-
-    const redisKey = `mcp_auth:${code}`;
-
-    // Verify the code still exists in Redis
-    const existing = await new Promise((resolve, reject) => {
-        client.get(redisKey, (err, val) => {
-            if (err) reject(err);
-            else resolve(val);
-        });
-    });
-
-    if (!existing) {
-        res.status(400).json({ message: "Invalid or expired auth code" });
-        return;
-    }
-
-    // req.cookies.token is the existing valid JWT (protect already validated it)
-    const token = req.cookies.token;
-
-    await new Promise((resolve, reject) => {
-        client.set(redisKey, token, "EX", 5 * 60, (err) => {
-            if (err) reject(err);
-            else resolve();
-        });
-    });
-
-    res.status(200).json({
-        message: "Already logged in — AI is now authenticated.",
-        name: req.user.name,
-        email: req.user.email,
-    });
+    // Token is ready — hand it over and burn the code (one-time use).
+    client.del(mcpAuthKey(code));
+    res.status(200).json({ token: record.token });
 }));
 // ─────────────────────────────────────────────────────────────────────────────
 

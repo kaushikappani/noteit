@@ -51,9 +51,27 @@ const postApiLimiter = rateLimit({
     legacyHeaders: false
 });
 
+// MCP is JSON-RPC over POST — a tool-heavy session blows past 60/min, so it
+// gets its own ceiling rather than the exemption it used to have. Opening a
+// session needs no credentials and each one costs memory, so "unlimited" was a
+// standing invitation; 300/min is far more than any real client asks for.
+const mcpLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: 300,
+    message: {
+        jsonrpc: '2.0',
+        id: null,
+        error: { code: -32000, message: 'Too many MCP requests, please slow down.' }
+    },
+    standardHeaders: true,
+    legacyHeaders: false
+});
+
 app.use((req, res, next) => {
-    // MCP is JSON-RPC over POST — a tool-heavy session blows past 60/min.
-    if (req.method === 'POST' && !isMcpRequest(req)) {
+    if (isMcpRequest(req)) {
+        return mcpLimiter(req, res, next);
+    }
+    if (req.method === 'POST') {
         return postApiLimiter(req, res, next);
     }
     next();

@@ -42,14 +42,14 @@ const McpLogin = () => {
         try {
             if (!code) throw new Error("Missing auth code in URL. Please ask the AI to try again.");
 
-            // Login with platform=mcp so backend also returns token in JSON body
             const config = { withCredentials: true, headers: { "Content-Type": "application/json" } };
-            const { data } = await axios.post("/api/users/login", { email, password, platform: "mcp" }, config);
+            await axios.post("/api/users/login", { email, password }, config);
 
-            if (!data.token) throw new Error("Login succeeded but no token was returned. Contact support.");
-
-            // Deposit the token into Redis so AI can pick it up
-            await axios.post("/api/users/mcp/exchange", { code, token: data.token }, config);
+            // The login above set the httpOnly cookie. Deposit from that,
+            // rather than asking the backend to hand the raw token to this page
+            // — a token this page never sees is one an injected script on it
+            // cannot steal, and the auth code alone is useless without a login.
+            await axios.post("/api/users/mcp/auto-exchange", { code }, config);
 
             setSuccess(true);
         } catch (err) {

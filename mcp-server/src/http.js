@@ -4,19 +4,24 @@ import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 
 import { createNoteitServer } from "./server.js";
+import { createMemoryGrantStore, grantKeyFromHeaders, hashGrantKey } from "./grants.js";
 
-// A month. The login lives in the session and nowhere else — the token is never
-// handed to the client — so the session's lifetime *is* how long a user stays
-// logged in. Anything shorter marches them back through the browser flow while
-// their year-long token is still perfectly good.
+// A month. Sessions are a cache in front of the grant store now, not the thing
+// that holds a login: a client presenting a grant key re-authenticates whatever
+// session it lands on, so losing one costs a handshake rather than a sign-in.
+// Kept long anyway for clients that don't store the credential.
 const DEFAULT_SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 const SWEEP_INTERVAL_MS = 60 * 1000;
 
 // With a month-long TTL the sweeper no longer bounds the map, so this does.
 // Each entry pins a Server, a transport and a JWT for as long as it lives, and
-// every re-handshake adds one. Evicting is a forced logout, so the cap is set
-// far above any plausible fleet of real clients.
+// every re-handshake adds one.
 const DEFAULT_MAX_SESSIONS = 500;
+
+// How long a session may trust a grant it has already resolved before checking
+// the store again. Caps how long a revoked login keeps working on a session
+// that is still open somewhere else.
+const GRANT_RECHECK_MS = 60 * 1000;
 
 /** Framework-agnostic Node req/res helpers so this file never imports express. */
 function sendJson(res, status, payload) {
@@ -41,7 +46,13 @@ function rpcError(res, status, message, code = -32000) {
  * Router built by one cannot be mounted into the other. The caller wires the
  * routes with whatever express instance it already has.
  */
-export function createMcpHttpHandlers({ sessionTtlMs, maxSessions, ssePath, log = () => {} } = {}) {
+export function createMcpHttpHandlers({
+  sessionTtlMs,
+  maxSessions,
+  ssePath,
+  grants = createMemoryGrantStore(),
+  log = () => {},
+} = {}) {
   const ttl =
     sessionTtlMs ?? (Number(process.env.MCP_SESSION_TTL_MS) || DEFAULT_SESSION_TTL_MS);
   const cap =
@@ -52,11 +63,62 @@ export function createMcpHttpHandlers({ sessionTtlMs, maxSessions, ssePath, log 
   // opts back into spec-preferred SSE streaming.
   const enableJsonResponse = process.env.MCP_JSON_RESPONSE !== "false";
 
-  /** sessionId -> { transport, server, lastSeen, kind } */
+  /** sessionId -> { transport, server, api, session, lastSeen, kind } */
   const sessions = new Map();
 
-  function track(id, kind, transport, server, api) {
-    sessions.set(id, { transport, server, api, lastSeen: Date.now(), kind });
+  /**
+   * Re-attach a stored login to this session, if the client presented a grant key.
+   *
+   * This is what makes a login outlive the process. The session map is memory
+   * and dies with the server; the grant store is not. A client that kept its
+   * key gets re-authenticated here on the very first request of a brand new
+   * session, so a restart, a redeploy or a second instance costs it a handshake
+   * and nothing else.
+   *
+   * A key that no longer resolves — revoked by logout, or expired — is simply
+   * ignored rather than rejected: the session stays open and unauthenticated,
+   * and the tools say "not logged in", which is the truth and is recoverable.
+   */
+  async function applyGrant(req, entry) {
+    if (!entry?.api || !entry?.session) return;
+
+    const key = grantKeyFromHeaders(req.headers);
+    if (!key) return;
+
+    const hash = hashGrantKey(key);
+
+    // Already bound to this grant: skip the lookup, but not forever. Revocation
+    // happens in the store, and a session that never looks again would keep
+    // working after another client called logout. Re-checking on a timer bounds
+    // that window without a Redis round trip on every single tool call.
+    const fresh = Date.now() - (entry.session.grantCheckedAt || 0) < GRANT_RECHECK_MS;
+    if (entry.session.grantHash === hash && entry.api.isAuthenticated() && fresh) return;
+
+    let record;
+    try {
+      record = await grants.load(hash);
+    } catch (e) {
+      log(`grant lookup failed: ${e.message}`);
+      return;
+    }
+
+    if (!record?.token) {
+      // Only interesting once per session; after that it is just noise.
+      if (entry.session.grantHash !== null) {
+        entry.session.grantHash = null;
+        entry.api.clearToken();
+        log(`grant no longer valid (${entry.kind}) — client must log in again`);
+      }
+      return;
+    }
+
+    entry.api.setToken(record.token);
+    entry.session.grantHash = hash;
+    entry.session.grantCheckedAt = Date.now();
+  }
+
+  function track(id, kind, transport, server, api, session) {
+    sessions.set(id, { transport, server, api, session, lastSeen: Date.now(), kind });
     log(`session opened (${kind}): ${id} — ${sessions.size} active`);
 
     transport.onclose = () => {
@@ -72,15 +134,15 @@ export function createMcpHttpHandlers({ sessionTtlMs, maxSessions, ssePath, log 
    * Keep the map at the cap, giving up logged-out sessions before logged-in ones.
    *
    * The ordering is the security-relevant part, not a nicety. Opening a session
-   * needs no credentials and `/mcp` is exempt from the app's rate limiter, so
-   * anyone can create them for free; a plain least-recently-used cap would let
-   * that evict every signed-in user, which is a cheap denial of login. An
+   * needs no credentials, so anyone can create them cheaply; a plain
+   * least-recently-used cap would let that evict every signed-in user. An
    * attacker's sessions never authenticate, so spending those first means a
-   * flood costs them their own sessions instead of someone's month-old login.
+   * flood costs them their own sessions rather than someone else's work.
    *
-   * Evicting an authenticated session is logged loudly: it is the one eviction
-   * a user cannot recover from without signing in again, and it means the cap is
-   * genuinely too low rather than that something went stale.
+   * Evicting an authenticated session is still logged loudly. A client holding
+   * a grant re-authenticates on its next request and never notices, but one
+   * that does not store the credential has to sign in again — either way it
+   * means the cap is too low rather than that something went stale.
    */
   function evictOverCap() {
     if (sessions.size <= cap) return;
@@ -98,7 +160,9 @@ export function createMcpHttpHandlers({ sessionTtlMs, maxSessions, ssePath, log 
     );
     for (const [id, entry] of giveUpFirst.slice(0, sessions.size - cap)) {
       sessions.delete(id);
-      const cost = signedIn(entry) ? " — that client must log in again" : " (never logged in)";
+      const cost = signedIn(entry)
+        ? " — that client re-authenticates on its next request only if it kept its grant key"
+        : " (never logged in)";
       log(`session evicted at cap ${cap} (${entry.kind}): ${id}${cost}`);
       Promise.resolve(entry.transport.close()).catch(() => {});
     }
@@ -139,6 +203,7 @@ export function createMcpHttpHandlers({ sessionTtlMs, maxSessions, ssePath, log 
           rpcError(res, 404, "Unknown or expired MCP session. Re-initialize to continue.");
           return;
         }
+        await applyGrant(req, entry);
         await entry.transport.handleRequest(req, res, body);
         return;
       }
@@ -159,11 +224,11 @@ export function createMcpHttpHandlers({ sessionTtlMs, maxSessions, ssePath, log 
         return;
       }
 
-      const { server, api } = createNoteitServer();
+      const { server, api, session } = createNoteitServer({ grants });
       const transport = new StreamableHTTPServerTransport({
         sessionIdGenerator: () => randomUUID(),
         enableJsonResponse,
-        onsessioninitialized: (id) => track(id, "streamable-http", transport, server, api),
+        onsessioninitialized: (id) => track(id, "streamable-http", transport, server, api, session),
         onsessionclosed: (id) => {
           sessions.delete(id);
           log(`session terminated by client: ${id}`);
@@ -171,6 +236,9 @@ export function createMcpHttpHandlers({ sessionTtlMs, maxSessions, ssePath, log 
       });
 
       await server.connect(transport);
+      // Before the handshake is answered, so a returning client is already
+      // logged in by the time it asks for anything.
+      await applyGrant(req, { api, session, kind: "streamable-http" });
       await transport.handleRequest(req, res, body);
     } catch (e) {
       log(`streamable-http error: ${e.stack || e.message}`);
@@ -184,9 +252,11 @@ export function createMcpHttpHandlers({ sessionTtlMs, maxSessions, ssePath, log 
    */
   async function handleSseConnect(req, res, postPath) {
     try {
-      const { server, api } = createNoteitServer();
+      const { server, api, session } = createNoteitServer({ grants });
       const transport = new SSEServerTransport(postPath, res);
-      track(transport.sessionId, "sse", transport, server, api);
+      const entry = { transport, server, api, session, kind: "sse" };
+      track(transport.sessionId, "sse", transport, server, api, session);
+      await applyGrant(req, entry);
       await server.connect(transport);
     } catch (e) {
       log(`sse connect error: ${e.stack || e.message}`);
@@ -203,6 +273,9 @@ export function createMcpHttpHandlers({ sessionTtlMs, maxSessions, ssePath, log 
     }
 
     try {
+      // The legacy transport POSTs each call to a different request than the
+      // one that opened the stream, so the key arrives here too.
+      await applyGrant(req, entry);
       await entry.transport.handlePostMessage(req, res, body);
     } catch (e) {
       log(`sse message error: ${e.stack || e.message}`);

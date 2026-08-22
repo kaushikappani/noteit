@@ -95,10 +95,19 @@ export function createApiClient({ baseUrl } = {}) {
   };
 }
 
-/** Format a successful MCP tool response */
-export function ok(data) {
+/**
+ * Format a successful MCP tool response.
+ *
+ * `meta` rides along in the result's `_meta`, which the spec defines as
+ * out-of-band data for the client. Nothing in it reaches the model: the client
+ * renders `content` into the prompt and reads `_meta` separately. That is
+ * precisely where a credential belongs — see grants.js.
+ */
+export function ok(data, meta) {
   const text = typeof data === "string" ? data : JSON.stringify(data, null, 2);
-  return { content: [{ type: "text", text }] };
+  const result = { content: [{ type: "text", text }] };
+  if (meta) result._meta = meta;
+  return result;
 }
 
 /** Format an error MCP tool response */

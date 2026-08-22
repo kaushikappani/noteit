@@ -1,4 +1,5 @@
 import { ok, err } from "../api-client.js";
+import { credentialMeta, mintGrantKey, hashGrantKey, GRANT_TTL_MS } from "../grants.js";
 
 export const authTools = [
   {
@@ -10,21 +11,13 @@ export const authTools = [
   {
     name: "check_login",
     description:
-      "Check if the user has completed the browser login after calling start_login. Call this after the user says they have logged in, or every ~5 seconds after showing them the login URL. Requires a code returned by start_login.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        code: {
-          type: "string",
-          description: "The auth code returned by start_login",
-        },
-      },
-      required: ["code"],
-    },
+      "Check if the user has completed the browser login after calling start_login. Call this after the user says they have logged in, or every ~5 seconds after showing them the login URL. Takes no arguments — this server remembers which login it started.",
+    inputSchema: { type: "object", properties: {} },
   },
   {
     name: "logout",
-    description: "Logout from Noteit and clear the stored session token.",
+    description:
+      "Log out of Noteit on this client and revoke its saved sign-in. Other devices and the browser session are left alone.",
     inputSchema: { type: "object", properties: {} },
   },
   {
@@ -50,35 +43,69 @@ export const authTools = [
   },
 ];
 
-export async function handleAuthTool(name, args, api) {
+const GRANT_DAYS = Math.round(GRANT_TTL_MS / (24 * 60 * 60 * 1000));
+
+/**
+ * Turn a completed login into a credential the client keeps.
+ *
+ * The JWT itself never leaves this process. What the client gets is a grant
+ * key: a random string that means nothing anywhere else, that only resolves to
+ * this token through the store, and that logout can destroy. The account JWT
+ * can do none of those things — it is a bare 365-day bearer of the whole
+ * account with nothing behind it that can take it back.
+ */
+async function issueGrant(ctx, token) {
+  const key = mintGrantKey();
+  const hash = hashGrantKey(key);
+  await ctx.grants.save(hash, { token, createdAt: Date.now() }, GRANT_TTL_MS);
+  ctx.session.grantHash = hash;
+  return credentialMeta(key);
+}
+
+export async function handleAuthTool(name, args, api, ctx) {
   try {
     switch (name) {
 
       // ── Step 1: Generate auth code + return login URL ────────────────────
       case "start_login": {
-        const { code, loginUrl } = await api.request("GET", "/api/users/mcp/auth");
+        const { code, secret, loginUrl } = await api.request("GET", "/api/users/mcp/auth");
+
+        // The login URL has to be shown — the user has to click it — and it
+        // carries the code, so the code is in the model's prompt whether we
+        // like it or not. The secret is the half that stays here: redeeming the
+        // token needs both, so a prompt injection reading the URL back out of
+        // the conversation still cannot trade it for the account JWT.
+        ctx.session.pendingLogin = { code, secret };
+
         return ok(
           `🔐 **Open this URL in your browser to login:**\n\n${loginUrl}\n\n` +
           `Log in with your NoteIt email and password on that page.\n` +
           `Once you're done, come back and I'll confirm your login automatically.\n\n` +
-          `_(Auth code: \`${code}\` — expires in 5 minutes)_`
+          `_(The link expires in 5 minutes.)_`
         );
       }
 
       // ── Step 2: Poll once to see if token is ready ────────────────────────
       case "check_login": {
-        const { code } = args;
-        if (!code) {
-          return err(new Error("Missing code. Please call start_login first to get an auth code."));
+        // Only this session can redeem the login it started: the secret was
+        // never written down anywhere the model or the user could reach.
+        const pending = ctx.session.pendingLogin;
+        if (!pending) {
+          return err(new Error("No login in progress. Call start_login first."));
         }
+
+        const query =
+          `code=${encodeURIComponent(pending.code)}` +
+          `&secret=${encodeURIComponent(pending.secret)}`;
 
         let res;
         try {
-          res = await api.request("GET", `/api/users/mcp/token?code=${encodeURIComponent(code)}`);
+          res = await api.request("GET", `/api/users/mcp/token?${query}`);
         } catch (e) {
           const msg = e.message || "";
           if (msg.includes("expired") || msg.includes("not found")) {
-            return err(new Error("The auth code has expired or is invalid. Please call start_login again."));
+            ctx.session.pendingLogin = null;
+            return err(new Error("The login link has expired. Please call start_login again."));
           }
           return err(e);
         }
@@ -89,27 +116,47 @@ export async function handleAuthTool(name, args, api) {
         }
 
         if (res && res.token) {
-          // The token stays here. It is the user's 365-day account JWT and it
-          // cannot be revoked, so it is never handed back to the client — the
-          // session it authenticates is what has to survive instead.
+          // The code is spent — the backend deletes it as it hands the token over.
+          ctx.session.pendingLogin = null;
           api.setToken(res.token);
-          // Fetch profile to confirm
+
+          const meta = await issueGrant(ctx, res.token);
+
+          let who = "";
           try {
             const profile = await api.request("GET", "/api/users/info");
-            return ok(`✅ Logged in successfully as **${profile.name}** (${profile.email})! You can now use all NoteIt tools.`);
+            who = ` as **${profile.name}** (${profile.email})`;
           } catch {
-            return ok("✅ Logged in successfully! You can now use all NoteIt tools.");
+            // Logged in either way; only the greeting suffers.
           }
+
+          return ok(
+            `✅ Logged in successfully${who}! You can now use all NoteIt tools.\n\n` +
+            `This client stays signed in for up to ${GRANT_DAYS} days, including across ` +
+            `server restarts. Call logout to end it.`,
+            meta
+          );
         }
 
         return ok("⏳ Still waiting — please complete the login in your browser and let me know when done.");
       }
 
-
       case "logout": {
-        await api.request("GET", "/api/users/logout");
+        // Deliberately does not call /api/users/logout: that clears a cookie
+        // this server does not hold, and revoking the account token would sign
+        // the user out of their browser too. Logging *this client* out means
+        // destroying this client's grant, which is exactly what a grant is for.
+        if (ctx.session.grantHash) {
+          await ctx.grants.delete(ctx.session.grantHash);
+          ctx.session.grantHash = null;
+        }
+        ctx.session.pendingLogin = null;
         api.clearToken();
-        return ok("Logged out successfully.");
+
+        return ok(
+          "Logged out. This client's saved sign-in has been revoked; your browser session is untouched.",
+          credentialMeta(null)
+        );
       }
 
       case "get_profile": {
