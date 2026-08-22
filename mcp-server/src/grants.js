@@ -126,11 +126,15 @@ export function createMemoryGrantStore() {
  */
 export const CREDENTIAL_META_KEY = "mcp.client/credential";
 
-/** Build the `_meta` a client reads to start (or stop) sending a grant key. */
-export function credentialMeta(key) {
+/**
+ * Build the `_meta` a client reads to start (or stop) sending a grant key.
+ * `ttlMs` should match what the store was told, so the client stops sending a
+ * key at the same moment the server stops honouring it.
+ */
+export function credentialMeta(key, ttlMs = GRANT_TTL_MS) {
   return {
     [CREDENTIAL_META_KEY]: key
-      ? { header: "Authorization", value: `Bearer ${key}`, expiresInMs: GRANT_TTL_MS }
+      ? { header: "Authorization", value: `Bearer ${key}`, expiresInMs: ttlMs }
       : null,
   };
 }

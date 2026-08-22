@@ -63,8 +63,21 @@ secrets, which is the part worth understanding.
   prompt. It cannot be kept quiet — the user has to click it.
 - **`secret`** never leaves the MCP server's session memory. Redeeming needs
   both, so reading the URL back out of a transcript buys nothing.
-- The **JWT** (365-day account token) never goes to the client and is never
-  printed. It lives in the per-session API client.
+- The **JWT** never goes to the client and is never printed. It lives in the
+  per-session API client.
+
+The deposit mints a **fresh 365-day token in its own `login:mcp:<id>` slot**
+rather than copying the browser's cookie. There is only one slot per platform,
+so while MCP shared the web slot, the next ordinary sign-in on the website
+overwrote it and every MCP call started failing with a token mismatch — a large
+part of what "I keep having to log in again" actually was. `protect` accepts all
+three slots, so the browser and the AI client no longer disturb each other in
+either direction.
+
+(The token carries a `platform: "mcp"` claim nothing reads. JWT timestamps are
+second-granular and the deposit runs immediately after `/login`, so without it
+the two tokens come out byte-identical and a browser logout would delete both
+slots.)
 
 ## Staying signed in
 
@@ -99,6 +112,7 @@ What survives what:
 | Second instance / no sticky routing | lost, re-handshakes | **survives** (grant) |
 | Session evicted at the 500 cap | lost, re-handshakes | **survives** (grant) |
 | `logout` tool | kept | revoked, both ends |
+| Signing in / out on the website | unaffected | **survives** (separate slot) |
 
 A grant is revocable; the raw JWT is not. That is the other reason to hand out a
 grant rather than the token itself.
@@ -122,9 +136,9 @@ spec feature, and neither side requires the other to implement it.
 
 | What | Where | Lifetime |
 | --- | --- | --- |
-| Account JWT | Redis `login:<platform>:<id>`, cookie | 365 days, revoked on logout |
+| Account JWT | Redis `login:<platform>:<id>` — one slot each for web, mobile, mcp — plus the cookie | 365 days, revoked on logout |
 | Pending login code | Redis `mcp_auth:<code>` (secret hashed) | 5 minutes, single use |
-| Grant | Redis `mcp_grant:<sha256(key)>` | 365 days, revoked by `logout` |
+| Grant | Redis `mcp_grant:<sha256(key)>` | 365 days, capped to the token's remaining life; revoked by `logout` |
 | MCP session | MCP server process memory | 30 days idle, cap 500 |
 | Grant key (client copy) | `chrome.storage.local` — never `.sync` | until revoked |
 | Session id (client copy) | `chrome.storage.local` | 30 days |

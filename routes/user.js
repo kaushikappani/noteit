@@ -330,8 +330,8 @@ router.route("/logout").get(asyncHandler(async (req, res) => {
         try {
             const decode = jwt.verify(token, process.env.JWT_SECRET);
             // Only the key holding *this* token: signing out of the browser
-            // should not knock the user's phone offline as well.
-            for (const platform of ["web", "mobile"]) {
+            // should not knock the user's phone or AI client offline as well.
+            for (const platform of ["web", "mobile", "mcp"]) {
                 const key = `login:${platform}:${decode.id}`;
                 await new Promise((resolve) => {
                     client.get(key, (err, stored) => {
@@ -473,7 +473,7 @@ function secretMatches(record, provided) {
     return expected.length === actual.length && crypto.timingSafeEqual(expected, actual);
 }
 
-/** Park the caller's own JWT against a pending code. Shared by both deposit routes. */
+/** Park a freshly minted MCP token against a pending code. Shared by both deposit routes. */
 async function depositMcpToken(req, res) {
     const { code } = req.body;
     if (!isMcpCode(code)) {
@@ -487,9 +487,37 @@ async function depositMcpToken(req, res) {
         return;
     }
 
-    // `protect` has already verified this cookie, so it is the caller's own
-    // token and nobody else's — the request body has no say in it.
-    await writeMcpAuth(code, { ...record, token: req.cookies.token });
+    // A token of its own, in a slot of its own, rather than a copy of the
+    // browser's cookie. There is exactly one login:web slot per user, so
+    // handing the AI client the web token meant the next ordinary sign-in on
+    // the website overwrote it and every MCP call started failing — which is
+    // most of what "I have to log in again" turned out to be. `protect` now
+    // accepts login:mcp too, so the two live side by side and neither logging
+    // out of the browser nor logging back into it disturbs the AI client.
+    //
+    // It is also a fresh 365 days. Depositing the existing cookie could hand
+    // over a token with a month left while the grant wrapping it claimed a
+    // year.
+    // The `platform` claim is not read anywhere — every consumer only wants
+    // `id`. It is here to make the payload differ from the web token's, because
+    // JWT timestamps are second-granular and this route runs immediately after
+    // /login on the MCP login page. Without it the two tokens come out byte
+    // identical, both slots hold the same string, and logging out of the
+    // browser deletes the AI client's slot as well — reintroducing exactly the
+    // coupling the separate slot exists to remove.
+    const id = req.user._id;
+    const ttlMilliseconds365Days = 365 * 24 * 60 * 60 * 1000;
+    const token = jwt.sign({ id, platform: "mcp" }, process.env.JWT_SECRET, { expiresIn: "365d" });
+
+    await new Promise((resolve, reject) => {
+        client.set(`login:mcp:${id}`, token, "PX", ttlMilliseconds365Days, (err) =>
+            err ? reject(err) : resolve()
+        );
+    });
+
+    // `protect` has already verified the caller, so this is minted for them and
+    // nobody else — the request body has no say in it.
+    await writeMcpAuth(code, { ...record, token });
 
     res.status(200).json({
         message: "Authorized — the AI assistant is now connected.",

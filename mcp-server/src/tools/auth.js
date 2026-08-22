@@ -57,9 +57,32 @@ const GRANT_DAYS = Math.round(GRANT_TTL_MS / (24 * 60 * 60 * 1000));
 async function issueGrant(ctx, token) {
   const key = mintGrantKey();
   const hash = hashGrantKey(key);
-  await ctx.grants.save(hash, { token, createdAt: Date.now() }, GRANT_TTL_MS);
+  // Never outlive the token inside it. A grant that did would keep resolving —
+  // auth_status cheerfully saying "logged in" — while every actual call came
+  // back 401, which is a worse experience than being told to sign in.
+  const ttl = Math.min(GRANT_TTL_MS, remainingTokenLifeMs(token));
+  await ctx.grants.save(hash, { token, createdAt: Date.now() }, ttl);
   ctx.session.grantHash = hash;
-  return credentialMeta(key);
+  return credentialMeta(key, ttl);
+}
+
+/**
+ * How long the JWT has left, from its own `exp` claim.
+ *
+ * Read, not verified — the backend we got it from is the one that signed it,
+ * and nothing here is trusted for authentication. It is only used to shorten a
+ * lifetime, so a token we cannot parse falls back to the full grant TTL and
+ * behaves exactly as it did before.
+ */
+function remainingTokenLifeMs(token) {
+  try {
+    const [, payload] = String(token).split(".");
+    const { exp } = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
+    if (!exp) return GRANT_TTL_MS;
+    return Math.max(0, exp * 1000 - Date.now());
+  } catch (_) {
+    return GRANT_TTL_MS;
+  }
 }
 
 export async function handleAuthTool(name, args, api, ctx) {

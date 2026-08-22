@@ -21,16 +21,22 @@ const protect = asyncHandler(async (req, res, next) => {
             } else {
                 req.user = JSON.parse(result);
             }
-            // Check if the token in Redis matches the one in the request
-            await client.mget([ "login:web:"+ decode.id, "login:mobile:"+decode.id ], (err, result) => {
+            // Check if the token in Redis matches the one in the request.
+            //
+            // "mcp" is its own slot on purpose. It used to be issued into the
+            // web slot, which holds exactly one token — so the next ordinary
+            // web login overwrote it and every MCP call started failing here
+            // with a token mismatch. Signing in on the website should not sign
+            // you out of your AI client.
+            await client.mget([ "login:web:"+ decode.id, "login:mobile:"+decode.id, "login:mcp:"+decode.id ], (err, result) => {
                 if (err) {
                     console.error(err);
                     res.status(500).json({ message: "Internal server error" });
                     return;
                 }
-                
-                const [loginWebToken, loginMobileToken] = result;
-                if (loginWebToken !== token && loginMobileToken!== token ) {
+
+                const [loginWebToken, loginMobileToken, loginMcpToken] = result;
+                if (loginWebToken !== token && loginMobileToken !== token && loginMcpToken !== token) {
                     console.log('Token mismatch');
                     res.clearCookie("token").status(401).json({ message: "Authorization failed: Token mismatch" });
                     return;
@@ -63,16 +69,17 @@ const stockProtect = asyncHandler(async (req, res, next) => {
                 req.user = JSON.parse(result);
             }
 
-            // Check if the token in Redis matches the one in the request
-            await client.mget(["login:web:" + decode.id, "login:mobile:" + decode.id], (err, result) => {
+            // Check if the token in Redis matches the one in the request.
+            // "mcp" is its own slot — see the note in protect above.
+            await client.mget(["login:web:" + decode.id, "login:mobile:" + decode.id, "login:mcp:" + decode.id], (err, result) => {
                 if (err) {
                     console.error(err);
                     res.status(500).json({ message: "Internal server error" });
                     return;
                 }
-                const [loginWebToken, loginMobileToken] = result;
+                const [loginWebToken, loginMobileToken, loginMcpToken] = result;
 
-                if (loginWebToken !== token && loginMobileToken !== token) {
+                if (loginWebToken !== token && loginMobileToken !== token && loginMcpToken !== token) {
                     console.log('Token mismatch');
                     res.clearCookie("token").status(401).json({ message: "Authorization failed: Token mismatch" });
                     return;
