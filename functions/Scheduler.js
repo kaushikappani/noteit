@@ -44,8 +44,11 @@ schedule.scheduleJob(rule2, () => {
         console.log('Skipping task between 12 AM and 6 AM');
     } else {
         console.log('Scheduler triggered every 10 mins');
-        scheduleCoorporateAnnouncments();
-        scheduleCoorporateActions();
+        // Corporate announcements and actions moved to marketdesk/scheduler.js,
+        // which runs the same 10-minute cadence but upserts each filing into
+        // md_filings and summarises it once, instead of re-analysing the whole
+        // rolling window on every tick. Alerts still go out from there, gated on
+        // a materiality score.
     }
 });
 

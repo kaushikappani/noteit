@@ -355,23 +355,21 @@ const scheduleCoorporateAnnouncments = async () => {
       const html = mailTemplate.replace("<!-- Repeat rows as needed -->", tableRows);
           const catchDate = moment().tz(process.env.TIME_ZONE);
 
-      if (noteId) {
-        try {
-          const note = await Note.findById(noteId);
-          note.title = `Corporate Announcements - ${catchDate}`;
-          note.content = html;
-          await note.save();
-        } catch (error) {
-          console.error(`Error saving note for ${userEmail}:`, error);
-        }
-      }
+      // Corporate announcements no longer overwrite a note. They are ingested,
+      // summarised and scored by the MarketDesk module, which keeps every filing
+      // as its own record instead of squashing them into one HTML blob that the
+      // next run destroyed. See marketdesk/jobs/ingestFilings.js.
     }
 
   } catch (e) {
     console.error("Error in scheduleCoorporateAnnouncments ", e);
   }
 };
-scheduleCoorporateAnnouncments();
+
+// Previously this ran on import, meaning every boot and every deploy triggered a
+// full NSE fetch plus an LLM pass before the server had even finished starting.
+// MarketDesk's scheduler owns this cadence now.
+// scheduleCoorporateAnnouncments();
 
 //analyzeCorporateDocument("https://nsearchives.nseindia.com/corporate/FEDERALBNK_28122025202138_ESOS_210_212_281225_SE_S.pdf");
 
@@ -441,13 +439,9 @@ const scheduleCoorporateActions = async () => {
       tableRows
     );
 
-    // 💾 Save to Note
-    const note = await Note.findById("664d66b9ac1930ca8b3f59d1");
-    note.title = "Corporate Actions - " + catchDate.toString();
-    note.content = mailHtml;
-    await note.save(); // ❗ important
-
-    console.log("Corporate actions saved to note:", note._id);
+    // No longer saved to a note - corporate actions are stored per action in
+    // md_corporate_actions and shown as the calendar panel.
+    // See marketdesk/jobs/ingestCorporateActions.js.
 
     // Send email if needed
     const recipient = {

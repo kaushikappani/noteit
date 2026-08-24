@@ -6,6 +6,7 @@ import { Spinner } from 'react-bootstrap';
 import Icon from "./noteIcon.jpg";
 import axios from "axios";
 import { Button, Avatar } from '@mui/material';
+import { isAdmin } from "../marketdesk/AdminGate";
 
 const Header = (props) => {
     const history = useHistory();
@@ -51,6 +52,10 @@ const Header = (props) => {
                                     align="end"
                                 >
                                     <NavDropdown.Item as={Link} to="/profile">Profile</NavDropdown.Item>
+                                    {/* MarketDesk is owner-only; the server 403s for anyone else. */}
+                                    {isAdmin(props.user) && (
+                                        <NavDropdown.Item as={Link} to="/marketdesk">MarketDesk</NavDropdown.Item>
+                                    )}
                                     <NavDropdown.Divider />
                                     <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
                                 </NavDropdown>

@@ -16,6 +16,10 @@ import NotesV2 from './pages/NotesV2';
 import NoteItChat from './pages/NoteItChat';
 import McpLogin from './pages/McpLogin';
 import TradeBook from './pages/TradeBook';
+import ScreenerDashboard from './marketdesk/pages/ScreenerDashboard';
+import CompanySnapshot from './marketdesk/pages/CompanySnapshot';
+import EditionView from './marketdesk/pages/EditionView';
+import MarketDeskSettings from './marketdesk/pages/MarketDeskSettings';
 function App() {
   return (
     <BrowserRouter>
@@ -38,6 +42,13 @@ function App() {
         <Route path="/genai" component={NoteItChat} exact />
         <Route path="/mcp-login" component={McpLogin} exact />
         <Route path="/tradebook" component={TradeBook} exact />
+
+        {/* MarketDesk - admin-only AI market newspaper. Pages live under
+            src/marketdesk/ so the feature can move out as one unit. */}
+        <Route path="/marketdesk" component={ScreenerDashboard} exact />
+        <Route path="/marketdesk/settings" component={MarketDeskSettings} exact />
+        <Route path="/marketdesk/company/:symbol" component={CompanySnapshot} exact />
+        <Route path="/marketdesk/edition/:date/:slot" component={EditionView} exact />
       </main>
     </BrowserRouter>
   );

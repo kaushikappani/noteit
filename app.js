@@ -20,6 +20,7 @@ const path = require("path");
 const aiGptRoutes = require("./routes/aigpt");
 const tradebookRoutes = require("./routes/tradebook");
 const { mountMcp, isMcpRequest } = require("./middleware/mcp");
+const { mountMarketDesk } = require("./marketdesk");
 
 require('./functions/Scheduler');
 
@@ -107,6 +108,10 @@ app.use("/api/remainders", remainderRoutes);
 
 app.use("/gpt", aiGptRoutes);
 app.use("/api/tradebook", tradebookRoutes);
+
+// MarketDesk - AI market newspaper. Self-contained in marketdesk/; this and the
+// require above are its only footprint in the host app.
+mountMarketDesk(app);
 
 // MCP server — must be mounted before the production catch-all below.
 if (process.env.MCP_HTTP_ENABLED !== "false") {
