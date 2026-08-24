@@ -5,7 +5,8 @@ exchange filing for a configurable watchlist, researches the market on the web
 through an agentic LLM loop, and publishes one edition: a screener dashboard,
 a page per company, and the same thing emailed, pushed and sent to Telegram.
 
-Admin-only. Self-contained in this folder — see `DEPENDENCIES.md`.
+Admin-only. Self-contained in this folder — see `DEPENDENCIES.md` for the
+extraction seam and `USAGE.md` for what every button does.
 
 ## How it fits together
 
