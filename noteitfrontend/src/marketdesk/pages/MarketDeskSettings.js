@@ -264,6 +264,52 @@ function Settings() {
             </div>
 
             <div style={card}>
+                <div style={cardTitle}>Models</div>
+                <Row>
+                    <Col xs={12} md={4}>
+                        <Form.Label style={{ fontSize: 12, color: "#95a1b1" }}>Fast (filing analysis)</Form.Label>
+                        <Form.Control
+                            size="sm"
+                            placeholder="gemini-3.5-flash-lite"
+                            defaultValue={config.models?.fast || ""}
+                            onBlur={(e) => saveConfig({
+                                models: { ...config.models, fast: e.target.value.trim() || null },
+                            })}
+                        />
+                    </Col>
+                    <Col xs={12} md={4}>
+                        <Form.Label style={{ fontSize: 12, color: "#95a1b1" }}>Balanced (company pass)</Form.Label>
+                        <Form.Control
+                            size="sm"
+                            placeholder="gemini-3.5-flash-lite"
+                            defaultValue={config.models?.balanced || ""}
+                            onBlur={(e) => saveConfig({
+                                models: { ...config.models, balanced: e.target.value.trim() || null },
+                            })}
+                        />
+                    </Col>
+                    <Col xs={12} md={4}>
+                        <Form.Label style={{ fontSize: 12, color: "#95a1b1" }}>Deep (market brief)</Form.Label>
+                        <Form.Control
+                            size="sm"
+                            placeholder="gemini-3.5-flash"
+                            defaultValue={config.models?.deep || ""}
+                            onBlur={(e) => saveConfig({
+                                models: { ...config.models, deep: e.target.value.trim() || null },
+                            })}
+                        />
+                    </Col>
+                </Row>
+                <div style={{ fontSize: 11.5, color: "#6b7480", marginTop: 10 }}>
+                    Active provider is <strong style={{ color: "#a8b3c1" }}>{status?.provider}</strong>, search backend{" "}
+                    <strong style={{ color: "#a8b3c1" }}>{status?.searchProvider}</strong>. Leave a box empty to use the
+                    default for that provider. Free-tier Gemini allows only 20 requests per day <em>per model</em>, so
+                    pointing Deep at a different model than Fast gives each its own allowance.
+                    API keys and the provider itself are environment variables, not editable here.
+                </div>
+            </div>
+
+            <div style={card}>
                 <div style={cardTitle}>Cost controls</div>
                 <Row>
                     <Col xs={6} md={4}>

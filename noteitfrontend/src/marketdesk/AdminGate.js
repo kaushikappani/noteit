@@ -8,6 +8,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
+import "./marketdesk.css";
 
 const ADMIN_EMAILS = ["kaushikappani@gmail.com"];
 
@@ -27,7 +28,7 @@ export default function AdminGate({ children }) {
 
     if (!user) {
         return (
-            <div style={{ padding: 40, textAlign: "center", color: "#9aa4b2" }}>
+            <div className="md-scope" style={{ padding: 40, textAlign: "center", color: "#9aa4b2" }}>
                 <h4 style={{ color: "#e8ecf1" }}>Sign in required</h4>
                 <p>MarketDesk needs an authenticated session.</p>
                 <Link to="/">Go to sign in</Link>
@@ -37,7 +38,7 @@ export default function AdminGate({ children }) {
 
     if (!isAdmin(user)) {
         return (
-            <div style={{ padding: 40, textAlign: "center", color: "#9aa4b2" }}>
+            <div className="md-scope" style={{ padding: 40, textAlign: "center", color: "#9aa4b2" }}>
                 <h4 style={{ color: "#e8ecf1" }}>Not available</h4>
                 <p>MarketDesk is restricted to the account owner.</p>
                 <Link to="/notes">Back to notes</Link>
@@ -45,5 +46,8 @@ export default function AdminGate({ children }) {
         );
     }
 
-    return children;
+    // Every MarketDesk page renders through this gate, which makes it the one
+    // place to scope the dark form styling. Bootstrap's light input styles would
+    // otherwise leave white boxes inside dark panels.
+    return <div className="md-scope">{children}</div>;
 }

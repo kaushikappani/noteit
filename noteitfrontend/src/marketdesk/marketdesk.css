@@ -1,0 +1,140 @@
+/*
+ * Dark styling for the MarketDesk pages.
+ *
+ * The app loads the stock light bootstrap.min.css, and MUI's dark ThemeProvider
+ * does not touch react-bootstrap markup — so inputs, selects and textareas
+ * render white-on-white inside these dark panels. Everything here is scoped
+ * under .md-scope so none of it can reach the existing pages.
+ */
+
+.md-scope {
+    --md-bg: #12171e;
+    --md-bg-raised: #1a212b;
+    --md-border: #2a3441;
+    --md-border-strong: #3a475a;
+    --md-text: #dbe2ea;
+    --md-muted: #8b95a5;
+    --md-accent: #5b9bd5;
+}
+
+/* ---- inputs, selects, textareas ---------------------------------------- */
+
+.md-scope .form-control,
+.md-scope select.form-control,
+.md-scope textarea.form-control {
+    background-color: var(--md-bg-raised);
+    border: 1px solid var(--md-border);
+    color: var(--md-text);
+    border-radius: 5px;
+}
+
+.md-scope .form-control:focus {
+    background-color: var(--md-bg-raised);
+    border-color: var(--md-accent);
+    color: var(--md-text);
+    box-shadow: 0 0 0 2px rgba(91, 155, 213, .18);
+}
+
+.md-scope .form-control::placeholder { color: #636f80; }
+
+.md-scope .form-control:disabled,
+.md-scope .form-control[readonly] {
+    background-color: #151b23;
+    color: var(--md-muted);
+}
+
+/* Native dropdown lists are painted by the OS, so the options need it too. */
+.md-scope select.form-control option {
+    background-color: var(--md-bg-raised);
+    color: var(--md-text);
+}
+
+/* Chrome paints number spinners dark-on-dark otherwise. */
+.md-scope input[type="number"] { color-scheme: dark; }
+
+.md-scope .form-label,
+.md-scope label { color: var(--md-muted); }
+
+/* ---- switches and checkboxes ------------------------------------------- */
+/* react-bootstrap 1.x renders Form.Check type="switch" as .custom-control. */
+
+.md-scope .custom-control-label,
+.md-scope .form-check-label { color: var(--md-text); }
+
+.md-scope .custom-control-label::before {
+    background-color: #222b36;
+    border-color: var(--md-border-strong);
+}
+
+.md-scope .custom-control-input:checked ~ .custom-control-label::before {
+    background-color: var(--md-accent);
+    border-color: var(--md-accent);
+}
+
+.md-scope .custom-control-input:focus ~ .custom-control-label::before {
+    box-shadow: 0 0 0 2px rgba(91, 155, 213, .25);
+}
+
+.md-scope .form-check-input { background-color: #222b36; border-color: var(--md-border-strong); }
+
+/* ---- tabs -------------------------------------------------------------- */
+
+.md-scope .nav-tabs { border-bottom: 1px solid var(--md-border); }
+
+.md-scope .nav-tabs .nav-link {
+    color: var(--md-muted);
+    border: 1px solid transparent;
+    background: transparent;
+}
+
+.md-scope .nav-tabs .nav-link:hover {
+    color: var(--md-text);
+    border-color: transparent transparent var(--md-border);
+}
+
+.md-scope .nav-tabs .nav-link.active {
+    color: #f1f5f9;
+    background-color: var(--md-bg);
+    border-color: var(--md-border) var(--md-border) var(--md-bg);
+}
+
+/* ---- alerts ------------------------------------------------------------ */
+
+.md-scope .alert { border-width: 1px; border-style: solid; }
+
+.md-scope .alert-secondary {
+    background-color: var(--md-bg);
+    border-color: var(--md-border);
+    color: #a8b3c1;
+}
+.md-scope .alert-danger {
+    background-color: rgba(179, 38, 30, .14);
+    border-color: rgba(248, 113, 113, .35);
+    color: #fca5a5;
+}
+.md-scope .alert-success {
+    background-color: rgba(22, 163, 74, .14);
+    border-color: rgba(74, 222, 128, .3);
+    color: #86efac;
+}
+.md-scope .alert-warning {
+    background-color: rgba(217, 119, 6, .14);
+    border-color: rgba(251, 191, 36, .3);
+    color: #fcd34d;
+}
+
+/* ---- buttons ----------------------------------------------------------- */
+
+.md-scope .btn-outline-secondary {
+    color: #a8b3c1;
+    border-color: var(--md-border-strong);
+}
+.md-scope .btn-outline-secondary:hover {
+    background-color: #222b36;
+    border-color: var(--md-muted);
+    color: #f1f5f9;
+}
+.md-scope .btn-outline-light { color: var(--md-text); border-color: var(--md-border-strong); }
+.md-scope .btn-outline-light:hover { background-color: #222b36; color: #fff; }
+
+.md-scope .badge { font-weight: 500; }
