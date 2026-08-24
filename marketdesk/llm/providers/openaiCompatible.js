@@ -6,6 +6,7 @@
  */
 
 const { postJson } = require("../http");
+const { getPool } = require("../keyPool");
 const { LlmError, SafetyError } = require("../errors");
 const { toOpenAITools, toOpenAIToolChoice } = require("../toolSchema");
 const { estimateCostUsd } = require("../../config/settings");
@@ -89,19 +90,26 @@ function fromResponse(data, model) {
  * @param {object} opts
  * @param {string} opts.name          provider label, e.g. "openai" | "openrouter"
  * @param {string} opts.baseUrl       up to and including /v1
- * @param {string} opts.apiKey
+ * @param {string} [opts.apiKey]     single key; shorthand for a one-key pool
+ * @param {string[]} [opts.apiKeys]   key pool, alternated and failed over
  * @param {object} [opts.extraHeaders]
  * @param {boolean} [opts.jsonSchema] true when the endpoint supports response_format json_schema
  */
 function createOpenAICompatibleProvider({
-    name, baseUrl, apiKey, extraHeaders = {}, resolveModel, jsonSchema = false,
+    name, baseUrl, apiKey, apiKeys, extraHeaders = {}, resolveModel, jsonSchema = false,
 }) {
-    if (!apiKey) throw new LlmError(`${name} API key is not set`, { provider: name });
+    // Same pool machinery as the Gemini adapter: alternate across keys, fail over
+    // on 429/auth, drop a key that turns out to be invalid. See llm/keyPool.js.
+    const keyPool = getPool({
+        keys: apiKeys && apiKeys.length ? apiKeys : [apiKey],
+        provider: name,
+    });
 
     return {
         name,
         capabilities: { toolCalling: true, nativeWebSearch: false, jsonSchema, citations: false },
         resolveModel,
+        keyPool,
 
         async chat({
             system, messages = [], tools = [], toolChoice, responseFormat,
@@ -139,11 +147,16 @@ function createOpenAICompatibleProvider({
                 if (choice) body.tool_choice = choice;
             }
 
-            const data = await postJson(`${baseUrl}/chat/completions`, body, {
-                headers: { Authorization: `Bearer ${apiKey}`, ...extraHeaders },
-                signal, provider: name, model: resolved,
-            });
-            return fromResponse(data, resolved);
+            // The key travels in the Authorization header here, so it is applied
+            // per attempt and the pool can hand out a different one on failover.
+            return keyPool.run(async (key) => {
+                const data = await postJson(`${baseUrl}/chat/completions`, body, {
+                    headers: { Authorization: `Bearer ${key}`, ...extraHeaders },
+                    signal, provider: name, model: resolved,
+                    retryRateLimit: keyPool.liveCount() < 2,
+                });
+                return fromResponse(data, resolved);
+            }, { model: resolved });
         },
 
         // No native search on this shape. llm/index.js attaches a search

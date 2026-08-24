@@ -16,6 +16,7 @@ const { createGeminiProvider } = require("./providers/gemini");
 const { createOpenAICompatibleProvider } = require("./providers/openaiCompatible");
 const { createGeminiGroundingSearch } = require("./search/geminiGrounding");
 const { createHttpSearch } = require("./search/httpSearch");
+const { getPool } = require("./keyPool");
 const { env, resolveModel: resolveFromSettings } = require("../config/settings");
 const { LlmError, RateLimitError, isRetryable } = require("./errors");
 
@@ -27,8 +28,9 @@ function buildChatProvider(providerName, overrides) {
     switch (providerName) {
         case "gemini":
             return createGeminiProvider({
-                apiKey: env.geminiApiKey,
-                apiKeys: env.geminiApiKeys,
+                // getPool() memoises per key list, so the grounding search below
+                // lands on this same pool rather than relearning every 429.
+                pool: getPool({ keys: env.geminiApiKeys, provider: "gemini" }),
                 resolveModel,
             });
 
@@ -36,7 +38,7 @@ function buildChatProvider(providerName, overrides) {
             return createOpenAICompatibleProvider({
                 name: "openai",
                 baseUrl: "https://api.openai.com/v1",
-                apiKey: env.openaiApiKey,
+                apiKeys: env.openaiApiKeys,
                 resolveModel,
                 // The installed-era OpenAI API has json_object but not json_schema.
                 jsonSchema: false,
@@ -46,7 +48,7 @@ function buildChatProvider(providerName, overrides) {
             return createOpenAICompatibleProvider({
                 name: "openrouter",
                 baseUrl: "https://openrouter.ai/api/v1",
-                apiKey: env.openrouterApiKey,
+                apiKeys: env.openrouterApiKeys,
                 extraHeaders: {
                     "HTTP-Referer": process.env.DOMAIN || "https://noteit.local",
                     "X-Title": "Noteit MarketDesk",
@@ -74,10 +76,9 @@ function buildSearch(provider, overrides) {
         if (provider.capabilities.nativeWebSearch && provider.name === "gemini") {
             return provider.search.bind(provider);
         }
-        if (env.geminiApiKey) {
+        if (env.geminiApiKeys.length) {
             return createGeminiGroundingSearch({
-                apiKey: env.geminiApiKey,
-                apiKeys: env.geminiApiKeys,
+                pool: getPool({ keys: env.geminiApiKeys, provider: "gemini" }),
                 model: resolveFromSettings("fast", "gemini", overrides),
             });
         }

@@ -10,7 +10,8 @@
  */
 
 const { postJson } = require("../http");
-const { SafetyError, LlmError } = require("../errors");
+const { getPool } = require("../keyPool");
+const { SafetyError } = require("../errors");
 const { toGeminiTools, toGeminiToolConfig, toGeminiSchema } = require("../toolSchema");
 const { estimateCostUsd } = require("../../config/settings");
 
@@ -110,55 +111,46 @@ function fromResponse(data, model) {
     };
 }
 
-function createGeminiProvider({ apiKey, apiKeys, resolveModel }) {
-    const keys = (apiKeys && apiKeys.length ? apiKeys : [apiKey]).filter(Boolean);
-    if (!keys.length) throw new LlmError("GEMINI_API_KEY is not set", { provider: "gemini" });
-
-    // Which key to start from. Advanced permanently once a key is exhausted, so
-    // later calls do not keep paying a round trip to rediscover the same 429.
-    let cursor = 0;
+function createGeminiProvider({ apiKey, apiKeys, resolveModel, pool }) {
+    // Key selection — alternation, cooldowns, failover, dropping a bad key —
+    // belongs to llm/keyPool.js. A pool is built here only when the caller did
+    // not pass a shared one, so the chat provider and the grounding search can
+    // converge on ONE pool rather than each rediscovering the same 429s.
+    const keyPool = pool || getPool({
+        keys: apiKeys && apiKeys.length ? apiKeys : [apiKey],
+        provider: "gemini",
+    });
 
     /**
-     * Try each key in turn, rotating past exhausted ones.
+     * One generateContent call, on whichever key the pool hands us.
      *
-     * Free-tier quota is per project per model per day (20), so a second key from
-     * a different project is a genuinely fresh allowance rather than the same
-     * bucket under another name. postJson has already applied its own retry
-     * policy by the time a 429 reaches us, so arriving here means this key is
-     * spent, not merely busy.
+     * This API carries the key in the query string, so the URL is rebuilt per
+     * attempt rather than fixed once.
+     *
+     * retryRateLimit is switched OFF whenever a second key is live: backing off
+     * in postJson costs seconds and still leaves the call on the spent key,
+     * whereas rotating reaches an untouched allowance at once. With a single key
+     * there is nowhere to rotate to, so the in-place backoff is all we have and
+     * stays on.
      */
-    async function generate(model, body, signal) {
-        let lastErr;
-
-        for (let i = 0; i < keys.length; i++) {
-            const index = (cursor + i) % keys.length;
-            const url = `${BASE}/models/${encodeURIComponent(model)}:generateContent?key=${keys[index]}`;
-            try {
-                const data = await postJson(url, body, { signal, provider: "gemini", model });
-                cursor = index;
-                return fromResponse(data, model);
-            } catch (err) {
-                lastErr = err;
-                // 429: this project's allowance is spent.
-                // 404: this model is not released to this project -- Google is
-                // retiring 2.5 models per-project, so another key may still have
-                // it. Both are worth trying the next key for; nothing else is.
-                const worthRotating = err.status === 429 || err.status === 404;
-                if (!worthRotating || keys.length === 1) throw err;
-                if (i < keys.length - 1) {
-                    console.warn(
-                        `[marketdesk/llm] gemini key ${index + 1}/${keys.length} exhausted for ${model} — trying key ${((index + 1) % keys.length) + 1}`
-                    );
-                }
-            }
-        }
-        throw lastErr;
+    function generate(model, body, signal) {
+        return keyPool.run(async (key) => {
+            const url = `${BASE}/models/${encodeURIComponent(model)}:generateContent?key=${key}`;
+            const data = await postJson(url, body, {
+                signal,
+                provider: "gemini",
+                model,
+                retryRateLimit: keyPool.liveCount() < 2,
+            });
+            return fromResponse(data, model);
+        }, { model });
     }
 
     return {
         name: "gemini",
         capabilities: { toolCalling: true, nativeWebSearch: true, jsonSchema: true, citations: true },
         resolveModel,
+        keyPool,
 
         async chat({
             system, messages = [], tools = [], toolChoice, responseFormat,

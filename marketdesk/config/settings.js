@@ -69,6 +69,25 @@ const PRICING = {
 // "gemini-3.5-flash" just because that key happened to be checked earlier.
 const PRICING_KEYS = Object.keys(PRICING).sort((a, b) => b.length - a.length);
 
+/**
+ * Read a comma-separated key pool from the first of `names` that is set, then
+ * merge in any of the others.
+ *
+ * Merging rather than picking matters: someone who already had GEMINI_API_KEY
+ * set and then adds GEMINI_API_KEYS should end up with all of them, not silently
+ * lose the original. Duplicates collapse in the pool itself.
+ */
+function keyList(...names) {
+    const out = [];
+    for (const name of names) {
+        for (const part of String(process.env[name] || "").split(",")) {
+            const key = part.trim();
+            if (key && !out.includes(key)) out.push(key);
+        }
+    }
+    return out;
+}
+
 const env = {
     provider: (process.env.LLM_PROVIDER || "gemini").toLowerCase(),
     models: {
@@ -78,14 +97,21 @@ const env = {
     },
     geminiApiKey: process.env.GEMINI_API_KEY,
     /**
-     * Optional comma-separated pool. Free-tier Gemini allows only 20 requests per
-     * day per model per project, which is less than one edition needs, so several
-     * keys from different projects are rotated as each is exhausted.
+     * Comma-separated key pools, one per provider.
+     *
+     * Free-tier Gemini allows only 20 requests per day per model per project,
+     * which is less than one edition needs, so several keys from different
+     * projects are alternated and failed over — see llm/keyPool.js.
+     *
+     * The plural and singular names are merged for every provider, so going from
+     * one key to several is purely an env change and a single key is just a pool
+     * of one.
      */
-    geminiApiKeys: (process.env.GEMINI_API_KEYS || process.env.GEMINI_API_KEY || "")
-        .split(",").map((k) => k.trim()).filter(Boolean),
+    geminiApiKeys: keyList("GEMINI_API_KEYS", "GEMINI_API_KEY"),
     openaiApiKey: process.env.OPENAI_API_KEY,
+    openaiApiKeys: keyList("OPENAI_API_KEYS", "OPENAI_API_KEY"),
     openrouterApiKey: process.env.OPENROUTER_API_KEY,
+    openrouterApiKeys: keyList("OPENROUTER_API_KEYS", "OPENROUTER_API_KEY"),
     searchProvider: (process.env.MARKETDESK_SEARCH_PROVIDER || "gemini-grounding").toLowerCase(),
     tavilyApiKey: process.env.TAVILY_API_KEY,
     serperApiKey: process.env.SERPER_API_KEY,

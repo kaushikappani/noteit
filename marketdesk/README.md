@@ -141,14 +141,37 @@ Defaults are `gemini-3.5-flash-lite` (fast, balanced) and `gemini-3.5-flash`
 Free tier allows **20 requests per day per model per project** — less than a
 single edition needs. Two mechanisms make this survivable:
 
-- **Key rotation.** `GEMINI_API_KEYS` takes a comma-separated pool. On a 429 (or
-  a 404 for a model that project has not been given), the provider advances to
-  the next key and remembers which one worked. Keys from *different projects*
-  are genuinely separate allowances; a second key on the same project is not.
-  Because the cap is per model, `deep` pointing at a different model than `fast`
-  also stops the two tiers competing for one allowance.
+- **Key pool.** `GEMINI_API_KEYS` takes a comma-separated pool (`OPENAI_API_KEYS`
+  and `OPENROUTER_API_KEYS` work the same way). The singular `*_API_KEY` names are
+  merged in, so one key is simply a pool of one and nothing needs changing to go
+  from one key to several. Keys from *different projects* are genuinely separate
+  allowances; a second key on the same project is not. Because the cap is per
+  model, `deep` pointing at a different model than `fast` also stops the two
+  tiers competing for one allowance.
+
+  `llm/keyPool.js` owns two distinct behaviours:
+
+  - *Alternate* — every call starts one further along the ring, so N keys carry
+    about 1/N of the traffic each. This is what stops key 1 absorbing the whole
+    build and hitting its per-minute cap while the others sit idle.
+  - *Fail over* — a 429, a per-project 404, or an auth error retries the same
+    call on the next eligible key. A key that answers 429 is rested (until the
+    next UTC midnight for a *daily* cap, otherwise for the server's `retryDelay`);
+    a key that proves invalid is dropped from the pool for the process lifetime,
+    so one bad entry cannot take down the calls that land on it.
+
+  With a single key both reduce to "use that key", with no extra round trips.
+  `pool.stats()` reports per-key calls, failures and cooldowns, never a whole key.
 - **Pacing.** `LLM_MIN_INTERVAL_MS` (default `3500`, about 17 req/min) gates all
-  outbound calls process-wide. Set it to `0` on a paid key.
+  outbound calls process-wide. That default is sized for ONE key and is divided by
+  the number of live keys, since N projects have N times the allowance — 3 keys
+  pace at ~1170ms. Setting the variable explicitly pins it and disables that
+  scaling; `0` disables the gate entirely, for a paid key.
+
+  When more than one key is live, a 429 is *not* retried in place: rotating to a
+  key that still has allowance beats spending seconds backing off on a spent one.
+  5xx and network blips are still retried in place, since another key would only
+  hit the same struggling endpoint.
 
 429 retries wait for the server's own `retryDelay`, except when the violation is
 a *daily* cap — Gemini still says "retry in 33s" when the quota resets tomorrow,

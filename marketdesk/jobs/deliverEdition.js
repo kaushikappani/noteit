@@ -111,6 +111,23 @@ async function deliverEdition(target, { force = false, only } = {}) {
     }
 
     console.log(`[marketdesk] delivery ${edition.date} ${edition.slot}: ${JSON.stringify(results)}`);
+
+    // Email is the channel that matters: telegram and push are conveniences, but
+    // an edition nobody was mailed has effectively not been published. A quiet
+    // "skipped" or "disabled" in the results object is far too easy to miss, so
+    // any outcome other than a send is named explicitly here.
+    if (!only || only.includes("email")) {
+        const outcome = results.email;
+        if (outcome !== "sent") {
+            const reason = outcome === "disabled"
+                ? "email is switched off in settings (enabled.email)"
+                : outcome === "skipped"
+                    ? "this edition was already emailed — rebuild with force, or POST .../deliver {force:true}"
+                    : outcome;
+            console.error(`[marketdesk] NO EMAIL SENT for ${edition.date} ${edition.slot}: ${reason}`);
+            results.emailWarning = reason;
+        }
+    }
     return results;
 }
 

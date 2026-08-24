@@ -283,7 +283,23 @@ async function buildEdition({ date, slot, force = false, dryRun = false } = {}) 
         return { edition: edition.toObject(), skipped: true };
     }
     if (force) {
-        await MdEdition.updateOne({ _id: edition._id }, { $set: { status: "building", error: null } });
+        // Clearing the delivery stamps is the point, not a side effect.
+        //
+        // deliverEdition() is idempotent per channel: a channel with a sentAt is
+        // skipped, so that a retry after a half-failed delivery cannot send the
+        // email twice. But a forced rebuild replaces the edition's CONTENT, and
+        // the stamps left over from the previous build then suppress delivery of
+        // the new one entirely — you press rebuild, the newspaper changes, and no
+        // mail arrives. Resetting them here says "nothing has been sent for this
+        // edition as it now stands", which is exactly true.
+        //
+        // Safe against a failed rebuild: status goes to "building" in the same
+        // update, and deliverEdition() refuses anything that is not "ready", so a
+        // build that dies cannot trigger a send off the cleared stamps.
+        await MdEdition.updateOne(
+            { _id: edition._id },
+            { $set: { status: "building", error: null }, $unset: { delivery: "" } }
+        );
     }
 
     try {

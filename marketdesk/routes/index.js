@@ -66,7 +66,11 @@ router.post("/editions/build", adminProtect, asyncHandler(async (req, res) => {
     const result = await buildEdition({ date, slot, force: !!force, dryRun: !!dryRun });
     let delivery = null;
     if (deliver && !dryRun && !result.skipped) {
-        delivery = await deliverEdition(result.edition._id);
+        // force flows through to delivery as well. A forced rebuild replaces the
+        // edition's content, so the previous build's per-channel sentAt stamps
+        // must not suppress sending the new one — otherwise pressing rebuild
+        // changes the newspaper and silently mails nobody.
+        delivery = await deliverEdition(result.edition._id, { force: !!force });
     }
     res.json({ ...result, delivery });
 }));

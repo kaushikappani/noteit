@@ -17,9 +17,29 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
  * little headroom. Set LLM_MIN_INTERVAL_MS=0 on a paid key, where bursting is
  * free and this would only slow the build down.
  */
-const MIN_INTERVAL_MS = Number(
-    process.env.LLM_MIN_INTERVAL_MS === undefined ? 3500 : process.env.LLM_MIN_INTERVAL_MS
-);
+const PINNED_INTERVAL = process.env.LLM_MIN_INTERVAL_MS !== undefined;
+const MIN_INTERVAL_MS = Number(PINNED_INTERVAL ? process.env.LLM_MIN_INTERVAL_MS : 3500);
+
+/**
+ * How many independent API keys are in play.
+ *
+ * The interval above is sized for ONE key. A pool of N keys from N projects has
+ * N times the per-minute allowance, so holding the one-key pace would make extra
+ * keys buy reliability but no speed. llm/keyPool.js calls configureThrottle()
+ * with the live key count, and again whenever a key is dropped.
+ *
+ * An explicitly pinned LLM_MIN_INTERVAL_MS is left alone: if someone has set the
+ * pace by hand, silently dividing it is not ours to do.
+ */
+let divisor = 1;
+
+function configureThrottle({ divisor: next } = {}) {
+    if (PINNED_INTERVAL) return;
+    const value = Number(next);
+    if (Number.isFinite(value) && value >= 1) divisor = value;
+}
+
+const effectiveInterval = () => MIN_INTERVAL_MS / divisor;
 
 // A promise chain rather than a timestamp check, so concurrent callers queue
 // instead of all reading the same "last call" value and racing through together.
@@ -27,10 +47,11 @@ let gate = Promise.resolve();
 let lastCallAt = 0;
 
 function throttle() {
-    if (MIN_INTERVAL_MS <= 0) return Promise.resolve();
+    const interval = effectiveInterval();
+    if (interval <= 0) return Promise.resolve();
     const wait = gate.then(async () => {
         const gap = Date.now() - lastCallAt;
-        if (gap < MIN_INTERVAL_MS) await sleep(MIN_INTERVAL_MS - gap);
+        if (gap < interval) await sleep(interval - gap);
         lastCallAt = Date.now();
     });
     gate = wait.catch(() => {});
@@ -48,6 +69,7 @@ const MAX_BACKOFF_MS = 65000;
  */
 async function postJson(url, body, {
     headers = {}, signal, timeoutMs = 180000, provider, model, retries = 3,
+    retryRateLimit = true,
 } = {}) {
     let lastErr;
 
@@ -76,6 +98,14 @@ async function postJson(url, body, {
             lastErr.status = lastErr.status || 503;
         }
 
+        // With a live key pool, waiting out a 429 is strictly worse than handing
+        // the call to a key that still has allowance — so the caller can ask for
+        // rate limits to surface immediately and rotate instead of backing off.
+        // 5xx and network blips are still retried in place: another key would hit
+        // the same struggling endpoint.
+        const rateLimited = lastErr.name === "RateLimitError";
+        if (rateLimited && !retryRateLimit) throw lastErr;
+
         if (attempt < retries && isRetryable(lastErr)) {
             // Cap the server's suggestion: a multi-minute quota reset should
             // surface as a failure the caller can degrade around, not a stall.
@@ -93,4 +123,4 @@ async function postJson(url, body, {
     throw lastErr;
 }
 
-module.exports = { postJson, sleep, MIN_INTERVAL_MS };
+module.exports = { postJson, sleep, MIN_INTERVAL_MS, configureThrottle, effectiveInterval };

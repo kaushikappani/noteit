@@ -8,8 +8,11 @@
 
 const { createGeminiProvider } = require("../providers/gemini");
 
-function createGeminiGroundingSearch({ apiKey, apiKeys, model }) {
+function createGeminiGroundingSearch({ apiKey, apiKeys, pool, model }) {
     const provider = createGeminiProvider({
+        // Passed straight through: the caller shares the chat provider's pool so
+        // a spent key is known to both, rather than being rediscovered here.
+        pool,
         apiKey,
         apiKeys,
         resolveModel: () => model,
