@@ -1,78 +1,59 @@
 /**
- * get_price — quotes for a company or an index.
+ * get_price — one company or one index.
  *
- * NSE first for equities, Yahoo as the fallback and as the only route for global
- * indices and commodities. Both are soft: a quote that cannot be fetched returns
- * a note, so the model writes around it instead of the run dying.
+ * Sources live in services/priceSources.js. NSE and Yahoo both proved unusable
+ * for equities (403 and rate limiting respectively), so screener.in is the
+ * primary and Yahoo is only a last resort.
  */
 
-const { fetchQuote } = require("../../services/nseClient");
+const { fetchEquityPrice, findIndex, fetchYahoo } = require("../../services/priceSources");
 
-// Yahoo tickers for the cues an Indian market brief actually references.
-const INDEX_TICKERS = {
-    NIFTY: "^NSEI", NIFTY50: "^NSEI", SENSEX: "^BSESN", BANKNIFTY: "^NSEBANK",
+// Yahoo tickers for the few things neither Indian source covers.
+const YAHOO_FALLBACK = {
     SPX: "^GSPC", SP500: "^GSPC", NASDAQ: "^IXIC", DOW: "^DJI",
-    NIKKEI: "^N225", HANGSENG: "^HSI", FTSE: "^FTSE",
-    CRUDE: "BZ=F", BRENT: "BZ=F", GOLD: "GC=F", DXY: "DX-Y.NYB", USDINR: "INR=X",
+    CRUDE: "BZ=F", BRENT: "BZ=F", GOLD: "GC=F", SILVER: "SI=F",
+    DXY: "DX-Y.NYB", USDINR: "INR=X",
 };
-
-async function yahooQuote(ticker) {
-    try {
-        const yahooFinance = require("yahoo-finance2").default;
-        const q = await yahooFinance.quote(ticker);
-        if (!q) return null;
-        return {
-            ticker,
-            name: q.shortName || q.longName || ticker,
-            price: q.regularMarketPrice,
-            change: q.regularMarketChange,
-            percentChange: q.regularMarketChangePercent,
-            previousClose: q.regularMarketPreviousClose,
-            currency: q.currency,
-        };
-    } catch (err) {
-        console.error(`[marketdesk/prices] yahoo failed for ${ticker}: ${err.message}`);
-        return null;
-    }
-}
 
 module.exports = function pricesTool() {
     return {
         name: "get_price",
         description:
-            "Get the latest price for an NSE company symbol, or for an index or commodity " +
-            "(NIFTY, SENSEX, BANKNIFTY, SPX, NASDAQ, DOW, NIKKEI, HANGSENG, CRUDE, GOLD, DXY, USDINR). " +
-            "Never state a price you have not fetched.",
+            "Get the latest price for one NSE company symbol, or one index or commodity. " +
+            "For a broad set of index levels prefer get_indices, which returns them all at once. " +
+            "Quote only what this returns; if it reports no data, say so rather than estimating.",
         parameters: {
             type: "object",
             properties: {
-                symbol: { type: "string", description: "NSE symbol or index name." },
+                symbol: { type: "string", description: "NSE symbol (e.g. ITC) or index name (e.g. NIFTY 50, CRUDE)." },
             },
             required: ["symbol"],
         },
         handler: async ({ symbol }, ctx) => {
-            const key = String(symbol || "").trim().toUpperCase().replace(/\s+/g, "");
+            const key = String(symbol || "").trim().toUpperCase();
             if (!key) return { error: "symbol is required" };
 
-            // Record what was genuinely fetched. Telling the model not to invent
-            // numbers does not stop it -- a brief was published quoting four index
-            // levels when every one of these lookups had failed -- so the caller
-            // needs a record of real data to check the output against.
-            const remember = (quote) => {
-                if (quote && ctx?.facts?.prices) ctx.facts.prices.set(key, quote);
+            const remember = (quote, name) => {
+                if (quote && ctx?.facts?.prices) ctx.facts.prices.set(name || key, quote);
                 return quote;
             };
 
-            if (INDEX_TICKERS[key]) {
-                const quote = remember(await yahooQuote(INDEX_TICKERS[key]));
-                return quote || { symbol: key, note: "quote unavailable right now" };
+            // An index or commodity by name, from NSE or the global scraper.
+            const index = await findIndex(key);
+            if (index) return remember(index, index.name);
+
+            // A tracked equity.
+            const equity = await fetchEquityPrice(key.replace(/\s+/g, ""));
+            if (equity) return remember(equity);
+
+            // Anything left is a global ticker only Yahoo carries.
+            const ticker = YAHOO_FALLBACK[key.replace(/\s+/g, "")];
+            if (ticker) {
+                const quote = await fetchYahoo(ticker);
+                if (quote) return remember(quote);
             }
 
-            const nseQuote = remember(await fetchQuote(key));
-            if (nseQuote) return nseQuote;
-
-            const fallback = remember(await yahooQuote(`${key}.NS`));
-            return fallback || { symbol: key, note: "quote unavailable right now" };
+            return { symbol: key, note: "no price available right now; do not quote a level for this" };
         },
     };
 };

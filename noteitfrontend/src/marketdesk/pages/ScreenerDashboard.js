@@ -119,16 +119,20 @@ function Screener() {
                                     style={{ fontSize: 12.5, color: "#95a1b1" }}
                                 />
                             )}
-                            <Form.Select
+                            {/* Form.Control as="select", not Form.Select: this app is on
+                                react-bootstrap 1.x, where Form.Select does not exist and
+                                resolves to undefined. */}
+                            <Form.Control
+                                as="select"
                                 size="sm"
                                 value={sort}
                                 onChange={(e) => setSort(e.target.value)}
                                 style={{ width: 160, fontSize: 12.5 }}
                             >
                                 <option value="materiality">Most material</option>
-                                <option value="symbol">Symbol A–Z</option>
+                                <option value="symbol">Symbol A-Z</option>
                                 <option value="sentiment">Sentiment</option>
-                            </Form.Select>
+                            </Form.Control>
                         </div>
                     </div>
 

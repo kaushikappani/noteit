@@ -240,7 +240,7 @@ function Settings() {
                 ))}
                 <div style={{ marginTop: 12, fontSize: 12.5, color: "#95a1b1" }}>
                     Recipients: {(config.recipients || []).map((r) => (
-                        <Badge bg="secondary" key={r.email} style={{ marginRight: 5, fontWeight: 400 }}>
+                        <Badge variant="secondary" key={r.email} style={{ marginRight: 5, fontWeight: 400 }}>
                             {r.email}
                         </Badge>
                     ))}

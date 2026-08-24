@@ -38,7 +38,7 @@ export default function EditionHeader({
 
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                 {edition?.status && edition.status !== "ready" && (
-                    <Badge bg={edition.status === "failed" ? "danger" : "secondary"}>
+                    <Badge variant={edition.status === "failed" ? "danger" : "secondary"}>
                         {edition.status}
                     </Badge>
                 )}

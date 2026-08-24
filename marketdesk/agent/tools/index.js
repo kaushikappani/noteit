@@ -11,13 +11,16 @@ const webSearchTool = require("./webSearch");
 const filingsTool = require("./filings");
 const watchlistTool = require("./watchlist");
 const pricesTool = require("./prices");
+const indicesTool = require("./indices");
 const newsTool = require("./news");
 const calendarTool = require("./calendar");
 
 /** Named sets, so each pass exposes only what it should reach for. */
 const TOOL_SETS = {
     companySnapshot: ["get_company_filings", "web_search", "get_price", "get_calendar"],
-    marketBrief: ["web_search", "get_price", "get_news", "get_watchlist"],
+    // get_indices first: one call gets the whole board, so the model has no
+    // reason to guess levels symbol by symbol.
+    marketBrief: ["get_indices", "web_search", "get_price", "get_news", "get_watchlist"],
     all: null,
 };
 
@@ -25,6 +28,7 @@ function buildRegistry({ provider }) {
     const tools = [
         filingsTool(),
         watchlistTool(),
+        indicesTool(),
         pricesTool(),
         newsTool(),
         calendarTool(),

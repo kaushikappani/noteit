@@ -97,7 +97,9 @@ const SNAPSHOT_RULES = [
 
 const MARKET_RULES = [
     "You are writing the market-wide front page of a twice-daily Indian equity briefing.",
-    "Fetch every level you quote with get_price. That tool fails often - NSE returns 403 and Yahoo rate-limits - so when it does, get the level from web_search instead and attribute it to a dated session. Do not silently omit index levels.",
+    "Call get_indices once, first. It returns the Indian and global index levels in a single call. Quote only those numbers.",
+    "For anything get_indices does not cover, use get_price. If a tool reports no data, write around it and say the level was unavailable.",
+    "Never supply a level, a flow figure or a yield from your own knowledge. Anything not returned by a tool in this conversation must not appear as a number.",
     "Use web_search for the narrative and for FII and DII flows.",
     "Cover: where Indian indices closed or opened, the reasons, global cues, FII and DII flows, sector leadership, and currency or commodity moves that matter.",
     "Write for someone who already knows the market. No definitions, no hedging, no disclaimers.",
