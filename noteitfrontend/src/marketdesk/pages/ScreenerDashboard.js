@@ -51,7 +51,11 @@ function Screener() {
         setBusy(true);
         setError(null);
         try {
-            await buildEdition({ force: true, deliver: false });
+            // deliver: true — a rebuild produces a new edition, and an edition
+            // nobody was mailed has effectively not been published. This sent
+            // deliver:false, so "Rebuild now" rebuilt the newspaper and then told
+            // the server to skip every channel, email included.
+            await buildEdition({ force: true, deliver: true });
             await load();
         } catch (err) {
             setError(errorMessage(err));
