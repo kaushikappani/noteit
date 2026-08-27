@@ -148,7 +148,7 @@ existing edition. `--deliver` sends it.
 | Everything marked quiet | No filings since the last edition. Real, not a bug |
 | "Market section unverified" | No price or news lookup succeeded — see search config below |
 | Pending analysis climbing | LLM daily quota exhausted; add a key to `GEMINI_API_KEYS` |
-| Thin market narrative | No search backend. Set `MARKETDESK_SEARCH_PROVIDER=tavily` + `TAVILY_API_KEY`, or enable billing for Gemini grounding |
+| Thin market narrative | No search backend. Free fix: `MARKETDESK_SEARCH_PROVIDER=google` with `GOOGLE_SEARCH_API_KEY` + `GOOGLE_SEARCH_CX` (100 queries/day, no billing) |
 | Email not arriving | Check `mailerConfigured` on the settings page |
 | Telegram says sent but nothing arrived | The host helper swallows its own errors; usually Redis being unreachable |
 

@@ -179,15 +179,38 @@ so that case fails fast and rotates instead of burning the retry budget.
 
 If a configured model is retired, the tier degrades (deep → balanced → fast).
 
-### Google Search grounding needs billing
+### Web search backends
 
-Grounded search returns a bare `RESOURCE_EXHAUSTED` on free-tier keys — no quota
-detail, no allowance. Until billing is enabled, either leave
-`MARKETDESK_SEARCH_PROVIDER=none` (the agent is simply not offered `web_search`,
-rather than being handed a tool that always fails) or set a `TAVILY_API_KEY` /
-`SERPER_API_KEY` and switch the backend. With search off, company entries still
-work — they are built from stored filing analyses — but the market brief is thin.
+`MARKETDESK_SEARCH_PROVIDER` picks where the agent's `web_search` tool gets
+its results. It is independent of `LLM_PROVIDER` because grounded search is a
+separate request in every case.
 
+| Value | Cost | Needs |
+| --- | --- | --- |
+| `google` | **Free, 100 queries/day** | `GOOGLE_SEARCH_API_KEY` + `GOOGLE_SEARCH_CX` |
+| `tavily` | Free 1,000/month | `TAVILY_API_KEY` |
+| `serper` | One-off free credits | `SERPER_API_KEY` |
+| `gemini-grounding` | Billed per query | A Gemini key with billing enabled |
+| `none` | — | — |
+
+`google` uses the Programmable Search Engine JSON API — real Google results,
+no billing account. Two free values to obtain:
+
+1. Google Cloud console: enable **Custom Search API**, create an API key.
+2. programmablesearchengine.google.com: create an engine with **Search the
+   entire web** enabled, copy its Search engine ID (the `cx`).
+
+100/day is comfortable — an edition uses roughly 10-20 queries, so two
+editions a day leaves plenty of headroom. When the allowance runs out the
+backend returns a note rather than throwing, so the edition still ships.
+
+Gemini's own grounding is not available on a free key: it answers a bare
+`RESOURCE_EXHAUSTED` with no quota detail.
+
+With no backend configured, `web_search` is **not offered to the agent at
+all** rather than handed over as a tool that always fails. Index levels still
+work regardless (NSE and screener.in need no key); what is lost is the
+narrative research and the flow commentary.
 ## Cost
 
 Roughly $0.05–0.15 per edition for ~30 companies on Gemini Flash tiers. Turn it

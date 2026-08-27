@@ -113,6 +113,8 @@ const env = {
     openrouterApiKey: process.env.OPENROUTER_API_KEY,
     openrouterApiKeys: keyList("OPENROUTER_API_KEYS", "OPENROUTER_API_KEY"),
     searchProvider: (process.env.MARKETDESK_SEARCH_PROVIDER || "gemini-grounding").toLowerCase(),
+    googleSearchApiKey: process.env.GOOGLE_SEARCH_API_KEY,
+    googleSearchCx: process.env.GOOGLE_SEARCH_CX,
     tavilyApiKey: process.env.TAVILY_API_KEY,
     serperApiKey: process.env.SERPER_API_KEY,
     maxUsdPerRun: Number(process.env.LLM_MAX_USD_PER_RUN || 0.5),

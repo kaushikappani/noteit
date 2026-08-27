@@ -16,6 +16,7 @@ const { createGeminiProvider } = require("./providers/gemini");
 const { createOpenAICompatibleProvider } = require("./providers/openaiCompatible");
 const { createGeminiGroundingSearch } = require("./search/geminiGrounding");
 const { createHttpSearch } = require("./search/httpSearch");
+const { createGoogleCseSearch } = require("./search/googleCse");
 const { getPool } = require("./keyPool");
 const { env, resolveModel: resolveFromSettings } = require("../config/settings");
 const { LlmError, RateLimitError, isRetryable } = require("./errors");
@@ -67,6 +68,18 @@ function buildChatProvider(providerName, overrides) {
  * search key must not take the whole newspaper down, it should just cost us the
  * research section.
  */
+/** The portable backends, in preference order, or null if none is configured. */
+function portableSearch() {
+    if (env.googleSearchApiKey && env.googleSearchCx) {
+        return createGoogleCseSearch({
+            apiKey: env.googleSearchApiKey,
+            cx: env.googleSearchCx,
+        });
+    }
+    if (env.tavilyApiKey) return createHttpSearch({ backend: "tavily", apiKey: env.tavilyApiKey });
+    if (env.serperApiKey) return createHttpSearch({ backend: "serper", apiKey: env.serperApiKey });
+    return null;
+}
 function buildSearch(provider, overrides) {
     const want = env.searchProvider;
 
@@ -86,6 +99,17 @@ function buildSearch(provider, overrides) {
         if (env.tavilyApiKey) return createHttpSearch({ backend: "tavily", apiKey: env.tavilyApiKey });
         if (env.serperApiKey) return createHttpSearch({ backend: "serper", apiKey: env.serperApiKey });
         return null;
+    }
+
+    if (want === "google" || want === "google-cse") {
+        if (env.googleSearchApiKey && env.googleSearchCx) {
+            return createGoogleCseSearch({
+                apiKey: env.googleSearchApiKey,
+                cx: env.googleSearchCx,
+            });
+        }
+        console.warn("[marketdesk] MARKETDESK_SEARCH_PROVIDER=google but GOOGLE_SEARCH_API_KEY/CX are not set");
+        return portableSearch();
     }
 
     if (want === "tavily" && env.tavilyApiKey) {
