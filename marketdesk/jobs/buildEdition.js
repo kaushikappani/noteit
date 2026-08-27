@@ -433,6 +433,22 @@ async function buildEdition({ date, slot, force = false, dryRun = false } = {}) 
             error: null,
         };
 
+        // Refuse to publish an empty paper.
+        //
+        // A model that returns unparseable JSON falls back to an empty brief,
+        // and until now the edition was still marked ready and delivered: one
+        // run emailed a newspaper with no headline, no points, no index levels
+        // and football fixtures listed as sources. Guarding the numbers was not
+        // enough -- the edition as a whole needs a floor.
+        const hasBrief = (payload.marketPoints || []).length > 0;
+        const hasCompanies = companyRefs.some((r) => !r.stale);
+        if (!hasBrief && !hasCompanies) {
+            throw new Error(
+                "edition has no market brief and no company entries - refusing to publish. " +
+                "The model returned nothing usable; check the agent trace."
+            );
+        }
+
         payload.html = renderEdition({
             ...payload,
             snapshots: snapshots.filter(Boolean),

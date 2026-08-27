@@ -41,10 +41,22 @@ module.exports = function webSearchTool({ provider }) {
             const dated = `${query} (as of ${today})`;
 
             const result = await provider.search({ query: dated, recencyDays, signal });
+
+            // Keep only citations plausibly about the query. A market-brief run
+            // came back citing football fixture predictions, which then appeared
+            // in the newspaper as sources; an irrelevant citation is worse than
+            // none because it looks like evidence.
+            const tokens = String(query).toLowerCase().split(/[^a-z0-9]+/i)
+                .filter((t) => t.length > 3);
+            const relevant = (c) => {
+                if (!tokens.length) return true;
+                const hay = String(c.title || "").toLowerCase();
+                return tokens.some((t) => hay.includes(t));
+            };
             if (ctx?.facts) ctx.facts.sourced = (ctx.facts.sourced || 0) + 1;
             return {
                 summary: result.text,
-                citations: (result.citations || []).slice(0, 8),
+                citations: (result.citations || []).filter(relevant).slice(0, 8),
             };
         },
     };
