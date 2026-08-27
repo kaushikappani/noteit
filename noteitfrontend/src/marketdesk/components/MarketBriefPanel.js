@@ -28,8 +28,11 @@ function IndexTile({ item }) {
 export default function MarketBriefPanel({ edition }) {
     if (!edition) return null;
 
-    const paragraphs = String(edition.marketBrief || "")
-        .split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
+    // Editions built before the brief became a list still only have prose, so
+    // fall back to splitting it rather than showing nothing.
+    const points = edition.marketPoints?.length
+        ? edition.marketPoints
+        : String(edition.marketBrief || "").split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
 
     return (
         <section style={{ marginBottom: 30 }}>
@@ -75,13 +78,18 @@ export default function MarketBriefPanel({ edition }) {
                 </div>
             )}
 
-            {paragraphs.map((p, i) => (
-                <p key={i} style={{
-                    margin: "0 0 13px", lineHeight: 1.62, color: "#c3ccd8", fontSize: 14.5,
-                }}>
-                    {p}
-                </p>
-            ))}
+            {points.length > 0 && (
+                <ul style={{ margin: "0 0 16px", padding: "0 0 0 20px" }}>
+                    {points.map((p, i) => (
+                        <li key={i} style={{
+                            margin: "0 0 10px", lineHeight: 1.6,
+                            color: "#c3ccd8", fontSize: 14.5,
+                        }}>
+                            {p}
+                        </li>
+                    ))}
+                </ul>
+            )}
 
             <CitationList citations={edition.marketCitations} max={5} />
         </section>

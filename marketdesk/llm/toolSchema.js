@@ -44,6 +44,21 @@ function toGeminiSchema(schema) {
             out[key] = value;
         }
     }
+    // Gemini rejects the whole request when a name in "required" is not a
+    // defined property, so one stale entry after a field rename kills every
+    // call using the schema. Drop the unknown names and carry on: a lost
+    // constraint is far cheaper than a dead edition.
+    if (Array.isArray(out.required) && out.properties) {
+        const known = out.required.filter((r) => out.properties[r] !== undefined);
+        if (known.length !== out.required.length) {
+            const dropped = out.required.filter((r) => out.properties[r] === undefined);
+            console.warn(
+                "[marketdesk/llm] schema requires undefined propert" +
+                (dropped.length > 1 ? "ies: " : "y: ") + dropped.join(", ") + " - dropped"
+            );
+        }
+        out.required = known.length ? known : undefined;
+    }
     if (!out.type) out.type = out.properties ? "OBJECT" : "STRING";
     // An OBJECT with no properties is an error on Gemini's side, not an empty object.
     if (out.type === "OBJECT" && out.properties && !Object.keys(out.properties).length) return undefined;

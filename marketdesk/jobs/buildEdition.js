@@ -219,8 +219,11 @@ async function buildMarketBrief({
     });
 
     const parsed = parseJsonLoose(result.text, {
-        fallback: { headline: "Market brief unavailable", brief: result.text || "", indices: [] },
+        fallback: { headline: "Market brief unavailable", points: [], indices: [] },
     });
+
+    // asArray copes with a model that returns one blob instead of a list.
+    const points = asArray(parsed.points, 10);
 
     const claimed = Array.isArray(parsed.indices)
         ? parsed.indices.slice(0, 10).map((i) => ({
@@ -251,7 +254,10 @@ async function buildMarketBrief({
 
     return {
         headline: parsed.headline || "",
-        brief: parsed.brief || "",
+        points,
+        // Kept populated so anything still reading marketBrief - an old edition
+        // in the archive, a mail client - has something sensible to show.
+        brief: points.join("\n\n"),
         themes: asArray(parsed.themes, 6),
         indices,
         unsourced,
@@ -387,6 +393,7 @@ async function buildEdition({ date, slot, force = false, dryRun = false } = {}) 
             status: "ready",
             builtAt: new Date(),
             marketBrief: market.brief,
+            marketPoints: market.points,
             marketHeadline: market.headline,
             marketThemes: market.themes,
             marketCitations: market.citations.slice(0, 12),

@@ -32,11 +32,14 @@ const MARKET_SCHEMA = {
     type: "object",
     properties: {
         headline: { type: "string", description: "One line summarising the session. Under 100 characters." },
-        brief: {
-            type: "string",
+        points: {
+            type: "array",
+            items: { type: "string" },
             description:
-                "The market brief, 250-400 words, plain paragraphs separated by blank lines. " +
-                "Lead with what happened and why. No bullet characters, no markdown headings.",
+                "5 to 8 self-contained points, each one or two full sentences. Order them by " +
+                "importance: index action first, then global cues, then flows, then sectors, " +
+                "then currency and commodities. Each point must stand alone and carry a concrete " +
+                "number or named driver. No bullet characters, no headings, no trailing summary.",
         },
         indices: {
             type: "array",
@@ -57,7 +60,7 @@ const MARKET_SCHEMA = {
             description: "2 to 5 short theme labels driving the session.",
         },
     },
-    required: ["headline", "brief"],
+    required: ["headline", "points"],
 };
 
 /**
@@ -103,6 +106,7 @@ const MARKET_RULES = [
     "Use web_search for the narrative and for FII and DII flows.",
     "Cover: where Indian indices closed or opened, the reasons, global cues, FII and DII flows, sector leadership, and currency or commodity moves that matter.",
     "Write for someone who already knows the market. No definitions, no hedging, no disclaimers.",
+    "Deliver the brief as discrete points, not prose. One idea per point, each carrying a number or a named driver. A point that could be deleted without losing information should not be there.",
 ].join(" ");
 
 /** System prompt for the per-company pass, anchored to today. */

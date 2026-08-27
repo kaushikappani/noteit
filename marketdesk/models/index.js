@@ -108,6 +108,8 @@ const editionSchema = new mongoose.Schema({
     builtAt: Date,
     marketHeadline: String,
     marketBrief: String,
+    /** The brief as discrete points; marketBrief keeps a joined copy for older readers. */
+    marketPoints: [String],
     marketThemes: [String],
     /** True when the market pass gathered no real data - the brief is unsourced. */
     marketBriefUnsourced: Boolean,

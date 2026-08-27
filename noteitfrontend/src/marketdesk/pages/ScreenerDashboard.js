@@ -6,7 +6,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 
 import Header from "../../components/Header";
 import AdminGate, { currentUser } from "../AdminGate";
-import { getLatestEdition, buildEdition, errorMessage } from "../api";
+import { getLatestEdition, getCompanies, buildEdition, errorMessage } from "../api";
 import EditionHeader from "../components/EditionHeader";
 import MarketBriefPanel from "../components/MarketBriefPanel";
 import CompanyCard from "../components/CompanyCard";
@@ -15,27 +15,48 @@ import CalendarPanel from "../components/CalendarPanel";
 const darkTheme = createTheme({ palette: { mode: "dark" } });
 
 const SORTS = {
-    materiality: (a, b) => (b.materiality - a.materiality) || Number(a.stale) - Number(b.stale),
+    // Covered-in-this-edition first, then by materiality, so the rows that have
+    // something to say are never buried under the quiet ones.
+    materiality: (a, b) =>
+        Number(b.covered) - Number(a.covered) ||
+        (b.materiality - a.materiality) ||
+        a.symbol.localeCompare(b.symbol),
     symbol: (a, b) => a.symbol.localeCompare(b.symbol),
-    sentiment: (a, b) => String(a.sentiment).localeCompare(String(b.sentiment)),
+    sentiment: (a, b) =>
+        String(a.sentiment || "zz").localeCompare(String(b.sentiment || "zz")) ||
+        a.symbol.localeCompare(b.symbol),
+};
+
+const FILTERS = {
+    news: { label: "With news", test: (r) => r.covered },
+    all: { label: "All companies", test: () => true },
+    filed: { label: "Has filings on record", test: (r) => r.filingCount > 0 },
 };
 
 function Screener() {
     const [edition, setEdition] = useState(null);
-    const [snapshots, setSnapshots] = useState([]);
     const [loading, setLoading] = useState(true);
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState(null);
+    const [rows, setRows] = useState([]);
     const [sort, setSort] = useState("materiality");
-    const [hideQuiet, setHideQuiet] = useState(true);
+    const [filter, setFilter] = useState("news");
 
     const load = useCallback(async () => {
         setLoading(true);
         setError(null);
         try {
-            const data = await getLatestEdition();
-            setEdition(data.edition);
-            setSnapshots(data.snapshots || []);
+            // The company grid comes from /companies rather than the edition, so
+            // every watchlist name gets a row even when nothing was filed.
+            const [editionData, companyData] = await Promise.all([
+                getLatestEdition().catch((e) => {
+                    if (e?.response?.status === 404) return { edition: null };
+                    throw e;
+                }),
+                getCompanies(),
+            ]);
+            setEdition(editionData.edition);
+            setRows(companyData.rows || []);
         } catch (err) {
             // A fresh install has no edition yet; that is not an error worth shouting about.
             if (err?.response?.status === 404) setEdition(null);
@@ -64,17 +85,8 @@ function Screener() {
         }
     };
 
-    const bySnapshotId = new Map(snapshots.map((s) => [String(s._id), s]));
-    const rows = (edition?.companyRefs || []).map((ref) => {
-        const snapshot = bySnapshotId.get(String(ref.snapshotId));
-        return { ...ref, bullets: snapshot?.bullets || [] };
-    });
-
-    const visible = rows
-        .filter((r) => !(hideQuiet && r.stale))
-        .sort(SORTS[sort]);
-
-    const quietCount = rows.filter((r) => r.stale).length;
+    const visible = rows.filter(FILTERS[filter].test).sort(SORTS[sort]);
+    const withNews = rows.filter((r) => r.covered).length;
 
     return (
         <div style={{ maxWidth: 900, margin: "0 auto", padding: "0 16px 60px" }}>
@@ -91,15 +103,16 @@ function Screener() {
                 <div style={{ textAlign: "center", padding: 50 }}>
                     <Spinner animation="border" size="sm" />
                 </div>
-            ) : !edition ? (
-                <Alert variant="secondary">
-                    No edition has been built yet. Use <strong>Rebuild now</strong> above, or wait for
-                    the 8&nbsp;AM run. Check <Link to="/marketdesk/settings">settings</Link> first if
-                    the watchlist is empty.
-                </Alert>
             ) : (
                 <>
-                    <MarketBriefPanel edition={edition} />
+                    {!edition && (
+                        <Alert variant="secondary">
+                            No edition has been built yet, so there is no market brief. Use{" "}
+                            <strong>Rebuild now</strong> above, or wait for the 8&nbsp;AM run. Your
+                            companies are still listed below.
+                        </Alert>
+                    )}
+                    {edition && <MarketBriefPanel edition={edition} />}
 
                     <div style={{
                         display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -109,20 +122,23 @@ function Screener() {
                             fontSize: 11, textTransform: "uppercase",
                             letterSpacing: ".6px", color: "#7c8698",
                         }}>
-                            Your companies · {visible.length} shown
+                            Your companies · {visible.length} of {rows.length} shown · {withNews} with news
                         </div>
 
-                        <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
-                            {quietCount > 0 && (
-                                <Form.Check
-                                    type="switch"
-                                    id="md-hide-quiet"
-                                    label={`Hide quiet (${quietCount})`}
-                                    checked={hideQuiet}
-                                    onChange={(e) => setHideQuiet(e.target.checked)}
-                                    style={{ fontSize: 12.5, color: "#95a1b1" }}
-                                />
-                            )}
+                        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                            <Form.Control
+                                as="select"
+                                size="sm"
+                                value={filter}
+                                onChange={(e) => setFilter(e.target.value)}
+                                style={{ width: 190, fontSize: 12.5 }}
+                            >
+                                {Object.entries(FILTERS).map(([key, f]) => (
+                                    <option key={key} value={key}>
+                                        {f.label} ({rows.filter(f.test).length})
+                                    </option>
+                                ))}
+                            </Form.Control>
                             {/* Form.Control as="select", not Form.Select: this app is on
                                 react-bootstrap 1.x, where Form.Select does not exist and
                                 resolves to undefined. */}
@@ -143,8 +159,8 @@ function Screener() {
                     {visible.length
                         ? visible.map((row) => <CompanyCard key={row.symbol} row={row} />)
                         : <Alert variant="secondary">
-                              Nothing material in this window.
-                              {quietCount > 0 && " Turn off “Hide quiet” to see the full watchlist."}
+                              No companies match this filter. Switch to <strong>All companies</strong>
+                              {" "}to see the whole watchlist.
                           </Alert>}
 
                     <CalendarPanel calendar={edition.calendar} />

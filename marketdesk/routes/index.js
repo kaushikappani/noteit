@@ -90,6 +90,13 @@ router.post("/editions/:id/deliver", adminProtect, asyncHandler(async (req, res)
  * The screener grid. Reads the latest ready edition's company refs so the table
  * matches the newspaper exactly, rather than recomputing a second ranking.
  */
+/**
+ * The screener grid.
+ *
+ * Returns every active watchlist company, not only the ones an edition covered.
+ * A company with no filings still needs a row, because that row is the only way
+ * to reach its page — and "nothing filed" is itself information.
+ */
 router.get("/companies", adminProtect, asyncHandler(async (req, res) => {
     const edition = await MdEdition.findOne({ status: "ready" })
         .sort({ date: -1, builtAt: -1 })
@@ -99,35 +106,65 @@ router.get("/companies", adminProtect, asyncHandler(async (req, res) => {
     const watchlist = await MdWatchlist.findOne({ key: "default" }).lean();
     const active = (watchlist?.symbols || []).filter((s) => s.active !== false);
 
-    if (!edition) {
-        return res.json({
-            edition: null,
-            rows: active.map((s) => ({ symbol: s.symbol, name: s.name, sector: s.sector })),
-        });
+    const covered = new Map();
+    if (edition) {
+        const snapshots = await MdCompanySnapshot.find({ editionId: edition._id })
+            .select("symbol headline bullets sentiment materialityTop stale")
+            .lean();
+        const bySymbol = new Map(snapshots.map((s) => [s.symbol, s]));
+        for (const ref of edition.companyRefs || []) {
+            covered.set(ref.symbol, { ref, snapshot: bySymbol.get(ref.symbol) });
+        }
     }
 
-    const snapshots = await MdCompanySnapshot.find({ editionId: edition._id })
-        .select("symbol headline bullets sentiment materialityTop stale")
-        .lean();
-    const bySymbol = new Map(snapshots.map((s) => [s.symbol, s]));
-    const meta = new Map(active.map((s) => [s.symbol, s]));
+    // Latest filing per company, so an uncovered row can still say something
+    // useful rather than just sitting blank.
+    const symbols = active.map((s) => s.symbol);
+    const latestFilings = await MdFiling.aggregate([
+        { $match: { symbol: { $in: symbols } } },
+        { $sort: { announcedAt: -1 } },
+        {
+            $group: {
+                _id: "$symbol",
+                desc: { $first: "$desc" },
+                announcedAt: { $first: "$announcedAt" },
+                materiality: { $first: "$materiality" },
+                sentiment: { $first: "$sentiment" },
+                count: { $sum: 1 },
+            },
+        },
+    ]);
+    const filingBySymbol = new Map(latestFilings.map((f) => [f._id, f]));
 
-    const rows = (edition.companyRefs || []).map((ref) => {
-        const snapshot = bySymbol.get(ref.symbol);
+    const rows = active.map((entry) => {
+        const hit = covered.get(entry.symbol);
+        const latest = filingBySymbol.get(entry.symbol);
+
         return {
-            symbol: ref.symbol,
-            name: meta.get(ref.symbol)?.name,
-            sector: meta.get(ref.symbol)?.sector,
-            materiality: ref.materiality || 0,
-            sentiment: ref.sentiment,
-            headline: ref.headline,
-            stale: !!ref.stale,
-            bullets: snapshot?.bullets || [],
+            symbol: entry.symbol,
+            name: entry.name,
+            sector: entry.sector,
+            tags: entry.tags || [],
+
+            // In this edition?
+            covered: !!hit && !hit.ref.stale,
+            stale: !!hit?.ref?.stale,
+
+            materiality: hit?.ref?.materiality ?? latest?.materiality ?? 0,
+            sentiment: hit?.ref?.sentiment || latest?.sentiment || null,
+            headline: hit?.ref?.headline || latest?.desc || null,
+            bullets: hit?.snapshot?.bullets || [],
+
+            filingCount: latest?.count || 0,
+            lastFilingAt: latest?.announcedAt || null,
         };
     });
 
     res.json({
-        edition: { date: edition.date, slot: edition.slot, builtAt: edition.builtAt },
+        edition: edition
+            ? { date: edition.date, slot: edition.slot, builtAt: edition.builtAt }
+            : null,
+        count: rows.length,
         rows,
     });
 }));

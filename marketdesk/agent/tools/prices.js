@@ -10,9 +10,13 @@ const { fetchEquityPrice, findIndex, fetchYahoo } = require("../../services/pric
 
 // Yahoo tickers for the few things neither Indian source covers.
 const YAHOO_FALLBACK = {
+    // BSE indices are not in NSE's allIndices feed and screener.in has no page
+    // for them, so without these entries Sensex simply never appears in a brief.
+    SENSEX: "^BSESN", BSESENSEX: "^BSESN", BANKEX: "BSE-BANK.BO",
     SPX: "^GSPC", SP500: "^GSPC", NASDAQ: "^IXIC", DOW: "^DJI",
-    CRUDE: "BZ=F", BRENT: "BZ=F", GOLD: "GC=F", SILVER: "SI=F",
-    DXY: "DX-Y.NYB", USDINR: "INR=X",
+    NIKKEI: "^N225", HANGSENG: "^HSI", FTSE: "^FTSE", DAX: "^GDAXI",
+    CRUDE: "BZ=F", BRENT: "BZ=F", WTI: "CL=F", GOLD: "GC=F", SILVER: "SI=F",
+    DXY: "DX-Y.NYB", USDINR: "INR=X", INR: "INR=X",
 };
 
 module.exports = function pricesTool() {

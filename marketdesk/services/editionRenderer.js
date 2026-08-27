@@ -126,10 +126,16 @@ function calendarPanel(calendar) {
  */
 function renderEdition(edition) {
     const {
-        date, slot, marketHeadline, marketBrief, marketThemes, indices,
+        date, slot, marketHeadline, marketBrief, marketPoints, marketThemes, indices,
         companyRefs = [], calendar = [], snapshots = [], usage,
         marketBriefUnsourced,
     } = edition;
+
+    // Editions built before the brief became a list still only have prose, so
+    // fall back to splitting it rather than showing nothing.
+    const briefPoints = marketPoints?.length
+        ? marketPoints
+        : String(marketBrief || "").split(/\n{2,}/).map((t) => t.trim()).filter(Boolean);
 
     const byId = new Map(snapshots.map((s) => [String(s._id), s]));
     const bySymbol = new Map(snapshots.map((s) => [s.symbol, s]));
@@ -172,7 +178,9 @@ function renderEdition(edition) {
     ${marketHeadline ? `<h1 style="margin:0 0 14px;font-size:19px;line-height:1.35;color:${C.ink};font-weight:700;">${esc(marketHeadline)}</h1>` : ""}
     ${themes}
     ${indicesTable(indices)}
-    ${paragraphs(marketBrief)}
+    ${briefPoints.length ? `<ul style="margin:0 0 18px;padding:0 0 0 20px;">${briefPoints
+        .map((p) => `<li style="margin:0 0 9px;line-height:1.55;color:${C.body};font-size:14px;">${esc(p)}</li>`)
+        .join("")}</ul>` : ""}
 
     ${material.length ? `<div style="margin:28px 0 4px;font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:${C.muted};">
         Your companies · ${material.length} with news
