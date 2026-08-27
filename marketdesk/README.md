@@ -187,11 +187,22 @@ separate request in every case.
 
 | Value | Cost | Needs |
 | --- | --- | --- |
-| `google` | **Free, 100 queries/day** | `GOOGLE_SEARCH_API_KEY` + `GOOGLE_SEARCH_CX` |
+| `google` | Free, 100 queries/day — **legacy projects only, see below** | `GOOGLE_SEARCH_API_KEY` + `GOOGLE_SEARCH_CX` |
 | `tavily` | Free 1,000/month | `TAVILY_API_KEY` |
 | `serper` | One-off free credits | `SERPER_API_KEY` |
 | `gemini-grounding` | Billed per query | A Gemini key with billing enabled |
 | `none` | — | — |
+
+**`google` is unavailable on Google Cloud projects created after early 2026.**
+Google closed the Custom Search JSON API to new sign-ups, and the block is at
+account level — it cannot be configured around. The symptom is a 403 reading
+"This project does not have the access to Custom Search JSON API" while the
+console shows the API enabled, the key lists it under restrictions, and the
+`cx` resolves fine. Note the wording: "does not have the access", not "is not
+enabled". That distinction is the tell — configuration cannot produce it.
+
+On a project that predates the shutdown it still works. Otherwise use `tavily`
+or `serper`, or enable billing and use `gemini-grounding`.
 
 `google` uses the Programmable Search Engine JSON API — real Google results,
 no billing account. Two free values to obtain:

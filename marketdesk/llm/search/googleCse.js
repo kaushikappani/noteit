@@ -66,7 +66,18 @@ function createGoogleCseSearch({ apiKey, cx }) {
                     usage: { inputTokens: 0, outputTokens: 0, costUsd: 0 },
                 };
             }
-            throw new LlmError(`google-cse ${status}: ${detail}`, {
+            // The two most common setup mistakes both surface as a bare 403 or
+            // 400, and neither message says what to actually do about it.
+            let hint = "";
+            if (/does not have the access|has not been used|is disabled/i.test(detail)) {
+                hint = " -- enable the Custom Search API for this project at " +
+                    "console.cloud.google.com/apis/library/customsearch.googleapis.com " +
+                    "(restricting the key to Custom Search API is not the same as enabling it)";
+            } else if (status === 400) {
+                hint = " -- check GOOGLE_SEARCH_CX is the Search engine ID from " +
+                    "programmablesearchengine.google.com";
+            }
+            throw new LlmError(`google-cse ${status}: ${detail}${hint}`, {
                 provider: "google-cse", status,
             });
         }
