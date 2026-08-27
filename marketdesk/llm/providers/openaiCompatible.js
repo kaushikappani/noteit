@@ -9,7 +9,7 @@ const { postJson } = require("../http");
 const { getPool } = require("../keyPool");
 const { LlmError, SafetyError } = require("../errors");
 const { toOpenAITools, toOpenAIToolChoice } = require("../toolSchema");
-const { estimateCostUsd } = require("../../config/settings");
+const { estimateCostUsd, env: llmEnv } = require("../../config/settings");
 
 /** Canonical messages -> OpenAI `messages`. */
 function toOpenAIMessages(messages = [], system) {
@@ -116,9 +116,12 @@ function createOpenAICompatibleProvider({
             model, tier, temperature = 0.6, maxTokens = 4096, signal,
         }) {
             const resolved = model || resolveModel(tier);
+            const cap = llmEnv.maxTokensCeiling
+                ? Math.min(maxTokens, llmEnv.maxTokensCeiling)
+                : maxTokens;
             let effectiveSystem = system;
 
-            const body = { model: resolved, temperature, max_tokens: maxTokens };
+            const body = { model: resolved, temperature, max_tokens: cap };
 
             if (responseFormat && responseFormat !== "text" && responseFormat.json) {
                 if (jsonSchema) {

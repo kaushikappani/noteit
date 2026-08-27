@@ -13,7 +13,7 @@ const { postJson } = require("../http");
 const { getPool } = require("../keyPool");
 const { SafetyError } = require("../errors");
 const { toGeminiTools, toGeminiToolConfig, toGeminiSchema } = require("../toolSchema");
-const { estimateCostUsd } = require("../../config/settings");
+const { estimateCostUsd, env: llmEnv } = require("../../config/settings");
 
 const BASE = "https://generativelanguage.googleapis.com/v1beta";
 
@@ -157,11 +157,14 @@ function createGeminiProvider({ apiKey, apiKeys, resolveModel, pool }) {
             model, tier, temperature = 0.6, maxTokens = 4096, signal,
         }) {
             const resolved = model || resolveModel(tier);
+            const cap = llmEnv.maxTokensCeiling
+                ? Math.min(maxTokens, llmEnv.maxTokensCeiling)
+                : maxTokens;
 
             const generationConfig = {
                 temperature,
                 topP: 0.95,
-                maxOutputTokens: maxTokens,
+                maxOutputTokens: cap,
                 responseMimeType: "text/plain",
             };
             if (responseFormat && responseFormat !== "text" && responseFormat.json) {

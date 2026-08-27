@@ -118,6 +118,14 @@ const env = {
     tavilyApiKey: process.env.TAVILY_API_KEY,
     serperApiKey: process.env.SERPER_API_KEY,
     maxUsdPerRun: Number(process.env.LLM_MAX_USD_PER_RUN || 0.5),
+    /**
+     * Hard ceiling on max_tokens per call, or null for no ceiling.
+     *
+     * OpenRouter free accounts reject a request that asks for more tokens
+     * than the remaining credit can cover, so the request has to be sized to
+     * the balance rather than to the model's context window.
+     */
+    maxTokensCeiling: Number(process.env.LLM_MAX_TOKENS || 0) || null,
     adminEmails: (process.env.MARKETDESK_ADMIN_EMAILS || "kaushikappani@gmail.com")
         .split(",").map((s) => s.trim().toLowerCase()).filter(Boolean),
     cronToken: process.env.MARKETDESK_CRON_TOKEN || null,

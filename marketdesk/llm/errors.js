@@ -79,6 +79,10 @@ function fromHttp(status, body, meta = {}) {
         (body && (body.error?.message || body.message)) ||
         (typeof body === "string" ? body.slice(0, 400) : JSON.stringify(body || {}).slice(0, 400));
     const message = `${meta.provider || "llm"} ${status}: ${detail}`;
+    // 402 means out of credit. No amount of retrying or tier-switching fixes
+    // it, and the message already tells the operator what to do.
+    if (status === 402) return new LlmError(message, { ...meta, status });
+
     if (status === 429) {
         const err = new RateLimitError(message, { ...meta, status });
         err.retryAfterMs = retryAfterMs(body, meta.headers);
