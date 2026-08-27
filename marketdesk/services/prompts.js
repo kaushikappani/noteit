@@ -103,6 +103,8 @@ const MARKET_RULES = [
     "Call get_indices once, first. It returns the Indian and global index levels in a single call. Quote only those numbers.",
     "For anything get_indices does not cover, use get_price. If a tool reports no data, write around it and say the level was unavailable.",
     "Never supply a level, a flow figure or a yield from your own knowledge. Anything not returned by a tool in this conversation must not appear as a number.",
+    "get_indices outranks web_search for any index or commodity level. Search results routinely surface pages years out of date - a search for today's close can return a figure from a previous decade - so never take a level from search when get_indices supplied one.",
+    "If you use a number that came from search, say which date it refers to. A figure whose date you cannot establish must be described in words, not quoted.",
     "Use web_search for the narrative and for FII and DII flows.",
     "Cover: where Indian indices closed or opened, the reasons, global cues, FII and DII flows, sector leadership, and currency or commodity moves that matter.",
     "Write for someone who already knows the market. No definitions, no hedging, no disclaimers.",

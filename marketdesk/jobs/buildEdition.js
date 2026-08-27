@@ -186,6 +186,30 @@ async function buildCompanySnapshot({
 }
 
 /** The market-wide front page. */
+/**
+ * Keep only citations that could plausibly describe the current session.
+ *
+ * Search returns stale pages readily -- a query about today came back with
+ * articles from the previous October and a year-ahead forecast. Undated
+ * results are kept, since most publishers omit the field and dropping them
+ * would empty the list; anything with a date older than the window goes.
+ */
+function freshCitations(citations = [], maxAgeDays = 10) {
+    const cutoff = Date.now() - maxAgeDays * 86400000;
+    const kept = citations.filter((c) => {
+        if (!c?.published) return true;
+        const at = Date.parse(c.published);
+        return Number.isNaN(at) ? true : at >= cutoff;
+    });
+    const dropped = citations.length - kept.length;
+    if (dropped > 0) {
+        console.warn(
+            "[marketdesk] dropped " + dropped + " citation(s) older than " + maxAgeDays + " days"
+        );
+    }
+    return kept;
+}
+
 /** Loose match between a model-written index label and a symbol we fetched. */
 function namesMatch(label, symbol) {
     const a = String(label || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
@@ -261,7 +285,7 @@ async function buildMarketBrief({
         themes: asArray(parsed.themes, 6),
         indices,
         unsourced,
-        citations: result.citations || [],
+        citations: freshCitations(result.citations || []),
         usage: result.usage,
         traceId: result.traceId,
     };

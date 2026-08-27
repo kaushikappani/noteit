@@ -7,32 +7,47 @@
 const { postJson } = require("../http");
 const { LlmError } = require("../errors");
 
-/** Fold results into one readable block, since that is what the model consumes. */
+/**
+ * Fold results into one readable block, since that is what the model consumes.
+ *
+ * The publication date is included deliberately. Search happily returns pages
+ * years out of date -- a query for today's close came back with index levels
+ * from a previous decade -- and without a date on each result the model has no
+ * way to tell. An unknown date is stated as such rather than left blank.
+ */
 function render(results) {
     return results
-        .map((r, i) => `[${i + 1}] ${r.title}\n${r.url}\n${(r.snippet || "").trim()}`)
-        .join("\n\n");
+        .map((r, i) =>
+            "[" + (i + 1) + "] " + r.title +
+            (r.published ? " (published " + r.published + ")" : " (date unknown)") +
+            String.fromCharCode(10) + r.url +
+            String.fromCharCode(10) + (r.snippet || "").trim())
+        .join(String.fromCharCode(10) + String.fromCharCode(10));
 }
 
 async function tavily({ apiKey, query, recencyDays, signal }) {
     const body = {
-        api_key: apiKey,
         query,
         search_depth: "basic",
         max_results: 8,
         include_answer: true,
+        topic: "news",
     };
     if (recencyDays) body.days = recencyDays;
 
     const data = await postJson("https://api.tavily.com/search", body, {
+        // Bearer, not api_key in the body: both work today, but the body form is
+        // the deprecated one.
+        headers: { Authorization: "Bearer " + apiKey },
         signal, provider: "tavily", retries: 1,
     });
     const results = (data.results || []).map((r) => ({
         title: r.title, url: r.url, snippet: r.content,
+        published: r.published_date || null,
     }));
     return {
         text: data.answer ? `${data.answer}\n\n${render(results)}` : render(results),
-        citations: results.map((r) => ({ title: r.title, url: r.url })),
+        citations: results.map((r) => ({ title: r.title, url: r.url, published: r.published || null })),
     };
 }
 
@@ -49,7 +64,7 @@ async function serper({ apiKey, query, recencyDays, signal }) {
         .map((r) => ({ title: r.title, url: r.link, snippet: r.snippet }));
     return {
         text: render(results),
-        citations: results.map((r) => ({ title: r.title, url: r.url })),
+        citations: results.map((r) => ({ title: r.title, url: r.url, published: r.published || null })),
     };
 }
 

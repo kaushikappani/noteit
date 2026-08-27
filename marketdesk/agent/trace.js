@@ -11,6 +11,19 @@ const { MdAgentRun } = require("../models");
 
 const MAX_FIELD = 4000;
 
+/**
+ * Drop provider bookkeeping before storing a tool call.
+ *
+ * Gemini's thoughtSignature is a few hundred opaque characters per call and is
+ * worthless for diagnosis. Left in, it consumed the whole field budget and the
+ * tool names got truncated away, so a run looked like it had called one tool
+ * when it had called three.
+ */
+const forTrace = (calls) => {
+    if (!Array.isArray(calls)) return calls;
+    return calls.map((c) => ({ name: c.name, args: c.args }));
+};
+
 const trim = (value) => {
     if (value === undefined || value === null) return value;
     const text = typeof value === "string" ? value : JSON.stringify(value);
@@ -53,7 +66,7 @@ async function startTrace({ editionId, purpose, provider, model }) {
                         tools: (entry.tools || []).map((t) => t.name),
                     },
                     text: trim(entry.text),
-                    toolCalls: trim(entry.toolCalls),
+                    toolCalls: trim(forTrace(entry.toolCalls)),
                     toolResults: trim(entry.toolResults),
                     finishReason: entry.finishReason,
                     usage: entry.usage,
